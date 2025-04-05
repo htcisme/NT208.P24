@@ -1,0 +1,92 @@
+/* Import Montserrat font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+.footer-container {
+    background: #0b3d91; /* Keep the outer background blue */
+    color: #ffffff; /* White text for the outer container */
+    padding: 20px;
+    text-align: center;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    font-family: 'Montserrat', sans-serif; /* Apply Montserrat font */
+}
+
+.footer-content {
+    background: #0b3d91; /* Blue background */
+    color: #ffffff; /* White text */
+    padding: 20px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: row; /* Align columns horizontally */
+    align-items: center; /* Vertically center the columns */
+    justify-content: space-between; /* Distribute space between columns */
+    width: 100%; /* Ensure it takes the full width */
+    box-sizing: border-box; /* Include padding in the width calculation */
+}
+
+.footer-columns {
+    display: flex;
+    justify-content: space-between; /* Space out the two columns evenly */
+    width: 100%; /* Take up the full width */
+    margin-left: 20px; /* Align with the left edge */
+}
+
+.footer-section {
+    text-align: left; /* Align text to the left */
+    min-width: 200px; /* Ensure enough space for content */
+    padding-bottom: 20px;
+}
+
+/* Style the left column (title/logo) */
+.footer-section:first-child {
+    display: flex;
+    flex-direction: column; /* Stack logo and title vertically */
+    align-items: center; /* Center items horizontally */
+    margin-left: 50px;;
+}
+
+/* Style the right column (contact info) */
+.footer-section:last-child {
+    text-align: left; /* Ensure contact info is left-aligned */
+    padding-top: 25px;
+    margin-right: 120px;
+}
+
+.footer-title {
+    display: flex;
+    flex-direction: column; /* Stack logo and title vertically */
+    align-items: center; /* Center the logo and text horizontally */
+}
+
+.footer-title-img-container {
+    margin-bottom: 10px; /* Space between the image and the title text */
+}
+
+.footer-title-text {
+    font-weight: bold; /* Make the title text bold */
+    font-size: 20px; /* Keep the font size */
+    text-align: center; /* Center the text horizontally */
+}
+
+.footer-divider {
+    margin: 10px 0; /* Adjusted margin to fit within the container */
+    width: 100%; /* Full width of the container */
+    border: 0.5px solid #ffffff; /* White divider for contrast */
+}
+
+.footer-rights {
+    font-size: 12px;
+    color: #ffffff; /* White text */
+    padding-top: 20px; /* Space above the rights text */
+    font-family: 'Montserrat', sans-serif; /* Apply Montserrat font */
+}
+
+.footer-link {
+    color: #ffffff; /* White text to match the footer */
+    text-decoration: none; /* Remove the default underline */
+    transition: color 0.3s ease; /* Smooth color transition on hover */
+}
+
+.footer-link:hover {
+    color: #cccccc; /* Lighter shade on hover for visual feedback */
+}
