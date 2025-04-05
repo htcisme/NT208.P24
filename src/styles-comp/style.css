@@ -1,3 +1,30 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
+
+/* --------------- Header -------------*/
+.Header-Topbar-Dark-mode-toggle {
+  display: flex;
+  align-items: top;
+  justify-content: top;
+  margin: 0px 0px 32px 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6.5px;
+  font-size: 24px;
+  color: #003366;
+  transition: color 0.3s ease;
+  background-color: #ffffff;
+  border-radius: 10px;
+}
+.Header-Topbar-Dark-mode-toggle svg {
+  color: #1f2937; /* Màu mặc định là xám đậm */
+  transition: color 0.3s ease;
+}
+.Header-Topbar-Dark-mode-toggle svg:hover {
+  color: #2d71b9;
+  transition: color 0.3s ease;
+}
+
 .Header {
   width: 100%;
   background-color: #eaf7ff;
