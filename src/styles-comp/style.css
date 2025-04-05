@@ -1,0 +1,153 @@
+.Header {
+  width: 100%;
+  background-color: #eaf7ff;
+  flex-direction: column;
+
+  font-family: "Montserrat", sans-serif;
+  display: flex;
+  justify-content: space-between;
+}
+
+.Header-Topbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 15px;
+  padding-right: 50px;
+}
+
+.Header-Topbar-Logogroup {
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.Header-Topbar-Titlegroup {
+  text-align: left;
+  flex: 1;
+  text-shadow: 1px 2px 3px rgba(0, 0, 0, 0.19);
+}
+
+.Header-Topbar-Titlegroup-Uniname {
+  font-size: 20px;
+  letter-spacing: 0.5px;
+  color: #003366;
+}
+
+.Header-Topbar-Titlegroup-Deptname {
+  font-size: 25px;
+  font-weight: bold;
+  color: #003366;
+  letter-spacing: -1px;
+}
+
+.Header-Topbar-Authsearch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.Header-Topbar-Authsearch-Searchbox {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  padding: 6px 30px;
+  border-radius: 10px;
+  caret-color: #00274d; /* Đặt màu cho dấu nháy */
+}
+
+.Header-Topbar-Authsearch-Searchbox input {
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: #003366;
+  padding: 0px;
+  margin: 0px;
+  width: 100%;
+}
+
+.Header-Topbar-Authsearch-Searchbox-Searchicon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Header-Topbar-Authsearch-Searchbox-Searchicon-Icon {
+  width: 24px;
+  height: 24px;
+  color: var(--icon-color, #1f2937); /* Màu mặc định là xám đậm */
+  transition: color 0.3s ease;
+}
+.Header-Topbar-Authsearch-Searchbox-Searchicon-Icon:hover {
+  color: #2d71b9; /* Màu khi hover */
+}
+
+.Header-Topbar-Authsearch-Authlinks {
+  display: flex;
+  margin-top: 7px;
+  gap: 20px;
+  font-size: 14px;
+  color: #003366;
+  cursor: pointer;
+}
+.Header-Topbar-Authsearch-Authlinks-Item:hover {
+  color: #2d71b9;
+}
+
+.Header-Navbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  background-color: #e2f4ff;
+  color: #00274d;
+  border: 2px solid #ffffff;
+}
+
+.Header-Navbar-Navitem {
+  font-size: 22px;
+  letter-spacing: -0.5px;
+  font-family: "montserrat", sans-serif;
+  font-weight: bold;
+  padding: 12px 20px;
+  border-right: 2px solid #ffffff;
+  font-weight: bold;
+  display: flex;
+  justify-content: center; /* Căn giữa theo chiều ngang */
+  align-items: center; /* Căn giữa theo chiều dọc */
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  width: 100%;
+}
+
+.Header-Navbar-Navitem:last-child {
+  border-right: none;
+}
+
+.Header-Navbar-Navitem:hover {
+  background-color: #c1e0ff;
+  color: #003366;
+  border-radius: 5px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .Header-Navbar {
+    flex-direction: column; /* Chuyển menu thành dọc khi trên màn hình nhỏ */
+    align-items: center;
+  }
+
+  .Header-Navbar-Navitem {
+    border-right: none; /* Loại bỏ border phải khi menu dọc */
+    margin-bottom: 10px; /* Thêm khoảng cách giữa các mục */
+  }
+
+  .Header-Navbar-Navitem:last-child {
+    margin-bottom: 0; /* Loại bỏ margin cho phần tử cuối cùng */
+  }
+}
