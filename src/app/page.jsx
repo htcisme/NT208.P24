@@ -2,7 +2,7 @@ import Image from "next/image";
 import styles from "./page.module.css";
 import Header from "@/components/Header/index.jsx";
 
-export default function Home() {
+function App() {
   return (
     <div>
       <Header />
@@ -42,3 +42,5 @@ export default function Home() {
     </div>
   );
 }
+
+export default App;
