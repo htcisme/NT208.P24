@@ -1,7 +1,8 @@
-import React from "react";
-import Footer from "@/components/Footer";
+import Image from "next/image";
+import styles from "./page.module.css";
+import Header from "@/components/Header";
 
-function App() {
+export default function Home() {
   return (
     <div>
       <h1>Trang chính</h1>
@@ -9,5 +10,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
