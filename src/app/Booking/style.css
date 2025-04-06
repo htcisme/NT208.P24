@@ -11,3 +11,23 @@ body {
   align-items: center;
   min-height: 100vh; /* Đảm bảo iframe được căn giữa cả chiều dọc */
 }
+
+.booking-header-title {
+  color: #04255a;
+  font-weight: bold;
+  font-family: "Montserrat", sans-serif;
+  font-style: italic;
+  font-size: 27px;
+  margin-top: 82px;
+  margin-bottom: 93px;
+}
+
+.booking-body-img {
+  border-radius: 2%;
+  margin-bottom: 10px;
+}
+
+.booking-body-frame {
+  border-radius: 2%;
+  margin-bottom: 120px;
+}
