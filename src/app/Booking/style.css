@@ -1,10 +1,13 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
 
 body {
-  background-color: #87accd;
+  overflow: hidden;
 }
 
 .booking {
+  background-color: #87accd;
+  height: auto;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -18,16 +21,23 @@ body {
   font-family: "Montserrat", sans-serif;
   font-style: italic;
   font-size: 27px;
-  margin-top: 82px;
-  margin-bottom: 93px;
+  margin-top: 60px;
+  margin-bottom: 30px;
 }
-
+.booking-body-cropbox {
+  width: 700px;
+  height: 250px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
 .booking-body-img {
-  border-radius: 2%;
-  margin-bottom: 10px;
+  border-radius: 25px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .booking-body-frame {
-  border-radius: 2%;
+  border-radius: 25px;
   margin-bottom: 120px;
 }
