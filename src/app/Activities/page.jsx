@@ -4,7 +4,7 @@ import Footer from "./Footer";
 import "@/styles-comp/style.css";
 import Image from "next/image";
 
-function App() {
+function Activities() {
   return (
     <div>
       <Header></Header>
@@ -14,4 +14,4 @@ function App() {
   );
 }
 
-export default App;
+export default Activities;
