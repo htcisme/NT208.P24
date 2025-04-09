@@ -5,8 +5,9 @@ import Header from "@/components/Header";
 export default function Home() {
   return (
     <div>
+      <Header></Header>
       <h1>Trang chính</h1>
-      <Footer />
+      <Footer></Footer>
     </div>
   );
 }
