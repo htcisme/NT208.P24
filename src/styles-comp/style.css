@@ -268,3 +268,75 @@
 .footer-link:hover {
     color: #cccccc; 
 }
+
+/* --------------- REGISTER FORM -------------*/
+
+.registerform-header {
+  max-width: 700px;
+  padding: 30px;
+  text-align: center;
+  align-items: center;
+  align-self: center;
+  color: #0c2a4d;
+  margin-top: 50px;
+  margin-bottom: 5px;
+}
+
+.registerform-header h1 {
+  color: #042354;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.registerform-header-subtext {
+  font-style: italic;
+  color: #042354;
+  margin-top: 10px;
+}
+
+.registerform-footer-form {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  max-width: 660px;
+  width: 660px;
+  border: 2px solid white;
+  border-radius: 25px;
+  padding: 30px;
+  align-self: center;
+  font-size: 18px;
+  margin-bottom: 40px;
+}
+
+.registerform-footer-form input {
+  height: 40px;
+  width: 100%;
+  padding: 12px;
+  background-color: white;
+  border: none;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.registerform-footer-form label {
+  font-weight: bold;
+  color: #042354;
+  margin-bottom: 15px;
+  margin-top: 15px;
+}
+
+.registerform-footer-form button {
+  background-color: white;
+  width: 250px;
+  height: 40px;
+  align-self: center;
+  color: #042354;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 20px;
+}

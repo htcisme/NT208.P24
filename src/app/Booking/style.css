@@ -1,13 +1,43 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
 
 body {
-  background-color: #87accd;
+  overflow: hidden;
 }
 
 .booking {
+  background-color: #87accd;
+  height: auto;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh; /* Đảm bảo iframe được căn giữa cả chiều dọc */
+}
+
+.booking-header-title {
+  color: #04255a;
+  font-weight: bold;
+  font-family: "Montserrat", sans-serif;
+  font-style: italic;
+  font-size: 27px;
+  margin-top: 60px;
+  margin-bottom: 30px;
+}
+.booking-body-cropbox {
+  width: 700px;
+  height: 250px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.booking-body-img {
+  border-radius: 25px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.booking-body-frame {
+  border-radius: 25px;
+  margin-bottom: 120px;
 }
