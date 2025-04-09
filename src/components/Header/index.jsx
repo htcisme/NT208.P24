@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import "@/styles-comp/style.css";
 import Image from "next/image";
-
 export default function Header() {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -123,12 +122,24 @@ export default function Header() {
       </div>
 
       <div className="Header-Navbar">
-        <div className="Header-Navbar-Navitem">TRANG CHỦ</div>
-        <div className="Header-Navbar-Navitem">GIỚI THIỆU</div>
-        <div className="Header-Navbar-Navitem">HOẠT ĐỘNG</div>
-        <div className="Header-Navbar-Navitem">THÀNH TÍCH</div>
-        <div className="Header-Navbar-Navitem">ĐẶT PHÒNG</div>
-        <div className="Header-Navbar-Navitem">LIÊN HỆ</div>
+        <div className="Header-Navbar-Navitem">
+          <a href="/">TRANG CHỦ</a>
+        </div>
+        <div className="Header-Navbar-Navitem">
+          <a href="/Introduction">GIỚI THIỆU</a>
+        </div>
+        <div className="Header-Navbar-Navitem">
+          <a href="Activities">HOẠT ĐỘNG</a>
+        </div>
+        <div className="Header-Navbar-Navitem">
+          <a href="/Awards">THÀNH TÍCH</a>
+        </div>
+        <div className="Header-Navbar-Navitem">
+          <a href="/Booking">ĐẶT PHÒNG</a>
+        </div>
+        <div className="Header-Navbar-Navitem">
+          <a href="/Contact">LIÊN HỆ</a>
+        </div>
       </div>
     </div>
   );
