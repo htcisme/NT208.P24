@@ -1,7 +1,7 @@
 import React from "react";
-import "@/styles-comp/style.css"; 
+import "@/styles-comp/style.css";
 import Image from "next/image";
-import logodoankhoa from "@/imgs-comp/logo-doan-khoa.png"; 
+import logodoankhoa from "@/imgs-comp/logo-doan-khoa.png";
 
 const Footer = () => {
     return (
@@ -44,11 +44,15 @@ const Footer = () => {
                             </a>
                         </p>
                         <p>
-                            
+
                             Khu phố 6, Phường Linh Trung, Tp. Thủ Đức, Tp. Hồ Chí Minh
                         </p>
                     </div>
                 </div>
+                <hr className="footer-divider" />
+                <p className="footer-rights">
+                    © NC.UIT ALL RIGHTS RESERVED
+                </p>
             </div>
             <hr className="footer-divider" />
             <p className="footer-rights">

@@ -1,0 +1,191 @@
+/* Import Montserrat font */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+/* Apply Montserrat font globally */
+* {
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Layout chính */
+.light-container-main {
+  padding: 2rem;
+  background-color: #f9fafb;
+  color: #1f2937;
+}
+
+/* Split section: 70-30 */
+.light-split-section {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.light-split-left {
+  width: 70%;
+  text-align: center;
+}
+
+.light-split-right {
+  width: 30%;
+}
+
+.light-split-right h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 1rem;
+}
+
+.light-news-list {
+  list-style: none;
+  padding: 0;
+}
+
+.light-news-list li {
+  margin-bottom: 0.75rem;
+}
+
+.light-news-list a {
+  color: #2563eb;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+.light-news-list a:hover {
+  text-decoration: underline;
+}
+
+/* Phần tiêu đề mô tả */
+.light-section-title h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2563eb;
+  margin-bottom: 0.5rem;
+}
+
+.light-section-title p {
+  font-size: 1rem;
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+}
+
+.light-section-highlight img {
+  border-radius: 0.5rem;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.5rem;
+}
+
+.light-section-description {
+  max-width: 800px;
+  margin: 0 auto;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #374151;
+}
+
+/* Slider hoạt động */
+.light-slider-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem 0;
+  position: relative;
+}
+
+.light-slider-item {
+  text-align: center;
+}
+
+.light-slider-item img {
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.light-slider-item h4 {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #0369a1;
+}
+
+.light-slider-arrow {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #2563eb;
+}
+
+/* Chi tiết hoạt động */
+.light-detail-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin: 2.5rem 0;
+}
+
+/* 40-60 split */
+.split-40-60 {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.split-40-60 .light-detail-image {
+  width: 40%;
+}
+
+.split-40-60 .light-detail-content {
+  width: 60%;
+}
+
+/* 60-40 split */
+.split-60-40 {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.split-60-40 .light-detail-content {
+  width: 60%;
+}
+
+.split-60-40 .light-detail-image {
+  width: 40%;
+}
+
+.light-detail-item h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #111827;
+}
+
+.light-detail-item p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #4b5563;
+}
+
+.light-detail-image img {
+  border-radius: 0.5rem;
+  width: 100%;
+  height: auto;
+}
+
+/* Extra footer section */
+.light-footer-extra {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem 0;
+  border-top: 1px solid #e5e7eb;
+  margin-top: 3rem;
+}
+
+.light-footer-col {
+  background-color: #f3f4f6;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  text-align: center;
+  font-weight: 500;
+  color: #1f2937;
+}
