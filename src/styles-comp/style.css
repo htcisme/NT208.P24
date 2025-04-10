@@ -180,6 +180,17 @@
 }
 
 /* --------------- FOOTER -------------*/
+/* --------------- FOOTER -------------*/
+
+.footer-container {
+    background: #0b3d91; 
+    color: #ffffff; 
+    padding: 20px;
+    text-align: center;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    font-family: 'Montserrat', sans-serif; 
+}
 
 .footer-content {
     background: #0b3d91;
@@ -199,11 +210,25 @@
     /* box-sizing: border-box; */
     font-family: 'Montserrat', sans-serif;
     font-size: 14px; /* Kích thước chữ mặc định */
+    background: #0b3d91; 
+    color: #ffffff; 
+    padding: 20px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: row; 
+    align-items: center;
+    justify-content: space-between; 
+    width: 100%; 
+    box-sizing: border-box; 
 }
 
 .footer-columns {
     display: flex;
     justify-content: space-around; 
+    width: 100%; 
+    margin-left: 20px; 
+    display: flex;
+    justify-content: space-between; 
     width: 100%; 
     margin-left: 20px; 
 }
@@ -250,16 +275,15 @@
     width: 100%;
     max-width: 1200px; 
     margin: 10px auto;    
+    margin: 10px 0; 
+    width: 100%; 
+    border: 0.5px solid #ffffff; 
 }
 
 .footer-rights {
     font-size: 12px;
     color: #ffffff; 
     padding-top: 20px; 
-    width: 100%;
-    max-width: 1200px; 
-    margin: 10px auto;    
-    text-align: center;
     font-family: 'Montserrat', sans-serif;
 }
 
