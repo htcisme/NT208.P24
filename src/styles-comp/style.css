@@ -181,27 +181,24 @@
 
 /* --------------- FOOTER -------------*/
 
-.footer-container {
-    background: #0b3d91; 
-    color: #ffffff; 
-    padding: 20px;
-    text-align: center;
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-    font-family: 'Montserrat', sans-serif; 
-}
-
 .footer-content {
-    background: #0b3d91; 
-    color: #ffffff; 
+    background: #0b3d91;
+    color: #ffffff;
     padding: 20px;
-    border-radius: 15px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
     display: flex;
-    flex-direction: row; 
+    flex-direction: row;
     align-items: center;
-    justify-content: space-between; 
-    width: 100%; 
-    box-sizing: border-box; 
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1200px; 
+    margin: 10px auto;    
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px; /* Kích thước chữ mặc định */
 }
 
 .footer-columns {
