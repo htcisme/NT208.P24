@@ -54,10 +54,6 @@ const Footer = () => {
                     © NC.UIT ALL RIGHTS RESERVED
                 </p>
             </div>
-            <hr className="footer-divider" />
-            <p className="footer-rights">
-                © NC.UIT ALL RIGHTS RESERVED
-            </p>
         </footer>
     );
 };
