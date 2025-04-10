@@ -190,20 +190,20 @@
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     justify-content: space-between;
     width: 100%;
     max-width: 1200px; 
     margin: 10px auto;    
-    box-sizing: border-box;
+    /* box-sizing: border-box; */
     font-family: 'Montserrat', sans-serif;
     font-size: 14px; /* Kích thước chữ mặc định */
 }
 
 .footer-columns {
     display: flex;
-    justify-content: space-between; 
+    justify-content: space-around; 
     width: 100%; 
     margin-left: 20px; 
 }
@@ -247,12 +247,19 @@
     margin: 10px 0; 
     width: 100%; 
     border: 0.5px solid #ffffff; 
+    width: 100%;
+    max-width: 1200px; 
+    margin: 10px auto;    
 }
 
 .footer-rights {
     font-size: 12px;
     color: #ffffff; 
     padding-top: 20px; 
+    width: 100%;
+    max-width: 1200px; 
+    margin: 10px auto;    
+    text-align: center;
     font-family: 'Montserrat', sans-serif;
 }
 
