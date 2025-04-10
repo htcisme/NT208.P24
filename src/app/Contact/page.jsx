@@ -1,95 +1,44 @@
 import Image from "next/image";
-import styles from "./page.module.css";
-
-export default function Home() {
+import styles from "./style.css";
+import RegisterForm from "@/components/RegisterForm";
+export default function Contact() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+    <div className="contact">
+      <div className="contact-header-title">Thông tin liên hệ</div>
+      <div className="contact-body-information">
+        <div className="contact-body-header-information">
+          <p>Đoàn khoa Mạng Máy tính và Truyền thông</p>
         </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        <div className="contact-body-address-information">
+          <p>
+            Sảnh Tầng 8, Tòa nhà E, Trường Đại học Công nghệ Thông tin - ĐHQG -
+            HCM
+            <br /> Khu phố 6, phường Linh Trung, quận Thủ Đức, TP. Hồ Chí Minh
+          </p>
+        </div>
+
+        <div className="contact-body-facemail-information">
+          <p className="font-bold">
+            Facebook:{" "}
+            <a className="font-light" href="https://www.facebook.com/uit.nc">
+              facebook.com/uit.nc
+            </a>
+          </p>
+
+          <p className="font-bold">
+            Email: <a className="font-light">doanthanhnien@suctremmt.com</a>
+          </p>
+        </div>
+      </div>
+      <div className="contact-body-img">
+        <Image
+          src="/Img/Contact/anhdaihoi.png"
+          alt="dai-hoi-doan-khoa"
+          width={1126}
+          height={659}
+        />
+      </div>
+      <RegisterForm className="registerform"></RegisterForm>
     </div>
   );
 }

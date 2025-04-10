@@ -1,8 +1,9 @@
 import Image from "next/image";
 import styles from "./page.module.css";
-import Header from "@/components/Header/index.jsx";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
-function App() {
+export default function Home() {
   return (
     <div>
       <Header />
@@ -42,5 +43,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
