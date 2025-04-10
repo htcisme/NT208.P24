@@ -1,4 +1,3 @@
-/* page.module.css */
 .Container {
   font-family: "Montserrat", sans-serif;
   padding: 0;
@@ -6,7 +5,6 @@
   background-color: #e4effa;
   color: #0b1f40;
 }
-/* HEADER */
 .Header {
   position: fixed;
   top: 0;
@@ -43,7 +41,7 @@
 }
 
 .Header_Nav_NavButton:hover {
-  background-color: #2d71b9; /* Màu khi hover */
+  background-color: #2d71b9;
   transition: all 0.5s ease-in-out;
   color: white;
 }
@@ -63,7 +61,7 @@
   background-color: #ededed;
   padding: 6px 30px;
   border-radius: 10px;
-  caret-color: #00274d; /* Đặt màu cho dấu nháy */
+  caret-color: #00274d;
 }
 
 .Header_Topbar_Authsearch_Searchbox input {
@@ -71,8 +69,8 @@
   outline: none;
   font-size: 16px;
   color: #003366;
-  padding: 0px;
-  margin: 0px;
+  padding: 0;
+  margin: 0;
   width: 100%;
 }
 
@@ -85,12 +83,12 @@
 .Header_Topbar_Authsearch_Searchbox_Searchicon_Icon {
   width: 24px;
   height: 24px;
-  color: var(--icon-color, #1f2937); /* Màu mặc định là xám đậm */
+  color: var(--icon-color, #1f2937);
   transition: color 0.3s ease;
 }
 
 .Header_Topbar_Authsearch_Searchbox_Searchicon_Icon:hover {
-  color: #2d71b9; /* Màu khi hover */
+  color: #2d71b9;
   transition: all 0.5s ease-in-out;
 }
 
@@ -138,7 +136,6 @@
   display: block;
 }
 
-/* HERO SECTION */
 .hero {
   position: relative;
   height: 100vh;
@@ -171,7 +168,7 @@
 
 .heroContent {
   position: relative;
-  z-index: 2; /* nổi lên trên overlay và ảnh */
+  z-index: 2;
   text-align: center;
   color: white;
   padding: 20px;
@@ -199,7 +196,6 @@
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);
 }
 
-/* MAIN SECTION */
 .Body {
   background: linear-gradient(
     to bottom,
@@ -208,7 +204,7 @@
     #33659a 73%,
     #042354 100%
   );
-  padding: 40px 60px 0px 60px;
+  padding: 40px 0 0 0;
   max-width: 100%;
   margin: 0 auto;
   font-size: 18px;
@@ -216,7 +212,7 @@
 }
 
 .Body_Container {
-  padding: 40px 0px;
+  padding: 40px 0;
 }
 
 .Body_Container_Introduction {
@@ -225,22 +221,52 @@
   overflow: hidden;
 }
 
-.Body_Shape01 {
+.Body_Container_Introduction_BodyShape01 {
   position: absolute;
-  top: 20px;
-  right: -10px;
-  padding: 20px 100px;
+  top: 2px;
+  right: 0;
   width: 950px;
-  height: 7%;
-  background-color: #799cd4;
-  opacity: 0.5;
+  height: 3%;
+  background-color: #517fb1;
+  z-index: 1;
+}
+
+.Body_Container_Introduction_BodyShape02 {
+  position: absolute;
+  bottom: 470px;
+  left: 0;
+  width: 50%;
+  height: 20%;
+  background-color: #04255a;
+  z-index: 0;
+}
+
+.Body_Container_Introduction_BodyShape03 {
+  position: absolute;
+  bottom: 470px;
+  right: 0;
+  width: 2%;
+  height: 33%;
+  background-color: #04255a;
+  z-index: 0;
+}
+
+.Body_Container_Introduction_BodyShape04 {
+  position: absolute;
+  bottom: 200px;
+  left: 0;
+  width: 100%;
+  height: 20%;
+  background-color: #7e9fca;
+  z-index: 0;
 }
 
 .Body_Container_Introduction::before {
   content: "";
   position: absolute;
-  left: 50%; /* Canh giữa theo chiều ngang */
-  transform: translateX(-50%); /* Dịch ngược lại 50% để canh giữa */
+  top: 8%;
+  left: 50%;
+  transform: translateX(-50%);
   width: 640px;
   height: 640px;
   background-image: url("/Img/Homepage/LogoKhoa.png");
@@ -251,40 +277,27 @@
   z-index: 0;
 }
 
-.Body_Container_Introduction::before {
-  content: "";
-  position: absolute;
-  left: 50%; /* Canh giữa theo chiều ngang */
-  transform: translateX(-50%); /* Dịch ngược lại 50% để canh giữa */
-  width: 640px;
-  height: 640px;
-  color: #042354;
-}
-
-.Body_ContentWrapper {
+.Body_Container_Introduction_ContentWrapper {
   position: relative;
-  z-index: 1; /* đảm bảo nội dung nằm trên logo */
-}
-
-.Body_Title {
-  background-color: #042354;
-  color: white;
-  display: inline-block;
-  padding: 12px 24px;
-  border-radius: 50px;
-  font-size: 23px;
-  font-weight: 800;
-  margin-bottom: 30px;
-}
-
-.Body_ContentWrapper {
+  z-index: 1;
   display: flex;
-
+  margin: 0 60px;
   gap: 40px;
 }
 
-.Body_ImageContainer {
-  flex: 1; /* mỗi cột chiếm 50% */
+.Body_Container_Introduction_Title {
+  background-color: #042354;
+  color: white;
+  display: inline-block;
+  margin: 60px;
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-size: 30px;
+  font-weight: 800;
+}
+
+.Body_Container_Introduction_ContentWrapper_ImageContainer {
+  flex: 1;
   padding: 20px;
   box-sizing: border-box;
   width: 100%;
@@ -297,29 +310,30 @@
   align-items: center;
 }
 
-.Body_Image {
+.Body_Container_Introduction_ContentWrapper_ImageContainer_Image {
   width: 900px;
   height: 500px;
-  object-fit: cover; /* Giữ nguyên tỷ lệ khung hình */
+  object-fit: cover;
   box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 12px; /* Tuỳ chọn */
+  border-radius: 12px;
 }
 
-.Body_ImageFade {
+.Body_Container_Introduction_ContentWrapper_ImageContainer_ImageFade {
   opacity: 0;
   transition: opacity 0.5s ease-in-out;
 }
 
-.Body_ImageFadeShow {
+.Body_Container_Introduction_ContentWrapper_ImageContainer_ImageFadeShow {
   opacity: 1;
 }
-.Body_Dots {
+
+.Body_Container_Introduction_ContentWrapper_ImageContainer_Dots {
   display: flex;
   justify-content: center;
-  margin-top: 10px;
+  padding: 10px;
 }
 
-.Body_Dot {
+.Body_Container_Introduction_ContentWrapper_ImageContainer_Dot {
   display: inline-block;
   width: 14px;
   height: 14px;
@@ -329,18 +343,18 @@
   transition: background-color 0.5s;
 }
 
-.Active {
+.Body_Container_Introduction_ContentWrapper_ImageContainer_Active {
   background-color: #2263a8;
 }
 
-.Body_TextContainer {
-  flex: 1; /* mỗi cột chiếm 50% */
+.Body_Container_Introduction_ContentWrapper_TextContainer {
+  flex: 1;
   padding: 20px;
   box-sizing: border-box;
   color: #0b1f40;
 }
 
-.Body_Heading {
+.Body_Container_Introduction_ContentWrapper_TextContainer_Heading {
   text-align: right;
   font-size: 43px;
   font-weight: 1000;
@@ -349,15 +363,129 @@
   color: #0b1f40;
 }
 
-.Body_Description {
+.Body_Container_Introduction_ContentWrapper_TextContainer_Description {
   font-size: 17px;
   line-height: 1.8;
   margin-bottom: 10px;
   text-align: justify;
 }
 
-.Body_ReadMore {
+.Body_Container_Introduction_ContentWrapper_TextContainer_ReadMore {
   text-align: right;
   font-style: italic;
   color: #042354;
+}
+
+.Body_Container_MemberWrap {
+  display: flex;
+  justify-content: center;
+  gap: 5%;
+  flex-wrap: wrap;
+  padding: 0 60px;
+}
+
+.Body_Container_MemberItem {
+  padding: 10px;
+
+  transition: transform 0.3s ease;
+}
+
+.Body_Container_MemberImage {
+  transform: rotate(-2deg);
+  width: 500px;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.Body_Container_MemberImage:hover {
+  transform: rotate(0deg) scale(1.02);
+}
+
+.Body_Container_MemberLabel {
+  font-weight: 1000;
+  font-size: 40px;
+  text-align: center;
+  color: #0b1e3f;
+  margin-top: 10px;
+  text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
+  -webkit-text-stroke: 3px #b5dff7;
+  paint-order: stroke fill;
+}
+
+.Body_Container_Activities {
+  text-align: center;
+  margin-top: 60px;
+  padding: 0 60px;
+}
+
+.Activities_RecentLabel {
+  font-size: 28px;
+  font-weight: 700;
+  background-color: #0b1e3f;
+  color: white;
+  display: inline-block;
+  padding: 10px 25px;
+  border-radius: 999px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  margin-bottom: 80px;
+}
+
+.Activities_RecentCards {
+  margin-top: 40px;
+  gap: 50px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.Activities_RecentCard {
+  width: 230px;
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
+}
+
+.Activities_RecentCard:hover {
+  transform: translateY(-5px);
+}
+
+.Activities_RecentCard_Image {
+  width: 100%;
+  height: auto;
+}
+
+.Activities_RecentCard_Content {
+  padding: 15px;
+  text-align: left;
+}
+
+.Activities_RecentCard_Title {
+  font-weight: 600;
+  font-size: 16px;
+  color: #0b1e3f;
+  margin-bottom: 5px;
+}
+
+.Activities_RecentCard_Desc {
+  font-size: 14px;
+  color: #444;
+  margin-bottom: 8px;
+}
+
+.Activities_RecentCard_Date {
+  font-size: 13px;
+  font-style: italic;
+  color: #888;
+}
+
+.Activities_ViewMore {
+  margin-top: 25px;
+  font-style: italic;
+  color: #1a1a1a;
+  font-size: 20px;
 }
