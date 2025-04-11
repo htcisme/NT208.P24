@@ -194,31 +194,31 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  max-width: 1200px; 
-  margin: 10px auto;    
+  max-width: 1200px;
+  margin: 0 auto;
   /* box-sizing: border-box; */
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-size: 14px; /* Kích thước chữ mặc định */
 }
 
 .footer-columns {
   display: flex;
-  justify-content: space-around; 
-  width: 100%; 
-  margin-left: 20px; 
+  justify-content: space-around;
+  width: 100%;
+  margin-left: 20px;
 }
 
 .footer-section {
-  text-align: left; 
-  min-width: 200px; 
+  text-align: left;
+  min-width: 200px;
   padding-bottom: 20px;
 }
 
 .footer-section:first-child {
   display: flex;
-  flex-direction: column; 
-  align-items: center; 
-  margin-left: 50px;;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 50px;
 }
 
 .footer-section:last-child {
@@ -229,48 +229,48 @@
 
 .footer-title {
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   align-items: center;
 }
 
 .footer-title-img-container {
-  margin-bottom: 10px; 
+  margin-bottom: 10px;
 }
 
 .footer-title-text {
-  font-weight: bold; 
-  font-size: 20px; 
-  text-align: center; 
+  font-weight: bold;
+  font-size: 20px;
+  text-align: center;
 }
 
 .footer-divider {
-  margin: 10px 0; 
-  width: 100%; 
-  border: 0.5px solid #ffffff; 
+  margin: 10px 0;
   width: 100%;
-  max-width: 1200px; 
-  margin: 10px auto;    
+  border: 0.5px solid #ffffff;
+  width: 100%;
+  max-width: 1200px;
+  margin: 10px auto;
 }
 
 .footer-rights {
   font-size: 12px;
-  color: #ffffff; 
-  padding-top: 20px; 
+  color: #ffffff;
+  padding-top: 20px;
   width: 100%;
-  max-width: 1200px; 
-  margin: 10px auto;    
+  max-width: 1200px;
+  margin: 10px auto;
   text-align: center;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
 }
 
 .footer-link {
-  color: #ffffff; 
-  text-decoration: none; 
-  transition: color 0.3s ease; 
+  color: #ffffff;
+  text-decoration: none;
+  transition: color 0.3s ease;
 }
 
 .footer-link:hover {
-  color: #cccccc; 
+  color: #cccccc;
 }
 
 /* --------------- REGISTER FORM -------------*/
