@@ -5,7 +5,7 @@ export const metadata = {
   description: "Tạo bởi XangFuTing",
 };
 
-export default function RootLayout({ children }) {
+export default function BookingLayout({ children }) {
   return (
     <html lang="en">
       <body>
