@@ -1,0 +1,321 @@
+/* Import Montserrat font */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+/* Apply Montserrat font globally */
+* {
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Layout chính */
+.light-container-main {
+  padding: 2rem;
+  background-color: #ECF9FF;
+  color: #042354;
+}
+
+/* Tiêu đề chính */
+.light-main-title {
+  font-size: 22px; /* Kích thước chữ 22px */
+  font-weight: 600; /* Độ đậm */
+  color: #042354; /* Màu chữ */
+  text-align: center; /* Căn giữa */
+  margin-bottom: 2rem; /* Khoảng cách dưới */
+  line-height: 1.5; /* Khoảng cách giữa các dòng */
+}
+
+/* Split section: 70-30 */
+.light-split-section {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.light-split-left {
+  width: 70%;
+  text-align: center;
+}
+
+.light-split-right {
+  width: 30%;
+  text-align: justify; /* Căn đều nội dung trong cột */
+}
+
+/* Tiêu đề "Tin tức mới nhất" */
+.light-split-right h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff; /* Chữ trắng */
+  background-color: #042354; /* Nền xanh đậm */
+  padding: 0.5rem 1rem; /* Khoảng cách bên trong */
+  display: inline-block; /* Để nền chỉ bao quanh nội dung */
+}
+
+/* Danh sách tin tức */
+.light-news-list {
+  list-style: none;
+  padding: 0;
+  border-top: 1px solid #042354; /* Đường kẻ ngang phía trên */
+}
+
+.light-news-list li {
+  margin-bottom: 1rem;
+  padding-top: 1rem;
+}
+
+.light-news-list a {
+  color: #042354;
+  text-decoration: none;
+  font-size: 1rem;
+  line-height: 1.5;
+  display: block; /* Để toàn bộ dòng có thể click */
+}
+
+/* Ngày tháng năm */
+.light-news-list .news-date {
+  display: block; /* Đặt ngày tháng trên hàng riêng */
+  font-size: 12px;
+  color: #042354;
+  margin-top: 5px; 
+  margin-left: 20px;
+  font-style: italic; /* Tùy chọn: làm nghiêng ngày tháng để nổi bật */
+}
+
+.light-news-list a:hover {
+  text-decoration: underline;
+}
+
+/* Phần tiêu đề mô tả */
+.light-section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #042354;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.light-section-date {
+  font-size: 14px;
+  color: #042354;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+/* Hình ảnh nổi bật */
+.light-section-highlight img {
+  border-radius: 0.5rem;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  height: auto;
+}
+
+.light-section-description {
+  max-width: 1000px;
+  font-size: 1rem;
+  color: #042354;
+  text-align: justify;
+}
+
+.light-section-author {
+  font-size: 14px;
+  color: #042354;
+  margin-top: 1rem;
+  text-align: right;
+}
+
+.light-slider-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem 0;
+  position: relative;
+}
+
+.light-slider-item {
+  text-align: center;
+  flex: 1; /* Chia đều không gian cho mỗi item */
+}
+
+.slider-image-placeholder {
+  width: 350px; /* Giảm chiều rộng một chút */
+  height: 300px; /* Tăng chiều cao */
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  margin: 0 auto 10px; /* Căn giữa và giữ khoảng cách bên dưới */
+  transition: all 0.3s ease; /* Thêm hiệu ứng chuyển đổi mượt mà */
+}
+
+/* Hình ảnh ở giữa (active) */
+.slider-image-placeholder.active {
+  width: 450px; /* Tăng chiều rộng */
+  height: 400px; /* Tăng chiều cao */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Đổ bóng để nổi bật */
+}
+
+.slider-image {
+  width: 90%; /* Giảm chiều rộng một chút */
+  height: 250px; /* Tăng chiều cao */
+  object-fit: cover; /* Đảm bảo hình ảnh không bị méo */
+  border-radius: 0.5rem;
+  margin: 0 auto 0.5rem; /* Căn giữa và giữ khoảng cách bên dưới */
+}
+
+.light-slider-item h4 {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #042354;
+}
+
+.light-slider-arrow {
+  background: none;
+  border: none;
+  font-size: 2rem; /* Kích thước mũi tên lớn hơn */
+  cursor: pointer;
+  color: #042354;
+  padding: 0 1rem;
+}
+
+.light-slider-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.light-slider-dots .dot {
+  width: 10px;
+  height: 10px;
+  background-color: #ccc;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.light-slider-dots .dot.active {
+  background-color: #042354;
+}
+
+/* 40-60 split: Hình ảnh bên trái, nội dung bên phải */
+.split-40-60 {
+  display: flex;
+  gap: 1.5rem;
+  padding-bottom: 50px;
+  align-items: stretch; /* Đảm bảo các phần tử con có cùng chiều cao */
+}
+
+/* 60-40 split: Nội dung bên trái, hình ảnh bên phải */
+.split-60-40 {
+  display: flex;
+  gap: 1.5rem;
+  align-items: stretch; /* Đảm bảo các phần tử con có cùng chiều cao */
+}
+
+/* Đảm bảo hình ảnh và nội dung có cùng chiều cao */
+.split-40-60 .light-detail-image,
+.split-60-40 .light-detail-image {
+  width: 40%;
+  display: flex; /* Để hình ảnh bên trong có thể căn chỉnh */
+}
+
+.split-40-60 .light-detail-content,
+.split-60-40 .light-detail-content {
+  width: 60%;
+  text-align: justify;
+  text-indent: 2rem; /* Thụt lề dòng đầu tiên */
+}
+
+/* Placeholder cho hình ảnh trong section */
+.detail-image-placeholder {
+  width: 100%;
+  height: 100%; /* Chiều cao sẽ khớp với nội dung */
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  min-height: 250px; /* Đảm bảo chiều cao tối thiểu */
+}
+
+.light-detail-container {
+  margin-top: 10px;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 70px;
+  padding-bottom: 20px;
+}
+
+/* Related Posts Section */
+.related-posts-container {
+  padding: 2rem 0;
+  padding-left: 70px;
+  padding-right: 70px;
+}
+
+.related-posts-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background-color: #042354;
+  padding: 0.5rem 1rem;
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #042354;
+  line-height: 1;
+}
+
+.related-posts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.related-post-item {
+  text-align: center;
+}
+
+.related-post-box {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.related-post-image-placeholder {
+  width: 100%;
+  height: 250px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.related-post-image img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.related-post-title {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #042354;
+  text-align: left;
+  margin: 0;
+  flex: 1;
+}
+
+.related-post-title a {
+  color: #042354;
+  text-decoration: none; /* Bỏ gạch chân mặc định */
+  display: block; /* Đảm bảo toàn bộ dòng tiêu đề có thể nhấn */
+}
+
+.related-post-title a:hover {
+  text-decoration: underline; /* Thêm gạch chân khi hover */
+}

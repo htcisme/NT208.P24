@@ -5,7 +5,7 @@ import Image from "next/image";
 import "@/styles-comp/style.css";
 import "@/app/Activities/style.css";
 
-export default function LightActivities() {
+export default function Activities() {
   // Danh sách 5 sự kiện với tiêu đề (có thể thêm hình ảnh sau)
   const events = [{ title: "VNU TOUR 2024", image: "/path-to-image-1.jpg" }, { title: "NGỌN ĐUỐC XANH 2025", image: "/path-to-image-2.jpg" }, { title: "NETSEC DAY 2024", image: "/path-to-image-3.jpg" }, { title: "EVENT 4 2024", image: "/path-to-image-4.jpg" }, { title: "EVENT 5 2024", image: "/path-to-image-5.jpg" },];
 
