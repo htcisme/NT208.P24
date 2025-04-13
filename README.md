@@ -15,7 +15,18 @@ _Một lần nữa, nhóm 4 xin chân thành cảm ơn! ❤️_
 2. Hoàng Bảo Phước - **MSSV:** 23521231
 3. Đỗ Quang Trung - **MSSV:** 23521673
 
-# III. GIỚI THIỆU VỀ TRANG WEB
+# III. ĐỒ ÁN MÔN HỌC
+
+_**1. Database:**_
+   ![Database image](Database_Web.png)
+
+_**2. Login Activities:**_
+   ![Login Activities image](Login.png)
+
+_**3. Use Case Diagram:**_
+   ![Use Case Diagram image](Use_Case_Diagram.png)
+
+# IV. GIỚI THIỆU VỀ TRANG WEB
 
 _**1. Đối tượng hướng đến:**_
 
@@ -49,7 +60,7 @@ _**3. Site map đề nghị:**_
 - Về Đặt phòng: Biểu mẫu đăng ký đặt phòng
 - Về Liên hệ: Cập nhật thông tin liên hệ (Email, Facebook)
 
-# IV. CÔNG NGHỆ SỬ DỤNG
+# V. CÔNG NGHỆ SỬ DỤNG
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
