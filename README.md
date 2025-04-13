@@ -9,14 +9,6 @@ _Một lần nữa, nhóm 4 xin chân thành cảm ơn! ❤️_
 
 **Tên đề tài:** Website Giới thiệu tổ chức Đoàn khoa Mạng máy tính và Truyền thông.
 
-# II. DANH SÁCH THÀNH VIÊN
-
-1. Nguyễn Đình Khang - **MSSV:** 23520694
-2. Hoàng Bảo Phước - **MSSV:** 23521231
-3. Đỗ Quang Trung - **MSSV:** 23521673
-
-# III. ĐỒ ÁN MÔN HỌC
-
 _**1. Database:**_
    ![Database image](public/Img/GitHub/Database_Web.png)
 
@@ -26,7 +18,13 @@ _**2. Login Activities:**_
 _**3. Use Case Diagram:**_
    ![Use Case Diagram image](public/Img/GitHub/Use_Case_Diagram.png)
 
-# IV. GIỚI THIỆU VỀ TRANG WEB
+# II. DANH SÁCH THÀNH VIÊN
+
+1. Nguyễn Đình Khang - **MSSV:** 23520694
+2. Hoàng Bảo Phước - **MSSV:** 23521231
+3. Đỗ Quang Trung - **MSSV:** 23521673
+
+# III. GIỚI THIỆU VỀ TRANG WEB
 
 _**1. Đối tượng hướng đến:**_
 
@@ -60,7 +58,7 @@ _**3. Site map đề nghị:**_
 - Về Đặt phòng: Biểu mẫu đăng ký đặt phòng
 - Về Liên hệ: Cập nhật thông tin liên hệ (Email, Facebook)
 
-# V. CÔNG NGHỆ SỬ DỤNG
+# IV. CÔNG NGHỆ SỬ DỤNG
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
