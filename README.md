@@ -18,13 +18,13 @@ _Một lần nữa, nhóm 4 xin chân thành cảm ơn! ❤️_
 # III. ĐỒ ÁN MÔN HỌC
 
 _**1. Database:**_
-   ![Database image](Database_Web.png)
+   ![Database image](public/Img/GitHub/Database_Web.png)
 
 _**2. Login Activities:**_
-   ![Login Activities image](Login.png)
+   ![Login Activities image](public/Img/GitHub/Login.png)
 
 _**3. Use Case Diagram:**_
-   ![Use Case Diagram image](Use_Case_Diagram.png)
+   ![Use Case Diagram image](public/Img/GitHub/Use_Case_Diagram.png)
 
 # IV. GIỚI THIỆU VỀ TRANG WEB
 
