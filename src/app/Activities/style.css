@@ -8,7 +8,9 @@
 
 /* Layout chính */
 .light-container-main {
-  padding: 2rem;
+  padding-top: 2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
   background-color: #ECF9FF;
   color: #042354;
 
@@ -222,5 +224,5 @@
   padding-left: 30px;
   padding-right: 30px;
   padding-top: 70px;
-  padding-bottom: 20px;
+  padding-bottom: 30px;
 }
