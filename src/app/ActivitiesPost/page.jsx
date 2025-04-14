@@ -5,8 +5,9 @@ import Link from "next/link";
 import Image from "next/image";
 import "@/styles-comp/style.css";
 import "@/app/ActivitiesPost/style.css";
+import Footer from "@/components/Footer";
 
-export default function PostActivities() {
+export default function ActivitiesPost() {
   // Slider hoạt động
   const relatedPosts = [
     {
@@ -85,6 +86,16 @@ export default function PostActivities() {
                 <span className="news-date">Thứ Sáu - 14/02/2025</span>
               </li>
             </ul>
+
+            {/* Đặt "Trở về" và "Xem thêm" trong cùng một hàng */}
+            <div className="light-news-actions">
+              <div className="light-news-back">
+                <Link href="/Activities">Quay lại</Link>
+              </div>
+              <div className="light-news-more">
+                <Link href="/ActivitiesOverview">Xem thêm</Link>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -110,6 +121,7 @@ export default function PostActivities() {
             ))}
           </div>
         </section>
+        <Footer></Footer>
       </main>
     </>
   );
