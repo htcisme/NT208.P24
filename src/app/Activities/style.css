@@ -11,6 +11,7 @@
   padding: 2rem;
   background-color: #ECF9FF;
   color: #042354;
+
 }
 
 /* Split section: 70-30 */
@@ -68,6 +69,7 @@
   margin-top: 5px; 
   margin-left: 20px;
   font-style: italic; /* Tùy chọn: làm nghiêng ngày tháng để nổi bật */
+
 }
 
 .light-news-list a:hover {
@@ -99,6 +101,7 @@
   color: #042354;
   text-align: justify;
 }
+
 
 .light-slider-container {
   display: flex;
@@ -137,12 +140,14 @@
   object-fit: cover; /* Đảm bảo hình ảnh không bị méo */
   border-radius: 0.5rem;
   margin: 0 auto 0.5rem; /* Căn giữa và giữ khoảng cách bên dưới */
+
 }
 
 .light-slider-item h4 {
   font-size: 1.1rem;
   font-weight: 500;
   color: #042354;
+
 }
 
 .light-slider-arrow {
