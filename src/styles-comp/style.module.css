@@ -1,0 +1,130 @@
+.Header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: white;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 30px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);
+}
+
+.Header_Logo {
+  font-size: 30px;
+  font-weight: 1000;
+  color: #000000;
+}
+
+.Header_Nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.Header_Nav_NavButton {
+  padding: 6px 12px;
+  background: #111;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.Header_Nav_NavButton:hover {
+  background-color: #2d71b9;
+  transition: all 0.5s ease-in-out;
+  color: white;
+}
+
+.Header_Topbar_Authsearch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.Header_Topbar_Authsearch_Searchbox {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #ededed;
+  padding: 6px 30px;
+  border-radius: 10px;
+  caret-color: #00274d;
+}
+
+.Header_Topbar_Authsearch_Searchbox input {
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: #003366;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.Header_Topbar_Authsearch_Searchbox_Searchicon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Header_Topbar_Authsearch_Searchbox_Searchicon_Icon {
+  width: 24px;
+  height: 24px;
+  color: var(--icon-color, #1f2937);
+  transition: color 0.3s ease;
+}
+
+.Header_Topbar_Authsearch_Searchbox_Searchicon_Icon:hover {
+  color: #2d71b9;
+  transition: all 0.5s ease-in-out;
+}
+
+.Header_Nav_MenuWrapper {
+  position: relative;
+  margin-left: 10px;
+}
+
+.Header_Nav_MenuWrapper_MenuButton {
+  color: rgb(0, 0, 0);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.Header_Nav_MenuWrapper_DropdownMenu {
+  display: none;
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background-color: white;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 20;
+  min-width: 160px;
+  text-align: left;
+}
+
+.Header_Nav_MenuWrapper_DropdownMenu a {
+  display: block;
+  padding: 10px 16px;
+  text-decoration: none;
+  color: #0b1f40;
+  border-bottom: 1px solid #eee;
+}
+
+.Header_Nav_MenuWrapper_DropdownMenu a:hover {
+  background-color: #f0f0f0;
+  transition: all 0.2s ease-in-out;
+}
+
+.Header_Nav_MenuWrapper_MenuButton_ShowMenu {
+  display: block;
+}

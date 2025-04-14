@@ -1,0 +1,209 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
+
+body {
+  background-color: #ecf9ff;
+  display: flex;
+  flex-direction: column;
+  font-family: "Montserrat", sans-serif;
+}
+
+.form-container {
+  background-color: white;
+  border-radius: 5px;
+  width: 100%;
+  max-width: 720px;
+  padding: 30px;
+  align-self: center;
+  margin-top: 120px;
+  margin-bottom: 50px;
+}
+
+.tab-container {
+  display: flex;
+  margin-bottom: 30px;
+}
+
+.tab {
+  padding: 15px 0;
+  width: 50%;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.tab.active {
+  background-color: #0a2556;
+  color: white;
+}
+
+.tab:not(.active) {
+  background-color: white;
+  color: #0a2556;
+  border-bottom: 1px solid #ccc;
+}
+
+.form-title {
+  text-align: center;
+  color: #0a2556;
+  margin-bottom: 20px;
+  font-style: italic;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 10px;
+  color: #0a2556;
+  font-weight: bold;
+}
+
+.form-control {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 15px;
+  background-color: #0a2556;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+.form-note {
+  text-align: center;
+}
+
+.form-note a {
+  color: #0a2556;
+  text-decoration: none;
+}
+
+.disclaimer {
+  text-align: center;
+  color: #555;
+  font-size: 14px;
+  margin-top: 15px;
+  line-height: 1.5;
+}
+
+.disclaimer em {
+  font-style: normal;
+  color: #0a2556;
+  font-weight: bold;
+}
+
+/* Form visibility control */
+#login-form,
+#register-form {
+  display: none;
+}
+
+#login-form.active,
+#register-form.active {
+  display: block;
+}
+
+/* Social Login Styles */
+.social-login {
+  margin-bottom: 25px;
+}
+
+.social-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  width: 48%;
+  transition: all 0.3s ease;
+}
+
+.btn-facebook {
+  background-color: #3b5998;
+  color: white;
+}
+
+.btn-facebook:hover {
+  background-color: #2d4373;
+}
+
+.btn-google {
+  background-color: #ffffff;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.btn-google:hover {
+  background-color: #f1f1f1;
+}
+
+.social-icon {
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+.or-divider {
+  text-align: center;
+  position: relative;
+  margin: 20px 0;
+}
+
+.or-divider:before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: #ddd;
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+}
+
+.or-divider span {
+  background: white;
+  padding: 0 15px;
+  position: relative;
+  z-index: 2;
+  color: #777;
+}
+
+.form-slider {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.form-wrapper {
+  display: flex;
+  width: 100%; /* vì có 2 form */
+  transition: transform 0.5s ease;
+}
+
+.form-content {
+  width: 100%;
+  flex-shrink: 0;
+  padding: 20px;
+  box-sizing: border-box;
+}
