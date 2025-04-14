@@ -1,80 +1,149 @@
-import React from "react";
+"use client"; // Thêm dòng này để đánh dấu đây là Client Component
+
+import React, { useState } from "react";
 import Image from "next/image";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import "@/styles-comp/style.css"; 
+import "@/styles-comp/style.css";
 import "@/app/Activities/style.css";
 
-export default function LightActivities() {
+export default function Activities() {
+  // Danh sách 5 sự kiện với tiêu đề (có thể thêm hình ảnh sau)
+  const events = [{ title: "VNU TOUR 2024", image: "/path-to-image-1.jpg" }, { title: "NGỌN ĐUỐC XANH 2025", image: "/path-to-image-2.jpg" }, { title: "NETSEC DAY 2024", image: "/path-to-image-3.jpg" }, { title: "EVENT 4 2024", image: "/path-to-image-4.jpg" }, { title: "EVENT 5 2024", image: "/path-to-image-5.jpg" },];
+
+  // Trạng thái để quản lý vị trí bắt đầu của slider
+  const [startIndex, setStartIndex] = useState(0);
+
+  // Hàm xử lý bấm mũi tên trái
+  const handlePrev = () => {
+    setStartIndex((prevIndex) => (prevIndex === 0 ? events.length - 3 : prevIndex - 1));
+  };
+
+  // Hàm xử lý bấm mũi tên phải
+  const handleNext = () => {
+    setStartIndex((prevIndex) => (prevIndex === events.length - 3 ? 0 : prevIndex + 1));
+  };
+
+  // Lấy 3 sự kiện để hiển thị dựa trên startIndex
+  const visibleEvents = events.slice(startIndex, startIndex + 3);
   return (
     <>
-      <Header />
-
       <main className="light-container-main">
-        {/* Thanh tiêu đề bên trong trang */}
-        <header className="light-header-bar">
-          <div className="light-header-left">
-            <h1 className="light-header-title">Light - Activities</h1>
+        {/* Split section: 70-30 */}
+        <div className="light-split-section">
+          {/* Bên trái: 70% - Tiêu đề, hình ảnh, mô tả */}
+          <div className="light-split-left">
+            <div className="light-section-title">
+              <strong>CÁC HOẠT ĐỘNG NỔI BẬT</strong><br />
+              <strong>CỦA TUỔI TRẺ MẠNG MÁY TÍNH VÀ TRUYỀN THÔNG</strong>
+            </div>
+            <div className="light-section-highlight">
+              <Image src="/path-to-image.jpg" alt="Highlight" width={800} height={400} />
+            </div>
+            <p className="light-section-description">
+              Hướng đến xây dựng một thế hệ sinh viên Khoa Mạng máy tính và Truyền thông nói riêng và sinh viên trường Đại học Công nghệ Thông tin nói chung
+              vừa hồng, vừa chuyên, hiểu kiến thức, vững kỹ năng, Đoàn khoa thường xuyên tổ chức các hoạt động thuộc nhiều lĩnh vực khác nhau: hoạt động Đoàn
+              - Hội, công tác xã hội, tình nguyện, học tập, nghiên cứu khoa học, âm nhạc,... và các hoạt động khác phù hợp với nhu cầu của sinh viên.
+              <br />
+              <br />
+              Dấu ấn nổi bật trong suốt 10 năm thành lập của Đoàn khoa chính là các hoạt động Đoàn - Hội, các hoạt động phục vụ cho lợi ích của xã hội, thiện
+              nguyện và phát triển kỹ năng mềm cho sinh viên. Trải dài qua các năm học, Đoàn khoa có các hoạt động nổi bật như: <strong>Chào đón Tân sinh viên
+                Khoa kết hợp sinh hoạt công dân đầu khóa, VNU Tour - Hành trình khám phá khu đô thị Đại học Quốc gia HCM, NETSEC Day - Ngày hội truyền thống Khoa
+                Mạng máy tính và Truyền thông, NC Fes - Ngày hội trò chơi dân gian và Chiến dịch tình nguyện Ngọn Đuốc Xanh.</strong>
+            </p>
           </div>
-          <div className="light-header-right">
-         
-          </div>
-        </header>
 
-        {/* Tiêu đề và mô tả hoạt động */}
-        <section className="light-section-main">
-          <div className="light-section-title">
-            <h2>CÁC HOẠT ĐỘNG NỔI BẬT</h2>
-            <p>của Tuổi trẻ Khoa Mạng máy tính và Truyền thông</p>
+          {/* Bên phải: 30% - Tin tức mới nhất */}
+          <div className="light-split-right">
+            <h3>TIN TỨC MỚI NHẤT</h3>
+            <ul className="light-news-list">
+              <li>
+                <a href="#">Chiến dịch Ngọn Đuốc Xanh 2025 thông báo mở form đăng ký chiến sĩ</a>
+                <span className="news-date">Thứ Sáu - 14/02/2025</span>
+              </li>
+              <li>
+                <a href="#">Đoàn khoa Mạng máy tính và Truyền thông công bố chủ đề “Tần Ty Đón Tết” chào mừng Xuân Ất Tỵ 2025</a>
+                <span className="news-date">Thứ Sáu - 14/02/2025</span>
+              </li>
+              <li>
+                <a href="#">Công bố chủ đề hoạt động “NC Sharing”</a>
+                <span className="news-date">Thứ Sáu - 14/02/2025</span>
+              </li>
+            </ul>
           </div>
-          <div className="light-section-highlight">
-          </div>
-          <p className="light-section-description">
-            Tuổi trẻ Khoa Mạng máy tính và Truyền thông luôn là lực lượng xung kích, tiên phong trong các hoạt động học tập,
-            phong trào, tình nguyện, nghiên cứu khoa học và hội nhập quốc tế. Trong những năm qua, Đoàn Khoa đã tổ chức nhiều
-            hoạt động tiêu biểu như các chiến dịch tình nguyện Mùa hè xanh, Xuân tình nguyện, các hoạt động học thuật như Chuỗi
-            ôn tập, Seminar, Hội nghị Sinh viên, cũng như các chương trình truyền thông sáng tạo. Mỗi hoạt động đều thu hút sự
-            tham gia nhiệt tình của sinh viên và để lại nhiều dấu ấn tốt đẹp.
-          </p>
-        </section>
+        </div>
 
         {/* Slider hoạt động */}
         <section className="light-slider-container">
-          <div className="light-slider-item">VNU TOUR 2024</div>
-          <div className="light-slider-item">NGỌN ĐUỐC XANH 2025</div>
-          <div className="light-slider-item">NETSEC DAY 2024</div>
+          <button className="light-slider-arrow" onClick={handlePrev}>
+            ←
+          </button>
+          {visibleEvents.map((event, index) => (
+            <div className="light-slider-item" key={index}>
+              <div className={`slider-image-placeholder ${index === 1 ? "active" : ""}`}></div>
+              <h4>{event.title}</h4>
+            </div>
+          ))}
+          <button className="light-slider-arrow" onClick={handleNext}>
+            →
+          </button>
         </section>
+        {/* Dots điều hướng */}
+        <div className="light-slider-dots">
+          {Array.from({ length: events.length - 2 }).map((_, index) => (
+            <span
+              key={index}
+              className={`dot ${startIndex === index ? "active" : ""}`}
+              onClick={() => setStartIndex(index)}
+            ></span>
+          ))}
+        </div>
 
-        {/* Chi tiết hoạt động */}
-        <section className="light-detail-container">
-          <div className="light-detail-item">
-            <h3>CHƯƠNG TRÌNH TRUYỀN THÔNG NGỌN ĐUỐC XANH</h3>
-            <p>
-              Với mục tiêu truyền cảm hứng cho thế hệ trẻ, Đoàn Khoa đã xây dựng chiến dịch "Ngọn đuốc xanh"
-              nhằm nâng cao nhận thức cộng đồng về trách nhiệm xã hội, bảo vệ môi trường và phát triển bền vững.
-              Chuỗi hoạt động truyền thông bao gồm: video ngắn, phỏng vấn chiến sĩ, minigame tương tác và các bài
-              viết cảm hứng.
-            </p>
+        <div className="light-detail-container">
+          {/* Section 1: Ngọn Đuốc Xanh - Hình ảnh bên trái, nội dung bên phải */}
+          <div className="light-detail-item split-40-60">
+            <div className="light-detail-image">
+              <div className="detail-image-placeholder"></div> {/* Placeholder cho hình ảnh */}
+            </div>
+            <div className="light-detail-content">
+              <h3><strong>CHƯƠNG TRÌNH TÌNH NGUYỆN NGỌN ĐUỐC XANH</strong></h3>
+              <br />
+              <p>
+                     Trong hai năm trở lại đây, bên cạnh NC FES, Đoàn khoa dần khẳng định vị trí của mình hơn nữa trong việc giúp sinh viên có một môi trường trải nghiệm thực tế
+                tại địa phương nơi các tỉnh. Cụ thể, Đoàn khoa đã tổ chức thành công 2 chiến dịch tình nguyện: Ngọn Đuốc Xanh 2023 và Ngọn Đuốc Xanh 2024. Đội hình Ngọn Đuốc 
+                Xanh là đội hình tình nguyện của các bạn sinh viên trẻ, năng động, nhiệt huyết, luôn mong muốn được cống hiến sức trẻ của mình cho cộng đồng. Với tinh thần 
+                "Sẻ chia - Kết nối - Trao yêu thương", các chiến sĩ Ngọn Đuốc Xanh đã tham gia nhiều hoạt động tình nguyện ý nghĩa tại địa phương phường Tân Phú, phường Long 
+                Trường (Thành phố Thủ Đức) và  xã Tân Phú (Thị xã Cai Lậy, tỉnh Tiền Giang) như: Công trình thanh niên “Tuyến đường hoa nông thôn mới”, Công trình “Thùng phân 
+                loại rác tái chế”, Ngày hội “Công nghệ cho em”, Ngày tri ân, Bữa cơm nghĩa tình, Lớp học kỹ năng mềm, Đêm văn nghệ cho em,... Các chiến sĩ của 2 chiến dịch tuy 
+                đến từ các khoa khác nhau, các ngành học khác nhau nhưng cùng chung tinh thần thiện nguyện, tương thân tương ái.
+              </p>
+            </div>
           </div>
-          <div className="light-detail-item">
-            <h3>VNU TOUR – HÀNH TRÌNH KHÁM PHÁ KHU ĐÔ THỊ ĐHQG-HCM</h3>
-            <p>
-              Đây là một chương trình tham quan thực tế hấp dẫn dành cho các bạn học sinh THPT, giúp các em khám phá
-              cơ sở vật chất, môi trường học tập và sinh hoạt tại Khu đô thị ĐHQG-HCM. Chương trình giúp định hướng
-              nghề nghiệp và tạo động lực phấn đấu cho học sinh trong giai đoạn quan trọng.
-            </p>
-          </div>
-        </section>
 
-        {/* Phần cuối trang (extra gợi ý nếu cần) */}
-        <div className="light-footer-extra">
-          <div className="light-footer-col">Nội dung 1</div>
-          <div className="light-footer-col">Nội dung 2</div>
-          <div className="light-footer-col">Nội dung 3</div>
+          {/* Section 2: VNU Tour - Nội dung bên trái, hình ảnh bên phải */}
+          <div className="light-detail-item split-60-40">
+            <div className="light-detail-content">
+              <h3><strong>VNU TOUR – HÀNH TRÌNH KHÁM PHÁ KHU ĐÔ THỊ ĐHQG-HCM</strong></h3>
+              <br />
+              <p>
+                Để giúp các bạn Tân sinh viên hiểu hơn về Khu đô thị Đại học Quốc gia HCM - nơi trường Đại học Công nghệ Thông tin
+                đang tọa lạc, chuỗi hoạt động chào đón Tân sinh viên còn một hoạt động đặc trưng, ghi dấu ấn về hoạt động “Thể lực 
+                tốt” của Đoàn khoa Mạng trong nhiều năm liền, đó là VNU Tour - Hành trình khám phá Khu đô thị Đại học Quốc gia. Trải
+                qua 11 mùa tính đến năm 2023, VNU Tour đã để lại trong lòng các bạn Tân sinh viên nhiều ký ức khó quên trong hành 
+                trình khám phá và tìm ra sự thật được che giấu đằng sau các chủ đề mà VNU Tour muốn truyền tải. Qua việc đi đến các 
+                trạm được đặt tại các địa điểm nổi bật trong Khu đô thị ĐHQG-HCM, vượt các chướng ngại vật, giải mật thư và tìm ra 
+                câu trả lời cuối cùng được ẩn giấu, các bạn Tân sinh viên sẽ có được cho mình những kỹ năng, kinh nghiệm bổ ích, 
+                sát với đời sống sinh viên tại đây. Hơn nữa, đây không chỉ là hoạt động giúp các bạn được trải nghiệm mà còn là một
+                trong những hoạt động được cấp giấy chứng nhận “Thể lực tốt” trong danh hiệu “Sinh viên 5 tốt” cấp Khoa. Năm 2023,
+                với chủ đề “Mật ngữ loài hoa”, đây là năm bùng nổ với hơn 450 thí sinh đến từ 15 trường đại học khác nhau trên địa 
+                bàn thành phố. VNU Tour hứa hẹn sẽ ngày càng phát huy hơn nữa vai trò của mình, nhất là giai đoạn những ngày đầu năm học.
+              </p>
+            </div>
+            <div className="light-detail-image">
+              <div className="detail-image-placeholder"></div> {/* Placeholder cho hình ảnh */}
+            </div>
+          </div>
         </div>
       </main>
-
-      <Footer />
     </>
   );
 }
+
