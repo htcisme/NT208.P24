@@ -1,0 +1,179 @@
+/* Định dạng chung */
+
+/* Import Montserrat font */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+/* Apply Montserrat font globally */
+* {
+  font-family: 'Montserrat', sans-serif;
+}
+
+main {
+    line-height: 1.6;
+    background-color: #ECF9FF;
+}
+
+/* Tiêu đề */
+.title-section {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.main-title {
+    font-size: 2rem;
+    color: #042354;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    color: #042354;
+    margin-top: 10px;
+    font-style: italic !important;
+}
+
+.full-width-image {
+    width: 100%;
+    overflow: hidden;
+}
+
+.two-columns-section {
+    display: flex;
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 20px;
+}
+
+.content-column {
+    width: 60%;
+    padding-top: 50px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+}
+
+.content-column p {
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    color: #042354;
+    text-align: justify;
+}
+
+.image-column {
+    width: 40%;
+    padding: 20px;
+}
+
+.slideshow {
+    position: relative;
+    width: 100%;
+}
+
+.slide img {
+    border-radius: 8px;
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+.dots {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    gap: 8px;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    background-color: #bbb;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.dot.active {
+    background-color: #003087;
+}
+
+/* Timeline Section */
+.timeline-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative; /* Cần thiết để pseudo-element ::before hoạt động đúng */
+    padding: 40px 20px; /* Giữ padding để nội dung không sát lề */
+    background-color: #F2FBFF; /* Màu nền trải rộng */
+    width: 100vw; /* Chiều rộng toàn màn hình */
+    height: 100%; /* Chiều cao bằng với timeline-section */
+}
+
+.timeline-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    
+}
+
+.timeline {
+    position: relative;
+    padding-left: 40px;
+    /* Xóa background-color ở đây vì đã áp dụng ở timeline-section::before */
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 18px; /* Đặt đường thẳng sao cho dấu chấm tròn nằm chính giữa */
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: #003087;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -37px; /* Điều chỉnh để dấu chấm tròn nằm chính giữa đường thẳng */
+    top: 5px;
+    width: 16px;
+    height: 16px;
+    background-color: #003087;
+    border-radius: 50%;
+    transform: translateX(50%); /* Dịch chuyển dấu chấm tròn về bên phải 50% chiều rộng của nó để căn giữa */
+}
+
+.timeline-item h3 {
+    font-size: 1.2rem;
+    color: #003087;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.timeline-item p {
+    font-size: 1rem;
+    color: #042354;
+}
+
+.timeline-description {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative; /* Cần thiết để pseudo-element ::before hoạt động đúng */
+    padding: 40px 20px;
+    margin-top: 20px;
+    padding: 25px;
+    padding-bottom: 40px;
+    text-align: justify;
+}
+
+.timeline-description p {
+    font-size: 1.1rem;
+    color: #042354;
+}

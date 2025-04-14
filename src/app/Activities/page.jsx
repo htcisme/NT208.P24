@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import Footer from "@/components/Footer";
 import "@/styles-comp/style.css";
 import "@/app/Activities/style.css";
 
@@ -142,6 +143,7 @@ export default function Activities() {
             </div>
           </div>
         </div>
+        <Footer></Footer>
       </main>
     </>
   );

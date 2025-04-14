@@ -6,13 +6,12 @@ export const metadata = {
   description: "Tạo bởi XangFuTing",
 };
 
-export default function RootLayout({ children }) {
+export default function Awards({ children }) {
   return (
     <html lang="en">
       <body>
         <Header></Header>
         {children}
-        <Footer></Footer>
       </body>
     </html>
   );
