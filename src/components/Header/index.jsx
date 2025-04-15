@@ -187,14 +187,14 @@ export default function Header() {
             ) : (
               <div className="Header-Topbar-Authsearch-Authlinks">
                 <Link
-                  href="/register"
+                  href="/User?tab=register"
                   className="Header-Topbar-Authsearch-Authlinks-Item"
                 >
                   Đăng ký
                 </Link>
                 <span>|</span>
                 <Link
-                  href="/login"
+                  href="/User?tab=login"
                   className="Header-Topbar-Authsearch-Authlinks-Item"
                 >
                   Đăng nhập
