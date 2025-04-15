@@ -2,11 +2,11 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 
 export const metadata = {
-  title: "Thành tích",
+  title: "Bài viết hoạt động",
   description: "Tạo bởi XangFuTing",
 };
 
-export default function Awards({ children }) {
+export default function ActivitiesPost({ children }) {
   return (
     <html lang="en">
       <body>

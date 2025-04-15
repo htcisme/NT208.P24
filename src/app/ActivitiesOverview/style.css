@@ -1,0 +1,158 @@
+/* Import Montserrat font */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+/* Apply Montserrat font globally */
+* {
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Định dạng cho phần Danh sách bài đăng */
+.post-list-container {
+  padding: 20px;
+  background-color: #ECF9FF; /* Màu nền giống trong hình */
+}
+
+.post-list-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  color: #042354;
+  text-transform: uppercase;
+  margin-top: 30px; /* Khoảng cách trên */
+}
+
+.post-list-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 cột mỗi hàng */
+  gap: 20px;
+  padding-bottom: 20px;
+}
+
+.post-item {
+  background-color: #fff;
+  border: 2px solid transparent;
+  transition: border 0.3s ease;
+}
+
+.post-item:hover {
+  border: 2px solid #042354; /* Viền xanh khi hover, giống trong hình */
+}
+
+.post-box {
+  padding: 10px;
+  text-align: left; /* Căn trái nội dung trong post-box */
+}
+
+.post-image-placeholder {
+  width: 100%;
+  height: 250px;
+  background-color: #f0f0f0; /* Placeholder cho hình ảnh */
+  margin-bottom: 10px;
+}
+
+.post-title {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 5px;
+  text-align: justify; /* Căn đều tiêu đề */
+}
+
+.post-title a {
+  color: #042354;
+  text-decoration: none;
+}
+
+.post-title a:hover {
+  text-decoration: underline;
+}
+
+.post-date {
+  font-size: 14px;
+  color: #042354;
+  text-align: left;
+  padding-left: 20px;
+}
+
+/* Định dạng cho phần Các bài viết khác */
+.other-posts-container {
+  margin: 40px;
+  background-color: #fff; /* Thêm background trắng cho toàn bộ phần */
+  padding: 20px; /* Thêm padding để tạo khoảng cách bên trong */
+  margin-bottom: 40px;;
+  border-radius: 8px; /* Bo góc nhẹ cho phần background */
+}
+
+.other-posts-title {
+  text-align: left;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #042354;
+  text-transform: uppercase;
+}
+
+.other-posts-grid {
+  display: flex; /* Chuyển sang flex để căn giữa */
+  justify-content: center; /* Căn giữa theo chiều ngang */
+  gap: 40px; /* Khoảng cách giữa hai cột */
+  max-width: 1200px; /* Giới hạn chiều rộng tối đa để không bị dãn quá */
+  margin: 0 auto; /* Căn giữa phần grid trong container */
+}
+
+.other-posts-column {
+  flex: 1; /* Mỗi cột chiếm 50% chiều rộng */
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.other-post-item {
+  padding: 5px 0;
+}
+
+.other-post-title {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 5px;
+  text-align: justify; /* Căn đều tiêu đề */
+}
+
+.other-post-title a {
+  color: #042354;
+  text-decoration: none;
+}
+
+.other-post-title a:hover {
+  text-decoration: underline;
+}
+
+.other-post-date {
+  font-size: 14px;
+  color: #042354;
+  text-align: left;
+  padding-left: 20px;
+}
+
+
+/* Container cho "Trở về" */
+.light-news-actions {
+  margin-bottom: 30px;
+  display: flex; /* Sử dụng flex để căn chỉnh */
+  justify-content: flex-end; /* Căn "Trở về" sang bên phải */
+  margin-right: 50px;;
+}
+
+/* Phần "Trở về" */
+.light-news-back {
+  text-align: right; /* Căn chữ bên trong sang phải */
+}
+
+.light-news-back a {
+  color: #042354;
+  font-size: 1rem; /* Kích thước chữ nhỏ */
+}
+
+.light-news-back a:hover {
+  text-decoration: underline;
+}
