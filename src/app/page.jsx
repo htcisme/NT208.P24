@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import RegisterForm from "@/components/RegisterForm";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
 const images = [
   "/Img/Homepage/BCH1.png",
@@ -13,7 +14,7 @@ const images = [
 ];
 
 export default function Home() {
-  // Danh sách 5 sự kiện với tiêu đề (có thể thêm hình ảnh sau)
+  // Danh sách 5 sự kiện với tiêu đề
   const events = [
     { title: "VNU TOUR 2024", image: "/Img/Homepage/Slider1.png" },
     { title: "NGỌN ĐUỐC XANH 2025", image: "/Img/Homepage/Slider3.png" },
@@ -22,8 +23,12 @@ export default function Home() {
     { title: "EVENT 5 2024", image: "/Img/Homepage/BCH2.png" },
   ];
 
-  // Trạng thái để quản lý vị trí bắt đầu của slider
+  // State quản lý
   const [startIndex, setStartIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [fade, setFade] = useState(true);
+  const [showMenu, setShowMenu] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   // Hàm xử lý bấm mũi tên trái
   const handlePrev = () => {
@@ -37,6 +42,16 @@ export default function Home() {
     setStartIndex((prevIndex) => (prevIndex + 1) % events.length);
   };
 
+  // Toggle menu
+  const toggleMenu = () => {
+    setShowMenu(!showMenu);
+  };
+
+  // Toggle user menu
+  const toggleUserMenu = () => {
+    setShowUserMenu(!showUserMenu);
+  };
+
   // Lấy 3 sự kiện kế tiếp từ startIndex, lặp lại nếu vượt quá độ dài
   const visibleEvents = Array.from(
     { length: 3 },
@@ -46,23 +61,47 @@ export default function Home() {
   const items = [
     {
       date: "20.01.2025",
-      text: "Đoàn khoa Mạng máy tính và Truyền thông đã sẵn sàng mang đến chuỗi truyền thống TẬN “TỴ” ĐÓN TẾT vô cùng hấp dẫn, đầy ý nghĩa để cùng các bạn tận hưởng một cái Tết Nguyên đán trọn vẹn nhất!!",
+      text: 'Đoàn khoa Mạng máy tính và Truyền thông đã sẵn sàng mang đến chuỗi truyền thống TẬN"TỴ"ĐÓN TẾT vô cùng hấp dẫn, đầy ý nghĩa để cùng các bạn tận hưởng một cái Tết Nguyên đán trọn vẹn nhất!!',
     },
     {
       date: "20.01.2025",
-      text: "Đoàn khoa Mạng máy tính và Truyền thông đã sẵn sàng mang đến chuỗi truyền thống TẬN “TỴ” ĐÓN TẾT vô cùng hấp dẫn, đầy ý nghĩa để cùng các bạn tận hưởng một cái Tết Nguyên đán trọn vẹn nhất!!",
+      text: 'Đoàn khoa Mạng máy tính và Truyền thông đã sẵn sàng mang đến chuỗi truyền thống TẬN"TỴ"ĐÓN TẾT vô cùng hấp dẫn, đầy ý nghĩa để cùng các bạn tận hưởng một cái Tết Nguyên đán trọn vẹn nhất!!',
     },
     {
       date: "20.01.2025",
-      text: "Đoàn khoa Mạng máy tính và Truyền thông đã sẵn sàng mang đến chuỗi truyền thống TẬN “TỴ” ĐÓN TẾT vô cùng hấp dẫn, đầy ý nghĩa để cùng các bạn tận hưởng một cái Tết Nguyên đán trọn vẹn nhất!!",
+      text: 'Đoàn khoa Mạng máy tính và Truyền thông đã sẵn sàng mang đến chuỗi truyền thống TẬN"TỴ"ĐÓN TẾT vô cùng hấp dẫn, đầy ý nghĩa để cùng các bạn tận hưởng một cái Tết Nguyên đán trọn vẹn nhất!!',
     },
     {
       date: "20.01.2025",
-      text: "Đoàn khoa Mạng máy tính và Truyền thông đã sẵn sàng mang đến chuỗi truyền thống TẬN “TỴ” ĐÓN TẾT vô cùng hấp dẫn, đầy ý nghĩa để cùng các bạn tận hưởng một cái Tết Nguyên đán trọn vẹn nhất!!",
+      text: 'Đoàn khoa Mạng máy tính và Truyền thông đã sẵn sàng mang đến chuỗi truyền thống TẬN"TỴ"ĐÓN TẾT vô cùng hấp dẫn, đầy ý nghĩa để cùng các bạn tận hưởng một cái Tết Nguyên đán trọn vẹn nhất!!',
     },
   ];
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [fade, setFade] = useState(true);
+
+  // Thêm vào đầu component Home.jsx
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Thêm useEffect để kiểm tra dark mode từ localStorage khi trang tải
+  useEffect(() => {
+    const savedMode = localStorage.getItem("darkMode");
+    if (savedMode === "true") {
+      setIsDarkMode(true);
+      document.body.classList.add("dark-mode");
+    } else {
+      document.body.classList.remove("dark-mode");
+    }
+  }, []);
+
+  // Thêm hàm toggleDarkMode
+  const toggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode);
+    if (isDarkMode) {
+      document.body.classList.remove("dark-mode");
+      localStorage.setItem("darkMode", "false");
+    } else {
+      document.body.classList.add("dark-mode");
+      localStorage.setItem("darkMode", "true");
+    }
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -78,36 +117,81 @@ export default function Home() {
   return (
     <div className={styles.Container}>
       <header className={styles.Header}>
-        <div className={styles.Header_Logo}>XANGFUTING</div>
+        <div className={styles.Header_Logo}>
+          <Link href="/">SUCTREMMT</Link>
+        </div>
         <div className={styles.Header_Nav}>
-          <button className={styles.Header_Nav_NavButton}>Đăng nhập</button>
-          <button className={styles.Header_Nav_NavButton}>Đăng ký</button>
-          <div className={styles.Header_Nav_MenuWrapper}>
+          {/* Nút chuyển đổi Dark/Light mode */}
+          <button
+            onClick={toggleDarkMode}
+            className={styles.Header_Nav_DarkModeToggle}
+            aria-label={
+              isDarkMode ? "Chuyển sang chế độ sáng" : "Chuyển sang chế độ tối"
+            }
+          >
+            {isDarkMode ? (
+              <svg
+                className={styles.Header_Nav_DarkModeIcon}
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M13 3a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0V3ZM6.343 4.929A1 1 0 0 0 4.93 6.343l1.414 1.414a1 1 0 0 0 1.414-1.414L6.343 4.929Zm12.728 1.414a1 1 0 0 0-1.414-1.414l-1.414 1.414a1 1 0 0 0 1.414 1.414l1.414-1.414ZM12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm-9 4a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2H3Zm16 0a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2h-2ZM7.757 17.657a1 1 0 1 0-1.414-1.414l-1.414 1.414a1 1 0 1 0 1.414 1.414l1.414-1.414Zm9.9-1.414a1 1 0 0 0-1.414 1.414l1.414 1.414a1 1 0 0 0 1.414-1.414l-1.414-1.414ZM13 19a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0v-2Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            ) : (
+              <svg
+                className={styles.Header_Nav_DarkModeIcon}
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M11.675 2.015a.998.998 0 0 0-.403.011C6.09 2.4 2 6.722 2 12c0 5.523 4.477 10 10 10 4.356 0 8.058-2.784 9.43-6.667a1 1 0 0 0-1.02-1.33c-.08.006-.105.005-.127.005h-.001l-.028-.002A5.227 5.227 0 0 0 20 14a8 8 0 0 1-8-8c0-.952.121-1.752.404-2.558a.996.996 0 0 0 .096-.428V3a1 1 0 0 0-.825-.985Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            )}
+          </button>
+
+          {/* Gộp nút đăng nhập/đăng ký thành dropdown */}
+          <div className={styles.Header_Nav_AuthWrapper}>
             <button
-              className={styles.Header_Nav_MenuWrapper_MenuButton}
-              onClick={() => {
-                const menu = document.getElementById("dropdownMenu");
-                if (menu) {
-                  menu.classList.toggle(
-                    styles.Header_Nav_MenuWrapper_MenuButton_ShowMenu
-                  );
-                }
-              }}
+              className={styles.Header_Nav_AuthButton}
+              onClick={toggleUserMenu}
             >
-              ☰
+              Tài khoản
+              <span className={styles.Header_Nav_AuthButton_Arrow}>▼</span>
             </button>
-            <div
-              className={styles.Header_Nav_MenuWrapper_DropdownMenu}
-              id="dropdownMenu"
-            >
-              <a href="Introduction">Giới thiệu</a>
-              <a href="Activities">Hoạt động</a>
-              <a href="Awards">Thành tích</a>
-              <a href="Booking">Đặt phòng</a>
-              <a href="Contact">Liên hệ</a>
-            </div>
+            {showUserMenu && (
+              <div className={styles.Header_Nav_AuthMenu}>
+                <Link
+                  href="/User?tab=login"
+                  className={styles.Header_Nav_AuthMenu_Item}
+                >
+                  Đăng nhập
+                </Link>
+                <Link
+                  href="/User?tab=register"
+                  className={styles.Header_Nav_AuthMenu_Item}
+                >
+                  Đăng ký
+                </Link>
+              </div>
+            )}
           </div>
-          <div className={styles.Header_Topbar_Authsearch}>
+
+          <div className={styles.Header_Nav_SearchWrapper}>
             <div className={styles.Header_Topbar_Authsearch_Searchbox}>
               <input type="text" placeholder="Tìm kiếm..." />
               <span
@@ -126,16 +210,65 @@ export default function Home() {
                 >
                   <path
                     stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeWidth="2"
                     d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
                   />
                 </svg>
               </span>
             </div>
           </div>
+
+          <div className={styles.Header_Nav_MenuWrapper}>
+            <button
+              className={styles.Header_Nav_MenuWrapper_MenuButton}
+              onClick={toggleMenu}
+              aria-expanded={showMenu}
+            >
+              ☰
+            </button>
+            <div
+              className={`${styles.Header_Nav_MenuWrapper_DropdownMenu} ${
+                showMenu
+                  ? styles.Header_Nav_MenuWrapper_MenuButton_ShowMenu
+                  : ""
+              }`}
+            >
+              <Link
+                href="/Introduction"
+                className={styles.Header_Nav_MenuWrapper_DropdownMenu_Item}
+              >
+                Giới thiệu
+              </Link>
+              <Link
+                href="/Activities"
+                className={styles.Header_Nav_MenuWrapper_DropdownMenu_Item}
+              >
+                Hoạt động
+              </Link>
+              <Link
+                href="/Awards"
+                className={styles.Header_Nav_MenuWrapper_DropdownMenu_Item}
+              >
+                Thành tích
+              </Link>
+              <Link
+                href="/Booking"
+                className={styles.Header_Nav_MenuWrapper_DropdownMenu_Item}
+              >
+                Đặt phòng
+              </Link>
+              <Link
+                href="/Contact"
+                className={styles.Header_Nav_MenuWrapper_DropdownMenu_Item}
+              >
+                Liên hệ
+              </Link>
+            </div>
+          </div>
         </div>
       </header>
+
       <section className={styles.hero}>
         <div className={styles.heroBackground}></div>
         <div className={styles.heroOverlay}></div>
@@ -147,6 +280,7 @@ export default function Home() {
               width={400}
               height={400}
               className={styles.logo}
+              priority
             />
           </div>
           <h1 className={styles.heroTitle}>
@@ -157,6 +291,7 @@ export default function Home() {
           </h2>
         </div>
       </section>
+
       <section className={styles.Body}>
         <div className={styles.Body_Container}>
           <section className={styles.Body_Container_Introduction}>
@@ -262,35 +397,17 @@ export default function Home() {
                   chi Đoàn trực thuộc, các ban chuyên môn và các đội nhóm chuyên
                   trách.
                 </p>
-                <p
-                  className={
-                    styles.Body_Container_Introduction_ContentWrapper_TextContainer_Description
-                  }
-                >
-                  Liên chi Đoàn khoa MMT&TT nay là Đoàn khoa MMT&TT không ngừng
-                  lớn mạnh về số lượng, nâng cao về chất lượng cán bộ Đoàn cơ sở
-                  để xứng đáng với vai trò là người bạn đồng hành cùng Đoàn viên
-                  – thanh niên khoa MMT&TT.
-                </p>
-                <p
-                  className={
-                    styles.Body_Container_Introduction_ContentWrapper_TextContainer_Description
-                  }
-                >
-                  Trong những năm qua, Đoàn TNCS Hồ Chí Minh khoa MMT&TT (Liên
-                  chi Đoàn) luôn là đơn vị đi đầu trong công tác Đoàn và Phong
-                  trào Thanh niên tại trường ĐH CNTT.
-                </p>
-                <a
+                <Link
                   href="/Introduction"
                   className={
                     styles.Body_Container_Introduction_ContentWrapper_TextContainer_ReadMore
                   }
                 >
                   Xem thêm ...
-                </a>
+                </Link>
               </div>
             </div>
+
             <div className={styles.Body_Container_MemberWrap}>
               <div className={styles.Body_Container_MemberItem}>
                 <img
@@ -322,6 +439,7 @@ export default function Home() {
               </div>
             </div>
           </section>
+
           <section className={styles.Body_Container_Activities}>
             <h2 className={styles.Activities_RecentLabel}>HOẠT ĐỘNG GẦN ĐÂY</h2>
             <div className={styles.Activities_RecentCards}>
@@ -398,9 +516,10 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <a href="/Activities" className={styles.Activities_ViewMore}>
+            <Link href="/Activities" className={styles.Activities_ViewMore}>
               Xem thêm ...
-            </a>
+            </Link>
+
             <div className={styles.Activities_Focus}>
               <div className={styles.Activities_Focus_Shape01}></div>
               <div className={styles.Activities_Focus_ContentWrapper}>
@@ -454,6 +573,7 @@ export default function Home() {
               </div>
             </div>
           </section>
+
           <section className={styles.Body_Container_Hightlight}>
             <div className={styles.Body_Container_Hightlight_Title}>
               HOẠT ĐỘNG NỔI BẬT
@@ -503,6 +623,7 @@ export default function Home() {
               ))}
             </div>
           </section>
+
           <section className={styles.Body_Container_Awards}>
             <div className={styles.Body_Container_Awards_Title}>
               THÀNH TÍCH NỔI BẬT
@@ -526,15 +647,15 @@ export default function Home() {
                 </div>
                 <div className={styles.Body_Container_Awards_Content_Desc}>
                   Tại chương trình Gala Tự hào Tuổi trẻ UIT 2024 - Tuyên dương
-                  các danh hiệu cấp Trường “Cán bộ, viên chức, giảng viên trẻ
-                  tiêu biểu”, “Thanh niên tiên tiến làm theo lời Bác”, “Sinh
-                  viên 5 Tốt”. Đoàn khoa MMT&TT xin được tự hào chúc mừng 𝟑𝟐
-                  sinh viên đã xuất sắc đạt danh hiệu “Thanh niên tiên tiến làm
-                  theo lời Bác” cấp Trường trong 𝟕 lĩnh vực. Đặc biệt, hai sinh
-                  viên Phạm Thái Bảo và Nguyễn Thanh Bình đã xuất sắc đạt “Thanh
-                  niên tiên tiến làm theo lời Bác tiêu biểu” cấp Trường trong
-                  hai lĩnh vực “Học tập - Nghiên cứu Khoa học” và “Hoạt động
-                  Tình nguyện”.
+                  các danh hiệu cấp Trường "Cán bộ, viên chức, giảng viên trẻ
+                  tiêu biểu", "Thanh niên tiên tiến làm theo lời Bác", "Sinh
+                  viên 5 Tốt". Đoàn khoa MMT&TT xin được tự hào chúc mừng 𝟑𝟐
+                  sinh viên đã xuất sắc đạt danh hiệu "Thanh niên tiên tiến làm
+                  theo lời Bác" cấp Trường trong 𝟕 lĩnh vực. Đặc biệt, hai sinh
+                  viên Phạm Thái Bảo và Nguyễn Thanh Bình đã xuất sắc đạt "Thanh
+                  niên tiên tiến làm theo lời Bác tiêu biểu" cấp Trường trong
+                  hai lĩnh vực "Học tập - Nghiên cứu Khoa học" và "Hoạt động
+                  Tình nguyện".
                 </div>
               </div>
               <div className={styles.Body_Container_Awards_Image}>
@@ -546,6 +667,7 @@ export default function Home() {
               </div>
             </div>
           </section>
+
           <section className={styles.Body_Container_Lower}>
             <div className={styles.Body_Container_Lower_Bandroll}>
               <div className={styles.Body_Container_Lower_Bandroll_Content}>
@@ -572,8 +694,9 @@ export default function Home() {
               </div>
             </div>
           </section>
+
           <section className={styles.Body_Container_RegisterForm}>
-            <RegisterForm></RegisterForm>
+            <RegisterForm className={styles.Body_Container_RegisterForm_Form} />
           </section>
         </div>
         <Footer />
