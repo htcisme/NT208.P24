@@ -12,6 +12,54 @@ const images = [
 ];
 
 export default function Home() {
+  // Danh sách 5 sự kiện với tiêu đề (có thể thêm hình ảnh sau)
+  const events = [
+    { title: "VNU TOUR 2024", image: "/Img/Homepage/Slider1.png" },
+    { title: "NGỌN ĐUỐC XANH 2025", image: "/Img/Homepage/Slider3.png" },
+    { title: "NETSEC DAY 2024", image: "/Img/Homepage/Slider2.png" },
+    { title: "EVENT 4 2024", image: "/Img/Homepage/BCH1.png" },
+    { title: "EVENT 5 2024", image: "/Img/Homepage/BCH2.png" },
+  ];
+
+  // Trạng thái để quản lý vị trí bắt đầu của slider
+  const [startIndex, setStartIndex] = useState(0);
+
+  // Hàm xử lý bấm mũi tên trái
+  const handlePrev = () => {
+    setStartIndex(
+      (prevIndex) => (prevIndex - 1 + events.length) % events.length
+    );
+  };
+
+  // Hàm xử lý bấm mũi tên phải
+  const handleNext = () => {
+    setStartIndex((prevIndex) => (prevIndex + 1) % events.length);
+  };
+
+  // Lấy 3 sự kiện kế tiếp từ startIndex, lặp lại nếu vượt quá độ dài
+  const visibleEvents = Array.from(
+    { length: 3 },
+    (_, i) => events[(startIndex + i) % events.length]
+  );
+
+  const items = [
+    {
+      date: "20.01.2025",
+      text: "Đoàn khoa Mạng máy tính và Truyền thông đã sẵn sàng mang đến chuỗi truyền thống TẬN “TỴ” ĐÓN TẾT vô cùng hấp dẫn, đầy ý nghĩa để cùng các bạn tận hưởng một cái Tết Nguyên đán trọn vẹn nhất!!",
+    },
+    {
+      date: "20.01.2025",
+      text: "Đoàn khoa Mạng máy tính và Truyền thông đã sẵn sàng mang đến chuỗi truyền thống TẬN “TỴ” ĐÓN TẾT vô cùng hấp dẫn, đầy ý nghĩa để cùng các bạn tận hưởng một cái Tết Nguyên đán trọn vẹn nhất!!",
+    },
+    {
+      date: "20.01.2025",
+      text: "Đoàn khoa Mạng máy tính và Truyền thông đã sẵn sàng mang đến chuỗi truyền thống TẬN “TỴ” ĐÓN TẾT vô cùng hấp dẫn, đầy ý nghĩa để cùng các bạn tận hưởng một cái Tết Nguyên đán trọn vẹn nhất!!",
+    },
+    {
+      date: "20.01.2025",
+      text: "Đoàn khoa Mạng máy tính và Truyền thông đã sẵn sàng mang đến chuỗi truyền thống TẬN “TỴ” ĐÓN TẾT vô cùng hấp dẫn, đầy ý nghĩa để cùng các bạn tận hưởng một cái Tết Nguyên đán trọn vẹn nhất!!",
+    },
+  ];
   const [currentIndex, setCurrentIndex] = useState(0);
   const [fade, setFade] = useState(true);
 
@@ -65,7 +113,7 @@ export default function Home() {
                 className={styles.Header_Topbar_Authsearch_Searchbox_Searchicon}
               >
                 <svg
-                  class={
+                  className={
                     styles.Header_Topbar_Authsearch_Searchbox_Searchicon_Icon
                   }
                   aria-hidden="true"
@@ -95,8 +143,8 @@ export default function Home() {
             <Image
               src="/Img/Homepage/Fulllogo.png"
               alt="Logo Đoàn Khoa"
-              width={800}
-              height={800}
+              width={400}
+              height={400}
               className={styles.logo}
             />
           </div>
@@ -123,6 +171,7 @@ export default function Home() {
             <div
               className={styles.Body_Container_Introduction_BodyShape04}
             ></div>
+
             <h2 className={styles.Body_Container_Introduction_Title}>
               GIỚI THIỆU
             </h2>
@@ -135,8 +184,8 @@ export default function Home() {
                 <Image
                   src={images[currentIndex]}
                   alt={`Giới thiệu ${currentIndex + 1}`}
-                  width={900}
-                  height={600}
+                  width={800}
+                  height={400}
                   className={`${
                     styles.Body_Container_Introduction_ContentWrapper_ImageContainer_Image
                   } ${
@@ -231,13 +280,14 @@ export default function Home() {
                   chi Đoàn) luôn là đơn vị đi đầu trong công tác Đoàn và Phong
                   trào Thanh niên tại trường ĐH CNTT.
                 </p>
-                <p
+                <a
+                  href="/Introduction"
                   className={
                     styles.Body_Container_Introduction_ContentWrapper_TextContainer_ReadMore
                   }
                 >
                   Xem thêm ...
-                </p>
+                </a>
               </div>
             </div>
             <div className={styles.Body_Container_MemberWrap}>
@@ -248,7 +298,7 @@ export default function Home() {
                   className={styles.Body_Container_MemberImage}
                 />
                 <p className={styles.Body_Container_MemberLabel}>
-                  Ban Truyền thông <br /> & Sự kiện
+                  Ban Truyền thông & Sự kiện
                 </p>
               </div>
               <div className={styles.Body_Container_MemberItem}>
@@ -271,7 +321,7 @@ export default function Home() {
               </div>
             </div>
           </section>
-          <div className={styles.Body_Container_Activities}>
+          <section className={styles.Body_Container_Activities}>
             <h2 className={styles.Activities_RecentLabel}>HOẠT ĐỘNG GẦN ĐÂY</h2>
             <div className={styles.Activities_RecentCards}>
               <div className={styles.Activities_RecentCard}>
@@ -347,8 +397,180 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <p className={styles.Activities_ViewMore}>Xem thêm ...</p>
-          </div>
+            <a href="/Activities" className={styles.Activities_ViewMore}>
+              Xem thêm ...
+            </a>
+            <div className={styles.Activities_Focus}>
+              <div className={styles.Activities_Focus_Shape01}></div>
+              <div className={styles.Activities_Focus_ContentWrapper}>
+                <div className={styles.Activities_Focus_ImageContainer}>
+                  <img
+                    src="/Img/Homepage/Hotimage.png"
+                    alt="Tiêu điểm hoạt động"
+                    className={styles.Activities_Focus_Image}
+                  />
+                  <div className={styles.Activities_Focus_Shape02}></div>
+                </div>
+                <div className={styles.Activities_Focus_Content}>
+                  <div className={styles.Activities_Focus_Content_Title}>
+                    TIÊU ĐIỂM
+                  </div>
+                  <div className={styles.Activities_Focus_Content_Timeline}>
+                    {items.map((item, index) => (
+                      <div
+                        key={index}
+                        className={styles.Activities_Focus_Content_TimelineItem}
+                      >
+                        <div
+                          className={
+                            styles.Activities_Focus_Content_TimelineItem_Circle
+                          }
+                        ></div>
+                        <div
+                          className={
+                            styles.Activities_Focus_Content_TimelineItem_Content
+                          }
+                        >
+                          <div
+                            className={
+                              styles.Activities_Focus_Content_TimelineItem_Date
+                            }
+                          >
+                            {item.date}
+                          </div>
+                          <div
+                            className={
+                              styles.Activities_Focus_Content_TimelineItem_Text
+                            }
+                          >
+                            {item.text}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section className={styles.Body_Container_Hightlight}>
+            <div className={styles.Body_Container_Hightlight_Title}>
+              HOẠT ĐỘNG NỔI BẬT
+            </div>
+            <div className={styles.Body_Container_Hightlight_Shape}></div>
+            {/* Slider hoạt động */}
+            <section className={styles.light_slider_container}>
+              <button
+                className={styles.light_slider_arrow}
+                onClick={handlePrev}
+              >
+                ←
+              </button>
+              {visibleEvents.map((event, index) => (
+                <div className={styles.light_slider_item} key={index}>
+                  <div
+                    className={`${styles.slider_image_placeholder} ${
+                      index === 1 ? styles.slider_image_placeholder_active : ""
+                    }`}
+                  >
+                    <img
+                      src={event.image}
+                      alt={event.title}
+                      className={styles.slider_image}
+                    />
+                  </div>
+                  <h4>{event.title}</h4>
+                </div>
+              ))}
+              <button
+                className={styles.light_slider_arrow}
+                onClick={handleNext}
+              >
+                →
+              </button>
+            </section>
+            {/* Dots điều hướng */}
+            <div className={styles.light_slider_dots}>
+              {events.map((_, index) => (
+                <span
+                  key={index}
+                  className={`${styles.light_slider_dot} ${
+                    startIndex === index ? styles.light_slider_dot_active : ""
+                  }`}
+                  onClick={() => setStartIndex(index)}
+                ></span>
+              ))}
+            </div>
+          </section>
+          <section className={styles.Body_Container_Awards}>
+            <div className={styles.Body_Container_Awards_Title}>
+              THÀNH TÍCH NỔI BẬT
+            </div>
+            <div className={styles.Body_Container_Awards_Shape01}></div>
+            <div className={styles.Body_Container_Awards_Shape02}></div>
+            <div className={styles.Body_Container_Awards_ContentWrapper}>
+              <div className={styles.Body_Container_Awards_Content}>
+                <div className={styles.Body_Container_Awards_Content_Title}>
+                  ĐOÀN KHOA MẠNG MÁY TÍNH VÀ TRUYỀN THÔNG LÀ ĐƠN VỊ XUẤT SẮC DẪN
+                  ĐẦU TRONG CÔNG TÁC ĐOÀN VÀ PHONG TRÀO THANH NIÊN NĂM HỌC 2023
+                  - 2024
+                </div>
+                <div className={styles.Body_Container_Awards_Content_Desc}>
+                  Chương trình nhằm mục đích tổng kết và đánh giá các hoạt động,
+                  phong trào tại các đơn vị, đồng thời vinh danh các cá nhân, tổ
+                  chức đã có sự đóng góp tiêu biểu. Trong năm học vừa qua, Đoàn
+                  khoa Mạng máy tính và Truyền thông đã vinh hạnh là ĐƠN VỊ XUẤT
+                  SẮC DẪN ĐẦU TRONG CÔNG TÁC ĐOÀN VÀ PHONG TRÀO THANH NIÊN NĂM
+                  HỌC 2023 - 2024!
+                </div>
+                <div className={styles.Body_Container_Awards_Content_Desc}>
+                  Tại chương trình Gala Tự hào Tuổi trẻ UIT 2024 - Tuyên dương
+                  các danh hiệu cấp Trường “Cán bộ, viên chức, giảng viên trẻ
+                  tiêu biểu”, “Thanh niên tiên tiến làm theo lời Bác”, “Sinh
+                  viên 5 Tốt”. Đoàn khoa MMT&TT xin được tự hào chúc mừng 𝟑𝟐
+                  sinh viên đã xuất sắc đạt danh hiệu “Thanh niên tiên tiến làm
+                  theo lời Bác” cấp Trường trong 𝟕 lĩnh vực. Đặc biệt, hai sinh
+                  viên Phạm Thái Bảo và Nguyễn Thanh Bình đã xuất sắc đạt “Thanh
+                  niên tiên tiến làm theo lời Bác tiêu biểu” cấp Trường trong
+                  hai lĩnh vực “Học tập - Nghiên cứu Khoa học” và “Hoạt động
+                  Tình nguyện”.
+                </div>
+              </div>
+              <div className={styles.Body_Container_Awards_Image}>
+                <img
+                  src="/Img/Homepage/Hotimage.png"
+                  alt="Thành tích nổi bật"
+                  className={styles.Body_Container_Awards_Image_Img}
+                />
+              </div>
+            </div>
+          </section>
+          <section className={styles.Body_Container_Lower}>
+            <div className={styles.Body_Container_Lower_Bandroll}>
+              <div className={styles.Body_Container_Lower_Bandroll_Content}>
+                ĐOÀN KẾT - TIÊN PHONG - TRÁCH NHIỆM - ĐỔI MỚI
+              </div>
+            </div>
+            <div className={styles.Image_Grid_Container}>
+              <img
+                src="/images/top-image.jpg"
+                alt="Top Banner"
+                className={styles.Image_Top}
+              />
+              <div className={styles.Image_Bottom_Row}>
+                <img
+                  src="/images/bottom-left.jpg"
+                  alt="Bottom Left"
+                  className={styles.Image_Bottom}
+                />
+                <img
+                  src="/images/bottom-right.jpg"
+                  alt="Bottom Right"
+                  className={styles.Image_Bottom}
+                />
+              </div>
+            </div>
+          </section>
         </div>
         <Footer />
       </section>

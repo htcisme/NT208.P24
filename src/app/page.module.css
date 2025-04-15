@@ -42,7 +42,7 @@
 
 .Header_Nav_NavButton:hover {
   background-color: #2d71b9;
-  transition: all 0.5s ease-in-out;
+  transition: all 0.2s ease-in-out;
   color: white;
 }
 
@@ -183,14 +183,14 @@
 }
 
 .heroTitle {
-  font-size: 40px;
+  font-size: 25px;
   font-weight: 500;
   margin-bottom: 10px;
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);
 }
 
 .heroSubtitle {
-  font-size: 45px;
+  font-size: 30px;
   font-weight: bold;
   color: #ffffff;
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);
@@ -233,7 +233,7 @@
 
 .Body_Container_Introduction_BodyShape02 {
   position: absolute;
-  bottom: 470px;
+  bottom: 34%;
   left: 0;
   width: 50%;
   height: 20%;
@@ -243,17 +243,17 @@
 
 .Body_Container_Introduction_BodyShape03 {
   position: absolute;
-  bottom: 470px;
+  bottom: 34%;
   right: 0;
-  width: 2%;
-  height: 33%;
+  width: 1.5%;
+  height: 30%;
   background-color: #04255a;
   z-index: 0;
 }
 
 .Body_Container_Introduction_BodyShape04 {
   position: absolute;
-  bottom: 200px;
+  bottom: 14%;
   left: 0;
   width: 100%;
   height: 20%;
@@ -264,7 +264,7 @@
 .Body_Container_Introduction::before {
   content: "";
   position: absolute;
-  top: 8%;
+  top: 3%;
   left: 50%;
   transform: translateX(-50%);
   width: 640px;
@@ -289,8 +289,8 @@
   background-color: #042354;
   color: white;
   display: inline-block;
-  margin: 60px;
-  padding: 12px 24px;
+  margin: 20px 60px;
+  padding: 8px 24px;
   border-radius: 50px;
   font-size: 30px;
   font-weight: 800;
@@ -300,8 +300,6 @@
   flex: 1;
   padding: 20px;
   box-sizing: border-box;
-  width: 100%;
-  height: 100%;
   position: relative; /* Cần cho Next.js Image */
   overflow: hidden;
   flex-shrink: 0;
@@ -311,8 +309,8 @@
 }
 
 .Body_Container_Introduction_ContentWrapper_ImageContainer_Image {
-  width: 900px;
-  height: 500px;
+  width: 650px;
+  height: 400px;
   object-fit: cover;
   box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.1);
   border-radius: 12px;
@@ -356,24 +354,29 @@
 
 .Body_Container_Introduction_ContentWrapper_TextContainer_Heading {
   text-align: right;
-  font-size: 43px;
-  font-weight: 1000;
+  font-size: 36px;
+  font-weight: bold;
   margin-bottom: 20px;
-  line-height: 60px;
+  line-height: 50px;
   color: #0b1f40;
 }
 
 .Body_Container_Introduction_ContentWrapper_TextContainer_Description {
-  font-size: 17px;
+  font-size: 14px;
   line-height: 1.8;
   margin-bottom: 10px;
   text-align: justify;
 }
 
 .Body_Container_Introduction_ContentWrapper_TextContainer_ReadMore {
-  text-align: right;
-  font-style: italic;
-  color: #042354;
+  align-items: right;
+  justify-self: right;
+  display: flex;
+}
+
+.Body_Container_Introduction_ContentWrapper_TextContainer_ReadMore:hover {
+  color: #2d71b9;
+  transition: all 0.2s ease-in-out;
 }
 
 .Body_Container_MemberWrap {
@@ -382,17 +385,21 @@
   gap: 5%;
   flex-wrap: wrap;
   padding: 0 60px;
+  z-index: 1;
 }
 
 .Body_Container_MemberItem {
   padding: 10px;
-
   transition: transform 0.3s ease;
+  z-index: 1;
 }
 
 .Body_Container_MemberImage {
-  transform: rotate(-2deg);
-  width: 500px;
+  transform: rotate(-1 deg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 332px;
   height: auto;
   border-radius: 8px;
   object-fit: cover;
@@ -404,33 +411,35 @@
 }
 
 .Body_Container_MemberLabel {
+  width: 332px;
   font-weight: 1000;
-  font-size: 40px;
+  line-height: 50px;
+  font-size: 35px;
   text-align: center;
   color: #0b1e3f;
   margin-top: 10px;
+  -webkit-text-stroke: 4px #b5dff7;
   text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
-  -webkit-text-stroke: 3px #b5dff7;
+
   paint-order: stroke fill;
 }
 
 .Body_Container_Activities {
   text-align: center;
   margin-top: 60px;
-  padding: 0 60px;
 }
 
 .Activities_RecentLabel {
   font-size: 28px;
   font-weight: 700;
-  background-color: #0b1e3f;
+  background-color: #042354;
   color: white;
   display: inline-block;
   padding: 10px 25px;
   border-radius: 999px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-  margin-bottom: 80px;
+  margin-bottom: 20px;
 }
 
 .Activities_RecentCards {
@@ -439,10 +448,12 @@
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+  margin-bottom: 30px;
+  padding: 0 60px;
 }
 
 .Activities_RecentCard {
-  width: 330px;
+  width: 230px;
   background-color: white;
   border-radius: 10px;
   overflow: hidden;
@@ -466,26 +477,417 @@
 
 .Activities_RecentCard_Title {
   font-weight: 600;
-  font-size: 16px;
-  color: #0b1e3f;
+  font-size: 15px;
+  color: #042354;
   margin-bottom: 5px;
 }
 
 .Activities_RecentCard_Desc {
-  font-size: 14px;
+  font-size: 13px;
   color: #444;
   margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .Activities_RecentCard_Date {
-  font-size: 13px;
+  font-size: 12px;
   font-style: italic;
   color: #888;
 }
 
 .Activities_ViewMore {
-  margin-top: 25px;
-  font-style: italic;
-  color: #1a1a1a;
   font-size: 20px;
+}
+
+.Activities_ViewMore:hover {
+  color: #2d71b9;
+  transition: all 0.2s ease-in-out;
+}
+
+.Activities_Focus {
+  margin-top: 30px;
+  max-width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.Activities_Focus_Shape01 {
+  position: absolute;
+  bottom: 26px;
+  left: 0;
+  width: 100%;
+  height: 320px;
+  background-color: #daeef7;
+  z-index: 0;
+}
+
+.Activities_Focus_Shape02 {
+  position: absolute;
+  top: 8px;
+  left: 13px;
+  width: 512px;
+  height: 337px;
+  border-radius: 20px;
+  background-color: #042354b5;
+  transform: rotate(2.5deg);
+  transform-origin: bottom left;
+  z-index: -1;
+}
+
+.Activities_Focus_ContentWrapper {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  gap: 60px;
+  margin-top: 40px;
+  padding: 0 120px;
+  z-index: 1;
+}
+
+.Activities_Focus_ImageContainer {
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  width: 550px;
+}
+
+.Activities_Focus_Image {
+  border-radius: 20px;
+  box-sizing: border-box;
+  position: relative; /* Cần cho Next.js Image */
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.Activities_Focus_Content {
+  box-sizing: border-box;
+  color: #042354;
+  width: 790px;
+}
+
+.Activities_Focus_Content_Title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  text-align: left;
+}
+
+.Activities_Focus_Content_Timeline {
+  font-size: 14px;
+  line-height: 20px;
+  text-align: left;
+  padding-left: 20px;
+  border-left: 2px solid #042354;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+}
+
+.Activities_Focus_Content_TimelineItem_Content:last-child {
+  border-left: none;
+}
+
+.Activities_Focus_Content_TimelineItem {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  padding-left: 10px;
+}
+
+.Activities_Focus_Content_TimelineItem_Circle {
+  width: 18px;
+  height: 18px;
+  background-color: #042354;
+  border-radius: 50%;
+  position: absolute;
+  left: -30px;
+  top: 0px;
+  border: 5px solid #daeef7;
+  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4); /* đổ bóng mềm */
+}
+.Activities_Focus_Content_TimelineItem_Date {
+  font-weight: bold;
+  color: #042354;
+}
+
+.Activities_Focus_Content_TimelineItem_Text {
+  font-size: 14px;
+  color: #333;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.Body_Container_Hightlight {
+  max-width: 100%;
+  margin: 60px auto;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.Body_Container_Hightlight_Title {
+  font-size: 28px;
+  font-weight: 700;
+  padding-top: 25px;
+  color: white;
+  z-index: 1;
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Body_Container_Hightlight_Shape {
+  position: absolute;
+  top: 15px;
+  right: 0;
+  width: 70%;
+  height: 70px;
+  background-color: #042354;
+  z-index: 0;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.light_slider_container {
+  margin-top: 140px;
+  margin-bottom: 30px;
+  width: 800px;
+  gap: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.light_slider_item {
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+}
+
+.slider_image_placeholder {
+  width: 300px;
+  height: 300px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  margin: 0 auto 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.slider_image_placeholder_active {
+  width: 350px;
+  height: 350px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.slider_image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 15px;
+  margin: 0 auto 0.5rem;
+}
+
+.light_slider_item h4 {
+  font-size: 20px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.light_slider_arrow {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #ffffff;
+  padding: 0 1rem;
+}
+
+.light_slider_dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.light_slider_dot {
+  width: 15px;
+  height: 15px;
+  background-color: #ccc;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.light_slider_dot_active {
+  background-color: #042354;
+}
+
+.Body_Container_Awards {
+  max-width: 100%;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.Body_Container_Awards_Title {
+  font-size: 28px;
+  font-weight: 700;
+  padding-top: 50px;
+  padding-left: 15%;
+  color: white;
+  z-index: 1;
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+}
+
+.Body_Container_Awards_Shape01 {
+  position: absolute;
+  top: 38px;
+  left: 0;
+  width: 50%;
+  height: 70px;
+  background-color: #042354;
+  z-index: 0;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.Body_Container_Awards_Shape02 {
+  position: absolute;
+  top: 148px;
+  right: 90px;
+  width: 618px;
+  height: 413px;
+  background-color: #042354;
+  z-index: 0;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  transform: rotate(3.5deg);
+  transform-origin: bottom left;
+  z-index: 0;
+}
+
+.Body_Container_Awards_ContentWrapper {
+  display: flex;
+  gap: 60px;
+  margin-top: 40px;
+  padding: 30px 60px;
+  z-index: 1;
+  color: #fff;
+}
+
+.Body_Container_Awards_Content {
+  z-index: 1;
+  color: #fff;
+  width: 1660px;
+}
+
+.Body_Container_Awards_Content_Title {
+  font-size: 17px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.Body_Container_Awards_Content_Desc {
+  font-size: 15px;
+  text-align: justify;
+  line-height: 30px;
+  padding-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.Body_Container_Awards_Image {
+  width: 618px;
+  height: 413px;
+  border-radius: 20px;
+  box-sizing: border-box;
+  position: relative; /* Cần cho Next.js Image */
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: right;
+  justify-content: right;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  margin-left: 80px;
+  margin-right: 20px;
+  margin-bottom: 30px;
+}
+
+.Body_Container_Awards_Image_Img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.Body_Container_Lower {
+  margin-top: 60px;
+}
+
+.Body_Container_Lower_Bandroll {
+  width: 100%;
+}
+
+.Body_Container_Lower_Bandroll_Content {
+  font-size: 50px;
+  text-align: center;
+  font-weight: bold;
+  color: #ffffff;
+  background-color: rgba(246, 252, 255, 0.521);
+  padding: 10px 0px;
+}
+
+.Image_Grid_Container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 40px 60px;
+}
+
+.Image_Top {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+.Image_Bottom_Row {
+  display: flex;
+  gap: 20px;
+}
+
+.Image_Bottom {
+  flex: 1;
+  height: 200px;
+  object-fit: cover;
+  display: block;
 }
