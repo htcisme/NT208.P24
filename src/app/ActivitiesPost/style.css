@@ -8,12 +8,21 @@
 
 /* Layout chính */
 .light-container-main {
-  padding-top: 2rem;
   padding-left: 2rem;
   padding-right: 2rem;
+  padding-top: 2rem;
   background-color: #ECF9FF;
   color: #042354;
+}
 
+/* Tiêu đề chính */
+.light-main-title {
+  font-size: 22px; /* Kích thước chữ 22px */
+  font-weight: 600; /* Độ đậm */
+  color: #042354; /* Màu chữ */
+  text-align: center; /* Căn giữa */
+  margin-bottom: 2rem; /* Khoảng cách dưới */
+  line-height: 1.5; /* Khoảng cách giữa các dòng */
 }
 
 /* Split section: 70-30 */
@@ -41,6 +50,45 @@
   background-color: #042354; /* Nền xanh đậm */
   padding: 0.5rem 1rem; /* Khoảng cách bên trong */
   display: inline-block; /* Để nền chỉ bao quanh nội dung */
+}
+
+/* Container cho "Trở về" và "Xem thêm" */
+.light-news-actions {
+  display: flex; /* Sử dụng flex để đặt hai liên kết trên cùng một hàng */
+  justify-content: space-between; /* "Trở về" căn trái, "Xem thêm" căn phải */
+  margin-top: 1rem;
+}
+
+/* Phần "Trở về" */
+.light-news-back {
+  text-align: left; /* Căn phải liên kết "Trở về" */
+  margin-top: 1rem;
+}
+
+.light-news-back a {
+  color: #042354;
+  text-decoration: none;
+  font-size: 0.85rem; /* Kích thước chữ nhỏ */
+}
+
+.light-news-back a:hover {
+  text-decoration: underline;
+}
+
+/* Phần "Xem thêm" */
+.light-news-more {
+  text-align: right; /* Căn phải liên kết "Xem thêm" */
+  margin-top: 1rem;
+}
+
+.light-news-more a {
+  color: #042354;
+  text-decoration: none;
+  font-size: 0.85rem; /* Kích thước chữ nhỏ */
+}
+
+.light-news-more a:hover {
+  text-decoration: underline;
 }
 
 /* Danh sách tin tức */
@@ -71,26 +119,9 @@
   margin-top: 5px; 
   margin-left: 20px;
   font-style: italic; /* Tùy chọn: làm nghiêng ngày tháng để nổi bật */
-
 }
 
 .light-news-list a:hover {
-  text-decoration: underline;
-}
-
-/* Phần "Xem thêm" */
-.light-news-more {
-  text-align: right; /* Căn phải liên kết "Xem thêm" */
-  margin-top: 1rem;
-}
-
-.light-news-more a {
-  color: #042354;
-  text-decoration: none;
-  font-size: 0.85rem; /* Giảm kích thước chữ xuống 0.85rem (khoảng 13.6px) */
-}
-
-.light-news-more a:hover {
   text-decoration: underline;
 }
 
@@ -100,6 +131,13 @@
   font-weight: 600;
   color: #042354;
   margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.light-section-date {
+  font-size: 14px;
+  color: #042354;
+  margin-bottom: 1rem;
   text-align: left;
 }
 
@@ -120,6 +158,12 @@
   text-align: justify;
 }
 
+.light-section-author {
+  font-size: 14px;
+  color: #042354;
+  margin-top: 1rem;
+  text-align: right;
+}
 
 .light-slider-container {
   display: flex;
@@ -158,14 +202,12 @@
   object-fit: cover; /* Đảm bảo hình ảnh không bị méo */
   border-radius: 0.5rem;
   margin: 0 auto 0.5rem; /* Căn giữa và giữ khoảng cách bên dưới */
-
 }
 
 .light-slider-item h4 {
   font-size: 1.1rem;
   font-weight: 500;
   color: #042354;
-
 }
 
 .light-slider-arrow {
@@ -240,5 +282,82 @@
   padding-left: 30px;
   padding-right: 30px;
   padding-top: 70px;
+  padding-bottom: 20px;
+}
+
+/* Related Posts Section */
+.related-posts-container {
+  padding-top: 50px;
   padding-bottom: 70px;
+  padding-left: 70px;
+  padding-right: 70px;
+}
+
+.related-posts-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background-color: #042354;
+  padding: 0.5rem 1rem;
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #042354;
+  line-height: 1;
+}
+
+.related-posts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.related-post-item {
+  text-align: center;
+}
+
+.related-post-box {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.related-post-image-placeholder {
+  width: 100%;
+  height: 250px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.related-post-image img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.related-post-title {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #042354;
+  text-align: left;
+  margin: 0;
+  flex: 1;
+}
+
+.related-post-title a {
+  color: #042354;
+  text-decoration: none; /* Bỏ gạch chân mặc định */
+  display: block; /* Đảm bảo toàn bộ dòng tiêu đề có thể nhấn */
+}
+
+.related-post-title a:hover {
+  text-decoration: underline; /* Thêm gạch chân khi hover */
 }

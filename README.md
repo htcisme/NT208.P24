@@ -9,6 +9,15 @@ _Một lần nữa, nhóm 4 xin chân thành cảm ơn! ❤️_
 
 **Tên đề tài:** Website Giới thiệu tổ chức Đoàn khoa Mạng máy tính và Truyền thông.
 
+_**1. Database:**_
+   ![Database image](public/Img/GitHub/Database_Web.png)
+
+_**2. Login Activities:**_
+   ![Login Activities image](public/Img/GitHub/Login.png)
+
+_**3. Use Case Diagram:**_
+   ![Use Case Diagram image](public/Img/GitHub/Use_Case_Diagram.png)
+
 # II. DANH SÁCH THÀNH VIÊN
 
 1. Nguyễn Đình Khang - **MSSV:** 23520694
