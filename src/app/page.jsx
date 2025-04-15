@@ -3,6 +3,7 @@ import Image from "next/image";
 import styles from "./page.module.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import RegisterForm from "@/components/RegisterForm";
 import { useState, useEffect } from "react";
 
 const images = [
@@ -570,6 +571,9 @@ export default function Home() {
                 />
               </div>
             </div>
+          </section>
+          <section className={styles.Body_Container_RegisterForm}>
+            <RegisterForm></RegisterForm>
           </section>
         </div>
         <Footer />
