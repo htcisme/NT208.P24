@@ -348,3 +348,86 @@
   font-weight: bold;
   margin-top: 20px;
 }
+
+/* --------------- HEADER ADMIN -------------*/
+
+/* Admin Header Styles */
+.admin-header-container {
+  width: 100%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+.admin-header-topbar {
+  background-color: #f0f0f0;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-header-title {
+  font-weight: bold;
+  color: #003366;
+  font-size: 16px;
+}
+
+.admin-header-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-header-username {
+  font-size: 14px;
+}
+
+.admin-header-user-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+}
+
+.admin-header-navbar {
+  display: flex;
+  list-style: none;
+  border-top: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #fff;
+}
+
+.admin-header-navitem {
+  padding: 15px 25px;
+  text-align: center;
+  cursor: pointer;
+  background-color: #f8f8f8;
+  transition: background-color 0.2s ease;
+  border-right: 1px solid #e0e0e0;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  font-size: 14px;
+  flex: 1;
+}
+
+.admin-header-navitem:hover {
+  background-color: #e8e8e8;
+}
+
+.admin-header-navitem-active {
+  background-color: #cce5ff;
+  color: #003366;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .admin-header-navbar {
+    flex-direction: column;
+  }
+  
+  .admin-header-navitem {
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+  }
+}

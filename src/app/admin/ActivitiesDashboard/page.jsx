@@ -3,11 +3,13 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Footer from "@/components/Footer";
+import HeaderAdmin from "@/components/HeaderAdmin";
 import Link from "next/link";
 import "@/styles-comp/style.css";
-import "@/app/ActivitiesAdminDashboard/style.css";
+import "@/app/admin/ActivitiesDashboard/style.css";
+import Header from "@/components/Header";
 
-const ActivitiesAdminDashboard = () => {
+const ActivitiesDashboard = () => {
   const [activeTab, setActiveTab] = useState('activities');
   const [activeView, setActiveView] = useState('allPages'); // 'allPages', 'addPage', or 'editPage'
   const [editingTask, setEditingTask] = useState(null);
@@ -367,22 +369,7 @@ const ActivitiesAdminDashboard = () => {
 
   return (
     <div className="admin-dashboard">
-      <div className="admin-header">
-        <div className="admin-title">TRANG QUẢN TRỊ</div>
-        <div className="admin-user">
-          <span>Nguyễn Đình Khang</span>
-          <div className="user-avatar">K</div>
-        </div>
-      </div>
-
-      <div className="nav-tabs">
-        <button className={activeTab === 'home' ? 'active' : ''} onClick={() => setActiveTab('home')}>TRANG CHỦ</button>
-        <button className={activeTab === 'intro' ? 'active' : ''} onClick={() => setActiveTab('intro')}>GIỚI THIỆU</button>
-        <button className={activeTab === 'activities' ? 'active' : ''} onClick={() => setActiveTab('activities')}>HOẠT ĐỘNG</button>
-        <button className={activeTab === 'achievements' ? 'active' : ''} onClick={() => setActiveTab('achievements')}>THÀNH TÍCH</button>
-        <button className={activeTab === 'rooms' ? 'active' : ''} onClick={() => setActiveTab('rooms')}>ĐẶT PHÒNG</button>
-        <button className={activeTab === 'contact' ? 'active' : ''} onClick={() => setActiveTab('contact')}>LIÊN HỆ</button>
-      </div>
+      <HeaderAdmin></HeaderAdmin>
 
       <div className="admin-content">
         <div className="admin-action-bar">
@@ -631,4 +618,4 @@ const ActivitiesAdminDashboard = () => {
   );
 };
 
-export default ActivitiesAdminDashboard;
+export default ActivitiesDashboard;

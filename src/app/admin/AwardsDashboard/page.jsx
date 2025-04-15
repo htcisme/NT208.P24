@@ -1,16 +1,17 @@
-"use client"; // Client Component indicator
+"use client"; 
 
 import React, { useState } from "react";
 import Image from "next/image";
 import Footer from "@/components/Footer";
 import Link from "next/link";
+import HeaderAdmin from "@/components/HeaderAdmin";
 import "@/styles-comp/style.css";
-import "@/app/AwardsAdminDashboard/style.css";
+import "@/app/admin/AwardsDashboard/style.css";
 
-function AwardsAdminDashboard() {
+function AwardsDashboard() {
   const [currentUser, setCurrentUser] = useState('Nguyễn Đình Khang');
   const [activeTab, setActiveTab] = useState('THÀNH TÍCH');
-  const [viewMode, setViewMode] = useState('list'); // 'list', 'add', 'edit'
+  const [viewMode, setViewMode] = useState('list');
   const [selectedAchievement, setSelectedAchievement] = useState(null);
   const [achievements, setAchievements] = useState([
     {
@@ -95,29 +96,8 @@ function AwardsAdminDashboard() {
 
   return (
     <div className="admin-container">
-      {/* Header */}
-      <header className="admin-header">
-        <h1 className="admin-title">TRANG QUẢN TRỊ</h1>
-        <div className="user-profile">
-          <span className="user-name">{currentUser}</span>
-          <div className="user-avatar">
-            <i className="user-icon"></i>
-          </div>
-        </div>
-      </header>
-
-      {/* Navigation */}
-      <nav className="admin-nav">
-        {['TRANG CHỦ', 'GIỚI THIỆU', 'HOẠT ĐỘNG', 'THÀNH TÍCH', 'ĐẶT PHÒNG', 'LIÊN HỆ'].map(tab => (
-          <button 
-            key={tab} 
-            className={`nav-item ${activeTab === tab ? 'active' : ''}`}
-            onClick={() => setActiveTab(tab)}
-          >
-            {tab}
-          </button>
-        ))}
-      </nav>
+      {/* Navigation Bar */}
+      <HeaderAdmin></HeaderAdmin>
 
       {/* Content Area */}
       <main className="admin-content">
@@ -140,7 +120,6 @@ function AwardsAdminDashboard() {
           </button>
         </div>
 
-        {/* Achievement List */}
         {viewMode === 'list' && (
           <div className="achievement-list">
             {achievements.map(achievement => (
@@ -343,4 +322,4 @@ function EditAchievementForm({ achievement, onSubmit, onCancel }) {
   );
 }
 
-export default AwardsAdminDashboard;
+export default AwardsDashboard;
