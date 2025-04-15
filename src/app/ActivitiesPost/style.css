@@ -8,7 +8,9 @@
 
 /* Layout chính */
 .light-container-main {
-  padding: 2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-top: 2rem;
   background-color: #ECF9FF;
   color: #042354;
 }
@@ -48,6 +50,45 @@
   background-color: #042354; /* Nền xanh đậm */
   padding: 0.5rem 1rem; /* Khoảng cách bên trong */
   display: inline-block; /* Để nền chỉ bao quanh nội dung */
+}
+
+/* Container cho "Trở về" và "Xem thêm" */
+.light-news-actions {
+  display: flex; /* Sử dụng flex để đặt hai liên kết trên cùng một hàng */
+  justify-content: space-between; /* "Trở về" căn trái, "Xem thêm" căn phải */
+  margin-top: 1rem;
+}
+
+/* Phần "Trở về" */
+.light-news-back {
+  text-align: left; /* Căn phải liên kết "Trở về" */
+  margin-top: 1rem;
+}
+
+.light-news-back a {
+  color: #042354;
+  text-decoration: none;
+  font-size: 0.85rem; /* Kích thước chữ nhỏ */
+}
+
+.light-news-back a:hover {
+  text-decoration: underline;
+}
+
+/* Phần "Xem thêm" */
+.light-news-more {
+  text-align: right; /* Căn phải liên kết "Xem thêm" */
+  margin-top: 1rem;
+}
+
+.light-news-more a {
+  color: #042354;
+  text-decoration: none;
+  font-size: 0.85rem; /* Kích thước chữ nhỏ */
+}
+
+.light-news-more a:hover {
+  text-decoration: underline;
 }
 
 /* Danh sách tin tức */
@@ -246,7 +287,8 @@
 
 /* Related Posts Section */
 .related-posts-container {
-  padding: 2rem 0;
+  padding-top: 50px;
+  padding-bottom: 70px;
   padding-left: 70px;
   padding-right: 70px;
 }

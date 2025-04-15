@@ -78,6 +78,22 @@
   text-decoration: underline;
 }
 
+/* Phần "Xem thêm" */
+.light-news-more {
+  text-align: right; /* Căn phải liên kết "Xem thêm" */
+  margin-top: 1rem;
+}
+
+.light-news-more a {
+  color: #042354;
+  text-decoration: none;
+  font-size: 0.85rem; /* Giảm kích thước chữ xuống 0.85rem (khoảng 13.6px) */
+}
+
+.light-news-more a:hover {
+  text-decoration: underline;
+}
+
 /* Phần tiêu đề mô tả */
 .light-section-title {
   font-size: 18px;
@@ -224,5 +240,5 @@
   padding-left: 30px;
   padding-right: 30px;
   padding-top: 70px;
-  padding-bottom: 30px;
+  padding-bottom: 70px;
 }

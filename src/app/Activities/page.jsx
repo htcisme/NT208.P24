@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Footer from "@/components/Footer";
+import Link from "next/link";
 import "@/styles-comp/style.css";
 import "@/app/Activities/style.css";
 
@@ -57,7 +58,7 @@ export default function Activities() {
             <h3>TIN TỨC MỚI NHẤT</h3>
             <ul className="light-news-list">
               <li>
-                <a href="#">Chiến dịch Ngọn Đuốc Xanh 2025 thông báo mở form đăng ký chiến sĩ</a>
+                <a href="/ActivitiesPost">Chiến dịch Ngọn Đuốc Xanh 2025 thông báo mở form đăng ký chiến sĩ</a>
                 <span className="news-date">Thứ Sáu - 14/02/2025</span>
               </li>
               <li>
@@ -69,6 +70,9 @@ export default function Activities() {
                 <span className="news-date">Thứ Sáu - 14/02/2025</span>
               </li>
             </ul>
+            <div className="light-news-more">
+              <Link href="/ActivitiesOverview">Xem thêm</Link>
+            </div>
           </div>
         </div>
 
@@ -108,12 +112,12 @@ export default function Activities() {
               <h3><strong>CHƯƠNG TRÌNH TÌNH NGUYỆN NGỌN ĐUỐC XANH</strong></h3>
               <br />
               <p>
-                     Trong hai năm trở lại đây, bên cạnh NC FES, Đoàn khoa dần khẳng định vị trí của mình hơn nữa trong việc giúp sinh viên có một môi trường trải nghiệm thực tế
-                tại địa phương nơi các tỉnh. Cụ thể, Đoàn khoa đã tổ chức thành công 2 chiến dịch tình nguyện: Ngọn Đuốc Xanh 2023 và Ngọn Đuốc Xanh 2024. Đội hình Ngọn Đuốc 
-                Xanh là đội hình tình nguyện của các bạn sinh viên trẻ, năng động, nhiệt huyết, luôn mong muốn được cống hiến sức trẻ của mình cho cộng đồng. Với tinh thần 
-                "Sẻ chia - Kết nối - Trao yêu thương", các chiến sĩ Ngọn Đuốc Xanh đã tham gia nhiều hoạt động tình nguyện ý nghĩa tại địa phương phường Tân Phú, phường Long 
-                Trường (Thành phố Thủ Đức) và  xã Tân Phú (Thị xã Cai Lậy, tỉnh Tiền Giang) như: Công trình thanh niên “Tuyến đường hoa nông thôn mới”, Công trình “Thùng phân 
-                loại rác tái chế”, Ngày hội “Công nghệ cho em”, Ngày tri ân, Bữa cơm nghĩa tình, Lớp học kỹ năng mềm, Đêm văn nghệ cho em,... Các chiến sĩ của 2 chiến dịch tuy 
+                Trong hai năm trở lại đây, bên cạnh NC FES, Đoàn khoa dần khẳng định vị trí của mình hơn nữa trong việc giúp sinh viên có một môi trường trải nghiệm thực tế
+                tại địa phương nơi các tỉnh. Cụ thể, Đoàn khoa đã tổ chức thành công 2 chiến dịch tình nguyện: Ngọn Đuốc Xanh 2023 và Ngọn Đuốc Xanh 2024. Đội hình Ngọn Đuốc
+                Xanh là đội hình tình nguyện của các bạn sinh viên trẻ, năng động, nhiệt huyết, luôn mong muốn được cống hiến sức trẻ của mình cho cộng đồng. Với tinh thần
+                "Sẻ chia - Kết nối - Trao yêu thương", các chiến sĩ Ngọn Đuốc Xanh đã tham gia nhiều hoạt động tình nguyện ý nghĩa tại địa phương phường Tân Phú, phường Long
+                Trường (Thành phố Thủ Đức) và  xã Tân Phú (Thị xã Cai Lậy, tỉnh Tiền Giang) như: Công trình thanh niên “Tuyến đường hoa nông thôn mới”, Công trình “Thùng phân
+                loại rác tái chế”, Ngày hội “Công nghệ cho em”, Ngày tri ân, Bữa cơm nghĩa tình, Lớp học kỹ năng mềm, Đêm văn nghệ cho em,... Các chiến sĩ của 2 chiến dịch tuy
                 đến từ các khoa khác nhau, các ngành học khác nhau nhưng cùng chung tinh thần thiện nguyện, tương thân tương ái.
               </p>
             </div>
@@ -126,15 +130,15 @@ export default function Activities() {
               <br />
               <p>
                 Để giúp các bạn Tân sinh viên hiểu hơn về Khu đô thị Đại học Quốc gia HCM - nơi trường Đại học Công nghệ Thông tin
-                đang tọa lạc, chuỗi hoạt động chào đón Tân sinh viên còn một hoạt động đặc trưng, ghi dấu ấn về hoạt động “Thể lực 
+                đang tọa lạc, chuỗi hoạt động chào đón Tân sinh viên còn một hoạt động đặc trưng, ghi dấu ấn về hoạt động “Thể lực
                 tốt” của Đoàn khoa Mạng trong nhiều năm liền, đó là VNU Tour - Hành trình khám phá Khu đô thị Đại học Quốc gia. Trải
-                qua 11 mùa tính đến năm 2023, VNU Tour đã để lại trong lòng các bạn Tân sinh viên nhiều ký ức khó quên trong hành 
-                trình khám phá và tìm ra sự thật được che giấu đằng sau các chủ đề mà VNU Tour muốn truyền tải. Qua việc đi đến các 
-                trạm được đặt tại các địa điểm nổi bật trong Khu đô thị ĐHQG-HCM, vượt các chướng ngại vật, giải mật thư và tìm ra 
-                câu trả lời cuối cùng được ẩn giấu, các bạn Tân sinh viên sẽ có được cho mình những kỹ năng, kinh nghiệm bổ ích, 
+                qua 11 mùa tính đến năm 2023, VNU Tour đã để lại trong lòng các bạn Tân sinh viên nhiều ký ức khó quên trong hành
+                trình khám phá và tìm ra sự thật được che giấu đằng sau các chủ đề mà VNU Tour muốn truyền tải. Qua việc đi đến các
+                trạm được đặt tại các địa điểm nổi bật trong Khu đô thị ĐHQG-HCM, vượt các chướng ngại vật, giải mật thư và tìm ra
+                câu trả lời cuối cùng được ẩn giấu, các bạn Tân sinh viên sẽ có được cho mình những kỹ năng, kinh nghiệm bổ ích,
                 sát với đời sống sinh viên tại đây. Hơn nữa, đây không chỉ là hoạt động giúp các bạn được trải nghiệm mà còn là một
                 trong những hoạt động được cấp giấy chứng nhận “Thể lực tốt” trong danh hiệu “Sinh viên 5 tốt” cấp Khoa. Năm 2023,
-                với chủ đề “Mật ngữ loài hoa”, đây là năm bùng nổ với hơn 450 thí sinh đến từ 15 trường đại học khác nhau trên địa 
+                với chủ đề “Mật ngữ loài hoa”, đây là năm bùng nổ với hơn 450 thí sinh đến từ 15 trường đại học khác nhau trên địa
                 bàn thành phố. VNU Tour hứa hẹn sẽ ngày càng phát huy hơn nữa vai trò của mình, nhất là giai đoạn những ngày đầu năm học.
               </p>
             </div>
