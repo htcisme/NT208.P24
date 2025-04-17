@@ -71,13 +71,17 @@ export default function Header() {
             </span>
           </div>
           <div className="Header-Topbar-Authsearch-Authlinks">
-            <span className="Header-Topbar-Authsearch-Authlinks-Item">
-              Đăng ký
-            </span>
+            <a href="/User?tab=register">
+              <span className="Header-Topbar-Authsearch-Authlinks-Item">
+                Đăng ký
+              </span>
+            </a>
             <span>|</span>
-            <span className="Header-Topbar-Authsearch-Authlinks-Item">
-              Đăng nhập
-            </span>
+            <a href="/User?tab=login">
+              <span className="Header-Topbar-Authsearch-Authlinks-Item">
+                Đăng nhập
+              </span>
+            </a>
           </div>
         </div>
 

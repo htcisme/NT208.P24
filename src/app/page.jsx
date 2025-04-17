@@ -4,6 +4,7 @@ import styles from "./page.module.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import RegisterForm from "@/components/RegisterForm";
+import Link from "next/link";
 import { useState, useEffect } from "react";
 
 const images = [
@@ -80,8 +81,12 @@ export default function Home() {
       <header className={styles.Header}>
         <div className={styles.Header_Logo}>XANGFUTING</div>
         <div className={styles.Header_Nav}>
-          <button className={styles.Header_Nav_NavButton}>Đăng nhập</button>
-          <button className={styles.Header_Nav_NavButton}>Đăng ký</button>
+          <a href="/User?tab=login">
+            <button className={styles.Header_Nav_NavButton}>Đăng nhập</button>
+          </a>
+          <a href="/User?tab=register">
+            <button className={styles.Header_Nav_NavButton}>Đăng ký</button>
+          </a>
           <div className={styles.Header_Nav_MenuWrapper}>
             <button
               className={styles.Header_Nav_MenuWrapper_MenuButton}
