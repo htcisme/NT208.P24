@@ -126,24 +126,24 @@ export default function Header() {
       </div>
 
       <div className="Header-Navbar">
-        <div className="Header-Navbar-Navitem">
+        <a className="Header-Navbar-Navitem" href="/">
           <a href="/">TRANG CHỦ</a>
-        </div>
-        <div className="Header-Navbar-Navitem">
+        </a>
+        <a className="Header-Navbar-Navitem" href="/Introduction">
           <a href="/Introduction">GIỚI THIỆU</a>
-        </div>
-        <div className="Header-Navbar-Navitem">
+        </a>
+        <a className="Header-Navbar-Navitem" href="Activities">
           <a href="Activities">HOẠT ĐỘNG</a>
-        </div>
-        <div className="Header-Navbar-Navitem">
+        </a>
+        <a className="Header-Navbar-Navitem" href="/Awards">
           <a href="/Awards">THÀNH TÍCH</a>
-        </div>
-        <div className="Header-Navbar-Navitem">
+        </a>
+        <a className="Header-Navbar-Navitem" href="/Booking">
           <a href="/Booking">ĐẶT PHÒNG</a>
-        </div>
-        <div className="Header-Navbar-Navitem">
+        </a>
+        <a className="Header-Navbar-Navitem" href="/Contact">
           <a href="/Contact">LIÊN HỆ</a>
-        </div>
+        </a>
       </div>
     </div>
   );

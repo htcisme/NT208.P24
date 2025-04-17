@@ -14,7 +14,7 @@ const images = [
 ];
 
 export default function Home() {
-  // Danh sách 5 sự kiện với tiêu đề (có thể thêm hình ảnh sau)
+  // Danh sách 5 sự kiện với tiêu đề
   const events = [
     { title: "VNU TOUR 2024", image: "/Img/Homepage/Slider1.png" },
     { title: "NGỌN ĐUỐC XANH 2025", image: "/Img/Homepage/Slider3.png" },
@@ -23,8 +23,12 @@ export default function Home() {
     { title: "EVENT 5 2024", image: "/Img/Homepage/BCH2.png" },
   ];
 
-  // Trạng thái để quản lý vị trí bắt đầu của slider
+  // State quản lý
   const [startIndex, setStartIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [fade, setFade] = useState(true);
+  const [showMenu, setShowMenu] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   // Hàm xử lý bấm mũi tên trái
   const handlePrev = () => {
@@ -38,6 +42,16 @@ export default function Home() {
     setStartIndex((prevIndex) => (prevIndex + 1) % events.length);
   };
 
+  // Toggle menu
+  const toggleMenu = () => {
+    setShowMenu(!showMenu);
+  };
+
+  // Toggle user menu
+  const toggleUserMenu = () => {
+    setShowUserMenu(!showUserMenu);
+  };
+
   // Lấy 3 sự kiện kế tiếp từ startIndex, lặp lại nếu vượt quá độ dài
   const visibleEvents = Array.from(
     { length: 3 },
@@ -47,23 +61,47 @@ export default function Home() {
   const items = [
     {
       date: "20.01.2025",
-      text: "Đoàn khoa Mạng máy tính và Truyền thông đã sẵn sàng mang đến chuỗi truyền thống TẬN “TỴ” ĐÓN TẾT vô cùng hấp dẫn, đầy ý nghĩa để cùng các bạn tận hưởng một cái Tết Nguyên đán trọn vẹn nhất!!",
+      text: 'Đoàn khoa Mạng máy tính và Truyền thông đã sẵn sàng mang đến chuỗi truyền thống TẬN"TỴ"ĐÓN TẾT vô cùng hấp dẫn, đầy ý nghĩa để cùng các bạn tận hưởng một cái Tết Nguyên đán trọn vẹn nhất!!',
     },
     {
       date: "20.01.2025",
-      text: "Đoàn khoa Mạng máy tính và Truyền thông đã sẵn sàng mang đến chuỗi truyền thống TẬN “TỴ” ĐÓN TẾT vô cùng hấp dẫn, đầy ý nghĩa để cùng các bạn tận hưởng một cái Tết Nguyên đán trọn vẹn nhất!!",
+      text: 'Đoàn khoa Mạng máy tính và Truyền thông đã sẵn sàng mang đến chuỗi truyền thống TẬN"TỴ"ĐÓN TẾT vô cùng hấp dẫn, đầy ý nghĩa để cùng các bạn tận hưởng một cái Tết Nguyên đán trọn vẹn nhất!!',
     },
     {
       date: "20.01.2025",
-      text: "Đoàn khoa Mạng máy tính và Truyền thông đã sẵn sàng mang đến chuỗi truyền thống TẬN “TỴ” ĐÓN TẾT vô cùng hấp dẫn, đầy ý nghĩa để cùng các bạn tận hưởng một cái Tết Nguyên đán trọn vẹn nhất!!",
+      text: 'Đoàn khoa Mạng máy tính và Truyền thông đã sẵn sàng mang đến chuỗi truyền thống TẬN"TỴ"ĐÓN TẾT vô cùng hấp dẫn, đầy ý nghĩa để cùng các bạn tận hưởng một cái Tết Nguyên đán trọn vẹn nhất!!',
     },
     {
       date: "20.01.2025",
-      text: "Đoàn khoa Mạng máy tính và Truyền thông đã sẵn sàng mang đến chuỗi truyền thống TẬN “TỴ” ĐÓN TẾT vô cùng hấp dẫn, đầy ý nghĩa để cùng các bạn tận hưởng một cái Tết Nguyên đán trọn vẹn nhất!!",
+      text: 'Đoàn khoa Mạng máy tính và Truyền thông đã sẵn sàng mang đến chuỗi truyền thống TẬN"TỴ"ĐÓN TẾT vô cùng hấp dẫn, đầy ý nghĩa để cùng các bạn tận hưởng một cái Tết Nguyên đán trọn vẹn nhất!!',
     },
   ];
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [fade, setFade] = useState(true);
+
+  // Thêm vào đầu component Home.jsx
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Thêm useEffect để kiểm tra dark mode từ localStorage khi trang tải
+  useEffect(() => {
+    const savedMode = localStorage.getItem("darkMode");
+    if (savedMode === "true") {
+      setIsDarkMode(true);
+      document.body.classList.add("dark-mode");
+    } else {
+      document.body.classList.remove("dark-mode");
+    }
+  }, []);
+
+  // Thêm hàm toggleDarkMode
+  const toggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode);
+    if (isDarkMode) {
+      document.body.classList.remove("dark-mode");
+      localStorage.setItem("darkMode", "false");
+    } else {
+      document.body.classList.add("dark-mode");
+      localStorage.setItem("darkMode", "true");
+    }
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -79,40 +117,37 @@ export default function Home() {
   return (
     <div className={styles.Container}>
       <header className={styles.Header}>
-        <div className={styles.Header_Logo}>XANGFUTING</div>
+        <div className={styles.Header_Logo}>
+          <Link href="/">SUCTREMMT</Link>
+        </div>
         <div className={styles.Header_Nav}>
-          <a href="/User?tab=login">
-            <button className={styles.Header_Nav_NavButton}>Đăng nhập</button>
-          </a>
-          <a href="/User?tab=register">
-            <button className={styles.Header_Nav_NavButton}>Đăng ký</button>
-          </a>
           <div className={styles.Header_Nav_MenuWrapper}>
             <button
-              className={styles.Header_Nav_MenuWrapper_MenuButton}
-              onClick={() => {
-                const menu = document.getElementById("dropdownMenu");
-                if (menu) {
-                  menu.classList.toggle(
-                    styles.Header_Nav_MenuWrapper_MenuButton_ShowMenu
-                  );
-                }
-              }}
+              className={styles.Header_Nav_AuthButton}
+              onClick={toggleUserMenu}
             >
-              ☰
+              Tài khoản
+              <span className={styles.Header_Nav_AuthButton_Arrow}>▼</span>
             </button>
-            <div
-              className={styles.Header_Nav_MenuWrapper_DropdownMenu}
-              id="dropdownMenu"
-            >
-              <a href="Introduction">Giới thiệu</a>
-              <a href="Activities">Hoạt động</a>
-              <a href="Awards">Thành tích</a>
-              <a href="Booking">Đặt phòng</a>
-              <a href="Contact">Liên hệ</a>
-            </div>
+            {showUserMenu && (
+              <div className={styles.Header_Nav_AuthMenu}>
+                <Link
+                  href="/User?tab=login"
+                  className={styles.Header_Nav_AuthMenu_Item}
+                >
+                  Đăng nhập
+                </Link>
+                <Link
+                  href="/User?tab=register"
+                  className={styles.Header_Nav_AuthMenu_Item}
+                >
+                  Đăng ký
+                </Link>
+              </div>
+            )}
           </div>
-          <div className={styles.Header_Topbar_Authsearch}>
+
+          <div className={styles.Header_Nav_SearchWrapper}>
             <div className={styles.Header_Topbar_Authsearch_Searchbox}>
               <input type="text" placeholder="Tìm kiếm..." />
               <span
@@ -131,16 +166,65 @@ export default function Home() {
                 >
                   <path
                     stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeWidth="2"
                     d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
                   />
                 </svg>
               </span>
             </div>
           </div>
+
+          <div className={styles.Header_Nav_MenuWrapper}>
+            <button
+              className={styles.Header_Nav_MenuWrapper_MenuButton}
+              onClick={toggleMenu}
+              aria-expanded={showMenu}
+            >
+              ☰
+            </button>
+            <div
+              className={`${styles.Header_Nav_MenuWrapper_DropdownMenu} ${
+                showMenu
+                  ? styles.Header_Nav_MenuWrapper_MenuButton_ShowMenu
+                  : ""
+              }`}
+            >
+              <Link
+                href="/Introduction"
+                className={styles.Header_Nav_MenuWrapper_DropdownMenu_Item}
+              >
+                Giới thiệu
+              </Link>
+              <Link
+                href="/Activities"
+                className={styles.Header_Nav_MenuWrapper_DropdownMenu_Item}
+              >
+                Hoạt động
+              </Link>
+              <Link
+                href="/Awards"
+                className={styles.Header_Nav_MenuWrapper_DropdownMenu_Item}
+              >
+                Thành tích
+              </Link>
+              <Link
+                href="/Booking"
+                className={styles.Header_Nav_MenuWrapper_DropdownMenu_Item}
+              >
+                Đặt phòng
+              </Link>
+              <Link
+                href="/Contact"
+                className={styles.Header_Nav_MenuWrapper_DropdownMenu_Item}
+              >
+                Liên hệ
+              </Link>
+            </div>
+          </div>
         </div>
       </header>
+
       <section className={styles.hero}>
         <div className={styles.heroBackground}></div>
         <div className={styles.heroOverlay}></div>
@@ -152,6 +236,7 @@ export default function Home() {
               width={400}
               height={400}
               className={styles.logo}
+              priority
             />
           </div>
           <h1 className={styles.heroTitle}>
@@ -162,6 +247,7 @@ export default function Home() {
           </h2>
         </div>
       </section>
+
       <section className={styles.Body}>
         <div className={styles.Body_Container}>
           <section className={styles.Body_Container_Introduction}>
@@ -177,10 +263,11 @@ export default function Home() {
             <div
               className={styles.Body_Container_Introduction_BodyShape04}
             ></div>
-
-            <h2 className={styles.Body_Container_Introduction_Title}>
-              GIỚI THIỆU
-            </h2>
+            <a href="/Introduction">
+              <h2 className={styles.Body_Container_Introduction_Title}>
+                GIỚI THIỆU
+              </h2>
+            </a>
             <div className={styles.Body_Container_Introduction_ContentWrapper}>
               <div
                 className={
@@ -267,35 +354,17 @@ export default function Home() {
                   chi Đoàn trực thuộc, các ban chuyên môn và các đội nhóm chuyên
                   trách.
                 </p>
-                <p
-                  className={
-                    styles.Body_Container_Introduction_ContentWrapper_TextContainer_Description
-                  }
-                >
-                  Liên chi Đoàn khoa MMT&TT nay là Đoàn khoa MMT&TT không ngừng
-                  lớn mạnh về số lượng, nâng cao về chất lượng cán bộ Đoàn cơ sở
-                  để xứng đáng với vai trò là người bạn đồng hành cùng Đoàn viên
-                  – thanh niên khoa MMT&TT.
-                </p>
-                <p
-                  className={
-                    styles.Body_Container_Introduction_ContentWrapper_TextContainer_Description
-                  }
-                >
-                  Trong những năm qua, Đoàn TNCS Hồ Chí Minh khoa MMT&TT (Liên
-                  chi Đoàn) luôn là đơn vị đi đầu trong công tác Đoàn và Phong
-                  trào Thanh niên tại trường ĐH CNTT.
-                </p>
-                <a
+                <Link
                   href="/Introduction"
                   className={
                     styles.Body_Container_Introduction_ContentWrapper_TextContainer_ReadMore
                   }
                 >
                   Xem thêm ...
-                </a>
+                </Link>
               </div>
             </div>
+
             <div className={styles.Body_Container_MemberWrap}>
               <div className={styles.Body_Container_MemberItem}>
                 <img
@@ -327,85 +396,102 @@ export default function Home() {
               </div>
             </div>
           </section>
+
           <section className={styles.Body_Container_Activities}>
-            <h2 className={styles.Activities_RecentLabel}>HOẠT ĐỘNG GẦN ĐÂY</h2>
-            <div className={styles.Activities_RecentCards}>
-              <div className={styles.Activities_RecentCard}>
-                <img
-                  src="/Img/Homepage/card1.png"
-                  alt="AWS Cloud Training"
-                  className={styles.Activities_RecentCard_Image}
-                />
-                <div className={styles.Activities_RecentCard_Content}>
-                  <h3 className={styles.Activities_RecentCard_Title}>
-                    Hoạt động học thuật
-                  </h3>
-                  <p className={styles.Activities_RecentCard_Desc}>
-                    Khoa Mạng máy tính và Truyền thông | AWS CLOUD TRAINING
-                  </p>
-                  <p className={styles.Activities_RecentCard_Date}>
-                    Ngày 13 tháng 01 năm 2025
-                  </p>
-                </div>
-              </div>
-              <div className={styles.Activities_RecentCard}>
-                <img
-                  src="/Img/Homepage/card1.png"
-                  alt="AI Workshop"
-                  className={styles.Activities_RecentCard_Image}
-                />
-                <div className={styles.Activities_RecentCard_Content}>
-                  <h3 className={styles.Activities_RecentCard_Title}>
-                    Workshop AI
-                  </h3>
-                  <p className={styles.Activities_RecentCard_Desc}>
-                    CLB Kỹ thuật số tổ chức | AI ỨNG DỤNG
-                  </p>
-                  <p className={styles.Activities_RecentCard_Date}>
-                    Ngày 25 tháng 02 năm 2025
-                  </p>
-                </div>
-              </div>
-              <div className={styles.Activities_RecentCard}>
-                <img
-                  src="/Img/Homepage/card1.png"
-                  alt="Cuộc thi lập trình"
-                  className={styles.Activities_RecentCard_Image}
-                />
-                <div className={styles.Activities_RecentCard_Content}>
-                  <h3 className={styles.Activities_RecentCard_Title}>
-                    Cuộc thi lập trình
-                  </h3>
-                  <p className={styles.Activities_RecentCard_Desc}>
-                    Khoa CNTT tổ chức | CTF CHALLENGE
-                  </p>
-                  <p className={styles.Activities_RecentCard_Date}>
-                    Ngày 10 tháng 03 năm 2025
-                  </p>
-                </div>
-              </div>
-              <div className={styles.Activities_RecentCard}>
-                <img
-                  src="/Img/Homepage/card1.png"
-                  alt="Seminar Blockchain"
-                  className={styles.Activities_RecentCard_Image}
-                />
-                <div className={styles.Activities_RecentCard_Content}>
-                  <h3 className={styles.Activities_RecentCard_Title}>
-                    Seminar Blockchain
-                  </h3>
-                  <p className={styles.Activities_RecentCard_Desc}>
-                    Khoa Mạng máy tính | CẬP NHẬT XU HƯỚNG BLOCKCHAIN
-                  </p>
-                  <p className={styles.Activities_RecentCard_Date}>
-                    Ngày 18 tháng 03 năm 2025
-                  </p>
-                </div>
-              </div>
-            </div>
-            <a href="/Activities" className={styles.Activities_ViewMore}>
-              Xem thêm ...
+            <a href="/Activities">
+              <h2 className={styles.Activities_RecentLabel}>
+                HOẠT ĐỘNG GẦN ĐÂY
+              </h2>
             </a>
+            <div className={styles.Activities_RecentCards}>
+              <a href="/ActivitiesPost">
+                <div className={styles.Activities_RecentCard}>
+                  <img
+                    src="/Img/Homepage/card1.png"
+                    alt="AWS Cloud Training"
+                    className={styles.Activities_RecentCard_Image}
+                  />
+                  <div className={styles.Activities_RecentCard_Content}>
+                    <h3 className={styles.Activities_RecentCard_Title}>
+                      Hoạt động học thuật
+                    </h3>
+                    <p className={styles.Activities_RecentCard_Desc}>
+                      Khoa Mạng máy tính và Truyền thông | AWS CLOUD TRAINING
+                    </p>
+                    <p className={styles.Activities_RecentCard_Date}>
+                      Ngày 13 tháng 01 năm 2025
+                    </p>
+                  </div>
+                </div>
+              </a>
+              <a href="/ActivitiesPost">
+                <div className={styles.Activities_RecentCard}>
+                  <img
+                    src="/Img/Homepage/card1.png"
+                    alt="AI Workshop"
+                    className={styles.Activities_RecentCard_Image}
+                  />
+                  <div className={styles.Activities_RecentCard_Content}>
+                    <h3 className={styles.Activities_RecentCard_Title}>
+                      Workshop AI
+                    </h3>
+                    <p className={styles.Activities_RecentCard_Desc}>
+                      CLB Kỹ thuật số tổ chức | AI ỨNG DỤNG
+                    </p>
+                    <p className={styles.Activities_RecentCard_Date}>
+                      Ngày 25 tháng 02 năm 2025
+                    </p>
+                  </div>
+                </div>
+              </a>
+              <a href="/ActivitiesPost">
+                <div className={styles.Activities_RecentCard}>
+                  <img
+                    src="/Img/Homepage/card1.png"
+                    alt="Cuộc thi lập trình"
+                    className={styles.Activities_RecentCard_Image}
+                  />
+                  <div className={styles.Activities_RecentCard_Content}>
+                    <h3 className={styles.Activities_RecentCard_Title}>
+                      Cuộc thi lập trình
+                    </h3>
+                    <p className={styles.Activities_RecentCard_Desc}>
+                      Khoa CNTT tổ chức | CTF CHALLENGE
+                    </p>
+                    <p className={styles.Activities_RecentCard_Date}>
+                      Ngày 10 tháng 03 năm 2025
+                    </p>
+                  </div>
+                </div>
+              </a>
+              <a href="/ActivitiesPost">
+                <div className={styles.Activities_RecentCard}>
+                  <img
+                    src="/Img/Homepage/card1.png"
+                    alt="Seminar Blockchain"
+                    className={styles.Activities_RecentCard_Image}
+                  />
+                  <div className={styles.Activities_RecentCard_Content}>
+                    <h3 className={styles.Activities_RecentCard_Title}>
+                      Seminar Blockchain
+                    </h3>
+                    <p className={styles.Activities_RecentCard_Desc}>
+                      Khoa Mạng máy tính | CẬP NHẬT XU HƯỚNG BLOCKCHAIN
+                    </p>
+                    <p className={styles.Activities_RecentCard_Date}>
+                      Ngày 18 tháng 03 năm 2025
+                    </p>
+                  </div>
+                </div>
+              </a>
+            </div>
+            <Link
+              href="/ActivitiesOverview"
+              className={styles.Activities_ViewMore}
+            >
+              Xem thêm ...
+            </Link>
+
             <div className={styles.Activities_Focus}>
               <div className={styles.Activities_Focus_Shape01}></div>
               <div className={styles.Activities_Focus_ContentWrapper}>
@@ -459,6 +545,7 @@ export default function Home() {
               </div>
             </div>
           </section>
+
           <section className={styles.Body_Container_Hightlight}>
             <div className={styles.Body_Container_Hightlight_Title}>
               HOẠT ĐỘNG NỔI BẬT
@@ -508,6 +595,7 @@ export default function Home() {
               ))}
             </div>
           </section>
+
           <section className={styles.Body_Container_Awards}>
             <div className={styles.Body_Container_Awards_Title}>
               THÀNH TÍCH NỔI BẬT
@@ -531,15 +619,15 @@ export default function Home() {
                 </div>
                 <div className={styles.Body_Container_Awards_Content_Desc}>
                   Tại chương trình Gala Tự hào Tuổi trẻ UIT 2024 - Tuyên dương
-                  các danh hiệu cấp Trường “Cán bộ, viên chức, giảng viên trẻ
-                  tiêu biểu”, “Thanh niên tiên tiến làm theo lời Bác”, “Sinh
-                  viên 5 Tốt”. Đoàn khoa MMT&TT xin được tự hào chúc mừng 𝟑𝟐
-                  sinh viên đã xuất sắc đạt danh hiệu “Thanh niên tiên tiến làm
-                  theo lời Bác” cấp Trường trong 𝟕 lĩnh vực. Đặc biệt, hai sinh
-                  viên Phạm Thái Bảo và Nguyễn Thanh Bình đã xuất sắc đạt “Thanh
-                  niên tiên tiến làm theo lời Bác tiêu biểu” cấp Trường trong
-                  hai lĩnh vực “Học tập - Nghiên cứu Khoa học” và “Hoạt động
-                  Tình nguyện”.
+                  các danh hiệu cấp Trường "Cán bộ, viên chức, giảng viên trẻ
+                  tiêu biểu", "Thanh niên tiên tiến làm theo lời Bác", "Sinh
+                  viên 5 Tốt". Đoàn khoa MMT&TT xin được tự hào chúc mừng 𝟑𝟐
+                  sinh viên đã xuất sắc đạt danh hiệu "Thanh niên tiên tiến làm
+                  theo lời Bác" cấp Trường trong 𝟕 lĩnh vực. Đặc biệt, hai sinh
+                  viên Phạm Thái Bảo và Nguyễn Thanh Bình đã xuất sắc đạt "Thanh
+                  niên tiên tiến làm theo lời Bác tiêu biểu" cấp Trường trong
+                  hai lĩnh vực "Học tập - Nghiên cứu Khoa học" và "Hoạt động
+                  Tình nguyện".
                 </div>
               </div>
               <div className={styles.Body_Container_Awards_Image}>
@@ -551,6 +639,7 @@ export default function Home() {
               </div>
             </div>
           </section>
+
           <section className={styles.Body_Container_Lower}>
             <div className={styles.Body_Container_Lower_Bandroll}>
               <div className={styles.Body_Container_Lower_Bandroll_Content}>
@@ -577,8 +666,9 @@ export default function Home() {
               </div>
             </div>
           </section>
+
           <section className={styles.Body_Container_RegisterForm}>
-            <RegisterForm></RegisterForm>
+            <RegisterForm className={styles.Body_Container_RegisterForm_Form} />
           </section>
         </div>
         <Footer />

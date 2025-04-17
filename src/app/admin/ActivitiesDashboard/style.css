@@ -1,0 +1,467 @@
+.admin-dashboard {
+  font-family: Arial, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #f0f2f5;
+  border: 1px solid #d1d1d1;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.admin-header {
+  background-color: #fff;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.admin-title {
+  font-weight: bold;
+  color: #334;
+  font-size: 16px;
+}
+
+.admin-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  background-color: #6e6e9e;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+}
+
+.nav-tabs {
+  display: flex;
+  background-color: #fff;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.nav-tabs button {
+  padding: 12px 20px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  font-weight: 500;
+  color: #555;
+  transition: background-color 0.2s;
+}
+
+.nav-tabs button.active {
+  background-color: #e4e9f2;
+  color: #1a3b7c;
+}
+
+.nav-tabs button:hover {
+  background-color: #f5f5f5;
+}
+
+.admin-action-bar {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background-color: #f0f2f5;
+}
+
+.btn-all-pages,
+.btn-batch-action {
+  padding: 8px 15px;
+  background-color: #1a3b7c;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.btn-add-page {
+  padding: 8px 15px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 12px;
+  color: #1a3b7c;
+  text-decoration: underline;
+}
+
+.btn-add-page.active {
+  background-color: #1a3b7c;
+  color: white;
+  text-decoration: none;
+}
+
+.content-section {
+  padding: 0 20px;
+  margin-bottom: 20px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+}
+
+.data-table th, 
+.data-table td {
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.data-table th {
+  background-color: #e8e8e8;
+  color: #333;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.data-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.checkbox-col {
+  width: 40px;
+}
+
+.comment-section {
+  padding: 0 20px;
+  margin-bottom: 20px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0 10px 0;
+  background-color: #1a3b7c;
+  color: white;
+  padding: 8px 15px;
+}
+
+.section-header h3 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.comment-text {
+  color: #0056b3;
+}
+
+.comment-row td {
+  font-size: 13px;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  color: #0056b3;
+  cursor: pointer;
+  margin-right: 5px;
+  text-decoration: underline;
+  font-size: 12px;
+}
+
+.delete-btn {
+  color: #dc3545;
+}
+
+.edit-btn {
+  color: #28a745;
+}
+
+.reply-btn {
+  color: #0056b3;
+}
+
+.copy-btn {
+  color: #6c757d;
+}
+
+.reply-container, 
+.edit-container {
+  background-color: #e9ecef;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 4px;
+}
+
+.reply-textarea, 
+.edit-textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background-color: #e3f2fd;
+}
+
+.reply-actions, 
+.edit-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-publish {
+  padding: 8px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.btn-cancel {
+  padding: 8px 15px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+/* Add New Page Styles */
+.add-page-container {
+  display: flex;
+  background-color: #f0f2f5;
+  padding: 20px;
+}
+
+.add-page-content {
+  flex: 3;
+  background-color: #e0e0e0;
+  padding: 20px;
+  border-radius: 4px;
+  margin-right: 20px;
+}
+
+.add-page-sidebar {
+  flex: 1;
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 4px;
+}
+
+.add-title-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+}
+
+.add-content-textarea {
+  width: 100%;
+  min-height: 200px;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.info-tabs {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.info-tabs button {
+  flex: 1;
+  padding: 8px;
+  background-color: #f0f2f5;
+  border: 1px solid #ced4da;
+  cursor: pointer;
+}
+
+.info-tabs button.active {
+  background-color: #fff;
+  border-bottom: none;
+  font-weight: bold;
+}
+
+.info-content {
+  margin-bottom: 20px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.info-row button {
+  flex: 1;
+  padding: 8px;
+  margin: 0 3px;
+  background-color: #f0f2f5;
+  border: 1px solid #ced4da;
+  cursor: pointer;
+}
+
+.info-row button.active {
+  background-color: #fff;
+  font-weight: bold;
+}
+
+.publish-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.publish-actions button {
+  width: 100%;
+  padding: 8px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.publish-actions button:last-child {
+  background-color: #28a745;
+}
+
+/* Additional CSS for admin dashboard */
+
+/* Action buttons left section */
+.action-buttons-left {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-nav {
+  padding: 8px 15px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 12px;
+  color: #1a3b7c;
+}
+
+.btn-nav.active {
+  background-color: #1a3b7c;
+  color: white;
+}
+
+/* Batch action styling */
+.batch-action-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.batch-action-select {
+  padding: 8px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+/* Status select dropdown */
+.status-select {
+  padding: 8px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+/* Button toggle containers */
+.button-toggle {
+  display: flex;
+}
+
+/* Scheduling options */
+.scheduling-options {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+}
+
+.date-input,
+.time-input {
+  padding: 8px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  width: 100%;
+}
+
+/* Draft button styling */
+.btn-draft {
+  padding: 8px 15px;
+  background-color: #6c757d !important;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+/* Header styling for add/edit page */
+.add-page-content h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #1a3b7c;
+  font-size: 18px;
+}
+
+/* Sidebar header */
+.add-page-sidebar h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #343a40;
+  font-size: 16px;
+}
+
+/* Reply and Edit area headers */
+.reply-container h4,
+.edit-container h4 {
+  margin-top: 0;
+  color: #343a40;
+  font-size: 14px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .add-page-container {
+    flex-direction: column;
+  }
+  
+  .add-page-content {
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+  
+  .admin-action-bar {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .nav-tabs {
+    flex-wrap: wrap;
+  }
+  
+  .nav-tabs button {
+    flex-grow: 1;
+    padding: 10px;
+  }
+  
+  .data-table {
+    display: block;
+    overflow-x: auto;
+  }
+}

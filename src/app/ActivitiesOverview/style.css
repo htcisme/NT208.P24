@@ -1,15 +1,16 @@
 /* Import Montserrat font */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap");
 
 /* Apply Montserrat font globally */
 * {
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
 }
 
 /* Định dạng cho phần Danh sách bài đăng */
 .post-list-container {
   padding: 20px;
-  background-color: #ECF9FF; /* Màu nền giống trong hình */
+  padding-bottom: 0px;
+  background-color: #ecf9ff; /* Màu nền giống trong hình */
 }
 
 .post-list-title {
@@ -79,7 +80,7 @@
   margin: 40px;
   background-color: #fff; /* Thêm background trắng cho toàn bộ phần */
   padding: 20px; /* Thêm padding để tạo khoảng cách bên trong */
-  margin-bottom: 40px;;
+  margin-bottom: 40px;
   border-radius: 8px; /* Bo góc nhẹ cho phần background */
 }
 
@@ -134,13 +135,12 @@
   padding-left: 20px;
 }
 
-
 /* Container cho "Trở về" */
 .light-news-actions {
   margin-bottom: 30px;
   display: flex; /* Sử dụng flex để căn chỉnh */
   justify-content: flex-end; /* Căn "Trở về" sang bên phải */
-  margin-right: 50px;;
+  margin-right: 50px;
 }
 
 /* Phần "Trở về" */

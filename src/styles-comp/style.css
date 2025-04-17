@@ -1,38 +1,15 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
 
 /* --------------- HEADER -------------*/
-.Header-Topbar-Dark-mode-toggle {
-  display: flex;
-  align-items: top;
-  justify-content: top;
-  margin: 0px 0px 32px 10px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 6.5px;
-  font-size: 24px;
-  color: #003366;
-  transition: color 0.3s ease;
-  background-color: #ffffff;
-  border-radius: 10px;
-}
-.Header-Topbar-Dark-mode-toggle svg {
-  color: #1f2937; /* Màu mặc định là xám đậm */
-  transition: color 0.3s ease;
-}
-.Header-Topbar-Dark-mode-toggle svg:hover {
-  color: #2d71b9;
-  transition: color 0.3s ease;
-}
-
 .Header {
   width: 100%;
   background-color: #eaf7ff;
   flex-direction: column;
-
   font-family: "Montserrat", sans-serif;
   display: flex;
   justify-content: space-between;
+  position: relative;
+  z-index: 100;
 }
 
 .Header-Topbar {
@@ -41,19 +18,22 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px 15px;
-  padding-right: 50px;
+  position: relative;
+  flex-wrap: wrap;
 }
 
 .Header-Topbar-Logogroup {
   display: flex;
   margin: 0;
   padding: 0;
+  cursor: pointer;
 }
 
 .Header-Topbar-Titlegroup {
   text-align: left;
   flex: 1;
   text-shadow: 1px 2px 3px rgba(0, 0, 0, 0.19);
+  margin-left: 15px;
 }
 
 .Header-Topbar-Titlegroup-Uniname {
@@ -69,22 +49,33 @@
   letter-spacing: -1px;
 }
 
+/* Phần chứa search và buttons */
+.Header-Topbar-RightSection {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .Header-Topbar-Authsearch {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+}
+
+.Header-Topbar-SearchRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .Header-Topbar-Authsearch-Searchbox {
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   background: #ffffff;
-  padding: 6px 30px;
+  padding: 6px 15px;
   border-radius: 10px;
-  caret-color: #00274d; /* Đặt màu cho dấu nháy */
+  caret-color: #00274d;
 }
 
 .Header-Topbar-Authsearch-Searchbox input {
@@ -106,11 +97,12 @@
 .Header-Topbar-Authsearch-Searchbox-Searchicon-Icon {
   width: 24px;
   height: 24px;
-  color: var(--icon-color, #1f2937); /* Màu mặc định là xám đậm */
+  color: var(--icon-color, #1f2937);
   transition: color 0.3s ease;
 }
+
 .Header-Topbar-Authsearch-Searchbox-Searchicon-Icon:hover {
-  color: #2d71b9; /* Màu khi hover */
+  color: #2d71b9;
 }
 
 .Header-Topbar-Authsearch-Authlinks {
@@ -121,10 +113,122 @@
   color: #003366;
   cursor: pointer;
 }
+
 .Header-Topbar-Authsearch-Authlinks-Item:hover {
   color: #2d71b9;
 }
 
+/* User Section */
+.Header-Topbar-Authsearch-UserSection {
+  position: relative;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.Header-Topbar-Authsearch-UserSection-Profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background-color: #ffffff;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.Header-Topbar-Authsearch-UserSection-Avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #c1e0ff;
+}
+
+.Header-Topbar-Authsearch-UserSection-Name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #003366;
+  white-space: nowrap;
+}
+
+.Header-Topbar-Authsearch-UserSection-Menu {
+  position: absolute;
+  top: calc(100% + 5px);
+  right: 0;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 150px;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.Header-Topbar-Authsearch-UserSection-MenuItem {
+  display: block;
+  padding: 10px 15px;
+  color: #003366;
+  font-size: 14px;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+}
+
+.Header-Topbar-Authsearch-UserSection-MenuItem:hover {
+  background-color: #e2f4ff;
+}
+
+/* Dark Mode Toggle */
+.Header-Topbar-Dark-mode-toggle {
+  align-items: top;
+  justify-content: top;
+  margin: 0px 0px 25px 10px;
+  background: #ffffff;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 10px;
+  height: 38px;
+  width: 38px;
+}
+
+.Header-Topbar-Dark-mode-toggle svg {
+  color: #1f2937;
+  transition: color 0.3s ease;
+}
+
+.Header-Topbar-Dark-mode-toggle:hover svg {
+  color: #2d71b9;
+}
+
+/* Mobile Menu Button */
+.Header-Mobile-Menu-Button {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 10px;
+}
+
+.Header-Mobile-Menu-Button span {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background-color: #003366;
+  border-radius: 3px;
+}
+
+/* Navigation */
 .Header-Navbar {
   width: 100%;
   display: flex;
@@ -141,14 +245,15 @@
   font-weight: bold;
   padding: 12px 20px;
   border-right: 2px solid #ffffff;
-  font-weight: bold;
   display: flex;
-  justify-content: center; /* Căn giữa theo chiều ngang */
-  align-items: center; /* Căn giữa theo chiều dọc */
+  justify-content: center;
+  align-items: center;
   text-align: center;
   cursor: pointer;
   transition: background 0.3s ease;
   width: 100%;
+  text-decoration: none;
+  color: #003366;
 }
 
 .Header-Navbar-Navitem:last-child {
@@ -163,19 +268,134 @@
   transition: all 0.3s ease;
 }
 
-@media (max-width: 768px) {
-  .Header-Navbar {
-    flex-direction: column; /* Chuyển menu thành dọc khi trên màn hình nhỏ */
-    align-items: center;
+/* Responsive styles */
+@media (max-width: 1200px) {
+  .Header-Navbar-Navitem {
+    font-size: 20px;
+    padding: 10px 15px;
+  }
+}
+
+/* Tablet (834px và nhỏ hơn) - Ẩn tiêu đề */
+@media (max-width: 834px) {
+  /* Ẩn thông tin trường và khoa trên thiết bị tablet */
+  .Header-Topbar-Titlegroup {
+    display: none;
+  }
+
+  /* Layout balanced cho tablet */
+  .Header-Topbar {
+    justify-content: space-between;
+    padding: 15px;
+  }
+
+  .Header-Topbar-Logogroup {
+    width: 160px; /* Kích thước phù hợp cho tablet */
+  }
+
+  .Header-Topbar-RightSection {
+    flex: 1;
+    justify-content: flex-end;
   }
 
   .Header-Navbar-Navitem {
-    border-right: none; /* Loại bỏ border phải khi menu dọc */
-    margin-bottom: 10px; /* Thêm khoảng cách giữa các mục */
+    font-size: 18px;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Hiển thị nút mobile menu */
+  .Header-Mobile-Menu-Button {
+    display: flex;
+  }
+
+  /* Ẩn menu chính trên mobile */
+  .Header-Navbar {
+    flex-direction: column;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  /* Khi menu được mở */
+  .Header-Navbar--open {
+    max-height: 500px;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .Header-Navbar-Navitem {
+    border-right: none;
+    border-bottom: 2px solid #ffffff;
   }
 
   .Header-Navbar-Navitem:last-child {
-    margin-bottom: 0; /* Loại bỏ margin cho phần tử cuối cùng */
+    border-bottom: none;
+  }
+
+  .Header-Topbar-Logogroup {
+    width: 140px; /* Giảm kích thước logo cho mobile */
+  }
+}
+
+@media (max-width: 576px) {
+  .Header-Topbar {
+    padding: 10px;
+  }
+
+  .Header-Topbar-Logogroup {
+    width: 120px;
+  }
+
+  .Header-Topbar-RightSection {
+    justify-content: flex-end;
+  }
+
+  .Header-Topbar-Authsearch {
+    width: 100%;
+  }
+
+  .Header-Topbar-SearchRow {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .Header-Topbar-Authsearch-Searchbox {
+    width: 150px; /* Thu nhỏ ô tìm kiếm trên mobile */
+  }
+}
+
+/* iPhone (430px và nhỏ hơn) */
+@media (max-width: 430px) {
+  .Header-Topbar {
+    padding: 10px;
+  }
+
+  .Header-Topbar-Logogroup {
+    display: flex;
+    justify-content: center;
+  }
+
+  .Header-Topbar-Authsearch-Authlinks {
+    width: 100%;
+    justify-content: center;
+    margin-top: 10px;
+  }
+
+  .Header-Topbar-Authsearch-UserSection {
+    margin-top: 10px;
+  }
+
+  .Header-Topbar-Authsearch-UserSection-Profile {
+    justify-content: center;
+  }
+
+  .Header-Topbar-Authsearch-Searchbox {
+    width: 130px;
+    padding: 6px 10px;
   }
 }
 
@@ -347,4 +567,87 @@
   cursor: pointer;
   font-weight: bold;
   margin-top: 20px;
+}
+
+/* --------------- HEADER ADMIN -------------*/
+
+/* Admin Header Styles */
+.admin-header-container {
+  width: 100%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+.admin-header-topbar {
+  background-color: #f0f0f0;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-header-title {
+  font-weight: bold;
+  color: #003366;
+  font-size: 16px;
+}
+
+.admin-header-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-header-username {
+  font-size: 14px;
+}
+
+.admin-header-user-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+}
+
+.admin-header-navbar {
+  display: flex;
+  list-style: none;
+  border-top: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #fff;
+}
+
+.admin-header-navitem {
+  padding: 15px 25px;
+  text-align: center;
+  cursor: pointer;
+  background-color: #f8f8f8;
+  transition: background-color 0.2s ease;
+  border-right: 1px solid #e0e0e0;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  font-size: 14px;
+  flex: 1;
+}
+
+.admin-header-navitem:hover {
+  background-color: #e8e8e8;
+}
+
+.admin-header-navitem-active {
+  background-color: #cce5ff;
+  color: #003366;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .admin-header-navbar {
+    flex-direction: column;
+  }
+
+  .admin-header-navitem {
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+  }
 }

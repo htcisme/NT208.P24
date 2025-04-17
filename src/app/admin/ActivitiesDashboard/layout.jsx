@@ -1,18 +1,16 @@
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Header from "@/components/Header";
 
 export const metadata = {
-  title: "Đặt phòng",
+  title: "Quản trị hoạt động",
   description: "Tạo bởi XangFuTing",
 };
 
-export default function BookingLayout({ children }) {
+export default function Activities({ children }) {
   return (
     <html lang="en">
       <body>
-        <Header></Header>
         {children}
-        <Footer></Footer>
       </body>
     </html>
   );
