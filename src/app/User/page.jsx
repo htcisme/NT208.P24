@@ -1,11 +1,20 @@
 "use client";
 import Image from "next/image";
 import styles from "./style.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import Script from "next/script";
 
 export default function User() {
   const [activeTab, setActiveTab] = useState("register");
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab");
+  // Cập nhật tab khi URL thay đổi
+  useEffect(() => {
+    if (tabParam === "login" || tabParam === "register") {
+      setActiveTab(tabParam);
+    }
+  }, [tabParam]);
 
   return (
     <div className="form-container">

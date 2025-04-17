@@ -1,3 +1,5 @@
+/* page.module.css */
+
 .Container {
   font-family: "Montserrat", sans-serif;
   padding: 0;
@@ -5,6 +7,314 @@
   background-color: #e4effa;
   color: #0b1f40;
 }
+/* Mobile Responsive */
+@media (max-width: 480px) {
+  .Header {
+    padding: 8px 10px;
+  }
+
+  .Header_Logo {
+    font-size: 20px;
+    -webkit-text-stroke: 0.5px black;
+  }
+
+  .Header_Nav {
+    gap: 5px;
+  }
+
+  .Header_Nav_AuthButton {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+
+  /* CSS cho nút Dark Mode */
+  .Header_Nav_DarkModeToggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .Header_Nav_DarkModeToggle:hover {
+    background-color: #e2f4ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .Header_Nav_DarkModeIcon {
+    color: #1f2937;
+    transition: color 0.3s ease;
+  }
+
+  .Header_Nav_DarkModeToggle:hover .Header_Nav_DarkModeIcon {
+    color: #2d71b9;
+  }
+
+  /* Chế độ Dark Mode */
+  body.dark-mode {
+    background-color: #121212;
+    color: #f0f0f0;
+  }
+
+  body.dark-mode .Header {
+    background-color: #1f2937;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  body.dark-mode .Header_Logo a {
+    color: #f0f0f0;
+    -webkit-text-stroke: 1px #ffffff;
+  }
+
+  body.dark-mode .Header_Nav_DarkModeToggle {
+    background-color: #374151;
+  }
+
+  body.dark-mode .Header_Nav_DarkModeIcon {
+    color: #f0f0f0;
+  }
+
+  body.dark-mode .Header_Nav_DarkModeToggle:hover {
+    background-color: #4b5563;
+  }
+
+  body.dark-mode .Header_Nav_AuthButton {
+    background-color: #4b5563;
+  }
+
+  body.dark-mode .Header_Nav_AuthButton:hover {
+    background-color: #60a5fa;
+  }
+
+  body.dark-mode .Header_Nav_AuthMenu {
+    background-color: #1f2937;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  body.dark-mode .Header_Nav_AuthMenu_Item {
+    color: #f0f0f0;
+  }
+
+  body.dark-mode .Header_Nav_AuthMenu_Item:hover {
+    background-color: #374151;
+  }
+
+  body.dark-mode .Header_Topbar_Authsearch_Searchbox {
+    background-color: #374151;
+    border-color: #4b5563;
+  }
+
+  body.dark-mode .Header_Topbar_Authsearch_Searchbox input {
+    color: #f0f0f0;
+  }
+
+  body.dark-mode .Header_Topbar_Authsearch_Searchbox input::placeholder {
+    color: #9ca3af;
+  }
+
+  body.dark-mode .Header_Topbar_Authsearch_Searchbox_Searchicon_Icon {
+    color: #9ca3af;
+  }
+
+  body.dark-mode .Header_Nav_MenuWrapper_MenuButton {
+    color: #f0f0f0;
+  }
+
+  body.dark-mode .Header_Nav_MenuWrapper_DropdownMenu {
+    background-color: #1f2937;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  body.dark-mode .Header_Nav_MenuWrapper_DropdownMenu_Item {
+    color: #f0f0f0;
+    border-color: #374151;
+  }
+
+  body.dark-mode .Header_Nav_MenuWrapper_DropdownMenu_Item:hover {
+    background-color: #374151;
+  }
+
+  /* Responsive untuk dark mode */
+  @media (max-width: 480px) {
+    .Header_Nav_DarkModeToggle {
+      padding: 6px;
+    }
+
+    .Header_Nav_DarkModeIcon {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .Header_Topbar_Authsearch_Searchbox {
+    width: 120px;
+    padding: 5px 10px;
+  }
+
+  .Header_Topbar_Authsearch_Searchbox input {
+    font-size: 12px;
+  }
+
+  .Header_Nav_MenuWrapper_MenuButton {
+    font-size: 20px;
+  }
+
+  .heroTitle {
+    font-size: 18px;
+  }
+
+  .heroSubtitle {
+    font-size: 22px;
+  }
+
+  .logo {
+    width: 200px;
+    height: 200px;
+  }
+
+  .Body_Container_Introduction_Title {
+    font-size: 20px;
+    margin: 10px 15px;
+    padding: 6px 15px;
+  }
+
+  .Body_Container_Introduction_ContentWrapper {
+    margin: 0 15px;
+    gap: 20px;
+  }
+
+  .Body_Container_Introduction_ContentWrapper_TextContainer_Heading {
+    font-size: 24px;
+    line-height: 1.3;
+  }
+
+  .Body_Container_Introduction_ContentWrapper_TextContainer_Description {
+    font-size: 13px;
+  }
+
+  .Body_Container_MemberWrap {
+    padding: 0 15px;
+  }
+
+  .Body_Container_MemberItem {
+    max-width: 100%;
+  }
+
+  .Body_Container_MemberLabel {
+    font-size: 20px;
+    line-height: 30px;
+    -webkit-text-stroke: 1px #b5dff7;
+  }
+
+  .Activities_RecentLabel,
+  .Body_Container_Hightlight_Title,
+  .Body_Container_Awards_Title {
+    font-size: 20px;
+    padding: 8px 15px;
+  }
+
+  .Activities_RecentCards {
+    padding: 0 15px;
+  }
+
+  .Activities_RecentCard {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .Activities_Focus_ContentWrapper {
+    padding: 0 15px;
+    gap: 30px;
+  }
+
+  .light_slider_container {
+    width: 100%;
+    padding: 0 10px;
+    margin-top: 100px;
+  }
+
+  .slider_image_placeholder {
+    width: 100px;
+    height: 100px;
+  }
+
+  .slider_image_placeholder_active {
+    width: 120px;
+    height: 120px;
+  }
+
+  .light_slider_item h4 {
+    font-size: 14px;
+  }
+
+  .Body_Container_Awards_Title {
+    padding-left: 15px;
+  }
+
+  .Body_Container_Awards_ContentWrapper {
+    padding: 20px 15px;
+  }
+
+  .Body_Container_Lower_Bandroll_Content {
+    font-size: 24px;
+    padding: 8px 0;
+  }
+
+  .Image_Grid_Container {
+    padding: 20px 15px;
+  }
+
+  .Image_Bottom_Row {
+    flex-direction: column;
+  }
+}
+
+/* Specific adjustments for very small screens */
+@media (max-width: 380px) {
+  .Header_Logo {
+    font-size: 18px;
+  }
+
+  .Header_Nav_AuthButton {
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+
+  .Header_Topbar_Authsearch_Searchbox {
+    width: 100px;
+  }
+
+  .light_slider_container {
+    gap: 10px;
+  }
+
+  .light_slider_arrow {
+    font-size: 1.5rem;
+    padding: 0 0.5rem;
+  }
+
+  .slider_image_placeholder {
+    width: 80px;
+    height: 80px;
+  }
+
+  .slider_image_placeholder_active {
+    width: 100px;
+    height: 100px;
+  }
+
+  .light_slider_item h4 {
+    font-size: 12px;
+  }
+}
+
+/* Header Styles */
 .Header {
   position: fixed;
   top: 0;
@@ -15,63 +325,112 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 30px;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);
+  padding: 10px 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .Header_Logo {
   font-size: 30px;
-  font-weight: 1000;
-  color: #000000;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.Header_Logo a {
+  color: #042354;
+  text-decoration: none;
+  -webkit-text-stroke: 1px #042354;
 }
 
 .Header_Nav {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
 }
 
-.Header_Nav_NavButton {
-  padding: 6px 12px;
-  background: #111;
+/* Auth Button & Dropdown */
+.Header_Nav_AuthWrapper {
+  position: relative;
+}
+
+.Header_Nav_AuthButton {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  background: #042354;
   color: white;
   border: none;
   border-radius: 10px;
   cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
 }
 
-.Header_Nav_NavButton:hover {
+.Header_Nav_AuthButton:hover {
   background-color: #2d71b9;
-  transition: all 0.2s ease-in-out;
-  color: white;
 }
 
-.Header_Topbar_Authsearch {
+.Header_Nav_AuthButton_Arrow {
+  font-size: 10px;
+  transition: transform 0.2s ease;
+}
+
+.Header_Nav_AuthButton:hover .Header_Nav_AuthButton_Arrow {
+  transform: translateY(2px);
+}
+
+.Header_Nav_AuthMenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  min-width: 150px;
+  margin-top: 5px;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.Header_Nav_AuthMenu_Item {
+  display: block;
+  padding: 10px 15px;
+  text-decoration: none;
+  color: #042354;
+  transition: background 0.2s ease;
+  font-size: 14px;
+}
+
+.Header_Nav_AuthMenu_Item:hover {
+  background-color: #f5f5f5;
+}
+
+/* Search Box */
+.Header_Nav_SearchWrapper {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
 }
 
 .Header_Topbar_Authsearch_Searchbox {
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   background-color: #ededed;
-  padding: 6px 30px;
+  padding: 6px 15px;
   border-radius: 10px;
   caret-color: #00274d;
+  width: 180px;
+  transition: all 0.3s ease;
 }
 
 .Header_Topbar_Authsearch_Searchbox input {
   border: none;
   outline: none;
-  font-size: 16px;
+  font-size: 14px;
   color: #003366;
   padding: 0;
   margin: 0;
   width: 100%;
+  background: transparent;
 }
 
 .Header_Topbar_Authsearch_Searchbox_Searchicon {
@@ -81,28 +440,34 @@
 }
 
 .Header_Topbar_Authsearch_Searchbox_Searchicon_Icon {
-  width: 24px;
-  height: 24px;
-  color: var(--icon-color, #1f2937);
+  width: 20px;
+  height: 20px;
+  color: #1f2937;
   transition: color 0.3s ease;
 }
 
 .Header_Topbar_Authsearch_Searchbox_Searchicon_Icon:hover {
   color: #2d71b9;
-  transition: all 0.5s ease-in-out;
 }
 
+/* Mobile Menu */
 .Header_Nav_MenuWrapper {
   position: relative;
-  margin-left: 10px;
 }
 
 .Header_Nav_MenuWrapper_MenuButton {
-  color: rgb(0, 0, 0);
+  background: none;
   border: none;
-  border-radius: 6px;
+  color: #000;
+  font-size: 24px;
   cursor: pointer;
-  font-weight: bold;
+  padding: 5px;
+  border-radius: 5px;
+  transition: background 0.2s ease;
+}
+
+.Header_Nav_MenuWrapper_MenuButton:hover {
+  background-color: #f0f0f0;
 }
 
 .Header_Nav_MenuWrapper_DropdownMenu {
@@ -115,27 +480,27 @@
   border-radius: 8px;
   overflow: hidden;
   z-index: 20;
-  min-width: 160px;
-  text-align: left;
-}
-
-.Header_Nav_MenuWrapper_DropdownMenu a {
-  display: block;
-  padding: 10px 16px;
-  text-decoration: none;
-  color: #0b1f40;
-  border-bottom: 1px solid #eee;
-}
-
-.Header_Nav_MenuWrapper_DropdownMenu a:hover {
-  background-color: #f0f0f0;
-  transition: all 0.2s ease-in-out;
+  min-width: 180px;
 }
 
 .Header_Nav_MenuWrapper_MenuButton_ShowMenu {
   display: block;
 }
 
+.Header_Nav_MenuWrapper_DropdownMenu_Item {
+  display: block;
+  padding: 12px 16px;
+  text-decoration: none;
+  color: #0b1f40;
+  border-bottom: 1px solid #eee;
+  transition: background 0.2s ease;
+}
+
+.Header_Nav_MenuWrapper_DropdownMenu_Item:hover {
+  background-color: #f0f0f0;
+}
+
+/* Hero Section */
 .hero {
   position: relative;
   height: 100vh;
@@ -196,6 +561,12 @@
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);
 }
 
+.logo {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Body Styles */
 .Body {
   background: linear-gradient(
     to bottom,
@@ -215,14 +586,21 @@
   padding: 40px 0;
 }
 
+/* Introduction Section */
 .Body_Container_Introduction {
   max-width: 100%;
   position: relative;
   overflow: hidden;
 }
 
-.Body_Container_Introduction_BodyShape01 {
+.Body_Container_Introduction_BodyShape01,
+.Body_Container_Introduction_BodyShape02,
+.Body_Container_Introduction_BodyShape03,
+.Body_Container_Introduction_BodyShape04 {
   position: absolute;
+}
+
+.Body_Container_Introduction_BodyShape01 {
   top: 2px;
   right: 0;
   width: 950px;
@@ -232,7 +610,6 @@
 }
 
 .Body_Container_Introduction_BodyShape02 {
-  position: absolute;
   bottom: 34%;
   left: 0;
   width: 50%;
@@ -242,7 +619,6 @@
 }
 
 .Body_Container_Introduction_BodyShape03 {
-  position: absolute;
   bottom: 34%;
   right: 0;
   width: 1.5%;
@@ -252,7 +628,6 @@
 }
 
 .Body_Container_Introduction_BodyShape04 {
-  position: absolute;
   bottom: 14%;
   left: 0;
   width: 100%;
@@ -300,7 +675,7 @@
   flex: 1;
   padding: 20px;
   box-sizing: border-box;
-  position: relative; /* Cần cho Next.js Image */
+  position: relative;
   overflow: hidden;
   flex-shrink: 0;
   display: flex;
@@ -369,16 +744,19 @@
 }
 
 .Body_Container_Introduction_ContentWrapper_TextContainer_ReadMore {
-  align-items: right;
-  justify-self: right;
-  display: flex;
+  display: inline-block;
+  margin-top: 10px;
+  color: #0b1f40;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
 }
 
 .Body_Container_Introduction_ContentWrapper_TextContainer_ReadMore:hover {
   color: #2d71b9;
-  transition: all 0.2s ease-in-out;
 }
 
+/* Member Section */
 .Body_Container_MemberWrap {
   display: flex;
   justify-content: center;
@@ -386,6 +764,7 @@
   flex-wrap: wrap;
   padding: 0 60px;
   z-index: 1;
+  margin-top: 30px;
 }
 
 .Body_Container_MemberItem {
@@ -395,7 +774,7 @@
 }
 
 .Body_Container_MemberImage {
-  transform: rotate(-1 deg);
+  transform: rotate(-1deg);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -420,10 +799,10 @@
   margin-top: 10px;
   -webkit-text-stroke: 4px #b5dff7;
   text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
-
   paint-order: stroke fill;
 }
 
+/* Activities Section */
 .Body_Container_Activities {
   text-align: center;
   margin-top: 60px;
@@ -501,13 +880,17 @@
 
 .Activities_ViewMore {
   font-size: 20px;
+  text-decoration: none;
+  color: #0b1f40;
+  font-weight: 500;
+  transition: color 0.2s ease;
 }
 
 .Activities_ViewMore:hover {
   color: #2d71b9;
-  transition: all 0.2s ease-in-out;
 }
 
+/* Focus Activities */
 .Activities_Focus {
   margin-top: 30px;
   max-width: 100%;
@@ -560,13 +943,15 @@
 .Activities_Focus_Image {
   border-radius: 20px;
   box-sizing: border-box;
-  position: relative; /* Cần cho Next.js Image */
+  position: relative;
   overflow: hidden;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  height: auto;
 }
 
 .Activities_Focus_Content {
@@ -594,10 +979,6 @@
   position: relative;
 }
 
-.Activities_Focus_Content_TimelineItem_Content:last-child {
-  border-left: none;
-}
-
 .Activities_Focus_Content_TimelineItem {
   display: flex;
   align-items: flex-start;
@@ -614,8 +995,9 @@
   left: -30px;
   top: 0px;
   border: 5px solid #daeef7;
-  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4); /* đổ bóng mềm */
+  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
 }
+
 .Activities_Focus_Content_TimelineItem_Date {
   font-weight: bold;
   color: #042354;
@@ -631,6 +1013,7 @@
   text-overflow: ellipsis;
 }
 
+/* Highlight Section */
 .Body_Container_Hightlight {
   max-width: 100%;
   margin: 60px auto;
@@ -707,7 +1090,6 @@
   height: 100%;
   object-fit: cover;
   border-radius: 15px;
-  margin: 0 auto 0.5rem;
 }
 
 .light_slider_item h4 {
@@ -744,6 +1126,7 @@
   background-color: #042354;
 }
 
+/* Awards Section */
 .Body_Container_Awards {
   max-width: 100%;
   justify-content: center;
@@ -790,7 +1173,6 @@
   border-radius: 20px;
   transform: rotate(3.5deg);
   transform-origin: bottom left;
-  z-index: 0;
 }
 
 .Body_Container_Awards_ContentWrapper {
@@ -830,7 +1212,7 @@
   height: 413px;
   border-radius: 20px;
   box-sizing: border-box;
-  position: relative; /* Cần cho Next.js Image */
+  position: relative;
   overflow: hidden;
   flex-shrink: 0;
   display: flex;
@@ -849,6 +1231,7 @@
   height: 100%;
 }
 
+/* Lower Section */
 .Body_Container_Lower {
   margin-top: 60px;
 }
@@ -898,5 +1281,429 @@
 .Body_Container_RegisterForm {
   display: flex;
   align-items: center;
-  justify-self: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+/* Responsive Styles */
+@media (max-width: 834px) {
+  .Header {
+    padding: 10px 15px;
+  }
+
+  .Header_Logo {
+    font-size: 24px;
+  }
+
+  .Header_Nav {
+    gap: 10px;
+  }
+
+  .Header_Topbar_Authsearch_Searchbox {
+    width: 150px;
+  }
+
+  .heroTitle {
+    font-size: 22px;
+  }
+
+  .heroSubtitle {
+    font-size: 26px;
+  }
+
+  .logo {
+    width: 300px;
+    height: 300px;
+  }
+
+  .Body_Container_Introduction_Title {
+    font-size: 24px;
+    margin: 15px 30px;
+  }
+
+  .Body_Container_MemberWrap {
+    gap: 20px;
+  }
+
+  .Body_Container_MemberItem {
+    max-width: 45%;
+  }
+
+  .Body_Container_MemberImage {
+    width: 100%;
+  }
+
+  .Body_Container_MemberLabel {
+    width: 100%;
+    font-size: 24px;
+    line-height: 40px;
+  }
+
+  .Activities_RecentLabel,
+  .Body_Container_Hightlight_Title,
+  .Body_Container_Awards_Title {
+    font-size: 24px;
+  }
+
+  .Activities_RecentCards {
+    gap: 20px;
+  }
+
+  .Activities_RecentCard {
+    width: 45%;
+  }
+
+  .light_slider_container {
+    gap: 20px;
+  }
+
+  .slider_image_placeholder {
+    width: 180px;
+    height: 180px;
+  }
+
+  .slider_image_placeholder_active {
+    width: 220px;
+    height: 220px;
+  }
+
+  .light_slider_item h4 {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .Body_Container_Introduction_ContentWrapper,
+  .Activities_Focus_ContentWrapper,
+  .Body_Container_Awards_ContentWrapper {
+    margin: 0 40px;
+    padding: 0 20px;
+  }
+
+  .Activities_RecentCards {
+    gap: 30px;
+  }
+
+  .light_slider_container {
+    width: 90%;
+  }
+
+  .slider_image_placeholder {
+    width: 250px;
+    height: 250px;
+  }
+
+  .slider_image_placeholder_active {
+    width: 300px;
+    height: 300px;
+  }
+
+  .Body_Container_Awards_Image {
+    width: 500px;
+    height: 350px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .Body_Container_Introduction_ContentWrapper {
+    flex-direction: column;
+  }
+
+  .Body_Container_Introduction_ContentWrapper_ImageContainer,
+  .Body_Container_Introduction_ContentWrapper_TextContainer {
+    flex: none;
+    width: 100%;
+  }
+
+  .Body_Container_Introduction_ContentWrapper_TextContainer_Heading {
+    text-align: center;
+    font-size: 30px;
+  }
+
+  .Body_Container_Introduction_ContentWrapper_ImageContainer_Image {
+    width: 100%;
+    max-width: 550px;
+    height: auto;
+  }
+
+  .Activities_Focus_ContentWrapper {
+    flex-direction: column;
+    padding: 0 30px;
+  }
+
+  .Activities_Focus_ImageContainer {
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .Activities_Focus_Content {
+    width: 100%;
+  }
+
+  .Body_Container_Awards_ContentWrapper {
+    flex-direction: column;
+  }
+
+  .Body_Container_Awards_Content {
+    width: 100%;
+  }
+
+  .Body_Container_Awards_Image {
+    width: 100%;
+    max-width: 550px;
+    height: auto;
+    margin: 30px auto;
+  }
+
+  .Body_Container_Lower_Bandroll_Content {
+    font-size: 36px;
+  }
+
+  .Body_Container_MemberLabel {
+    font-size: 28px;
+    -webkit-text-stroke: 2px #b5dff7;
+  }
+}
+
+/* Tablet Responsive - Cải tiến bổ sung */
+@media (min-width: 768px) and (max-width: 834px) {
+  /* Header styles for tablet */
+  .Header {
+    padding: 10px 15px;
+  }
+
+  .Header_Logo {
+    font-size: 24px;
+  }
+
+  .Header_Nav {
+    gap: 12px;
+  }
+
+  .Header_Nav_AuthButton {
+    padding: 7px 12px;
+    font-size: 13px;
+  }
+
+  .Header_Topbar_Authsearch_Searchbox {
+    width: 160px;
+  }
+
+  /* Hero section for tablet */
+  .hero {
+    height: 80vh;
+  }
+
+  .heroTitle {
+    font-size: 22px;
+    padding: 0 10px;
+  }
+
+  .heroSubtitle {
+    font-size: 26px;
+    padding: 0 10px;
+  }
+
+  .logo {
+    width: 300px;
+    height: 300px;
+  }
+
+  /* Introduction section for tablet */
+  .Body_Container_Introduction_Title {
+    font-size: 24px;
+    margin: 15px 20px;
+    padding: 7px 20px;
+  }
+
+  .Body_Container_Introduction_ContentWrapper {
+    margin: 0 20px;
+    gap: 30px;
+    flex-direction: column;
+  }
+
+  .Body_Container_Introduction_ContentWrapper_ImageContainer {
+    padding: 10px;
+    width: 100%;
+  }
+
+  .Body_Container_Introduction_ContentWrapper_ImageContainer_Image {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    margin: 0 auto;
+  }
+
+  .Body_Container_Introduction_ContentWrapper_TextContainer {
+    padding: 10px;
+    width: 100%;
+  }
+
+  .Body_Container_Introduction_ContentWrapper_TextContainer_Heading {
+    text-align: center;
+    font-size: 28px;
+    line-height: 1.4;
+  }
+
+  /* Member section for tablet */
+  .Body_Container_MemberWrap {
+    gap: 25px;
+    padding: 0 20px;
+  }
+
+  .Body_Container_MemberItem {
+    width: calc(50% - 25px);
+    max-width: none;
+  }
+
+  .Body_Container_MemberImage {
+    width: 100%;
+    height: auto;
+  }
+
+  .Body_Container_MemberLabel {
+    width: 100%;
+    font-size: 24px;
+    line-height: 40px;
+    -webkit-text-stroke: 2px #b5dff7;
+  }
+
+  /* Activities section for tablet */
+  .Activities_RecentLabel {
+    font-size: 24px;
+    padding: 8px 20px;
+  }
+
+  .Activities_RecentCards {
+    padding: 0 20px;
+    gap: 20px;
+  }
+
+  .Activities_RecentCard {
+    width: calc(50% - 10px);
+    max-width: none;
+  }
+
+  /* Focus activities for tablet */
+  .Activities_Focus_ContentWrapper {
+    flex-direction: column;
+    gap: 30px;
+    padding: 0 20px;
+  }
+
+  .Activities_Focus_ImageContainer {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .Activities_Focus_Content {
+    width: 100%;
+  }
+
+  /* Highlight section for tablet */
+  .Body_Container_Hightlight_Title {
+    font-size: 24px;
+  }
+
+  .light_slider_container {
+    width: 90%;
+    max-width: 700px;
+    gap: 15px;
+  }
+
+  .slider_image_placeholder {
+    width: 180px;
+    height: 180px;
+  }
+
+  .slider_image_placeholder_active {
+    width: 220px;
+    height: 220px;
+  }
+
+  /* Awards section for tablet */
+  .Body_Container_Awards_Title {
+    font-size: 24px;
+    padding-left: 30px;
+  }
+
+  .Body_Container_Awards_ContentWrapper {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .Body_Container_Awards_Content {
+    width: 100%;
+  }
+
+  .Body_Container_Awards_Image {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    margin: 30px auto;
+  }
+
+  /* Lower section for tablet */
+  .Body_Container_Lower_Bandroll_Content {
+    font-size: 36px;
+  }
+
+  .Image_Grid_Container {
+    padding: 30px 20px;
+  }
+
+  /* Register form for tablet */
+  .Body_Container_RegisterForm {
+    padding: 30px 20px;
+  }
+}
+
+/* Điều chỉnh cho tablet đứng (portrait) */
+@media (min-width: 768px) and (max-width: 834px) and (orientation: portrait) {
+  .Body_Container_MemberItem {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .Activities_RecentCard {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto 20px;
+  }
+
+  .slider_image_placeholder {
+    width: 140px;
+    height: 140px;
+  }
+
+  .slider_image_placeholder_active {
+    width: 180px;
+    height: 180px;
+  }
+}
+
+/* Điều chỉnh cho tablet ngang (landscape) */
+@media (min-width: 768px) and (max-width: 834px) and (orientation: landscape) {
+  .Body_Container_Introduction_ContentWrapper {
+    flex-direction: row;
+  }
+
+  .Body_Container_Introduction_ContentWrapper_ImageContainer,
+  .Body_Container_Introduction_ContentWrapper_TextContainer {
+    width: 50%;
+  }
+
+  .Activities_Focus_ContentWrapper {
+    flex-direction: row;
+  }
+
+  .Activities_Focus_ImageContainer {
+    width: 40%;
+  }
+
+  .Activities_Focus_Content {
+    width: 60%;
+  }
 }
