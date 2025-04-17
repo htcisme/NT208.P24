@@ -185,9 +185,9 @@
 
 /* Dark Mode Toggle */
 .Header-Topbar-Dark-mode-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: top;
+  justify-content: top;
+  margin: 0px 0px 25px 10px;
   background: #ffffff;
   border: none;
   cursor: pointer;
@@ -645,7 +645,7 @@
   .admin-header-navbar {
     flex-direction: column;
   }
-  
+
   .admin-header-navitem {
     border-right: none;
     border-bottom: 1px solid #e0e0e0;

@@ -265,6 +265,7 @@ body {
   min-height: 80px;
   position: relative;
   overflow: visible;
+  height: 500px;
 }
 
 .teams_container_accordion_card:hover {

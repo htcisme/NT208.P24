@@ -4,8 +4,8 @@ import styles from "./page.module.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import RegisterForm from "@/components/RegisterForm";
-import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 
 const images = [
   "/Img/Homepage/BCH1.png",
@@ -121,51 +121,7 @@ export default function Home() {
           <Link href="/">SUCTREMMT</Link>
         </div>
         <div className={styles.Header_Nav}>
-          {/* Nút chuyển đổi Dark/Light mode */}
-          <button
-            onClick={toggleDarkMode}
-            className={styles.Header_Nav_DarkModeToggle}
-            aria-label={
-              isDarkMode ? "Chuyển sang chế độ sáng" : "Chuyển sang chế độ tối"
-            }
-          >
-            {isDarkMode ? (
-              <svg
-                className={styles.Header_Nav_DarkModeIcon}
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M13 3a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0V3ZM6.343 4.929A1 1 0 0 0 4.93 6.343l1.414 1.414a1 1 0 0 0 1.414-1.414L6.343 4.929Zm12.728 1.414a1 1 0 0 0-1.414-1.414l-1.414 1.414a1 1 0 0 0 1.414 1.414l1.414-1.414ZM12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm-9 4a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2H3Zm16 0a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2h-2ZM7.757 17.657a1 1 0 1 0-1.414-1.414l-1.414 1.414a1 1 0 1 0 1.414 1.414l1.414-1.414Zm9.9-1.414a1 1 0 0 0-1.414 1.414l1.414 1.414a1 1 0 0 0 1.414-1.414l-1.414-1.414ZM13 19a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0v-2Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            ) : (
-              <svg
-                className={styles.Header_Nav_DarkModeIcon}
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M11.675 2.015a.998.998 0 0 0-.403.011C6.09 2.4 2 6.722 2 12c0 5.523 4.477 10 10 10 4.356 0 8.058-2.784 9.43-6.667a1 1 0 0 0-1.02-1.33c-.08.006-.105.005-.127.005h-.001l-.028-.002A5.227 5.227 0 0 0 20 14a8 8 0 0 1-8-8c0-.952.121-1.752.404-2.558a.996.996 0 0 0 .096-.428V3a1 1 0 0 0-.825-.985Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            )}
-          </button>
-
-          {/* Gộp nút đăng nhập/đăng ký thành dropdown */}
-          <div className={styles.Header_Nav_AuthWrapper}>
+          <div className={styles.Header_Nav_MenuWrapper}>
             <button
               className={styles.Header_Nav_AuthButton}
               onClick={toggleUserMenu}
@@ -307,10 +263,11 @@ export default function Home() {
             <div
               className={styles.Body_Container_Introduction_BodyShape04}
             ></div>
-
-            <h2 className={styles.Body_Container_Introduction_Title}>
-              GIỚI THIỆU
-            </h2>
+            <a href="/Introduction">
+              <h2 className={styles.Body_Container_Introduction_Title}>
+                GIỚI THIỆU
+              </h2>
+            </a>
             <div className={styles.Body_Container_Introduction_ContentWrapper}>
               <div
                 className={
@@ -441,82 +398,97 @@ export default function Home() {
           </section>
 
           <section className={styles.Body_Container_Activities}>
-            <h2 className={styles.Activities_RecentLabel}>HOẠT ĐỘNG GẦN ĐÂY</h2>
+            <a href="/Activities">
+              <h2 className={styles.Activities_RecentLabel}>
+                HOẠT ĐỘNG GẦN ĐÂY
+              </h2>
+            </a>
             <div className={styles.Activities_RecentCards}>
-              <div className={styles.Activities_RecentCard}>
-                <img
-                  src="/Img/Homepage/card1.png"
-                  alt="AWS Cloud Training"
-                  className={styles.Activities_RecentCard_Image}
-                />
-                <div className={styles.Activities_RecentCard_Content}>
-                  <h3 className={styles.Activities_RecentCard_Title}>
-                    Hoạt động học thuật
-                  </h3>
-                  <p className={styles.Activities_RecentCard_Desc}>
-                    Khoa Mạng máy tính và Truyền thông | AWS CLOUD TRAINING
-                  </p>
-                  <p className={styles.Activities_RecentCard_Date}>
-                    Ngày 13 tháng 01 năm 2025
-                  </p>
+              <a href="/ActivitiesPost">
+                <div className={styles.Activities_RecentCard}>
+                  <img
+                    src="/Img/Homepage/card1.png"
+                    alt="AWS Cloud Training"
+                    className={styles.Activities_RecentCard_Image}
+                  />
+                  <div className={styles.Activities_RecentCard_Content}>
+                    <h3 className={styles.Activities_RecentCard_Title}>
+                      Hoạt động học thuật
+                    </h3>
+                    <p className={styles.Activities_RecentCard_Desc}>
+                      Khoa Mạng máy tính và Truyền thông | AWS CLOUD TRAINING
+                    </p>
+                    <p className={styles.Activities_RecentCard_Date}>
+                      Ngày 13 tháng 01 năm 2025
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div className={styles.Activities_RecentCard}>
-                <img
-                  src="/Img/Homepage/card1.png"
-                  alt="AI Workshop"
-                  className={styles.Activities_RecentCard_Image}
-                />
-                <div className={styles.Activities_RecentCard_Content}>
-                  <h3 className={styles.Activities_RecentCard_Title}>
-                    Workshop AI
-                  </h3>
-                  <p className={styles.Activities_RecentCard_Desc}>
-                    CLB Kỹ thuật số tổ chức | AI ỨNG DỤNG
-                  </p>
-                  <p className={styles.Activities_RecentCard_Date}>
-                    Ngày 25 tháng 02 năm 2025
-                  </p>
+              </a>
+              <a href="/ActivitiesPost">
+                <div className={styles.Activities_RecentCard}>
+                  <img
+                    src="/Img/Homepage/card1.png"
+                    alt="AI Workshop"
+                    className={styles.Activities_RecentCard_Image}
+                  />
+                  <div className={styles.Activities_RecentCard_Content}>
+                    <h3 className={styles.Activities_RecentCard_Title}>
+                      Workshop AI
+                    </h3>
+                    <p className={styles.Activities_RecentCard_Desc}>
+                      CLB Kỹ thuật số tổ chức | AI ỨNG DỤNG
+                    </p>
+                    <p className={styles.Activities_RecentCard_Date}>
+                      Ngày 25 tháng 02 năm 2025
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div className={styles.Activities_RecentCard}>
-                <img
-                  src="/Img/Homepage/card1.png"
-                  alt="Cuộc thi lập trình"
-                  className={styles.Activities_RecentCard_Image}
-                />
-                <div className={styles.Activities_RecentCard_Content}>
-                  <h3 className={styles.Activities_RecentCard_Title}>
-                    Cuộc thi lập trình
-                  </h3>
-                  <p className={styles.Activities_RecentCard_Desc}>
-                    Khoa CNTT tổ chức | CTF CHALLENGE
-                  </p>
-                  <p className={styles.Activities_RecentCard_Date}>
-                    Ngày 10 tháng 03 năm 2025
-                  </p>
+              </a>
+              <a href="/ActivitiesPost">
+                <div className={styles.Activities_RecentCard}>
+                  <img
+                    src="/Img/Homepage/card1.png"
+                    alt="Cuộc thi lập trình"
+                    className={styles.Activities_RecentCard_Image}
+                  />
+                  <div className={styles.Activities_RecentCard_Content}>
+                    <h3 className={styles.Activities_RecentCard_Title}>
+                      Cuộc thi lập trình
+                    </h3>
+                    <p className={styles.Activities_RecentCard_Desc}>
+                      Khoa CNTT tổ chức | CTF CHALLENGE
+                    </p>
+                    <p className={styles.Activities_RecentCard_Date}>
+                      Ngày 10 tháng 03 năm 2025
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div className={styles.Activities_RecentCard}>
-                <img
-                  src="/Img/Homepage/card1.png"
-                  alt="Seminar Blockchain"
-                  className={styles.Activities_RecentCard_Image}
-                />
-                <div className={styles.Activities_RecentCard_Content}>
-                  <h3 className={styles.Activities_RecentCard_Title}>
-                    Seminar Blockchain
-                  </h3>
-                  <p className={styles.Activities_RecentCard_Desc}>
-                    Khoa Mạng máy tính | CẬP NHẬT XU HƯỚNG BLOCKCHAIN
-                  </p>
-                  <p className={styles.Activities_RecentCard_Date}>
-                    Ngày 18 tháng 03 năm 2025
-                  </p>
+              </a>
+              <a href="/ActivitiesPost">
+                <div className={styles.Activities_RecentCard}>
+                  <img
+                    src="/Img/Homepage/card1.png"
+                    alt="Seminar Blockchain"
+                    className={styles.Activities_RecentCard_Image}
+                  />
+                  <div className={styles.Activities_RecentCard_Content}>
+                    <h3 className={styles.Activities_RecentCard_Title}>
+                      Seminar Blockchain
+                    </h3>
+                    <p className={styles.Activities_RecentCard_Desc}>
+                      Khoa Mạng máy tính | CẬP NHẬT XU HƯỚNG BLOCKCHAIN
+                    </p>
+                    <p className={styles.Activities_RecentCard_Date}>
+                      Ngày 18 tháng 03 năm 2025
+                    </p>
+                  </div>
                 </div>
-              </div>
+              </a>
             </div>
-            <Link href="/Activities" className={styles.Activities_ViewMore}>
+            <Link
+              href="/ActivitiesOverview"
+              className={styles.Activities_ViewMore}
+            >
               Xem thêm ...
             </Link>
 
