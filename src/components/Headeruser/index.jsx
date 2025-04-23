@@ -1,4 +1,4 @@
-"use client";
+    "use client";
 import { useState, useEffect } from "react";
 import styles from "@/styles-comp/style.module.css";
 import Image from "next/image";

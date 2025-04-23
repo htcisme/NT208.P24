@@ -7,10 +7,10 @@ import { usePathname } from "next/navigation";
 
 const HeaderAdmin = () => {
   const pathname = usePathname();
-  
+
   const isActive = (path) => {
-    return pathname === path 
-      ? "admin-header-navitem admin-header-navitem-active" 
+    return pathname === path
+      ? "admin-header-navitem admin-header-navitem-active"
       : "admin-header-navitem";
   };
 
@@ -21,15 +21,15 @@ const HeaderAdmin = () => {
         <div className="admin-header-user">
           <span className="admin-header-username">Nguyễn Đình Khang</span>
           <div className="admin-header-user-icon">
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              width="24" 
-              height="24" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="2" 
-              strokeLinecap="round" 
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
               strokeLinejoin="round"
             >
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -38,7 +38,7 @@ const HeaderAdmin = () => {
           </div>
         </div>
       </div>
-      
+
       <div className="admin-header-navbar">
         <Link href="/" className={isActive("/")}>
           TRANG CHỦ
@@ -46,10 +46,16 @@ const HeaderAdmin = () => {
         <Link href="/introduction" className={isActive("/introduction")}>
           GIỚI THIỆU
         </Link>
-        <Link href="/admin/ActivitiesDashboard" className={isActive("/activities")}>
+        <Link
+          href="/admin/ActivitiesDashboard"
+          className={isActive("/activities")}
+        >
           HOẠT ĐỘNG
         </Link>
-        <Link href="/admin/AwardsDashboard" className={isActive("/achievements")}>
+        <Link
+          href="/admin/AwardsDashboard"
+          className={isActive("/achievements")}
+        >
           THÀNH TÍCH
         </Link>
         <Link href="/booking" className={isActive("/booking")}>
