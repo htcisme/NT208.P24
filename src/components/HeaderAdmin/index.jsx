@@ -61,7 +61,7 @@ const HeaderAdmin = () => {
         <Link href="/booking" className={isActive("/booking")}>
           ĐẶT PHÒNG
         </Link>
-        <Link href="/contact" className={isActive("/contact")}>
+        <Link href="/admin/UsersDashboard" className={isActive("/contact")}>
           NGƯỜI DÙNG
         </Link>
       </div>

@@ -1,23 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/mongodb";
-import mongoose from "mongoose";
-
-// Define User schema if you haven't created a User model yet
-let User;
-try {
-  User = mongoose.model("User");
-} catch {
-  const userSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    role: { type: String, default: "user" },
-    createdAt: { type: Date, default: Date.now },
-  });
-
-  User = mongoose.model("User", userSchema);
-}
+import User from "@/models/User";
 
 export async function POST(request) {
   try {
@@ -60,10 +44,11 @@ export async function POST(request) {
     }
 
     // Validate admin role with admin code
-    let userRole = "user"; // Default role
+    let userRole = "user";
     if (role === "admin") {
       // Verify admin code (store this securely in your .env)
-      const validAdminCode = process.env.ADMIN_SECRET_CODE || "admin123"; // Change this in production
+      const validAdminCode =
+        process.env.ADMIN_SECRET_CODE || "XP8c!vK2#qRz7@tL9jWnE5$dYg6*pH";
 
       if (adminCode !== validAdminCode) {
         return NextResponse.json(
@@ -84,7 +69,7 @@ export async function POST(request) {
       name,
       email,
       password: hashedPassword,
-      role: userRole, // Set the validated role
+      role: userRole,
     });
 
     await newUser.save();
@@ -92,20 +77,21 @@ export async function POST(request) {
     return NextResponse.json(
       {
         success: true,
-        message: "Đăng ký thành công",
+        message: "Thêm người dùng thành công",
         user: {
           id: newUser._id,
           name: newUser.name,
           email: newUser.email,
           role: newUser.role,
+          createdAt: new Date(newUser.createdAt).toLocaleDateString("vi-VN"),
         },
       },
       { status: 201 }
     );
   } catch (error) {
-    console.error("Registration error:", error);
+    console.error("Error creating user:", error);
     return NextResponse.json(
-      { success: false, message: "Có lỗi xảy ra trong quá trình đăng ký" },
+      { success: false, message: "Lỗi khi thêm người dùng" },
       { status: 500 }
     );
   }
