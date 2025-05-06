@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import withAdminAuth from "@/components/WithAdminAuth";
 import HeaderAdmin from "@/components/HeaderAdmin";
 import "@/styles-comp/style.css";
 import "./style.css";
 
-export default function UsersDashboard() {
+function UsersDashboard() {
   // Thêm state để theo dõi người dùng được chọn
   const [selectedUsers, setSelectedUsers] = useState([]);
 
@@ -683,3 +684,5 @@ export default function UsersDashboard() {
     </div>
   );
 }
+
+export default withAdminAuth(UsersDashboard);

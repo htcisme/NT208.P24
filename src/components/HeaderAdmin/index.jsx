@@ -3,10 +3,47 @@
 import React, { useState, useEffect } from "react";
 import "@/styles-comp/style.css";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const HeaderAdmin = () => {
   const pathname = usePathname();
+  const router = useRouter();
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Kiểm tra user trong localStorage khi component mount
+    const checkUser = () => {
+      try {
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+          const userData = JSON.parse(storedUser);
+          setUser(userData);
+
+          // Nếu người dùng không phải admin, chuyển hướng về trang chủ
+          if (userData.role !== "admin") {
+            router.push("/");
+          }
+        } else {
+          // Nếu không có thông tin user, chuyển hướng về trang đăng nhập
+          router.push("/User?tab=login");
+        }
+      } catch (error) {
+        console.error("Error checking user:", error);
+        router.push("/User?tab=login");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkUser();
+  }, [router]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    router.push("/User?tab=login");
+  };
 
   const isActive = (path) => {
     return pathname === path
@@ -14,27 +51,38 @@ const HeaderAdmin = () => {
       : "admin-header-navitem";
   };
 
+  if (isLoading) {
+    return <div className="admin-loading">Đang tải...</div>;
+  }
+
   return (
     <div className="admin-header-container">
       <div className="admin-header-topbar">
         <div className="admin-header-title">TRANG QUẢN TRỊ</div>
         <div className="admin-header-user">
-          <span className="admin-header-username">Nguyễn Đình Khang</span>
-          <div className="admin-header-user-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </svg>
+          <span className="admin-header-username">{user?.name || "Khách"}</span>
+          <div className="admin-header-user-dropdown">
+            <div className="admin-header-user-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <div className="admin-header-dropdown-content">
+              <button onClick={handleLogout} className="admin-logout-btn">
+                Đăng xuất
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -48,20 +96,23 @@ const HeaderAdmin = () => {
         </Link>
         <Link
           href="/admin/ActivitiesDashboard"
-          className={isActive("/activities")}
+          className={isActive("/admin/ActivitiesDashboard")}
         >
           HOẠT ĐỘNG
         </Link>
         <Link
           href="/admin/AwardsDashboard"
-          className={isActive("/achievements")}
+          className={isActive("/admin/AwardsDashboard")}
         >
           THÀNH TÍCH
         </Link>
         <Link href="/booking" className={isActive("/booking")}>
           ĐẶT PHÒNG
         </Link>
-        <Link href="/admin/UsersDashboard" className={isActive("/contact")}>
+        <Link
+          href="/admin/UsersDashboard"
+          className={isActive("/admin/UsersDashboard")}
+        >
           NGƯỜI DÙNG
         </Link>
       </div>

@@ -84,10 +84,14 @@ export default function User() {
         throw new Error(data.message || "Đăng nhập thất bại");
       }
 
-      // Save token to localStorage
+      // Sau khi nhận được response thành công
+      // Lưu token vào localStorage
       localStorage.setItem("token", data.token);
 
-      // Save user info
+      // THÊM MỚI: Lưu token vào cookie
+      document.cookie = `token=${data.token}; path=/; max-age=86400`; // hết hạn sau 1 ngày
+
+      // Lưu thông tin người dùng
       localStorage.setItem("user", JSON.stringify(data.user));
 
       // Redirect to homepage or dashboard
