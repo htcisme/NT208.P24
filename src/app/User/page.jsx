@@ -26,7 +26,10 @@ export default function User() {
     name: "",
     email: "",
     password: "",
+    role: "user", // Thêm role mặc định là user
+    adminCode: "", // Mã xác thực cho admin
   });
+  const [showAdminCode, setShowAdminCode] = useState(false);
   const [registerError, setRegisterError] = useState("");
   const [isRegisterLoading, setIsRegisterLoading] = useState(false);
   const [registerSuccess, setRegisterSuccess] = useState("");
@@ -41,9 +44,24 @@ export default function User() {
 
   // Handle register form input changes
   const handleRegisterChange = (e) => {
+    const { name, value } = e.target;
+
+    if (name === "role" && value === "admin") {
+      setShowAdminCode(true);
+    } else if (name === "role" && value === "user") {
+      setShowAdminCode(false);
+      // Reset admin code when switching to user
+      setRegisterFormData({
+        ...registerFormData,
+        [name]: value,
+        adminCode: "",
+      });
+      return;
+    }
+
     setRegisterFormData({
       ...registerFormData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
   };
 
@@ -109,7 +127,10 @@ export default function User() {
         name: "",
         email: "",
         password: "",
+        role: "user",
+        adminCode: "",
       });
+      setShowAdminCode(false);
 
       // Switch to login tab after successful registration
       setTimeout(() => {
@@ -292,6 +313,37 @@ export default function User() {
                       minLength="6"
                     />
                   </div>
+
+                  <div className="form-group">
+                    <label htmlFor="register-role">Vai trò</label>
+                    <select
+                      className="form-control"
+                      id="register-role"
+                      name="role"
+                      value={registerFormData.role}
+                      onChange={handleRegisterChange}
+                      required
+                    >
+                      <option value="user">Đoàn viên</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </div>
+
+                  {showAdminCode && (
+                    <div className="form-group">
+                      <label htmlFor="admin-code">Mã xác thực Admin</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="admin-code"
+                        name="adminCode"
+                        placeholder="Nhập mã xác thực Admin"
+                        value={registerFormData.adminCode}
+                        onChange={handleRegisterChange}
+                        required
+                      />
+                    </div>
+                  )}
 
                   <button
                     type="submit"
