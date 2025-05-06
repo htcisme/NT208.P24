@@ -14,6 +14,7 @@ const images = [
 ];
 
 export default function Home() {
+  const [user, setUser] = useState(null);
   // Danh sách 5 sự kiện với tiêu đề
   const events = [
     { title: "VNU TOUR 2024", image: "/Img/Homepage/Slider1.png" },
@@ -30,6 +31,21 @@ export default function Home() {
   const [showMenu, setShowMenu] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
 
+  const handleLogout = () => {
+    // Xóa từ localStorage
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+
+    // Xóa cookie token
+    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+
+    // Cập nhật state
+    setUser(null);
+    setShowUserMenu(false);
+
+    // Tải lại trang để cập nhật giao diện
+    window.location.reload();
+  };
   // Hàm xử lý bấm mũi tên trái
   const handlePrev = () => {
     setStartIndex(
@@ -82,12 +98,23 @@ export default function Home() {
 
   // Thêm useEffect để kiểm tra dark mode từ localStorage khi trang tải
   useEffect(() => {
+    // Kiểm tra dark mode
     const savedMode = localStorage.getItem("darkMode");
     if (savedMode === "true") {
       setIsDarkMode(true);
       document.body.classList.add("dark-mode");
     } else {
       document.body.classList.remove("dark-mode");
+    }
+
+    // Kiểm tra đăng nhập
+    try {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    } catch (error) {
+      console.error("Error checking user:", error);
     }
   }, []);
 
@@ -126,23 +153,50 @@ export default function Home() {
               className={styles.Header_Nav_AuthButton}
               onClick={toggleUserMenu}
             >
-              Tài khoản
+              {user ? `Xin chào, ${user.name}` : "Tài khoản"}
               <span className={styles.Header_Nav_AuthButton_Arrow}>▼</span>
             </button>
             {showUserMenu && (
               <div className={styles.Header_Nav_AuthMenu}>
-                <Link
-                  href="/User?tab=login"
-                  className={styles.Header_Nav_AuthMenu_Item}
-                >
-                  Đăng nhập
-                </Link>
-                <Link
-                  href="/User?tab=register"
-                  className={styles.Header_Nav_AuthMenu_Item}
-                >
-                  Đăng ký
-                </Link>
+                {user ? (
+                  <>
+                    <Link
+                      href="/profile"
+                      className={styles.Header_Nav_AuthMenu_Item}
+                    >
+                      Trang cá nhân
+                    </Link>
+                    {user.role === "admin" && (
+                      <Link
+                        href="/admin/UsersDashboard"
+                        className={styles.Header_Nav_AuthMenu_Item}
+                      >
+                        Quản trị
+                      </Link>
+                    )}
+                    <button
+                      onClick={handleLogout}
+                      className={styles.Header_Nav_AuthMenu_Item}
+                    >
+                      Đăng xuất
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href="/User?tab=login"
+                      className={styles.Header_Nav_AuthMenu_Item}
+                    >
+                      Đăng nhập
+                    </Link>
+                    <Link
+                      href="/User?tab=register"
+                      className={styles.Header_Nav_AuthMenu_Item}
+                    >
+                      Đăng ký
+                    </Link>
+                  </>
+                )}
               </div>
             )}
           </div>
