@@ -23,7 +23,7 @@ export async function POST(request) {
   try {
     await dbConnect();
 
-    const { name, email, password } = await request.json();
+    const { name, email, password, role, adminCode } = await request.json();
 
     // Validation
     if (!name || !email || !password) {
@@ -59,6 +59,22 @@ export async function POST(request) {
       );
     }
 
+    // Validate admin role with admin code
+    let userRole = "user"; // Default role
+    if (role === "admin") {
+      // Verify admin code (store this securely in your .env)
+      const validAdminCode = process.env.ADMIN_SECRET_CODE || "admin123"; // Change this in production
+
+      if (adminCode !== validAdminCode) {
+        return NextResponse.json(
+          { success: false, message: "Mã xác thực Admin không hợp lệ" },
+          { status: 403 }
+        );
+      }
+
+      userRole = "admin";
+    }
+
     // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -68,6 +84,7 @@ export async function POST(request) {
       name,
       email,
       password: hashedPassword,
+      role: userRole, // Set the validated role
     });
 
     await newUser.save();
@@ -80,6 +97,7 @@ export async function POST(request) {
           id: newUser._id,
           name: newUser.name,
           email: newUser.email,
+          role: newUser.role,
         },
       },
       { status: 201 }

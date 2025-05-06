@@ -62,7 +62,7 @@ const HeaderAdmin = () => {
           ĐẶT PHÒNG
         </Link>
         <Link href="/contact" className={isActive("/contact")}>
-          LIÊN HỆ
+          NGƯỜI DÙNG
         </Link>
       </div>
     </div>

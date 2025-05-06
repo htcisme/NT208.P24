@@ -111,7 +111,7 @@
   background-color: #fff;
 }
 
-.data-table th, 
+.data-table th,
 .data-table td {
   text-align: left;
   padding: 10px;
@@ -187,7 +187,7 @@
   color: #6c757d;
 }
 
-.reply-container, 
+.reply-container,
 .edit-container {
   background-color: #e9ecef;
   padding: 15px;
@@ -195,7 +195,7 @@
   border-radius: 4px;
 }
 
-.reply-textarea, 
+.reply-textarea,
 .edit-textarea {
   width: 100%;
   min-height: 100px;
@@ -206,7 +206,7 @@
   background-color: #e3f2fd;
 }
 
-.reply-actions, 
+.reply-actions,
 .edit-actions {
   display: flex;
   gap: 10px;
@@ -440,26 +440,26 @@
   .add-page-container {
     flex-direction: column;
   }
-  
+
   .add-page-content {
     margin-right: 0;
     margin-bottom: 20px;
   }
-  
+
   .admin-action-bar {
     flex-direction: column;
     gap: 10px;
   }
-  
+
   .nav-tabs {
     flex-wrap: wrap;
   }
-  
+
   .nav-tabs button {
     flex-grow: 1;
     padding: 10px;
   }
-  
+
   .data-table {
     display: block;
     overflow-x: auto;

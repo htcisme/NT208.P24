@@ -9,9 +9,7 @@ export const metadata = {
 export default function Activities({ children }) {
   return (
     <html lang="en">
-      <body>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
