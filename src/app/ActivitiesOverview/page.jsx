@@ -1,12 +1,16 @@
 "use client"; // Đánh dấu đây là Client Component
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import "@/styles-comp/style.css";
 import "@/app/ActivitiesOverview/style.css";
 
 export default function ActivitiesOverview() {
+  // State để quản lý trang hiện tại cho mỗi phần
+  const [currentPostPage, setCurrentPostPage] = useState(1);
+  const [currentOtherPage, setCurrentOtherPage] = useState(1);
+
   // Dữ liệu mẫu cho danh sách bài đăng (8 bài, 2 hàng x 4 bài)
   const postList = [
     {
@@ -105,6 +109,32 @@ export default function ActivitiesOverview() {
     return `${hours}:${minutes} - Thứ Hai, Ngày ${day}/${month}/${year}`;
   };
 
+  // Cấu hình phân trang
+  const totalPostPages = 5; // Ví dụ có 5 trang cho phần danh sách bài đăng
+  const totalOtherPages = 3; // Ví dụ có 3 trang cho phần các bài viết khác
+
+  // Tạo mảng số trang cho phần phân trang
+  const generatePageNumbers = (currentPage, totalPages) => {
+    let pages = [];
+    
+    // Luôn hiển thị trang đầu tiên
+    pages.push(1);
+    
+    // Thêm trang hiện tại và các trang xung quanh
+    for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
+      if (!pages.includes(i)) {
+        pages.push(i);
+      }
+    }
+    
+    // Luôn hiển thị trang cuối cùng nếu có nhiều hơn 1 trang
+    if (totalPages > 1 && !pages.includes(totalPages)) {
+      pages.push(totalPages);
+    }
+    
+    return pages;
+  };
+
   return (
     <>
       <main className="light-container-main">
@@ -123,6 +153,39 @@ export default function ActivitiesOverview() {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Phân trang cho danh sách bài đăng */}
+          <div className="pagination-container">
+            <div className="pagination">
+              {currentPostPage > 1 && (
+                <button 
+                  className="pagination-btn" 
+                  onClick={() => setCurrentPostPage(currentPostPage - 1)}
+                >
+                  &lt;
+                </button>
+              )}
+              
+              {generatePageNumbers(currentPostPage, totalPostPages).map((pageNum) => (
+                <button
+                  key={pageNum}
+                  className={`pagination-btn ${pageNum === currentPostPage ? 'active' : ''}`}
+                  onClick={() => setCurrentPostPage(pageNum)}
+                >
+                  {pageNum}
+                </button>
+              ))}
+              
+              {currentPostPage < totalPostPages && (
+                <button 
+                  className="pagination-btn" 
+                  onClick={() => setCurrentPostPage(currentPostPage + 1)}
+                >
+                  &gt;
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Mục Các bài viết khác */}
@@ -148,6 +211,39 @@ export default function ActivitiesOverview() {
                     <p className="other-post-date">{formatDate(post.date)}</p>
                   </div>
                 ))}
+              </div>
+            </div>
+            
+            {/* Phân trang cho các bài viết khác */}
+            <div className="pagination-container other-pagination">
+              <div className="pagination">
+                {currentOtherPage > 1 && (
+                  <button 
+                    className="pagination-btn" 
+                    onClick={() => setCurrentOtherPage(currentOtherPage - 1)}
+                  >
+                    &lt;
+                  </button>
+                )}
+                
+                {generatePageNumbers(currentOtherPage, totalOtherPages).map((pageNum) => (
+                  <button
+                    key={pageNum}
+                    className={`pagination-btn ${pageNum === currentOtherPage ? 'active' : ''}`}
+                    onClick={() => setCurrentOtherPage(pageNum)}
+                  >
+                    {pageNum}
+                  </button>
+                ))}
+                
+                {currentOtherPage < totalOtherPages && (
+                  <button 
+                    className="pagination-btn" 
+                    onClick={() => setCurrentOtherPage(currentOtherPage + 1)}
+                  >
+                    &gt;
+                  </button>
+                )}
               </div>
             </div>
           </div>
