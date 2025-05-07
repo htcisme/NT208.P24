@@ -21,101 +21,11 @@ export default function BookingForm() {
     agreement: false,
   });
 
+  // Thêm vào phần khai báo state ở đầu component
+  const [submitting, setSubmitting] = useState(false);
+  const [submissionSuccess, setSubmissionSuccess] = useState(false);
   // State for tracking validation errors
   const [errors, setErrors] = useState({});
-
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
-    });
-
-    // Clear error for this field when user types
-    if (errors[name]) {
-      setErrors({
-        ...errors,
-        [name]: "",
-      });
-    }
-  };
-
-  // Validate step 1 fields
-  const validateStep1 = () => {
-    const newErrors = {};
-
-    if (!formData.fullname.trim()) {
-      newErrors.fullname = "Vui lòng nhập họ và tên";
-    }
-
-    if (!formData.mssv.trim()) {
-      newErrors.mssv = "Vui lòng nhập MSSV";
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = "Vui lòng nhập email";
-    } else if (
-      !formData.email.endsWith("@suctremmt.com") &&
-      !formData.email.endsWith("@gm.uit.edu.vn")
-    ) {
-      newErrors.email = "Email phải có định dạng MSSV@gm.uit.edu.vn ";
-    }
-
-    if (!formData.phone.trim()) {
-      newErrors.phone = "Vui lòng nhập số điện thoại";
-    } else if (!/^[0-9]{10}$/.test(formData.phone)) {
-      newErrors.phone = "Số điện thoại phải gồm 10 chữ số";
-    }
-
-    if (!formData.donvi) {
-      newErrors.donvi = "Vui lòng chọn đơn vị";
-    }
-
-    setErrors(newErrors);
-
-    // Return true if no errors
-    return Object.keys(newErrors).length === 0;
-  };
-
-  // Validate step 2 fields
-  const validateStep2 = () => {
-    const newErrors = {};
-
-    if (!formData.room.trim()) {
-      newErrors.room = "Vui lòng nhập tên phòng";
-    }
-
-    if (!formData.date) {
-      newErrors.date = "Vui lòng chọn ngày đặt phòng";
-    }
-
-    if (!formData.startTime) {
-      newErrors.startTime = "Vui lòng chọn thời gian bắt đầu";
-    }
-
-    if (!formData.endTime) {
-      newErrors.endTime = "Vui lòng chọn thời gian kết thúc";
-    } else if (formData.startTime && formData.endTime <= formData.startTime) {
-      newErrors.endTime = "Thời gian kết thúc phải sau thời gian bắt đầu";
-    }
-
-    if (!formData.content.trim()) {
-      newErrors.content = "Vui lòng nhập nội dung sử dụng";
-    }
-
-    if (!formData.equipment) {
-      newErrors.equipment = "Vui lòng chọn yêu cầu thiết bị";
-    }
-
-    if (!formData.agreement) {
-      newErrors.agreement = "Vui lòng đồng ý với các điều khoản";
-    }
-
-    setErrors(newErrors);
-
-    // Return true if no errors
-    return Object.keys(newErrors).length === 0;
-  };
 
   const nextStep = () => {
     // Validate all fields in step 1 before proceeding
@@ -143,29 +53,186 @@ export default function BookingForm() {
     setErrors(rest);
   };
 
-  const submitForm = () => {
-    // Validate all fields in step 2 before submitting
+  // Thay thế đoạn code gửi dữ liệu trong hàm submitForm với đoạn code sau
+  const submitForm = async () => {
     if (validateStep2()) {
-      // Here you would typically collect all form data and send it to a server
-      alert("Đăng ký sử dụng phòng của bạn đã được gửi thành công!");
+      try {
+        setSubmitting(true);
 
-      // Reset form
-      setFormData({
-        fullname: "",
-        mssv: "",
-        email: "",
-        phone: "",
-        donvi: "",
-        room: "",
-        date: "",
-        startTime: "",
-        endTime: "",
-        content: "",
-        equipment: "",
-        agreement: false,
+        // Lấy giá trị text của đơn vị
+        const donviElement = document.getElementById("donvi");
+        const donviText = donviElement.options[donviElement.selectedIndex].text;
+
+        // Định dạng ngày
+        let formattedDate = formData.date;
+        if (formData.date && formData.date.includes("-")) {
+          const dateParts = formData.date.split("-");
+          formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+        }
+
+        // Thông tin khả năng gặp lỗi
+        console.log("Đang gửi dữ liệu...");
+        console.log("Hoạt động: ", formData.content.substring(0, 30) + "...");
+        console.log("MSSV: ", formData.mssv);
+        console.log("Đơn vị: ", donviText);
+
+        // Xây dựng URL với tất cả tham số
+        const scriptURL =
+          "https://script.google.com/macros/s/AKfycbztUVQSnFp6BYTUsmJGeuqPU9znyRiC8FvN9TWEu5yOWM01plcllrf9zSu2pVs7Mrd62A/exec";
+
+        // Tạo iframe ẩn để gửi form
+        const iframeId = "hidden_iframe_" + Date.now();
+        const iframe = document.createElement("iframe");
+        iframe.id = iframeId;
+        iframe.name = iframeId;
+        iframe.style.display = "none";
+        document.body.appendChild(iframe);
+
+        // Tạo form để gửi dữ liệu
+        const form = document.createElement("form");
+        form.action = scriptURL;
+        form.method = "GET";
+        form.target = iframeId;
+        form.style.display = "none";
+
+        // Thêm các field vào form
+        const addField = (name, value) => {
+          const input = document.createElement("input");
+          input.type = "hidden";
+          input.name = name;
+          input.value = value;
+          form.appendChild(input);
+        };
+
+        // Thêm tất cả các trường dữ liệu
+
+        addField("mssv", formData.mssv);
+        addField("ho_ten", formData.fullname);
+        addField("don_vi", donviText);
+        addField("sdt", formData.phone);
+        addField("phong", formData.room);
+        addField("ngay", formattedDate);
+        addField("gio", `${formData.startTime} - ${formData.endTime}`);
+        addField("noi_dung", formData.content);
+
+        // Thêm form vào document và submit
+        document.body.appendChild(form);
+        form.submit();
+
+        // Xử lý sau khi gửi
+        setTimeout(() => {
+          setSubmissionSuccess(true);
+          alert("Đăng ký sử dụng phòng của bạn đã được gửi thành công!");
+
+          // Reset form
+          setFormData({
+            fullname: "",
+            mssv: "",
+            email: "",
+            phone: "",
+            donvi: "",
+            room: "",
+            date: "",
+            startTime: "",
+            endTime: "",
+            content: "",
+            equipment: "",
+            agreement: false,
+          });
+
+          // Reset các state khác
+          setErrors({});
+          setCurrentStep(1);
+
+          // Dọn dẹp iframe và form
+          document.body.removeChild(form);
+          document.body.removeChild(iframe);
+
+          setSubmitting(false);
+        }, 2500);
+      } catch (error) {
+        console.error("Error submitting form:", error);
+        alert(`Có lỗi xảy ra khi gửi form: ${error.message}`);
+        setSubmitting(false);
+      }
+    }
+  };
+  // Thêm hàm validateStep1 nếu chưa có
+  const validateStep1 = () => {
+    const newErrors = {};
+
+    if (!formData.fullname.trim()) newErrors.fullname = "Họ tên là bắt buộc";
+    if (!formData.mssv.trim()) newErrors.mssv = "MSSV là bắt buộc";
+    if (!formData.email.trim()) {
+      newErrors.email = "Email là bắt buộc";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Email không hợp lệ";
+    }
+    if (!formData.phone.trim()) {
+      newErrors.phone = "Số điện thoại là bắt buộc";
+    } else if (!/^[0-9]{10}$/.test(formData.phone.trim())) {
+      newErrors.phone = "Số điện thoại phải có 10 chữ số";
+    }
+    if (!formData.donvi) newErrors.donvi = "Đơn vị là bắt buộc";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // Thêm hàm validateStep2 nếu chưa có
+  const validateStep2 = () => {
+    const newErrors = {};
+
+    if (!formData.room) newErrors.room = "Vui lòng chọn phòng";
+    if (!formData.date) newErrors.date = "Ngày sử dụng là bắt buộc";
+    if (!formData.startTime)
+      newErrors.startTime = "Thời gian bắt đầu là bắt buộc";
+    if (!formData.endTime) newErrors.endTime = "Thời gian kết thúc là bắt buộc";
+    if (!formData.content.trim())
+      newErrors.content = "Nội dung sử dụng là bắt buộc";
+    if (!formData.agreement)
+      newErrors.agreement = "Bạn cần đồng ý với các điều khoản";
+
+    // Kiểm tra thời gian bắt đầu và kết thúc
+    if (formData.startTime && formData.endTime) {
+      const start = new Date(`2000-01-01T${formData.startTime}`);
+      const end = new Date(`2000-01-01T${formData.endTime}`);
+      if (start >= end) {
+        newErrors.endTime = "Thời gian kết thúc phải sau thời gian bắt đầu";
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // Thêm hàm xử lý next và back
+  const handleNext = () => {
+    if (currentStep === 1) {
+      if (validateStep1()) {
+        setCurrentStep(2);
+      }
+    }
+  };
+
+  const handleBack = () => {
+    setCurrentStep(1);
+  };
+
+  // Thêm hàm xử lý input change nếu chưa có hoặc chưa đầy đủ
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? checked : value,
+    });
+
+    // Clear error when user types
+    if (errors[name]) {
+      setErrors({
+        ...errors,
+        [name]: undefined,
       });
-      setErrors({});
-      setCurrentStep(1);
     }
   };
 
@@ -394,7 +461,12 @@ export default function BookingForm() {
                 )}
               </div>
             </div>
-
+            {/* Thêm vào trước <div className="btn-group"> trong form-step thứ 2 */}
+            {submissionSuccess && (
+              <div className="submission-success">
+                Đăng ký đã được gửi thành công và lưu vào hệ thống!
+              </div>
+            )}
             <div className="btn-group">
               <button
                 type="button"
@@ -604,8 +676,9 @@ export default function BookingForm() {
                 type="button"
                 className="btn btn-success"
                 onClick={submitForm}
+                disabled={submitting}
               >
-                Gửi Đăng Ký
+                {submitting ? "Đang gửi..." : "Gửi Đăng Ký"}
               </button>
             </div>
           </div>
