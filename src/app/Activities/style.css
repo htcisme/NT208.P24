@@ -30,7 +30,10 @@
 
 .light-split-right {
   width: 30%;
-  text-align: justify; /* Căn đều nội dung trong cột */
+  text-align: justify; 
+  max-height: 700px; /* Chiều cao tối đa */
+  display: flex;
+  flex-direction: column;
 }
 
 /* Tiêu đề "Tin tức mới nhất" */
@@ -47,20 +50,47 @@
 .light-news-list {
   list-style: none;
   padding: 0;
-  border-top: 1px solid #042354; /* Đường kẻ ngang phía trên */
+  margin: 0;
+  max-height: 580px; /* Chiều cao tối đa */
+  overflow-y: auto; /* Tạo thanh cuộn khi cần */
+  border-top: 1px solid #042354;
+  padding-right: 10px; /* Tạo không gian cho thanh cuộn */
+}
+
+.light-news-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.light-news-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.light-news-list::-webkit-scrollbar-thumb {
+  background: #042354;
+  border-radius: 10px;
+}
+
+.light-news-list::-webkit-scrollbar-thumb:hover {
+  background: #031a3e;
 }
 
 .light-news-list li {
-  margin-bottom: 1rem;
-  padding-top: 1rem;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
 }
 
-.light-news-list a {
+.light-news-list li:last-child {
+  border-bottom: none;
+}
+
+.light-news-list li a {
   color: #042354;
   text-decoration: none;
-  font-size: 1rem;
-  line-height: 1.5;
-  display: block; /* Để toàn bộ dòng có thể click */
+  display: block;
+  font-size: 15px;
+  line-height: 1.4;
+  margin-bottom: 5px;
 }
 
 /* Ngày tháng năm */
@@ -80,18 +110,25 @@
 
 /* Phần "Xem thêm" */
 .light-news-more {
-  text-align: right; /* Căn phải liên kết "Xem thêm" */
-  margin-top: 1rem;
+  margin-top: auto; /* Đẩy nút Xem thêm xuống cuối */
+  text-align: right;
+  padding: 10px 0;
 }
 
 .light-news-more a {
   color: #042354;
   text-decoration: none;
-  font-size: 0.85rem; /* Giảm kích thước chữ xuống 0.85rem (khoảng 13.6px) */
+  font-size: 14px;
+  font-weight: 500;
+  padding: 5px 10px;
+  border: 1px solid #042354;
+  border-radius: 4px;
+  transition: all 0.3s ease;
 }
 
 .light-news-more a:hover {
-  text-decoration: underline;
+  background-color: #042354;
+  color: #fff;
 }
 
 /* Phần tiêu đề mô tả */

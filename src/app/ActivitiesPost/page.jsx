@@ -5,7 +5,6 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import "@/styles-comp/style.css";
-import "@/app/activities/[id]/style.css"; // Đảm bảo import đúng file CSS
 
 export default function ActivityPost() {
   const params = useParams();
