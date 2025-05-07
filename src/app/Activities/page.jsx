@@ -140,7 +140,7 @@ export default function Activities() {
                 {latestNews.length > 0 ? (
                   latestNews.map((news) => (
                     <li key={news._id}>
-                      <Link href={`/activities/${news._id}`}>
+                      <Link href={`/Activities/${news._id}`}>
                         {news.title}
                       </Link>
                       <span className="news-date">{formatNewsDate(news.createdAt)}</span>
