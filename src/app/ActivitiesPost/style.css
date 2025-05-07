@@ -1,363 +1,199 @@
-/* Import Montserrat font */
+/* Import Montserrat font (nếu chưa có trong file CSS chính) */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
 
-/* Apply Montserrat font globally */
-* {
-  font-family: 'Montserrat', sans-serif;
-}
-
-/* Layout chính */
-.light-container-main {
-  padding-left: 2rem;
-  padding-right: 2rem;
-  padding-top: 2rem;
+/* Layout cho trang chi tiết bài viết */
+.activity-post-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 2rem;
   background-color: #ECF9FF;
   color: #042354;
 }
 
-/* Tiêu đề chính */
-.light-main-title {
-  font-size: 22px; /* Kích thước chữ 22px */
-  font-weight: 600; /* Độ đậm */
-  color: #042354; /* Màu chữ */
-  text-align: center; /* Căn giữa */
-  margin-bottom: 2rem; /* Khoảng cách dưới */
-  line-height: 1.5; /* Khoảng cách giữa các dòng */
+/* Phần nội dung bài viết chính */
+.post-main-content {
+  flex: 1;
+  min-width: 65%;
 }
 
-/* Split section: 70-30 */
-.light-split-section {
-  display: flex;
-  gap: 2rem;
-  margin-bottom: 2.5rem;
-}
-
-.light-split-left {
-  width: 70%;
-  text-align: center;
-}
-
-.light-split-right {
+/* Sidebar tin tức mới nhất */
+.post-sidebar {
   width: 30%;
-  text-align: justify; /* Căn đều nội dung trong cột */
+  min-width: 250px;
 }
 
-/* Tiêu đề "Tin tức mới nhất" */
-.light-split-right h3 {
-  font-size: 15px;
-  font-weight: 600;
-  color: #fff; /* Chữ trắng */
-  background-color: #042354; /* Nền xanh đậm */
-  padding: 0.5rem 1rem; /* Khoảng cách bên trong */
-  display: inline-block; /* Để nền chỉ bao quanh nội dung */
-}
-
-/* Container cho "Trở về" và "Xem thêm" */
-.light-news-actions {
-  display: flex; /* Sử dụng flex để đặt hai liên kết trên cùng một hàng */
-  justify-content: space-between; /* "Trở về" căn trái, "Xem thêm" căn phải */
-  margin-top: 1rem;
-}
-
-/* Phần "Trở về" */
-.light-news-back {
-  text-align: left; /* Căn phải liên kết "Trở về" */
-  margin-top: 1rem;
-}
-
-.light-news-back a {
+/* Tiêu đề bài viết chính */
+.post-title {
+  font-size: 1.8rem;
+  font-weight: 700;
   color: #042354;
-  text-decoration: none;
-  font-size: 0.85rem; /* Kích thước chữ nhỏ */
-}
-
-.light-news-back a:hover {
-  text-decoration: underline;
-}
-
-/* Phần "Xem thêm" */
-.light-news-more {
-  text-align: right; /* Căn phải liên kết "Xem thêm" */
-  margin-top: 1rem;
-}
-
-.light-news-more a {
-  color: #042354;
-  text-decoration: none;
-  font-size: 0.85rem; /* Kích thước chữ nhỏ */
-}
-
-.light-news-more a:hover {
-  text-decoration: underline;
-}
-
-/* Danh sách tin tức */
-.light-news-list {
-  list-style: none;
-  padding: 0;
-  border-top: 1px solid #042354; /* Đường kẻ ngang phía trên */
-}
-
-.light-news-list li {
   margin-bottom: 1rem;
-  padding-top: 1rem;
 }
 
-.light-news-list a {
-  color: #042354;
-  text-decoration: none;
-  font-size: 1rem;
-  line-height: 1.5;
-  display: block; /* Để toàn bộ dòng có thể click */
-}
-
-/* Ngày tháng năm */
-.light-news-list .news-date {
-  display: block; /* Đặt ngày tháng trên hàng riêng */
-  font-size: 12px;
-  color: #042354;
-  margin-top: 5px; 
-  margin-left: 20px;
-  font-style: italic; /* Tùy chọn: làm nghiêng ngày tháng để nổi bật */
-}
-
-.light-news-list a:hover {
-  text-decoration: underline;
-}
-
-/* Phần tiêu đề mô tả */
-.light-section-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #042354;
+/* Thông tin meta: tác giả, ngày đăng */
+.post-meta {
+  font-size: 0.9rem;
+  color: #555;
   margin-bottom: 1.5rem;
-  text-align: left;
-}
-
-.light-section-date {
-  font-size: 14px;
-  color: #042354;
-  margin-bottom: 1rem;
-  text-align: left;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 /* Hình ảnh nổi bật */
-.light-section-highlight img {
+.post-featured-image {
+  margin: 1.5rem 0;
   border-radius: 0.5rem;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-  margin-top: 1rem;
-  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+.post-featured-image img {
   width: 100%;
   height: auto;
+  display: block;
 }
 
-.light-section-description {
-  max-width: 1000px;
+/* Nội dung bài viết */
+.post-content {
   font-size: 1rem;
-  color: #042354;
+  line-height: 1.6;
   text-align: justify;
 }
 
-.light-section-author {
-  font-size: 14px;
-  color: #042354;
-  margin-top: 1rem;
-  text-align: right;
-}
-
-.light-slider-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  margin: 2rem 0;
-  position: relative;
-}
-
-.light-slider-item {
-  text-align: center;
-  flex: 1; /* Chia đều không gian cho mỗi item */
-}
-
-.slider-image-placeholder {
-  width: 350px; /* Giảm chiều rộng một chút */
-  height: 300px; /* Tăng chiều cao */
+/* Phần tin tức mới nhất */
+.latest-news-section {
   background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 15px;
-  margin: 0 auto 10px; /* Căn giữa và giữ khoảng cách bên dưới */
-  transition: all 0.3s ease; /* Thêm hiệu ứng chuyển đổi mượt mà */
-}
-
-/* Hình ảnh ở giữa (active) */
-.slider-image-placeholder.active {
-  width: 450px; /* Tăng chiều rộng */
-  height: 400px; /* Tăng chiều cao */
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Đổ bóng để nổi bật */
-}
-
-.slider-image {
-  width: 90%; /* Giảm chiều rộng một chút */
-  height: 250px; /* Tăng chiều cao */
-  object-fit: cover; /* Đảm bảo hình ảnh không bị méo */
   border-radius: 0.5rem;
-  margin: 0 auto 0.5rem; /* Căn giữa và giữ khoảng cách bên dưới */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  padding: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-.light-slider-item h4 {
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: #042354;
-}
-
-.light-slider-arrow {
-  background: none;
-  border: none;
-  font-size: 2rem; /* Kích thước mũi tên lớn hơn */
-  cursor: pointer;
-  color: #042354;
-  padding: 0 1rem;
-}
-
-.light-slider-dots {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
-
-.light-slider-dots .dot {
-  width: 10px;
-  height: 10px;
-  background-color: #ccc;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.light-slider-dots .dot.active {
-  background-color: #042354;
-}
-
-/* 40-60 split: Hình ảnh bên trái, nội dung bên phải */
-.split-40-60 {
-  display: flex;
-  gap: 1.5rem;
-  padding-bottom: 50px;
-  align-items: stretch; /* Đảm bảo các phần tử con có cùng chiều cao */
-}
-
-/* 60-40 split: Nội dung bên trái, hình ảnh bên phải */
-.split-60-40 {
-  display: flex;
-  gap: 1.5rem;
-  align-items: stretch; /* Đảm bảo các phần tử con có cùng chiều cao */
-}
-
-/* Đảm bảo hình ảnh và nội dung có cùng chiều cao */
-.split-40-60 .light-detail-image,
-.split-60-40 .light-detail-image {
-  width: 40%;
-  display: flex; /* Để hình ảnh bên trong có thể căn chỉnh */
-}
-
-.split-40-60 .light-detail-content,
-.split-60-40 .light-detail-content {
-  width: 60%;
-  text-align: justify;
-  text-indent: 2rem; /* Thụt lề dòng đầu tiên */
-}
-
-/* Placeholder cho hình ảnh trong section */
-.detail-image-placeholder {
-  width: 100%;
-  height: 100%; /* Chiều cao sẽ khớp với nội dung */
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 0.5rem;
-  min-height: 250px; /* Đảm bảo chiều cao tối thiểu */
-}
-
-.light-detail-container {
-  margin-top: 10px;
-  padding-left: 30px;
-  padding-right: 30px;
-  padding-top: 70px;
-  padding-bottom: 20px;
-}
-
-/* Related Posts Section */
-.related-posts-container {
-  padding-top: 50px;
-  padding-bottom: 70px;
-  padding-left: 70px;
-  padding-right: 70px;
-}
-
-.related-posts-title {
+/* Tiêu đề phần tin tức mới nhất */
+.latest-news-title {
   font-size: 15px;
   font-weight: 600;
   color: #fff;
   background-color: #042354;
   padding: 0.5rem 1rem;
   display: inline-block;
-  margin-bottom: 1.5rem;
-  border-bottom: 2px solid #042354;
-  line-height: 1;
+  margin-bottom: 1rem;
 }
 
-.related-posts-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
+/* Danh sách tin tức */
+.latest-news-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid #042354;
 }
 
-.related-post-item {
+.latest-news-item {
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.latest-news-link {
+  color: #042354;
+  text-decoration: none;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  display: block;
+}
+
+.latest-news-link:hover {
+  text-decoration: underline;
+}
+
+.latest-news-date {
+  display: block;
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.3rem;
+  font-style: italic;
+  margin-left: 1rem;
+}
+
+/* Liên kết xem thêm */
+.view-more-link {
+  text-align: right;
+  margin-top: 1rem;
+}
+
+.view-more-link a {
+  color: #042354;
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+.view-more-link a:hover {
+  text-decoration: underline;
+}
+
+/* Nút trở về */
+.post-actions {
+  width: 100%;
+  margin-top: 2rem;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.back-button {
+  display: inline-block;
+  padding: 0.5rem 1.5rem;
+  background-color: #042354;
+  color: white;
+  text-decoration: none;
+  border-radius: 0.25rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.back-button:hover {
+  background-color: #031a3e;
+}
+
+/* Loading và error states */
+.loading-container, .error-container,
+.loading-news, .error-news {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
   text-align: center;
 }
 
-.related-post-box {
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 0.5rem;
+.loading-news, .error-news {
   padding: 1rem;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+  min-height: 100px;
 }
 
-.related-post-image-placeholder {
-  width: 100%;
-  height: 250px;
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  border-radius: 0.5rem;
-  margin-bottom: 0.5rem;
+.error-container button,
+.error-news button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #042354;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
 }
 
-.related-post-image img {
-  width: 100%;
-  height: 250px;
-  object-fit: cover;
-  border-radius: 0.5rem;
-  margin-bottom: 0.5rem;
+.no-news-message {
+  padding: 1rem 0;
+  text-align: center;
+  color: #666;
 }
 
-.related-post-title {
-  font-size: 1rem;
-  font-weight: 500;
-  color: #042354;
-  text-align: left;
-  margin: 0;
-  flex: 1;
-}
-
-.related-post-title a {
-  color: #042354;
-  text-decoration: none; /* Bỏ gạch chân mặc định */
-  display: block; /* Đảm bảo toàn bộ dòng tiêu đề có thể nhấn */
-}
-
-.related-post-title a:hover {
-  text-decoration: underline; /* Thêm gạch chân khi hover */
+/* Responsive design */
+@media (max-width: 768px) {
+  .activity-post-container {
+    flex-direction: column;
+  }
+  
+  .post-sidebar {
+    width: 100%;
+  }
 }

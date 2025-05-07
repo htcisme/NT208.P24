@@ -156,3 +156,82 @@
 .light-news-back a:hover {
   text-decoration: underline;
 }
+
+/* Pagination styles */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin: 30px 0;
+}
+
+.pagination {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.pagination-btn {
+  min-width: 32px;
+  height: 32px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  color: #042354;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.pagination-btn:hover {
+  background-color: #f0f8ff;
+  border-color: #042354;
+}
+
+.pagination-btn.active {
+  background-color: #042354;
+  color: #fff;
+  border-color: #042354;
+}
+
+/* Điều chỉnh phân trang ở phần Các bài viết khác */
+.other-pagination {
+  margin-top: 20px;
+  margin-bottom: 0;
+}
+
+.pagination-ellipsis {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  font-weight: bold;
+  color: #042354;
+}
+
+/* Thêm vào d:\PROJECT\NT208.P24\src\app\ActivitiesOverview\style.css */
+.loading-container, .error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  flex-direction: column;
+}
+
+.loading-container p, .error-container p {
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.error-container button {
+  padding: 8px 16px;
+  background-color: #042354;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
