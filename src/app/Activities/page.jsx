@@ -17,7 +17,7 @@ export default function Activities() {
   useEffect(() => {
     const fetchLatestNews = async () => {
       try {
-        const response = await fetch(`/api/activities?page=1&limit=3&status=published`);
+        const response = await fetch(`/api/activities?page=1&limit=10&status=published`);
         if (!response.ok) {
           throw new Error('Failed to fetch latest news');
         }
