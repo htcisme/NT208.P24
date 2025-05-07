@@ -212,3 +212,26 @@
   font-weight: bold;
   color: #042354;
 }
+
+/* Thêm vào d:\PROJECT\NT208.P24\src\app\ActivitiesOverview\style.css */
+.loading-container, .error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  flex-direction: column;
+}
+
+.loading-container p, .error-container p {
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.error-container button {
+  padding: 8px 16px;
+  background-color: #042354;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}

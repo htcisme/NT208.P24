@@ -242,3 +242,16 @@
   padding-top: 70px;
   padding-bottom: 70px;
 }
+
+.loading-news, .error-news {
+  padding: 15px;
+  text-align: center;
+}
+
+.error-news p {
+  color: #d32f2f;
+}
+
+.loading-news p {
+  color: #0288d1;
+}

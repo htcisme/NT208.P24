@@ -1,6 +1,6 @@
 "use client"; // Thêm dòng này để đánh dấu đây là Client Component
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"; // Thêm useEffect vào đây
 import Image from "next/image";
 import Footer from "@/components/Footer";
 import Link from "next/link";
@@ -8,8 +8,70 @@ import "@/styles-comp/style.css";
 import "@/app/Activities/style.css";
 
 export default function Activities() {
+  // State cho tin tức mới nhất
+  const [latestNews, setLatestNews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch tin tức mới nhất từ API
+  useEffect(() => {
+    const fetchLatestNews = async () => {
+      try {
+        const response = await fetch(`/api/activities?page=1&limit=3&status=published`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch latest news');
+        }
+        const data = await response.json();
+
+        if (data.success) {
+          setLatestNews(data.data);
+        } else {
+          throw new Error(data.message || 'Error fetching latest news');
+        }
+      } catch (err) {
+        console.error('Error:', err);
+        setError('Không thể lấy tin tức mới nhất');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLatestNews();
+  }, []);
+
+  // Hàm định dạng thời gian cho tin tức mới nhất (định dạng "Thứ ... - DD/MM/YYYY")
+  const formatNewsDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+
+    // Lấy ngày trong tuần
+    const daysOfWeek = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+    const dayOfWeek = daysOfWeek[date.getDay()];
+
+    return `${dayOfWeek} - ${day}/${month}/${year}`;
+  };
+
+  // Hàm định dạng thời gian đầy đủ (giữ nguyên)
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    return `${hours}:${minutes} - Thứ Hai, Ngày ${day}/${month}/${year}`;
+  };
+
   // Danh sách 5 sự kiện với tiêu đề (có thể thêm hình ảnh sau)
-  const events = [{ title: "VNU TOUR 2024", image: "/path-to-image-1.jpg" }, { title: "NGỌN ĐUỐC XANH 2025", image: "/path-to-image-2.jpg" }, { title: "NETSEC DAY 2024", image: "/path-to-image-3.jpg" }, { title: "EVENT 4 2024", image: "/path-to-image-4.jpg" }, { title: "EVENT 5 2024", image: "/path-to-image-5.jpg" },];
+  const events = [
+    { title: "VNU TOUR 2024", image: "/path-to-image-1.jpg" },
+    { title: "NGỌN ĐUỐC XANH 2025", image: "/path-to-image-2.jpg" },
+    { title: "NETSEC DAY 2024", image: "/path-to-image-3.jpg" },
+    { title: "EVENT 4 2024", image: "/path-to-image-4.jpg" },
+    { title: "EVENT 5 2024", image: "/path-to-image-5.jpg" },
+  ];
 
   // Trạng thái để quản lý vị trí bắt đầu của slider
   const [startIndex, setStartIndex] = useState(0);
@@ -26,6 +88,7 @@ export default function Activities() {
 
   // Lấy 3 sự kiện để hiển thị dựa trên startIndex
   const visibleEvents = events.slice(startIndex, startIndex + 3);
+
   return (
     <>
       <main className="light-container-main">
@@ -56,20 +119,39 @@ export default function Activities() {
           {/* Bên phải: 30% - Tin tức mới nhất */}
           <div className="light-split-right">
             <h3>TIN TỨC MỚI NHẤT</h3>
-            <ul className="light-news-list">
-              <li>
-                <a href="/ActivitiesPost">Chiến dịch Ngọn Đuốc Xanh 2025 thông báo mở form đăng ký chiến sĩ</a>
-                <span className="news-date">Thứ Sáu - 14/02/2025</span>
-              </li>
-              <li>
-                <a href="#">Đoàn khoa Mạng máy tính và Truyền thông công bố chủ đề “Tần Ty Đón Tết” chào mừng Xuân Ất Tỵ 2025</a>
-                <span className="news-date">Thứ Sáu - 14/02/2025</span>
-              </li>
-              <li>
-                <a href="#">Công bố chủ đề hoạt động “NC Sharing”</a>
-                <span className="news-date">Thứ Sáu - 14/02/2025</span>
-              </li>
-            </ul>
+
+            {/* Hiển thị loading state */}
+            {loading && (
+              <div className="loading-news">
+                <p>Đang tải tin tức...</p>
+              </div>
+            )}
+
+            {/* Hiển thị error state */}
+            {error && (
+              <div className="error-news">
+                <p>{error}</p>
+              </div>
+            )}
+
+            {/* Hiển thị tin tức từ API */}
+            {!loading && !error && (
+              <ul className="light-news-list">
+                {latestNews.length > 0 ? (
+                  latestNews.map((news) => (
+                    <li key={news._id}>
+                      <Link href={`/activities/${news._id}`}>
+                        {news.title}
+                      </Link>
+                      <span className="news-date">{formatNewsDate(news.createdAt)}</span>
+                    </li>
+                  ))
+                ) : (
+                  <li>Không có tin tức mới.</li>
+                )}
+              </ul>
+            )}
+
             <div className="light-news-more">
               <Link href="/ActivitiesOverview">Xem thêm</Link>
             </div>
@@ -116,8 +198,8 @@ export default function Activities() {
                 tại địa phương nơi các tỉnh. Cụ thể, Đoàn khoa đã tổ chức thành công 2 chiến dịch tình nguyện: Ngọn Đuốc Xanh 2023 và Ngọn Đuốc Xanh 2024. Đội hình Ngọn Đuốc
                 Xanh là đội hình tình nguyện của các bạn sinh viên trẻ, năng động, nhiệt huyết, luôn mong muốn được cống hiến sức trẻ của mình cho cộng đồng. Với tinh thần
                 "Sẻ chia - Kết nối - Trao yêu thương", các chiến sĩ Ngọn Đuốc Xanh đã tham gia nhiều hoạt động tình nguyện ý nghĩa tại địa phương phường Tân Phú, phường Long
-                Trường (Thành phố Thủ Đức) và  xã Tân Phú (Thị xã Cai Lậy, tỉnh Tiền Giang) như: Công trình thanh niên “Tuyến đường hoa nông thôn mới”, Công trình “Thùng phân
-                loại rác tái chế”, Ngày hội “Công nghệ cho em”, Ngày tri ân, Bữa cơm nghĩa tình, Lớp học kỹ năng mềm, Đêm văn nghệ cho em,... Các chiến sĩ của 2 chiến dịch tuy
+                Trường (Thành phố Thủ Đức) và  xã Tân Phú (Thị xã Cai Lậy, tỉnh Tiền Giang) như: Công trình thanh niên "Tuyến đường hoa nông thôn mới", Công trình "Thùng phân
+                loại rác tái chế", Ngày hội "Công nghệ cho em", Ngày tri ân, Bữa cơm nghĩa tình, Lớp học kỹ năng mềm, Đêm văn nghệ cho em,... Các chiến sĩ của 2 chiến dịch tuy
                 đến từ các khoa khác nhau, các ngành học khác nhau nhưng cùng chung tinh thần thiện nguyện, tương thân tương ái.
               </p>
             </div>
@@ -130,15 +212,15 @@ export default function Activities() {
               <br />
               <p>
                 Để giúp các bạn Tân sinh viên hiểu hơn về Khu đô thị Đại học Quốc gia HCM - nơi trường Đại học Công nghệ Thông tin
-                đang tọa lạc, chuỗi hoạt động chào đón Tân sinh viên còn một hoạt động đặc trưng, ghi dấu ấn về hoạt động “Thể lực
-                tốt” của Đoàn khoa Mạng trong nhiều năm liền, đó là VNU Tour - Hành trình khám phá Khu đô thị Đại học Quốc gia. Trải
+                đang tọa lạc, chuỗi hoạt động chào đón Tân sinh viên còn một hoạt động đặc trưng, ghi dấu ấn về hoạt động "Thể lực
+                tốt" của Đoàn khoa Mạng trong nhiều năm liền, đó là VNU Tour - Hành trình khám phá Khu đô thị Đại học Quốc gia. Trải
                 qua 11 mùa tính đến năm 2023, VNU Tour đã để lại trong lòng các bạn Tân sinh viên nhiều ký ức khó quên trong hành
                 trình khám phá và tìm ra sự thật được che giấu đằng sau các chủ đề mà VNU Tour muốn truyền tải. Qua việc đi đến các
                 trạm được đặt tại các địa điểm nổi bật trong Khu đô thị ĐHQG-HCM, vượt các chướng ngại vật, giải mật thư và tìm ra
                 câu trả lời cuối cùng được ẩn giấu, các bạn Tân sinh viên sẽ có được cho mình những kỹ năng, kinh nghiệm bổ ích,
                 sát với đời sống sinh viên tại đây. Hơn nữa, đây không chỉ là hoạt động giúp các bạn được trải nghiệm mà còn là một
-                trong những hoạt động được cấp giấy chứng nhận “Thể lực tốt” trong danh hiệu “Sinh viên 5 tốt” cấp Khoa. Năm 2023,
-                với chủ đề “Mật ngữ loài hoa”, đây là năm bùng nổ với hơn 450 thí sinh đến từ 15 trường đại học khác nhau trên địa
+                trong những hoạt động được cấp giấy chứng nhận "Thể lực tốt" trong danh hiệu "Sinh viên 5 tốt" cấp Khoa. Năm 2023,
+                với chủ đề "Mật ngữ loài hoa", đây là năm bùng nổ với hơn 450 thí sinh đến từ 15 trường đại học khác nhau trên địa
                 bàn thành phố. VNU Tour hứa hẹn sẽ ngày càng phát huy hơn nữa vai trò của mình, nhất là giai đoạn những ngày đầu năm học.
               </p>
             </div>
@@ -147,9 +229,8 @@ export default function Activities() {
             </div>
           </div>
         </div>
-        <Footer></Footer>
+        <Footer />
       </main>
     </>
   );
 }
-

@@ -1,91 +1,27 @@
 "use client"; // Client Component indicator
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Footer from "@/components/Footer";
 import HeaderAdmin from "@/components/HeaderAdmin";
 import Link from "next/link";
 import "@/styles-comp/style.css";
 import "@/app/admin/ActivitiesDashboard/style.css";
-import Header from "@/components/Header";
 
 const ActivitiesDashboard = () => {
   const [activeTab, setActiveTab] = useState("activities");
   const [activeView, setActiveView] = useState("allPages"); // 'allPages', 'addPage', or 'editPage'
   const [editingTask, setEditingTask] = useState(null);
 
-  // Sample data for the tasks/posts
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      title: "Chiến dịch Ngọn Đuốc Xanh 2025 công bố danh sách chiến sĩ",
-      content: "Nội dung bài viết...",
-      author: "Nguyễn Đình Khang",
-      time: "15:00 - Thứ Hai, Ngày 16/04/2025",
-      action: "Chỉnh sửa/Xóa/Sao chép",
-      selected: false,
-    },
-    {
-      id: 2,
-      title: "Chiến dịch Ngọn Đuốc Xanh 2025 công bố danh sách chiến sĩ",
-      content: "Nội dung bài viết...",
-      author: "Nguyễn Đình Khang",
-      time: "15:00 - Thứ Hai, Ngày 16/04/2025",
-      action: "Chỉnh sửa/Xóa/Sao chép",
-      selected: false,
-    },
-    {
-      id: 3,
-      title: "Chiến dịch Ngọn Đuốc Xanh 2025 công bố danh sách chiến sĩ",
-      content: "Nội dung bài viết...",
-      author: "Nguyễn Đình Khang",
-      time: "15:00 - Thứ Hai, Ngày 16/04/2025",
-      action: "Chỉnh sửa/Xóa/Sao chép",
-      selected: false,
-    },
-    {
-      id: 4,
-      title: "Chiến dịch Ngọn Đuốc Xanh 2025 công bố danh sách chiến sĩ",
-      content: "Nội dung bài viết...",
-      author: "Nguyễn Đình Khang",
-      time: "15:00 - Thứ Hai, Ngày 16/04/2025",
-      action: "Chỉnh sửa/Xóa/Sao chép",
-      selected: false,
-    },
-    {
-      id: 5,
-      title: "Chiến dịch Ngọn Đuốc Xanh 2025 công bố danh sách chiến sĩ",
-      content: "Nội dung bài viết...",
-      author: "Nguyễn Đình Khang",
-      time: "15:00 - Thứ Hai, Ngày 16/04/2025",
-      action: "Chỉnh sửa/Xóa/Sao chép",
-      selected: false,
-    },
-  ]);
+  // Khởi tạo state với mảng rỗng thay vì dữ liệu mẫu
+  const [tasks, setTasks] = useState([]);
+  const [comments, setComments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Sample data for comments
-  const [comments, setComments] = useState([
-    {
-      id: 1,
-      comment: "Ngọn Đuốc Xanh năm nay tuyệt quá!",
-      author: "Nguyễn Đình Khang",
-      time: "15:00 - Thứ Hai, Ngày 14/04/2025",
-      reply: "Ngọn Đuốc Xanh năm nay tuyệt quá!",
-      selected: false,
-      isReplying: false,
-      isEditing: false,
-    },
-    {
-      id: 2,
-      comment: "Ngọn Đuốc Xanh năm nay tuyệt quá!",
-      author: "Nguyễn Đình Khang",
-      time: "15:00 - Thứ Hai, Ngày 14/04/2025",
-      reply: "Ngọn Đuốc Xanh năm nay tuyệt quá!",
-      selected: false,
-      isReplying: false,
-      isEditing: false,
-    },
-  ]);
+  // State cho việc tải ảnh lên
+  const [uploadedImage, setUploadedImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState("");
 
   // For new page creation
   const [newTitle, setNewTitle] = useState("");
@@ -108,6 +44,65 @@ const ActivitiesDashboard = () => {
   // Selected batch action
   const [batchAction, setBatchAction] = useState("delete"); // 'delete', 'copy', 'edit'
   const [commentBatchAction, setCommentBatchAction] = useState("delete"); // 'delete', 'edit', 'reply'
+
+  // Fetch dữ liệu khi component được mount
+  useEffect(() => {
+    const fetchActivities = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/activities');
+        
+        if (!response.ok) {
+          throw new Error('Không thể lấy dữ liệu hoạt động');
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          // Chuyển đổi dữ liệu API thành định dạng hiện tại của ứng dụng
+          const formattedTasks = data.data.map(activity => ({
+            id: activity._id,
+            title: activity.title,
+            content: activity.content,
+            author: activity.author,
+            time: formatDate(activity.createdAt),
+            image: activity.image,
+            status: activity.status,
+            commentOption: activity.commentOption,
+            selected: false,
+          }));
+          
+          setTasks(formattedTasks);
+        } else {
+          throw new Error(data.message || 'Lỗi khi lấy dữ liệu hoạt động');
+        }
+      } catch (error) {
+        console.error('Error fetching activities:', error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchActivities();
+  }, []);
+
+  // Xử lý khi chọn ảnh
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        alert('Kích thước file không được vượt quá 2MB');
+        return;
+      }
+      
+      setUploadedImage(file);
+      
+      // Tạo URL preview cho ảnh
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl);
+    }
+  };
 
   // Handle checkbox selection for tasks
   const handleTaskSelection = (id) => {
@@ -142,17 +137,71 @@ const ActivitiesDashboard = () => {
   };
 
   // Execute batch action on tasks
-  const executeBatchActionOnTasks = () => {
+  const executeBatchActionOnTasks = async () => {
+    const selectedTasks = tasks.filter(task => task.selected);
+    
+    if (selectedTasks.length === 0) {
+      alert("Vui lòng chọn ít nhất một bài viết!");
+      return;
+    }
+    
     if (batchAction === "delete") {
-      setTasks(tasks.filter((task) => !task.selected));
+      if (window.confirm("Bạn có chắc muốn xóa các bài viết đã chọn?")) {
+        try {
+          for (const task of selectedTasks) {
+            await fetch(`/api/activities/${task.id}`, {
+              method: 'DELETE'
+            });
+          }
+          
+          setTasks(tasks.filter((task) => !task.selected));
+        } catch (error) {
+          console.error("Lỗi khi xóa bài viết:", error);
+          alert("Có lỗi xảy ra khi xóa bài viết!");
+        }
+      }
     } else if (batchAction === "copy") {
       const selectedTasks = tasks.filter((task) => task.selected);
-      const newTasks = selectedTasks.map((task) => ({
-        ...task,
-        id: Date.now() + Math.random(),
-        selected: false,
-      }));
-      setTasks([...tasks, ...newTasks]);
+      const newTasks = [...tasks];
+      
+      for (const task of selectedTasks) {
+        try {
+          const response = await fetch('/api/activities', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              title: `${task.title} (Sao chép)`,
+              content: task.content,
+              author: task.author,
+              status: task.status,
+              commentOption: task.commentOption,
+              image: task.image
+            }),
+          });
+          
+          const data = await response.json();
+          
+          if (data.success) {
+            newTasks.push({
+              id: data.data._id,
+              title: data.data.title,
+              content: data.data.content,
+              author: data.data.author,
+              image: data.data.image,
+              time: formatDate(data.data.createdAt),
+              status: data.data.status,
+              commentOption: data.data.commentOption,
+              selected: false,
+            });
+          }
+        } catch (error) {
+          console.error("Lỗi khi sao chép bài viết:", error);
+        }
+      }
+      
+      setTasks(newTasks);
     } else if (batchAction === "edit") {
       // For editing multiple tasks, we can implement a bulk edit interface
       // For simplicity, we'll just edit the first selected task
@@ -183,8 +232,25 @@ const ActivitiesDashboard = () => {
   };
 
   // Delete a single task
-  const deleteTask = (id) => {
-    setTasks(tasks.filter((task) => task.id !== id));
+  const deleteTask = async (id) => {
+    if (window.confirm("Bạn có chắc muốn xóa bài viết này?")) {
+      try {
+        const response = await fetch(`/api/activities/${id}`, {
+          method: 'DELETE'
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          setTasks(tasks.filter((task) => task.id !== id));
+        } else {
+          alert(data.message || "Có lỗi xảy ra khi xóa bài viết!");
+        }
+      } catch (error) {
+        console.error("Lỗi khi xóa bài viết:", error);
+        alert("Có lỗi xảy ra khi xóa bài viết!");
+      }
+    }
   };
 
   // Delete a single comment
@@ -193,36 +259,149 @@ const ActivitiesDashboard = () => {
   };
 
   // Copy a task
-  const copyTask = (task) => {
-    const newTask = { ...task, id: Date.now(), selected: false };
-    setTasks([...tasks, newTask]);
+  const copyTask = async (task) => {
+    try {
+      const response = await fetch('/api/activities', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: `${task.title} (Sao chép)`,
+          content: task.content,
+          author: task.author,
+          status: task.status,
+          commentOption: task.commentOption,
+          image: task.image
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        setTasks([...tasks, {
+          id: data.data._id,
+          title: data.data.title,
+          content: data.data.content,
+          author: data.data.author,
+          image: data.data.image,
+          time: formatDate(data.data.createdAt),
+          status: data.data.status,
+          commentOption: data.data.commentOption,
+          selected: false,
+        }]);
+      } else {
+        alert(data.message || "Có lỗi xảy ra khi sao chép bài viết!");
+      }
+    } catch (error) {
+      console.error("Lỗi khi sao chép bài viết:", error);
+      alert("Có lỗi xảy ra khi sao chép bài viết!");
+    }
   };
 
   // Edit a task
-  const editTask = (id) => {
-    const taskToEdit = tasks.find((task) => task.id === id);
-    setEditingTask(taskToEdit);
-    setNewTitle(taskToEdit.title);
-    setNewContent(taskToEdit.content);
-    setActiveView("editPage");
+  const editTask = async (id) => {
+    try {
+      const response = await fetch(`/api/activities/${id}`);
+      
+      if (!response.ok) {
+        throw new Error('Không thể lấy thông tin bài viết');
+      }
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        const taskToEdit = {
+          id: data.data._id,
+          title: data.data.title,
+          content: data.data.content,
+          author: data.data.author,
+          image: data.data.image,
+          status: data.data.status || "published",
+          commentOption: data.data.commentOption || "open"
+        };
+        
+        setEditingTask(taskToEdit);
+        setNewTitle(taskToEdit.title);
+        setNewContent(taskToEdit.content);
+        setPageStatus(taskToEdit.status);
+        setCommentOption(taskToEdit.commentOption);
+        
+        // Hiển thị hình ảnh hiện có nếu có
+        if (taskToEdit.image) {
+          setImagePreview(taskToEdit.image);
+        } else {
+          setImagePreview("");
+        }
+        
+        setActiveView("editPage");
+      } else {
+        throw new Error(data.message || 'Lỗi khi lấy thông tin bài viết');
+      }
+    } catch (error) {
+      console.error("Error fetching task:", error);
+      alert("Có lỗi xảy ra khi lấy thông tin bài viết!");
+    }
   };
 
   // Update edited task
-  const updateTask = () => {
-    if (newTitle.trim() === "") return;
+  const updateTask = async () => {
+    if (newTitle.trim() === "") {
+      alert("Tiêu đề không được để trống!");
+      return;
+    }
 
-    setTasks(
-      tasks.map((task) =>
-        task.id === editingTask.id
-          ? { ...task, title: newTitle, content: newContent }
-          : task
-      )
-    );
+    try {
+      // Tạo FormData để gửi cả dữ liệu và file
+      const formData = new FormData();
+      formData.append('title', newTitle);
+      formData.append('content', newContent);
+      formData.append('status', pageStatus);
+      formData.append('commentOption', commentOption);
+      
+      if (publishOption === "scheduled") {
+        formData.append('scheduledPublish', new Date(`${scheduledDate}T${scheduledTime}`).toISOString());
+      }
+      
+      // Thêm ảnh mới nếu có
+      if (uploadedImage) {
+        formData.append('image', uploadedImage);
+      }
 
-    setNewTitle("");
-    setNewContent("");
-    setEditingTask(null);
-    setActiveView("allPages");
+      const response = await fetch(`/api/activities/${editingTask.id}`, {
+        method: 'PUT',
+        body: formData,
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        setTasks(tasks.map(task => 
+          task.id === editingTask.id 
+            ? {
+                ...task,
+                title: newTitle,
+                content: newContent,
+                image: uploadedImage ? data.data.image : (imagePreview || task.image),
+                status: pageStatus,
+                commentOption: commentOption
+              } 
+            : task
+        ));
+
+        setNewTitle("");
+        setNewContent("");
+        setUploadedImage(null);
+        setImagePreview("");
+        setEditingTask(null);
+        setActiveView("allPages");
+      } else {
+        alert(data.message || "Có lỗi xảy ra khi cập nhật bài viết");
+      }
+    } catch (error) {
+      console.error("Error updating activity:", error);
+      alert("Có lỗi xảy ra khi cập nhật bài viết");
+    }
   };
 
   // Toggle reply for a comment
@@ -259,7 +438,7 @@ const ActivitiesDashboard = () => {
       id: Date.now(),
       comment: replyCommentText,
       author: "Nguyễn Đình Khang",
-      time: "15:00 - Thứ Hai, Ngày 14/04/2025",
+      time: formatDate(new Date()),
       reply: comments.find((comment) => comment.id === id).comment,
       selected: false,
       isReplying: false,
@@ -283,48 +462,134 @@ const ActivitiesDashboard = () => {
     );
   };
 
-  // Add new page
-  const addNewPage = () => {
-    if (newTitle.trim() === "") return;
+  // Hàm format date
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    return `${hours}:${minutes} - Thứ Hai, Ngày ${day}/${month}/${year}`;
+  };
 
-    const newPage = {
-      id: Date.now(),
-      title: newTitle,
-      content: newContent,
-      author: "Nguyễn Đình Khang",
-      time: "15:00 - Thứ Hai, Ngày 14/04/2025",
-      action: "Chỉnh sửa/Xóa/Sao chép",
-      selected: false,
-      status: pageStatus,
-      publishOption: publishOption,
-      commentOption: commentOption,
-    };
+  // Thêm hoạt động mới
+  const addNewPage = async () => {
+    if (newTitle.trim() === "") {
+      alert("Tiêu đề không được để trống!");
+      return;
+    }
 
-    setTasks([...tasks, newPage]);
-    setNewTitle("");
-    setNewContent("");
-    setActiveView("allPages");
+    try {
+      // Tạo FormData để gửi cả dữ liệu và file
+      const formData = new FormData();
+      formData.append('title', newTitle);
+      formData.append('content', newContent);
+      formData.append('author', "Nguyễn Đình Khang"); // Hoặc lấy từ thông tin người dùng hiện tại
+      formData.append('status', pageStatus);
+      formData.append('commentOption', commentOption);
+      
+      if (publishOption === "scheduled") {
+        formData.append('scheduledPublish', new Date(`${scheduledDate}T${scheduledTime}`).toISOString());
+      }
+      
+      // Thêm ảnh nếu có
+      if (uploadedImage) {
+        formData.append('image', uploadedImage);
+      }
+
+      const response = await fetch('/api/activities', {
+        method: 'POST',
+        body: formData, // Không cần đặt Content-Type khi dùng FormData
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        // Thêm vào danh sách hiển thị
+        setTasks([...tasks, {
+          id: data.data._id,
+          title: data.data.title,
+          content: data.data.content,
+          author: data.data.author,
+          image: data.data.image, // Thêm trường image
+          time: formatDate(data.data.createdAt),
+          status: data.data.status,
+          commentOption: data.data.commentOption,
+          selected: false,
+        }]);
+        
+        setNewTitle("");
+        setNewContent("");
+        setUploadedImage(null);
+        setImagePreview("");
+        setActiveView("allPages");
+        // Hiển thị thông báo thành công
+      } else {
+        // Hiển thị lỗi
+        alert(data.message || "Có lỗi xảy ra khi tạo hoạt động mới");
+      }
+    } catch (error) {
+      console.error("Error creating activity:", error);
+      alert("Có lỗi xảy ra khi tạo hoạt động mới");
+    }
   };
 
   // Render the page editor (used for both add and edit)
   const renderPageEditor = (isEditing = false) => (
     <div className="add-page-container">
       <div className="add-page-content">
-        <h2>{isEditing ? "CHỈNH SỬA TIÊU ĐỀ" : "THÊM TIÊU ĐỀ"}</h2>
+        <h2>{isEditing ? "CHỈNH SỬA BÀI VIẾT" : "THÊM BÀI VIẾT MỚI"}</h2>
         <input
           type="text"
-          placeholder="Thêm nội dung mới"
+          placeholder="Nhập tiêu đề bài viết"
           value={newTitle}
           onChange={(e) => setNewTitle(e.target.value)}
           className="add-title-input"
         />
+        
+        {/* Phần upload ảnh */}
+        <div className="image-upload-container">
+          <h3>Hình ảnh đại diện</h3>
+          <div className="image-upload-box">
+            <input 
+              type="file" 
+              accept="image/*" 
+              id="image-upload"
+              onChange={handleImageChange}
+              className="image-input" 
+            />
+            <label htmlFor="image-upload" className="image-upload-label">
+              {imagePreview ? "Thay đổi ảnh" : "Chọn ảnh"}
+            </label>
+            
+            {imagePreview && (
+              <div className="image-preview">
+                <img src={imagePreview} alt="Preview" />
+                <button 
+                  type="button" 
+                  className="remove-image-btn"
+                  onClick={() => {
+                    setUploadedImage(null);
+                    setImagePreview("");
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+            )}
+          </div>
+          <p className="image-hint">Kích thước đề xuất: 800x400px, tối đa 2MB</p>
+        </div>
+        
         <textarea
-          placeholder="Thêm nội dung mới"
+          placeholder="Nhập nội dung bài viết"
           value={newContent}
           onChange={(e) => setNewContent(e.target.value)}
           className="add-content-textarea"
         />
       </div>
+      
       <div className="add-page-sidebar">
         <h3>Thông tin bài viết</h3>
         <div className="info-tabs">
@@ -442,9 +707,20 @@ const ActivitiesDashboard = () => {
     </div>
   );
 
+  if (loading) {
+    return (
+      <div className="admin-dashboard">
+        <HeaderAdmin />
+        <div className="admin-content loading">
+          <p>Đang tải dữ liệu...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="admin-dashboard">
-      <HeaderAdmin></HeaderAdmin>
+      <HeaderAdmin />
 
       <div className="admin-content">
         <div className="admin-action-bar">
@@ -460,6 +736,8 @@ const ActivitiesDashboard = () => {
               onClick={() => {
                 setNewTitle("");
                 setNewContent("");
+                setUploadedImage(null);
+                setImagePreview("");
                 setActiveView("addPage");
               }}
             >
@@ -490,61 +768,77 @@ const ActivitiesDashboard = () => {
 
         {activeView === "allPages" && (
           <div className="content-section">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th className="checkbox-col">
-                    <input
-                      type="checkbox"
-                      onChange={handleSelectAllTasks}
-                      checked={
-                        tasks.length > 0 && tasks.every((task) => task.selected)
-                      }
-                    />
-                  </th>
-                  <th>TIÊU ĐỀ</th>
-                  <th>TÁC GIẢ</th>
-                  <th>THỜI GIAN</th>
-                  <th>TÁC VỤ</th>
-                </tr>
-              </thead>
-              <tbody>
-                {tasks.map((task) => (
-                  <tr key={task.id}>
-                    <td>
+            {tasks.length > 0 ? (
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th className="checkbox-col">
                       <input
                         type="checkbox"
-                        checked={task.selected}
-                        onChange={() => handleTaskSelection(task.id)}
+                        onChange={handleSelectAllTasks}
+                        checked={
+                          tasks.length > 0 && tasks.every((task) => task.selected)
+                        }
                       />
-                    </td>
-                    <td>{task.title}</td>
-                    <td>{task.author}</td>
-                    <td>{task.time}</td>
-                    <td>
-                      <button
-                        className="action-btn edit-btn"
-                        onClick={() => editTask(task.id)}
-                      >
-                        Chỉnh sửa
-                      </button>
-                      <button
-                        className="action-btn delete-btn"
-                        onClick={() => deleteTask(task.id)}
-                      >
-                        Xóa
-                      </button>
-                      <button
-                        className="action-btn copy-btn"
-                        onClick={() => copyTask(task)}
-                      >
-                        Sao chép
-                      </button>
-                    </td>
+                    </th>
+                    <th className="image-col">HÌNH ẢNH</th>
+                    <th>TIÊU ĐỀ</th>
+                    <th>TÁC GIẢ</th>
+                    <th>THỜI GIAN</th>
+                    <th>TÁC VỤ</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {tasks.map((task) => (
+                    <tr key={task.id}>
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={task.selected}
+                          onChange={() => handleTaskSelection(task.id)}
+                        />
+                      </td>
+                      <td className="task-image-cell">
+                        {task.image ? (
+                          <div className="task-thumbnail">
+                            <img src={task.image} alt={task.title} />
+                          </div>
+                        ) : (
+                          <div className="no-image">Không có ảnh</div>
+                        )}
+                      </td>
+                      <td>{task.title}</td>
+                      <td>{task.author}</td>
+                      <td>{task.time}</td>
+                      <td>
+                        <button
+                          className="action-btn edit-btn"
+                          onClick={() => editTask(task.id)}
+                        >
+                          Chỉnh sửa
+                        </button>
+                        <button
+                          className="action-btn delete-btn"
+                          onClick={() => deleteTask(task.id)}
+                        >
+                          Xóa
+                        </button>
+                        <button
+                          className="action-btn copy-btn"
+                          onClick={() => copyTask(task)}
+                        >
+                          Sao chép
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <div className="no-data-message">
+                Chưa có bài viết nào. Hãy thêm bài viết mới!
+              </div>
+            )}
           </div>
         )}
 
@@ -573,127 +867,133 @@ const ActivitiesDashboard = () => {
             </div>
           </div>
 
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th className="checkbox-col">
-                  <input
-                    type="checkbox"
-                    onChange={handleSelectAllComments}
-                    checked={
-                      comments.length > 0 &&
-                      comments.every((comment) => comment.selected)
-                    }
-                  />
-                </th>
-                <th>BÌNH LUẬN</th>
-                <th>TÁC GIẢ</th>
-                <th>THỜI GIAN</th>
-                <th>TRẢ LỜI CHO</th>
-                <th>TÁC VỤ</th>
-              </tr>
-            </thead>
-            <tbody>
-              {comments.map((comment) => (
-                <React.Fragment key={comment.id}>
-                  <tr className="comment-row">
-                    <td>
-                      <input
-                        type="checkbox"
-                        checked={comment.selected}
-                        onChange={() => handleCommentSelection(comment.id)}
-                      />
-                    </td>
-                    <td className="comment-text">{comment.comment}</td>
-                    <td>{comment.author}</td>
-                    <td>{comment.time}</td>
-                    <td>{comment.reply}</td>
-                    <td>
-                      <button
-                        className="action-btn reply-btn"
-                        onClick={() => toggleReply(comment.id)}
-                      >
-                        Trả lời
-                      </button>
-                      <button
-                        className="action-btn edit-btn"
-                        onClick={() => toggleEdit(comment.id)}
-                      >
-                        Chỉnh sửa
-                      </button>
-                      <button
-                        className="action-btn delete-btn"
-                        onClick={() => deleteComment(comment.id)}
-                      >
-                        Xóa
-                      </button>
-                    </td>
-                  </tr>
-
-                  {comment.isReplying && (
-                    <tr className="reply-row">
-                      <td colSpan="6">
-                        <div className="reply-container">
-                          <h4>Trả lời bình luận</h4>
-                          <textarea
-                            value={replyCommentText}
-                            onChange={(e) =>
-                              setReplyCommentText(e.target.value)
-                            }
-                            className="reply-textarea"
-                            placeholder="Nhập trả lời của bạn"
-                          />
-                          <div className="reply-actions">
-                            <button
-                              className="btn-publish"
-                              onClick={() => submitReply(comment.id)}
-                            >
-                              Bình luận
-                            </button>
-                            <button
-                              className="btn-cancel"
-                              onClick={() => toggleReply(comment.id)}
-                            >
-                              Hủy
-                            </button>
-                          </div>
-                        </div>
+          {comments.length > 0 ? (
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th className="checkbox-col">
+                    <input
+                      type="checkbox"
+                      onChange={handleSelectAllComments}
+                      checked={
+                        comments.length > 0 &&
+                        comments.every((comment) => comment.selected)
+                      }
+                    />
+                  </th>
+                  <th>BÌNH LUẬN</th>
+                  <th>TÁC GIẢ</th>
+                  <th>THỜI GIAN</th>
+                  <th>TRẢ LỜI CHO</th>
+                  <th>TÁC VỤ</th>
+                </tr>
+              </thead>
+              <tbody>
+                {comments.map((comment) => (
+                  <React.Fragment key={comment.id}>
+                    <tr className="comment-row">
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={comment.selected}
+                          onChange={() => handleCommentSelection(comment.id)}
+                        />
+                      </td>
+                      <td className="comment-text">{comment.comment}</td>
+                      <td>{comment.author}</td>
+                      <td>{comment.time}</td>
+                      <td>{comment.reply}</td>
+                      <td>
+                        <button
+                          className="action-btn reply-btn"
+                          onClick={() => toggleReply(comment.id)}
+                        >
+                          Trả lời
+                        </button>
+                        <button
+                          className="action-btn edit-btn"
+                          onClick={() => toggleEdit(comment.id)}
+                        >
+                          Chỉnh sửa
+                        </button>
+                        <button
+                          className="action-btn delete-btn"
+                          onClick={() => deleteComment(comment.id)}
+                        >
+                          Xóa
+                        </button>
                       </td>
                     </tr>
-                  )}
 
-                  {comment.isEditing && (
-                    <tr className="edit-row">
-                      <td colSpan="6">
-                        <div className="edit-container">
-                          <h4>Chỉnh sửa bình luận</h4>
-                          <textarea
-                            value={editCommentText}
-                            onChange={(e) => setEditCommentText(e.target.value)}
-                            className="edit-textarea"
-                          />
-                          <div className="edit-actions">
-                            <button
-                              className="btn-publish"
-                              onClick={() => submitEdit(comment.id)}
-                            >
-                              Cập nhật
-                            </button>
-                            <button
-                              className="btn-cancel"
-                              onClick={() => toggleEdit(comment.id)}
-                            >
-                              Hủy
-                            </button>
+                    {comment.isReplying && (
+                      <tr className="reply-row">
+                        <td colSpan="6">
+                          <div className="reply-container">
+                            <h4>Trả lời bình luận</h4>
+                            <textarea
+                              value={replyCommentText}
+                              onChange={(e) =>
+                                setReplyCommentText(e.target.value)
+                              }
+                              className="reply-textarea"
+                              placeholder="Nhập trả lời của bạn"
+                            />
+                            <div className="reply-actions">
+                              <button
+                                className="btn-publish"
+                                onClick={() => submitReply(comment.id)}
+                              >
+                                Bình luận
+                              </button>
+                              <button
+                                className="btn-cancel"
+                                onClick={() => toggleReply(comment.id)}
+                              >
+                                Hủy
+                              </button>
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                </React.Fragment>
-              ))}
-            </tbody>
-          </table>
+                        </td>
+                      </tr>
+                    )}
+
+                    {comment.isEditing && (
+                      <tr className="edit-row">
+                        <td colSpan="6">
+                          <div className="edit-container">
+                            <h4>Chỉnh sửa bình luận</h4>
+                            <textarea
+                              value={editCommentText}
+                              onChange={(e) => setEditCommentText(e.target.value)}
+                              className="edit-textarea"
+                            />
+                            <div className="edit-actions">
+                              <button
+                                className="btn-publish"
+                                onClick={() => submitEdit(comment.id)}
+                              >
+                                Cập nhật
+                              </button>
+                              <button
+                                className="btn-cancel"
+                                onClick={() => toggleEdit(comment.id)}
+                              >
+                                Hủy
+                              </button>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div className="no-data-message">
+              Chưa có bình luận nào.
+            </div>
+          )}
         </div>
       </div>
     </div>

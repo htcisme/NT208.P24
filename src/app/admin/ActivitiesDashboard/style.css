@@ -465,3 +465,139 @@
     overflow-x: auto;
   }
 }
+
+/* Thêm vào file CSS hiện có */
+
+/* Phần upload ảnh */
+.image-upload-container {
+  margin-bottom: 20px;
+}
+
+.image-upload-container h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #042354;
+}
+
+.image-upload-box {
+  border: 2px dashed #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  text-align: center;
+  position: relative;
+  background-color: #f8f9fa;
+}
+
+.image-input {
+  opacity: 0;
+  width: 0.1px;
+  height: 0.1px;
+  position: absolute;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.image-upload-label {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #042354;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.image-upload-label:hover {
+  background: #031a3e;
+}
+
+.image-preview {
+  margin-top: 15px;
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.image-preview img {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 4px;
+}
+
+.remove-image-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.image-hint {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #6c757d;
+}
+
+/* Thumbnail trong danh sách */
+.image-col {
+  width: 100px;
+}
+
+.task-image-cell {
+  width: 100px;
+}
+
+.task-thumbnail {
+  width: 80px;
+  height: 60px;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.task-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.no-image {
+  font-style: italic;
+  color: #999;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+  border: 1px dashed #ddd;
+  border-radius: 4px;
+}
+
+/* Loading và No data states */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  font-size: 18px;
+  color: #042354;
+}
+
+.no-data-message {
+  padding: 30px;
+  text-align: center;
+  font-style: italic;
+  color: #666;
+  border: 1px dashed #ccc;
+  border-radius: 5px;
+  margin: 20px 0;
+}
