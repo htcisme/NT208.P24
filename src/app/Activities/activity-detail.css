@@ -1,0 +1,312 @@
+/* Import Montserrat font */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+/* Layout cho trang chi tiết bài viết */
+.activity-post-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    padding-top: 2rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    background-color: #ECF9FF;
+    color: #042354;
+}
+
+/* Phần nội dung bài viết chính */
+.post-main-content {
+    flex: 1;
+    min-width: 65%;
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Sidebar tin tức mới nhất */
+.post-sidebar {
+    width: 30%;
+    min-width: 250px;
+}
+
+/* Tiêu đề bài viết chính */
+.post-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #042354;
+    margin-bottom: 1rem;
+}
+
+/* Thông tin meta: tác giả, ngày đăng */
+.post-meta {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+/* Hình ảnh nổi bật */
+.post-featured-image {
+    margin: 1.5rem 0;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.post-featured-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
+/* Thêm vào CSS hiện có cho phần nội dung bài viết */
+
+.post-content {
+    font-size: 1rem;
+    line-height: 1.6;
+    text-align: justify;
+    /* Thêm các thuộc tính sau để hiển thị đúng xuống dòng */
+    white-space: pre-line; /* Giữ nguyên các dòng ngắt và khoảng trắng liên tiếp */
+}
+
+/* Định dạng cho các đoạn văn trong post-content */
+.post-content p {
+    margin-bottom: 1.2rem;
+}
+
+/* Định dạng cho các đề mục trong post-content */
+.post-content h2, .post-content h3, .post-content h4 {
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    color: #042354;
+    font-weight: 600;
+}
+
+/* Định dạng cho các danh sách */
+.post-content ul, .post-content ol {
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Định dạng cho hình ảnh trong nội dung */
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    margin: 1rem 0;
+    border-radius: 0.5rem;
+}
+
+/* Định dạng cho link trong nội dung */
+.post-content a {
+    color: #0066cc;
+    text-decoration: underline;
+}
+
+.post-content a:hover {
+    color: #004080;
+}
+
+/* ===== PHẦN TIN TỨC MỚI NHẤT - ĐỒNG NHẤT VỚI ACTIVITIES ===== */
+.latest-news-section {
+    background-color: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    padding: 1rem;
+    height: 700px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Tiêu đề phần tin tức mới nhất */
+.latest-news-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    /* Chữ trắng */
+    background-color: #042354;
+    /* Nền xanh đậm */
+    padding: 0.5rem 1rem;
+    /* Khoảng cách bên trong */
+    display: inline-block;
+    /* Để nền chỉ bao quanh nội dung */
+    margin-bottom: 1rem;
+}
+
+/* Danh sách tin tức */
+.latest-news-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid #042354;
+    max-height: 580px;
+    /* Chiều cao tối đa */
+    overflow-y: auto;
+    /* Tạo thanh cuộn khi cần */
+    padding-right: 10px;
+    /* Tạo không gian cho thanh cuộn */
+}
+
+/* Định dạng thanh cuộn */
+.latest-news-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.latest-news-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.latest-news-list::-webkit-scrollbar-thumb {
+    background: #042354;
+    border-radius: 10px;
+}
+
+.latest-news-list::-webkit-scrollbar-thumb:hover {
+    background: #031a3e;
+}
+
+.latest-news-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.latest-news-item:last-child {
+    border-bottom: none;
+}
+
+.latest-news-link {
+    color: #042354;
+    text-decoration: none;
+    display: block;
+    font-size: 15px;
+    line-height: 1.4;
+    margin-bottom: 5px;
+}
+
+.latest-news-link:hover {
+    text-decoration: underline;
+}
+
+.latest-news-date {
+    display: block;
+    /* Đặt ngày tháng trên hàng riêng */
+    font-size: 12px;
+    color: #042354;
+    margin-top: 5px;
+    margin-left: 20px;
+    font-style: italic;
+    /* Nghiêng ngày tháng để nổi bật */
+}
+
+/* Liên kết xem thêm */
+.view-more-link {
+    text-align: right;
+    margin-top: auto;
+    padding-top: 10px;
+}
+
+.view-more-link a {
+    color: #042354;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 5px 10px;
+    border: 1px solid #042354;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.view-more-link a:hover {
+    background-color: #042354;
+    color: #fff;
+}
+
+/* Nút trở về */
+.post-actions {
+    width: 100%;
+    margin-top: 2rem;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.back-button {
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
+    background-color: #042354;
+    color: white;
+    text-decoration: none;
+    border-radius: 0.25rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.back-button:hover {
+    background-color: #031a3e;
+}
+
+/* Loading và error states */
+.loading-container,
+.error-container,
+.loading-news,
+.error-news {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    text-align: center;
+}
+
+.loading-news,
+.error-news {
+    padding: 1rem;
+    min-height: 100px;
+}
+
+.error-container button,
+.error-news button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #042354;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+
+.no-news-message {
+    padding: 1rem 0;
+    text-align: center;
+    color: #666;
+}
+
+/* Thêm vào cuối file */
+
+/* Định dạng container cho footer */
+.footer-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+    text-align: center;
+}
+
+/* Chỉnh sửa footer nếu cần thiết */
+.footer-container footer {
+    width: 100%;
+    max-width: 1200px;
+    /* Hoặc chiều rộng phù hợp với thiết kế của bạn */
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .activity-post-container {
+        flex-direction: column;
+    }
+
+    .post-sidebar {
+        width: 100%;
+    }
+}

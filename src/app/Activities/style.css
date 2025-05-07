@@ -28,12 +28,17 @@
   text-align: center;
 }
 
+/* Phần container cho tin tức mới nhất */
 .light-split-right {
   width: 30%;
   text-align: justify; 
   max-height: 700px; /* Chiều cao tối đa */
   display: flex;
   flex-direction: column;
+  background-color: #fff;  /* Thêm nền trắng */
+  border-radius: 0.5rem; /* Bo tròn góc */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Thêm đổ bóng nhẹ */
+  padding: 1rem; /* Thêm khoảng cách bên trong */
 }
 
 /* Tiêu đề "Tin tức mới nhất" */
@@ -44,6 +49,7 @@
   background-color: #042354; /* Nền xanh đậm */
   padding: 0.5rem 1rem; /* Khoảng cách bên trong */
   display: inline-block; /* Để nền chỉ bao quanh nội dung */
+  margin-bottom: 1rem; /* Thêm khoảng cách dưới tiêu đề */
 }
 
 /* Danh sách tin tức */

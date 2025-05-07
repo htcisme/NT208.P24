@@ -140,7 +140,7 @@ export default function ActivitiesOverview() {
                     {post.image && <img src={post.image} alt={post.title} />}
                   </div>
                   <h4 className="post-title">
-                    <Link href={`/activities/${post._id}`}>{post.title}</Link>
+                    <Link href={`/Activities/${post._id}`}>{post.title}</Link>
                   </h4>
                   <p className="post-date">{formatDate(post.createdAt)}</p>
                 </div>
@@ -193,7 +193,7 @@ export default function ActivitiesOverview() {
                 {otherPosts.slice(0, 4).map((post, index) => (
                   <div className="other-post-item" key={post._id || index}>
                     <h4 className="other-post-title">
-                      <Link href={`/activities/${post._id}`}>{post.title}</Link>
+                      <Link href={`/Activities/${post._id}`}>{post.title}</Link>
                     </h4>
                     <p className="other-post-date">{formatDate(post.createdAt)}</p>
                   </div>
@@ -203,7 +203,7 @@ export default function ActivitiesOverview() {
                 {otherPosts.slice(4, 8).map((post, index) => (
                   <div className="other-post-item" key={post._id || index}>
                     <h4 className="other-post-title">
-                      <Link href={`/activities/${post._id}`}>{post.title}</Link>
+                      <Link href={`/Activities/${post._id}`}>{post.title}</Link>
                     </h4>
                     <p className="other-post-date">{formatDate(post.createdAt)}</p>
                   </div>
