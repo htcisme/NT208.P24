@@ -1,8 +1,6 @@
 "use client"; 
 
-import React, { useState } from "react";
-import Image from "next/image";
-import Footer from "@/components/Footer";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import HeaderAdmin from "@/components/HeaderAdmin";
 import "@/styles-comp/style.css";
@@ -13,84 +11,170 @@ function AwardsDashboard() {
   const [activeTab, setActiveTab] = useState('THÀNH TÍCH');
   const [viewMode, setViewMode] = useState('list');
   const [selectedAchievement, setSelectedAchievement] = useState(null);
-  const [achievements, setAchievements] = useState([
-    {
-      id: 1,
-      title: "Bằng khen \"Hoàn thành xuất sắc nhiệm vụ năm học 2012-2013 và 2013-2014\"",
-      organization: "Đại học Quốc gia Hồ Chí Minh",
-      date: "16/02/2015",
-      content: "Hoàn thành xuất sắc nhiệm vụ năm học 2012-2013 và 2013-2014",
-      year: "2012-2014"
-    },
-    {
-      id: 2,
-      title: "Bằng khen \"Hoàn thành xuất sắc nhiệm vụ năm học 2012-2013 và 2013-2014\"",
-      organization: "Đại học Quốc gia Hồ Chí Minh",
-      date: "16/02/2015",
-      content: "Hoàn thành xuất sắc nhiệm vụ năm học 2012-2013 và 2013-2014",
-      year: "2012-2014"
-    },
-    {
-      id: 3,
-      title: "Bằng khen \"Hoàn thành xuất sắc nhiệm vụ năm học 2012-2013 và 2013-2014\"",
-      organization: "Đại học Quốc gia Hồ Chí Minh",
-      date: "16/02/2015",
-      content: "Hoàn thành xuất sắc nhiệm vụ năm học 2012-2013 và 2013-2014",
-      year: "2012-2014"
-    },
-    {
-      id: 4,
-      title: "Bằng khen \"Hoàn thành xuất sắc nhiệm vụ năm học 2012-2013 và 2013-2014\"",
-      organization: "Đại học Quốc gia Hồ Chí Minh",
-      date: "16/02/2015",
-      content: "Hoàn thành xuất sắc nhiệm vụ năm học 2012-2013 và 2013-2014",
-      year: "2012-2014"
-    }
-  ]);
+  const [achievements, setAchievements] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const handleAddAchievement = (formData) => {
-    const newAchievement = {
-      id: achievements.length + 1,
-      title: `Bằng khen "${formData.content}"`,
-      organization: formData.organization,
-      content: formData.content,
-      year: formData.year,
-      date: getCurrentDate()
+  // Fetch awards from API
+  useEffect(() => {
+    const fetchAwards = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/awards');
+        
+        if (!response.ok) {
+          throw new Error('Không thể tải danh sách giải thưởng');
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          // Chuyển đổi dữ liệu từ API sang format hiển thị
+          const formattedAwards = data.data.map(award => ({
+            id: award._id,
+            title: `Bằng khen "${award.content}"`,
+            organization: award.organization,
+            date: formatDate(award.date),
+            content: award.content,
+            year: award.year
+          }));
+          
+          setAchievements(formattedAwards);
+        } else {
+          throw new Error(data.message || 'Lỗi khi tải dữ liệu');
+        }
+      } catch (err) {
+        setError(err.message);
+        console.error('Error fetching awards:', err);
+      } finally {
+        setLoading(false);
+      }
     };
-    
-    setAchievements([...achievements, newAchievement]);
-    setViewMode('list');
-  };
 
-  const handleEditAchievement = (formData) => {
-    const updatedAchievements = achievements.map(achievement => {
-      if (achievement.id === selectedAchievement.id) {
-        return {
-          ...achievement,
+    fetchAwards();
+  }, []);
+
+  const handleAddAchievement = async (formData) => {
+    try {
+      const response = await fetch('/api/awards', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          organization: formData.organization,
+          content: formData.content,
+          year: formData.year,
+          date: new Date().toISOString()
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Không thể thêm giải thưởng');
+      }
+
+      const data = await response.json();
+      
+      if (data.success) {
+        const newAchievement = {
+          id: data.data._id,
           title: `Bằng khen "${formData.content}"`,
           organization: formData.organization,
           content: formData.content,
-          year: formData.year
+          year: formData.year,
+          date: formatDate(data.data.date)
         };
+        
+        setAchievements([...achievements, newAchievement]);
+        setViewMode('list');
+      } else {
+        throw new Error(data.message || 'Lỗi khi thêm giải thưởng');
       }
-      return achievement;
-    });
+    } catch (err) {
+      alert('Lỗi: ' + err.message);
+      console.error('Error adding award:', err);
+    }
+  };
+
+  const handleEditAchievement = async (formData) => {
+    try {
+      const response = await fetch(`/api/awards/${selectedAchievement.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          organization: formData.organization,
+          content: formData.content,
+          year: formData.year
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Không thể cập nhật giải thưởng');
+      }
+
+      const data = await response.json();
+      
+      if (data.success) {
+        const updatedAchievements = achievements.map(achievement => {
+          if (achievement.id === selectedAchievement.id) {
+            return {
+              ...achievement,
+              title: `Bằng khen "${formData.content}"`,
+              organization: formData.organization,
+              content: formData.content,
+              year: formData.year
+            };
+          }
+          return achievement;
+        });
+        
+        setAchievements(updatedAchievements);
+        setViewMode('list');
+        setSelectedAchievement(null);
+      } else {
+        throw new Error(data.message || 'Lỗi khi cập nhật giải thưởng');
+      }
+    } catch (err) {
+      alert('Lỗi: ' + err.message);
+      console.error('Error updating award:', err);
+    }
+  };
+
+  const handleDeleteAchievement = async (id) => {
+    if (!confirm('Bạn có chắc chắn muốn xóa giải thưởng này?')) {
+      return;
+    }
     
-    setAchievements(updatedAchievements);
-    setViewMode('list');
-    setSelectedAchievement(null);
+    try {
+      const response = await fetch(`/api/awards/${id}`, {
+        method: 'DELETE'
+      });
+
+      if (!response.ok) {
+        throw new Error('Không thể xóa giải thưởng');
+      }
+
+      const data = await response.json();
+      
+      if (data.success) {
+        const updatedAchievements = achievements.filter(achievement => achievement.id !== id);
+        setAchievements(updatedAchievements);
+      } else {
+        throw new Error(data.message || 'Lỗi khi xóa giải thưởng');
+      }
+    } catch (err) {
+      alert('Lỗi: ' + err.message);
+      console.error('Error deleting award:', err);
+    }
   };
 
-  const handleDeleteAchievement = (id) => {
-    const updatedAchievements = achievements.filter(achievement => achievement.id !== id);
-    setAchievements(updatedAchievements);
-  };
-
-  const getCurrentDate = () => {
-    const today = new Date();
-    const day = String(today.getDate()).padStart(2, '0');
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const year = today.getFullYear();
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
 
@@ -120,52 +204,65 @@ function AwardsDashboard() {
           </button>
         </div>
 
-        {viewMode === 'list' && (
-          <div className="achievement-list">
-            {achievements.map(achievement => (
-              <div key={achievement.id} className="achievement-item">
-                <div className="achievement-content">
-                  <h3 className="achievement-title">{achievement.title}</h3>
-                  <p className="achievement-org">{achievement.organization}</p>
-                </div>
-                <div className="achievement-actions">
-                  <span className="achievement-date">Thời gian: {achievement.date}</span>
-                  <button 
-                    className="edit-button"
-                    onClick={() => {
-                      setSelectedAchievement(achievement);
-                      setViewMode('edit');
-                    }}
-                  >
-                    <i className="edit-icon"></i>
-                  </button>
-                  <button 
-                    className="delete-button"
-                    onClick={() => handleDeleteAchievement(achievement.id)}
-                  >
-                    <i className="delete-icon"></i>
-                  </button>
-                </div>
-              </div>
-            ))}
+        {loading ? (
+          <div className="loading-container">
+            <p>Đang tải dữ liệu...</p>
           </div>
-        )}
+        ) : error ? (
+          <div className="error-container">
+            <p>{error}</p>
+            <button onClick={() => window.location.reload()}>Thử lại</button>
+          </div>
+        ) : (
+          <>
+            {viewMode === 'list' && (
+              <div className="achievement-list">
+                {achievements.map(achievement => (
+                  <div key={achievement.id} className="achievement-item">
+                    <div className="achievement-content">
+                      <h3 className="achievement-title">{achievement.title}</h3>
+                      <p className="achievement-org">{achievement.organization}</p>
+                    </div>
+                    <div className="achievement-actions">
+                      <span className="achievement-date">Thời gian: {achievement.date}</span>
+                      <button 
+                        className="edit-button"
+                        onClick={() => {
+                          setSelectedAchievement(achievement);
+                          setViewMode('edit');
+                        }}
+                      >
+                        <i className="edit-icon"></i>
+                      </button>
+                      <button 
+                        className="delete-button"
+                        onClick={() => handleDeleteAchievement(achievement.id)}
+                      >
+                        <i className="delete-icon"></i>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
 
-        {/* Add Achievement Form */}
-        {viewMode === 'add' && (
-          <AddAchievementForm onSubmit={handleAddAchievement} onCancel={() => setViewMode('list')} />
-        )}
+            {/* Add Achievement Form */}
+            {viewMode === 'add' && (
+              <AddAchievementForm onSubmit={handleAddAchievement} onCancel={() => setViewMode('list')} />
+            )}
 
-        {/* Edit Achievement Form */}
-        {viewMode === 'edit' && selectedAchievement && (
-          <EditAchievementForm 
-            achievement={selectedAchievement} 
-            onSubmit={handleEditAchievement} 
-            onCancel={() => {
-              setViewMode('list');
-              setSelectedAchievement(null);
-            }} 
-          />
+            {/* Edit Achievement Form */}
+            {viewMode === 'edit' && selectedAchievement && (
+              <EditAchievementForm 
+                achievement={selectedAchievement} 
+                onSubmit={handleEditAchievement} 
+                onCancel={() => {
+                  setViewMode('list');
+                  setSelectedAchievement(null);
+                }} 
+              />
+            )}
+          </>
         )}
       </main>
     </div>
@@ -236,7 +333,7 @@ function AddAchievementForm({ onSubmit, onCancel }) {
       </div>
 
       <div className="form-actions">
-        <button type="submit" className="btn btn-primary">Thêm</button>
+        <button type="submit" className="btn btn-primary">Thêm mới</button>
         <button type="button" className="btn btn-cancel" onClick={onCancel}>Hủy</button>
       </div>
     </form>
