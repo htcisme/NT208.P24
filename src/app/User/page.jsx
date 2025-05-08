@@ -1,11 +1,11 @@
 "use client";
 import Image from "next/image";
 import styles from "./style.css";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Script from "next/script";
 
-export default function User() {
+function UserContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab");
@@ -373,5 +373,15 @@ export default function User() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function User() {
+  return (
+    <Suspense
+      fallback={<div className="form-container loading">Đang tải...</div>}
+    >
+      <UserContent />
+    </Suspense>
   );
 }
