@@ -4,8 +4,9 @@
   font-family: "Montserrat", sans-serif;
   padding: 0;
   margin: 0;
-  background-color: #e4effa;
-  color: #0b1f40;
+  color: var(--text);
+  background-color: var(--background);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 /* Mobile Responsive */
 @media (max-width: 480px) {
@@ -58,86 +59,86 @@
 
   /* Chế độ Dark Mode */
   body.dark-mode {
-    background-color: #121212;
-    color: #f0f0f0;
+    background-color: #121212 !important;
+    color: #f0f0f0 !important;
   }
 
   body.dark-mode .Header {
-    background-color: #1f2937;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    background-color: #1f2937 !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
   }
 
   body.dark-mode .Header_Logo a {
-    color: #f0f0f0;
-    -webkit-text-stroke: 1px #ffffff;
+    color: #f0f0f0 !important;
+    -webkit-text-stroke: 1px #ffffff !important;
   }
 
   body.dark-mode .Header_Nav_DarkModeToggle {
-    background-color: #374151;
+    background-color: #374151 !important;
   }
 
   body.dark-mode .Header_Nav_DarkModeIcon {
-    color: #f0f0f0;
+    color: #f0f0f0 !important;
   }
 
   body.dark-mode .Header_Nav_DarkModeToggle:hover {
-    background-color: #4b5563;
+    background-color: #4b5563 !important;
   }
 
   body.dark-mode .Header_Nav_AuthButton {
-    background-color: #4b5563;
+    background-color: #4b5563 !important;
   }
 
   body.dark-mode .Header_Nav_AuthButton:hover {
-    background-color: #60a5fa;
+    background-color: #60a5fa !important;
   }
 
   body.dark-mode .Header_Nav_AuthMenu {
-    background-color: #1f2937;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    background-color: #1f2937 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
   }
 
   body.dark-mode .Header_Nav_AuthMenu_Item {
-    color: #f0f0f0;
+    color: #f0f0f0 !important;
   }
 
   body.dark-mode .Header_Nav_AuthMenu_Item:hover {
-    background-color: #374151;
+    background-color: #374151 !important;
   }
 
   body.dark-mode .Header_Topbar_Authsearch_Searchbox {
-    background-color: #374151;
-    border-color: #4b5563;
+    background-color: #374151 !important;
+    border-color: #4b5563 !important;
   }
 
   body.dark-mode .Header_Topbar_Authsearch_Searchbox input {
-    color: #f0f0f0;
+    color: #f0f0f0 !important;
   }
 
   body.dark-mode .Header_Topbar_Authsearch_Searchbox input::placeholder {
-    color: #9ca3af;
+    color: #9ca3af !important;
   }
 
   body.dark-mode .Header_Topbar_Authsearch_Searchbox_Searchicon_Icon {
-    color: #9ca3af;
+    color: #9ca3af !important;
   }
 
   body.dark-mode .Header_Nav_MenuWrapper_MenuButton {
-    color: #f0f0f0;
+    color: #f0f0f0 !important;
   }
 
   body.dark-mode .Header_Nav_MenuWrapper_DropdownMenu {
-    background-color: #1f2937;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    background-color: #1f2937 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
   }
 
   body.dark-mode .Header_Nav_MenuWrapper_DropdownMenu_Item {
-    color: #f0f0f0;
-    border-color: #374151;
+    color: #f0f0f0 !important;
+    border-color: #374151 !important;
   }
 
   body.dark-mode .Header_Nav_MenuWrapper_DropdownMenu_Item:hover {
-    background-color: #374151;
+    background-color: #374151 !important;
   }
 
   /* Responsive untuk dark mode */
@@ -320,13 +321,14 @@
   top: 0;
   left: 0;
   width: 100%;
-  background: white;
+  background: var(--header-background);
   z-index: 10;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
 }
 
 .Header_Logo {
@@ -336,9 +338,10 @@
 }
 
 .Header_Logo a {
-  color: #042354;
+  color: var(--header-text);
   text-decoration: none;
-  -webkit-text-stroke: 1px #042354;
+  -webkit-text-stroke: 1px var(--header-text);
+  transition: color 0.3s ease;
 }
 
 .Header_Nav {
@@ -357,7 +360,7 @@
   align-items: center;
   gap: 5px;
   padding: 8px 12px;
-  background: #042354;
+  background: var(--primary);
   color: white;
   border: none;
   border-radius: 10px;
@@ -367,7 +370,7 @@
 }
 
 .Header_Nav_AuthButton:hover {
-  background-color: #2d71b9;
+  background-color: var(--hover);
 }
 
 .Header_Nav_AuthButton_Arrow {
@@ -383,26 +386,27 @@
   position: absolute;
   top: 100%;
   right: 0;
-  background: white;
+  background: var(--card-background);
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   min-width: 150px;
   margin-top: 5px;
   z-index: 100;
   overflow: hidden;
+  transition: background-color 0.3s ease;
 }
 
 .Header_Nav_AuthMenu_Item {
   display: block;
   padding: 10px 15px;
   text-decoration: none;
-  color: #042354;
-  transition: background 0.2s ease;
+  color: var(--text);
+  transition: all 0.2s ease;
   font-size: 14px;
 }
 
 .Header_Nav_AuthMenu_Item:hover {
-  background-color: #f5f5f5;
+  background-color: var(--hover);
 }
 
 /* Search Box */
@@ -414,19 +418,20 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #ededed;
+  background-color: var(--input-background);
   padding: 6px 15px;
   border-radius: 10px;
-  caret-color: #00274d;
+  caret-color: var(--text);
   width: 180px;
   transition: all 0.3s ease;
+  border: 1px solid var(--input-border);
 }
 
 .Header_Topbar_Authsearch_Searchbox input {
   border: none;
   outline: none;
   font-size: 14px;
-  color: #003366;
+  color: var(--text);
   padding: 0;
   margin: 0;
   width: 100%;
@@ -458,16 +463,16 @@
 .Header_Nav_MenuWrapper_MenuButton {
   background: none;
   border: none;
-  color: #000;
+  color: var(--text);
   font-size: 24px;
   cursor: pointer;
   padding: 5px;
   border-radius: 5px;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .Header_Nav_MenuWrapper_MenuButton:hover {
-  background-color: #f0f0f0;
+  background-color: var(--hover);
 }
 
 .Header_Nav_MenuWrapper_DropdownMenu {
@@ -475,12 +480,13 @@
   position: absolute;
   top: 40px;
   right: 0;
-  background-color: white;
+  background-color: var(--card-background);
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
   overflow: hidden;
   z-index: 20;
   min-width: 180px;
+  transition: background-color 0.3s ease;
 }
 
 .Header_Nav_MenuWrapper_MenuButton_ShowMenu {
@@ -491,13 +497,13 @@
   display: block;
   padding: 12px 16px;
   text-decoration: none;
-  color: #0b1f40;
-  border-bottom: 1px solid #eee;
-  transition: background 0.2s ease;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  transition: all 0.2s ease;
 }
 
 .Header_Nav_MenuWrapper_DropdownMenu_Item:hover {
-  background-color: #f0f0f0;
+  background-color: var(--hover);
 }
 
 /* Hero Section */
@@ -568,22 +574,20 @@
 
 /* Body Styles */
 .Body {
-  background: linear-gradient(
-    to bottom,
-    #f6fcff 0%,
-    #c0e9ff 17%,
-    #33659a 73%,
-    #042354 100%
-  );
   padding: 40px 0 0 0;
   max-width: 100%;
   margin: 0 auto;
   font-size: 18px;
   line-height: 1.8;
+  background-color: var(--background);
+  color: var(--text);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .Body_Container {
   padding: 40px 0;
+  background-color: var(--background);
+  transition: background-color 0.3s ease;
 }
 
 /* Introduction Section */
@@ -632,8 +636,8 @@
   left: 0;
   width: 100%;
   height: 20%;
-  background-color: #7e9fca;
   z-index: 0;
+  background-color: #7e9fca;
 }
 
 .Body_Container_Introduction::before {
@@ -661,8 +665,8 @@
 }
 
 .Body_Container_Introduction_Title {
-  background-color: #042354;
-  color: white;
+  background-color: var(--text);
+  color: var(--background) !important;
   display: inline-block;
   margin: 20px 60px;
   padding: 8px 24px;
@@ -724,7 +728,6 @@
   flex: 1;
   padding: 20px;
   box-sizing: border-box;
-  color: #0b1f40;
 }
 
 .Body_Container_Introduction_ContentWrapper_TextContainer_Heading {
@@ -733,7 +736,6 @@
   font-weight: bold;
   margin-bottom: 20px;
   line-height: 50px;
-  color: #0b1f40;
 }
 
 .Body_Container_Introduction_ContentWrapper_TextContainer_Description {
@@ -746,7 +748,6 @@
 .Body_Container_Introduction_ContentWrapper_TextContainer_ReadMore {
   display: inline-block;
   margin-top: 10px;
-  color: #0b1f40;
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s ease;
@@ -795,9 +796,7 @@
   line-height: 50px;
   font-size: 35px;
   text-align: center;
-  color: #0b1e3f;
   margin-top: 10px;
-  -webkit-text-stroke: 4px #b5dff7;
   text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
   paint-order: stroke fill;
 }
@@ -811,8 +810,8 @@
 .Activities_RecentLabel {
   font-size: 28px;
   font-weight: 700;
-  background-color: #042354;
-  color: white;
+  background-color: var(--text);
+  color: var(--background) !important;
   display: inline-block;
   padding: 10px 25px;
   border-radius: 999px;
@@ -833,11 +832,12 @@
 
 .Activities_RecentCard {
   width: 230px;
-  background-color: white;
+  background-color: var(--text);
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
+  border: 1px solid var(--border);
 }
 
 .Activities_RecentCard:hover {
@@ -857,13 +857,13 @@
 .Activities_RecentCard_Title {
   font-weight: 600;
   font-size: 15px;
-  color: #042354;
+  color: var(--background);
   margin-bottom: 5px;
 }
 
 .Activities_RecentCard_Desc {
   font-size: 13px;
-  color: #444;
+  color: var(--secondary);
   margin-bottom: 8px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -875,7 +875,7 @@
 .Activities_RecentCard_Date {
   font-size: 12px;
   font-style: italic;
-  color: #888;
+  color: var(--secondary);
 }
 
 .Activities_ViewMore {
@@ -1005,7 +1005,7 @@
 
 .Activities_Focus_Content_TimelineItem_Text {
   font-size: 14px;
-  color: #333;
+  color: #5b5b5b;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -1036,6 +1036,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--background) !important;
 }
 
 .Body_Container_Hightlight_Shape {
@@ -1044,7 +1045,7 @@
   right: 0;
   width: 70%;
   height: 70px;
-  background-color: #042354;
+  background-color: var(--text);
   z-index: 0;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
@@ -1061,11 +1062,16 @@
   position: relative;
 }
 
+.light_slider_arrow {
+  color: var(--text);
+}
+
 .light_slider_item {
   text-align: center;
   margin: 0;
   padding: 0;
   flex: 1;
+  color: var(--text);
 }
 
 .slider_image_placeholder {
@@ -1095,7 +1101,6 @@
 .light_slider_item h4 {
   font-size: 20px;
   font-weight: bold;
-  color: #ffffff;
 }
 
 .light_slider_arrow {
@@ -1103,7 +1108,6 @@
   border: none;
   font-size: 2rem;
   cursor: pointer;
-  color: #ffffff;
   padding: 0 1rem;
 }
 
@@ -1141,7 +1145,7 @@
   font-weight: 700;
   padding-top: 50px;
   padding-left: 15%;
-  color: white;
+  color: var(--background) !important;
   z-index: 1;
   flex-shrink: 0;
   position: relative;
@@ -1154,7 +1158,7 @@
   left: 0;
   width: 50%;
   height: 70px;
-  background-color: #042354;
+  background-color: var(--text);
   z-index: 0;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
@@ -1186,7 +1190,7 @@
 
 .Body_Container_Awards_Content {
   z-index: 1;
-  color: #fff;
+  color: var(--text);
   width: 1660px;
 }
 
@@ -1245,7 +1249,7 @@
   text-align: center;
   font-weight: bold;
   color: #ffffff;
-  background-color: rgba(246, 252, 255, 0.521);
+  background-color: #09517586;
   padding: 10px 0px;
 }
 
@@ -1320,6 +1324,7 @@
   .Body_Container_Introduction_Title {
     font-size: 24px;
     margin: 15px 30px;
+    background-color: (--text);
   }
 
   .Body_Container_MemberWrap {
@@ -1707,4 +1712,29 @@
   .Activities_Focus_Content {
     width: 60%;
   }
+}
+
+body.dark-mode {
+  background: linear-gradient(
+    90deg,
+    #1b3f79 0%,
+    #0d326c 26%,
+    #031c43 74%,
+    #020e22 100%
+  ) !important;
+  color: #f0f0f0 !important;
+}
+
+body.dark-mode .Container,
+body.dark-mode .Body {
+  background: transparent !important;
+  color: #f0f0f0 !important;
+}
+
+body.dark-mode .Header,
+body.dark-mode .Header_Nav_AuthMenu,
+body.dark-mode .Header_Nav_MenuWrapper_DropdownMenu,
+body.dark-mode .Activities_RecentCard {
+  background: rgba(20, 30, 50, 0.95) !important;
+  color: #f0f0f0 !important;
 }

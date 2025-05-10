@@ -10,6 +10,7 @@ export default function Header() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [user, setUser] = useState(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [logoError, setLogoError] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -17,9 +18,10 @@ export default function Header() {
     const savedMode = localStorage.getItem("darkMode");
     if (savedMode === "true") {
       setIsDarkMode(true);
-      document.body.classList.add("dark-mode");
+      document.body.classList.add("dark");
     } else {
-      document.body.classList.remove("dark-mode");
+      setIsDarkMode(false);
+      document.body.classList.remove("dark");
     }
 
     // Kiểm tra thông tin đăng nhập
@@ -34,13 +36,15 @@ export default function Header() {
   }, []);
 
   const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-    if (isDarkMode) {
-      document.body.classList.remove("dark-mode");
-      localStorage.setItem("darkMode", "false");
-    } else {
-      document.body.classList.add("dark-mode");
+    const newMode = !isDarkMode;
+    setIsDarkMode(newMode);
+
+    if (newMode) {
+      document.body.classList.add("dark");
       localStorage.setItem("darkMode", "true");
+    } else {
+      document.body.classList.remove("dark");
+      localStorage.setItem("darkMode", "false");
     }
   };
 
@@ -62,10 +66,16 @@ export default function Header() {
       <div className="Header-Topbar">
         <div className="Header-Topbar-Logogroup">
           <Image
-            src="/Img/Homepage/Fulllogolight.png"
+            src={
+              isDarkMode
+                ? "/Img/Homepage/Fulllogolight.png"
+                : "/Img/Homepage/Fulllogolight.png"
+            }
             alt="Cum-logo-Doan-khoa"
             width={250}
             height={250}
+            onError={() => setLogoError(true)}
+            fallbackSrc="/Img/Homepage/Fulllogolight.png"
           />
         </div>
 
