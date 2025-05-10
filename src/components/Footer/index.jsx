@@ -3,11 +3,12 @@ import React from "react";
 import "@/styles-comp/style.css";
 import Image from "next/image";
 import logodoankhoa from "@/imgs-comp/logo-doan-khoa.png";
-import logoDoanKhoaDark from "@/imgs-comp/logo-doan-khoa-dark.png";
+import logodoankhoadark from "@/imgs-comp/logo-doan-khoa-dark.png";
 import { useTheme } from "@/context/ThemeContext";
 
 export default function Footer() {
   const { isDarkMode } = useTheme();
+
   return (
     <footer className="footer-container">
       <div className="footer-content">
@@ -16,7 +17,8 @@ export default function Footer() {
             <div className="footer-title">
               <div className="footer-title-img-container">
                 <Image
-                  src={isDarkMode ? logoDoanKhoaDark : logodoankhoa}
+                  key={isDarkMode ? "dark" : "light"}
+                  src={isDarkMode ? logodoankhoadark : logodoankhoa}
                   alt="Logo Đoàn Khoa"
                   width={150}
                   height={50}

@@ -418,7 +418,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: var(--input-background);
+  background-color: none !important;
   padding: 6px 15px;
   border-radius: 10px;
   caret-color: var(--text);
@@ -447,7 +447,7 @@
 .Header_Topbar_Authsearch_Searchbox_Searchicon_Icon {
   width: 20px;
   height: 20px;
-  color: #1f2937;
+  color: var(--text);
   transition: color 0.3s ease;
 }
 
@@ -881,7 +881,7 @@
 .Activities_ViewMore {
   font-size: 20px;
   text-decoration: none;
-  color: #0b1f40;
+  color: var(--text);
   font-weight: 500;
   transition: color 0.2s ease;
 }

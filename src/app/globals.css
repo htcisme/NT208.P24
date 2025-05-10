@@ -3,7 +3,7 @@
 :root {
   --background: #ecf9ff;
   --text: #04255a;
-  --primary: #1a73e8;
+  --primary: #04255a;
   --secondary: #5f6368;
   --border: #dadce0;
   --hover: #f8f9fa;
@@ -47,7 +47,6 @@ body {
   max-width: 100vw;
   overflow-x: hidden;
   font-family: "Montserrat", sans-serif;
-  background-color: var(--background);
   color: var(--text);
   transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -112,7 +111,6 @@ body.dark .user-item {
 body.dark input,
 body.dark select,
 body.dark textarea {
-  background-color: var(--input-background);
   color: var(--text);
   border-color: var(--input-border);
 }

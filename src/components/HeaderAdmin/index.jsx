@@ -91,9 +91,6 @@ const HeaderAdmin = () => {
         <Link href="/" className={isActive("/")}>
           TRANG CHỦ
         </Link>
-        <Link href="/introduction" className={isActive("/introduction")}>
-          GIỚI THIỆU
-        </Link>
         <Link
           href="/admin/ActivitiesDashboard"
           className={isActive("/admin/ActivitiesDashboard")}
@@ -106,9 +103,7 @@ const HeaderAdmin = () => {
         >
           THÀNH TÍCH
         </Link>
-        <Link href="/booking" className={isActive("/booking")}>
-          ĐẶT PHÒNG
-        </Link>
+
         <Link
           href="/admin/UsersDashboard"
           className={isActive("/admin/UsersDashboard")}

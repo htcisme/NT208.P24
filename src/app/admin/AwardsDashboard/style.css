@@ -1,7 +1,6 @@
 /* Main Container */
 .admin-container {
   font-family: Arial, sans-serif;
-  max-width: 1200px;
   margin: 0 auto;
   background-color: #ffffff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -81,7 +80,9 @@
 
 /* Content Area */
 .admin-content {
+  margin-top: 20px;
   padding: 15px;
+  background-color: #ffffff;
 }
 
 /* Content Tabs */
@@ -151,7 +152,8 @@
   margin-right: 15px;
 }
 
-.edit-button, .delete-button {
+.edit-button,
+.delete-button {
   background: none;
   border: none;
   cursor: pointer;
@@ -251,23 +253,23 @@
   .admin-nav {
     flex-wrap: wrap;
   }
-  
+
   .nav-item {
     flex: 1 0 33.33%;
     text-align: center;
     padding: 10px 5px;
   }
-  
+
   .achievement-item {
     flex-direction: column;
   }
-  
+
   .achievement-actions {
     margin-top: 10px;
     width: 100%;
     justify-content: flex-end;
   }
-  
+
   .achievement-date {
     margin-right: auto;
   }
@@ -277,12 +279,12 @@
   .nav-item {
     flex: 1 0 50%;
   }
-  
+
   .admin-header {
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .user-profile {
     margin-top: 10px;
     width: 100%;

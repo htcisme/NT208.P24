@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "@/styles-comp/style.css";
 import Image from "next/image";
 import Link from "next/link";

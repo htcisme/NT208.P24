@@ -9,7 +9,7 @@
   padding-top: 2rem;
   padding-left: 2rem;
   padding-right: 2rem;
-  background-color: #ecf9ff;
+  background-color: var(--page-background);
   color: #042354;
 }
 
@@ -237,8 +237,8 @@
 .back-button {
   display: inline-block;
   padding: 0.5rem 1.5rem;
-  background-color: #042354;
-  color: white;
+  background-color: var(--text);
+  color: var(--page-background);
   text-decoration: none;
   border-radius: 0.25rem;
   font-weight: 500;
