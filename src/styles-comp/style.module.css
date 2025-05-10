@@ -153,11 +153,13 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: #0b1f40 !important;
 }
 
 .Header-Topbar-Authsearch-UserInfo-Arrow {
   font-size: 10px;
   transition: transform 0.3s;
+  color: #0b1f40 !important;
 }
 
 .Header-Topbar-Authsearch-UserInfo:hover

@@ -13,10 +13,9 @@
 
 body {
   font-family: "Montserrat", sans-serif;
-  color: var(--text-color);
   display: flex;
   flex-direction: column;
-
+  background-color: var(--background);
   min-height: 100vh;
 }
 
@@ -24,6 +23,7 @@ body {
   width: 100%;
   max-width: 800px;
   background-color: white;
+  color: #04255a;
   border-radius: var(--border-radius);
   box-shadow: var(--shadow);
   overflow: hidden;
@@ -49,6 +49,7 @@ body {
 
 .form-content {
   padding: 30px;
+  color: #04255a;
 }
 
 .instructions {
@@ -168,6 +169,14 @@ body {
 
 .form-group {
   margin-bottom: 24px;
+  color: #04255a !important;
+}
+
+.form-group select,
+option,
+textarea,
+input[type="text"] {
+  color: #04255a !important;
 }
 
 .form-group label {
@@ -181,6 +190,7 @@ body {
   width: 100%;
   padding: 12px 16px;
   border: 1px solid #ddd;
+  color: #04255a;
   border-radius: 8px;
   font-size: 15px;
   transition: var(--transition);
@@ -195,6 +205,7 @@ body {
 textarea.form-control {
   min-height: 100px;
   resize: vertical;
+  color: #04255a;
 }
 
 .select-wrapper {
@@ -216,6 +227,7 @@ select.form-control {
   appearance: none;
   padding-right: 30px;
   cursor: pointer;
+  color: #04255a;
 }
 
 .btn-group {
@@ -306,6 +318,7 @@ select.form-control {
 .radio-option label {
   margin-bottom: 0;
   cursor: pointer;
+  color: #04255a;
 }
 
 .form-title {
@@ -349,6 +362,10 @@ select.form-control {
   font-weight: 600;
   padding-bottom: 10px;
   border-bottom: 1px solid #eee;
+}
+
+.form-card input {
+  color: #04255a !important;
 }
 
 .form-note {
@@ -413,4 +430,77 @@ select.form-control {
 button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
+}
+
+.Header-Topbar-Authsearch-UserInfo {
+  position: relative;
+  margin-top: 8px;
+}
+
+.Header-Topbar-Authsearch-UserInfo-Button {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 0px 10px;
+  border-radius: 18px;
+  color: #fff !important;
+  font-weight: 500;
+  font-size: 16px;
+  border: none;
+  gap: 8px;
+  transition: background 0.2s;
+}
+
+.Header-Topbar-Authsearch-UserInfo-Button:hover {
+  color: #add0ff;
+}
+
+.Header-Topbar-Authsearch-UserInfo-Button .arrow {
+  margin-left: 8px;
+  font-size: 14px;
+  color: #04255a;
+}
+
+.Header-Topbar-Authsearch-UserInfo-Name {
+  font-weight: 500;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #04255a !important;
+}
+
+.Header-Topbar-Authsearch-UserInfo-Menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 180px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+  overflow: hidden;
+  border: 1px solid #e2f4ff;
+  padding: 6px 0;
+}
+
+.Header-Topbar-Authsearch-UserInfo-Menu a,
+.Header-Topbar-Authsearch-UserInfo-Menu button {
+  display: block;
+  width: 100%;
+  padding: 12px 20px;
+  background: none;
+  border: none;
+  text-align: left;
+  color: #04255a;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  text-decoration: none;
+}
+
+.Header-Topbar-Authsearch-UserInfo-Menu a:hover,
+.Header-Topbar-Authsearch-UserInfo-Menu button:hover {
+  background: #e2f4ff;
+  color: #04255a;
 }

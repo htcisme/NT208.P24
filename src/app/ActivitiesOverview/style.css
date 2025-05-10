@@ -10,7 +10,6 @@
 .post-list-container {
   padding: 20px;
   padding-bottom: 0px;
-  background-color: #ecf9ff; /* Màu nền giống trong hình */
 }
 
 .post-list-title {
@@ -18,7 +17,6 @@
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 30px;
-  color: #042354;
   text-transform: uppercase;
   margin-top: 30px; /* Khoảng cách trên */
 }
@@ -31,7 +29,6 @@
 }
 
 .post-item {
-  background-color: #fff;
   border: 2px solid transparent;
   transition: border 0.3s ease;
 }
@@ -275,7 +272,8 @@
 }
 
 /* Thêm vào d:\PROJECT\NT208.P24\src\app\ActivitiesOverview\style.css */
-.loading-container, .error-container {
+.loading-container,
+.error-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -283,7 +281,8 @@
   flex-direction: column;
 }
 
-.loading-container p, .error-container p {
+.loading-container p,
+.error-container p {
   margin-bottom: 20px;
   font-size: 16px;
 }
