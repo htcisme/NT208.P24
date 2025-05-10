@@ -102,9 +102,10 @@ export default function Home() {
     const savedMode = localStorage.getItem("darkMode");
     if (savedMode === "true") {
       setIsDarkMode(true);
-      document.body.classList.add("dark-mode");
+      document.body.classList.add('dark');
     } else {
-      document.body.classList.remove("dark-mode");
+      setIsDarkMode(false);
+      document.body.classList.remove('dark');
     }
 
     // Kiểm tra đăng nhập
@@ -120,26 +121,17 @@ export default function Home() {
 
   // Thêm hàm toggleDarkMode
   const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-    if (isDarkMode) {
-      document.body.classList.remove("dark-mode");
-      localStorage.setItem("darkMode", "false");
-    } else {
-      document.body.classList.add("dark-mode");
+    const newMode = !isDarkMode;
+    setIsDarkMode(newMode);
+
+    if (newMode) {
+      document.body.classList.add('dark');
       localStorage.setItem("darkMode", "true");
+    } else {
+      document.body.classList.remove('dark');
+      localStorage.setItem("darkMode", "false");
     }
   };
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setFade(false);
-      setTimeout(() => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-        setFade(true);
-      }, 300);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <div className={styles.Container}>
@@ -276,6 +268,42 @@ export default function Home() {
               </Link>
             </div>
           </div>
+
+          <button
+            className={styles.Header_Nav_DarkModeToggle}
+            onClick={toggleDarkMode}
+            aria-label="Toggle dark mode"
+          >
+            {isDarkMode ? (
+              <svg
+                className={styles.Header_Nav_DarkModeIcon}
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z"
+                  fill="#fff"
+                />
+              </svg>
+            ) : (
+              <svg
+                className={styles.Header_Nav_DarkModeIcon}
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle cx="12" cy="12" r="5" fill="#042354" />
+                <path
+                  d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+                  stroke="#042354"
+                  strokeWidth="2"
+                />
+              </svg>
+            )}
+          </button>
         </div>
       </header>
 

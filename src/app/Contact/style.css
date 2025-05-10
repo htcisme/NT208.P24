@@ -1,31 +1,21 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
 
-body {
-  background-color: #ecf9ff;
-}
-
-.body-component {
-  background-color: #ecf9ff;
-}
-
 .contact {
-  background-color: #ecf9ff;
   height: auto;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  color: #04255a;
   font-family: "Montserrat", sans-serif;
 }
 
 .contact-header-title {
   text-align: justify;
-  color: #04255a;
   font-weight: bold;
   font-size: 27px;
   margin-left: 120px;
   margin-top: 60px;
   text-transform: uppercase;
+  color: var(--text);
 }
 
 .contact-body-information {
@@ -34,6 +24,7 @@ body {
   margin-left: 200px;
   font-size: 25px;
   margin-top: 30px;
+  color: var(--text);
 }
 
 .contact-body-address-information {
@@ -53,12 +44,15 @@ body {
 }
 
 .contact-body-header-information {
-  color: #042354;
   font-weight: bold;
   text-transform: uppercase;
   margin-top: 40px;
 }
 
-.registerform {
-  align-self: center;
+.Body_Container_RegisterForm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0px 20px;
+  margin-top: -100px;
 }

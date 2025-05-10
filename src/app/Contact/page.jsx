@@ -38,7 +38,9 @@ export default function Contact() {
           height={659}
         />
       </div>
-      <RegisterForm className="registerform"></RegisterForm>
+      <section className="Body_Container_RegisterForm">
+        <RegisterForm className="Body_Container_RegisterForm_Form" />
+      </section>
     </div>
   );
 }

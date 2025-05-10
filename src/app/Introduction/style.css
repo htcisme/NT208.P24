@@ -16,8 +16,6 @@ body {
 body {
   font-family: "Montserrat", sans-serif;
   line-height: 1.6;
-  color: #042354;
-  background-color: #ecf9ff;
   position: relative; /* Thêm position relative cho body */
 }
 
@@ -66,6 +64,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  background: none;
 }
 
 .hero_container_subtitle {
@@ -112,6 +111,7 @@ body {
 
 .history_container_text {
   line-height: 1.7;
+  color: var(--text);
 }
 
 .values {
@@ -151,9 +151,9 @@ body {
 .values_container_motto {
   font-size: 30px;
   font-weight: 1000;
-  color: #042354;
   letter-spacing: 0.05em;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  color: #042354;
   -webkit-text-stroke: 1px #042354;
 }
 
@@ -172,6 +172,7 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
+  color: var(--text);
 }
 
 .description_container_flex {
@@ -230,7 +231,6 @@ body {
   font-weight: 200;
   text-align: center;
   margin-bottom: 2.5rem;
-  color: #042354;
 }
 
 .teams_container_grid {
