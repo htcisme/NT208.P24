@@ -19,6 +19,10 @@ body {
   position: relative; /* Thêm position relative cho body */
 }
 
+.main {
+  background-color: var(--page-background);
+}
+
 .background {
   width: 100%;
   overflow: hidden; /* Kiểm soát overflow cho container chính */

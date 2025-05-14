@@ -5,7 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import RegisterForm from "@/components/RegisterForm";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const images = [
   "/Img/Homepage/BCH1.png",
@@ -30,6 +30,14 @@ export default function Home() {
   const [fade, setFade] = useState(true);
   const [showMenu, setShowMenu] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const searchRef = useRef(null);
+  const userMenuRef = useRef(null);
+  const [recentActivities, setRecentActivities] = useState([]);
+  const [loadingRecent, setLoadingRecent] = useState(true);
 
   const handleLogout = () => {
     // Xóa từ localStorage
@@ -133,6 +141,96 @@ export default function Home() {
     }
   };
 
+  // Đóng dropdown khi click ra ngoài
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowSearchResults(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setShowUserMenu(false);
+      }
+    }
+    if (showUserMenu) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showUserMenu]);
+
+  // Hàm tìm kiếm
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    if (!searchTerm.trim()) {
+      setSearchResults([]);
+      setShowSearchResults(false);
+      return;
+    }
+    setIsSearching(true);
+    try {
+      const response = await fetch(
+        `/api/activities/search?q=${encodeURIComponent(searchTerm.trim())}`
+      );
+      const data = await response.json();
+      if (data.success) {
+        setSearchResults(data.data);
+        setShowSearchResults(true);
+      } else {
+        setSearchResults([]);
+      }
+    } catch (error) {
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  // Khi thay đổi input
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    if (!e.target.value.trim()) {
+      setSearchResults([]);
+      setShowSearchResults(false);
+    }
+  };
+
+  // Khi click vào kết quả
+  const handleResultClick = (id) => {
+    setShowSearchResults(false);
+    setSearchTerm("");
+    window.location.href = `/Activities/${id}`;
+  };
+
+  useEffect(() => {
+    async function fetchRecentActivities() {
+      setLoadingRecent(true);
+      try {
+        const res = await fetch(
+          "/api/activities?page=1&limit=4&status=published"
+        );
+        const data = await res.json();
+        if (data.success) {
+          setRecentActivities(data.data);
+        } else {
+          setRecentActivities([]);
+        }
+      } catch (err) {
+        setRecentActivities([]);
+      } finally {
+        setLoadingRecent(false);
+      }
+    }
+    fetchRecentActivities();
+  }, []);
+
   return (
     <div className={styles.Container}>
       <header className={styles.Header}>
@@ -149,7 +247,7 @@ export default function Home() {
               <span className={styles.Header_Nav_AuthButton_Arrow}>▼</span>
             </button>
             {showUserMenu && (
-              <div className={styles.Header_Nav_AuthMenu}>
+              <div className={styles.Header_Nav_AuthMenu} ref={userMenuRef}>
                 {user ? (
                   <>
                     <Link
@@ -193,10 +291,20 @@ export default function Home() {
             )}
           </div>
 
-          <div className={styles.Header_Nav_SearchWrapper}>
-            <div className={styles.Header_Topbar_Authsearch_Searchbox}>
-              <input type="text" placeholder="Tìm kiếm..." />
-              <span
+          <div className={styles.Header_Nav_SearchWrapper} ref={searchRef}>
+            <form
+              onSubmit={handleSearch}
+              className={styles.Header_Topbar_Authsearch_Searchbox}
+            >
+              <input
+                type="text"
+                placeholder="Tìm kiếm hoạt động"
+                value={searchTerm}
+                onChange={handleSearchChange}
+                onFocus={() => searchTerm.trim() && setShowSearchResults(true)}
+              />
+              <button
+                type="submit"
                 className={styles.Header_Topbar_Authsearch_Searchbox_Searchicon}
               >
                 <svg
@@ -217,8 +325,37 @@ export default function Home() {
                     d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
                   />
                 </svg>
-              </span>
-            </div>
+              </button>
+            </form>
+            {showSearchResults && (
+              <div className={styles.searchResultsDropdown}>
+                {isSearching ? (
+                  <div className={styles.searchLoading}>Đang tìm kiếm...</div>
+                ) : searchResults.length > 0 ? (
+                  <>
+                    <div className={styles.searchResultsHeader}>
+                      <span>Tìm thấy {searchResults.length} kết quả</span>
+                    </div>
+                    <div className={styles.searchResultsList}>
+                      {searchResults.map((result) => (
+                        <div
+                          key={result._id}
+                          className={styles.searchResultItem}
+                          onClick={() => handleResultClick(result._id)}
+                        >
+                          <h4>{result.title}</h4>
+                          <p>{result.description?.substring(0, 100)}...</p>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <div className={styles.searchNoResults}>
+                    Không tìm thấy kết quả nào
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           <div className={styles.Header_Nav_MenuWrapper}>
@@ -490,86 +627,44 @@ export default function Home() {
               </h2>
             </a>
             <div className={styles.Activities_RecentCards}>
-              <a href="/ActivitiesPost">
-                <div className={styles.Activities_RecentCard}>
-                  <img
-                    src="/Img/Homepage/card1.png"
-                    alt="AWS Cloud Training"
-                    className={styles.Activities_RecentCard_Image}
-                  />
-                  <div className={styles.Activities_RecentCard_Content}>
-                    <h3 className={styles.Activities_RecentCard_Title}>
-                      Hoạt động học thuật
-                    </h3>
-                    <p className={styles.Activities_RecentCard_Desc}>
-                      Khoa Mạng máy tính và Truyền thông | AWS CLOUD TRAINING
-                    </p>
-                    <p className={styles.Activities_RecentCard_Date}>
-                      Ngày 13 tháng 01 năm 2025
-                    </p>
-                  </div>
-                </div>
-              </a>
-              <a href="/ActivitiesPost">
-                <div className={styles.Activities_RecentCard}>
-                  <img
-                    src="/Img/Homepage/card1.png"
-                    alt="AI Workshop"
-                    className={styles.Activities_RecentCard_Image}
-                  />
-                  <div className={styles.Activities_RecentCard_Content}>
-                    <h3 className={styles.Activities_RecentCard_Title}>
-                      Workshop AI
-                    </h3>
-                    <p className={styles.Activities_RecentCard_Desc}>
-                      CLB Kỹ thuật số tổ chức | AI ỨNG DỤNG
-                    </p>
-                    <p className={styles.Activities_RecentCard_Date}>
-                      Ngày 25 tháng 02 năm 2025
-                    </p>
-                  </div>
-                </div>
-              </a>
-              <a href="/ActivitiesPost">
-                <div className={styles.Activities_RecentCard}>
-                  <img
-                    src="/Img/Homepage/card1.png"
-                    alt="Cuộc thi lập trình"
-                    className={styles.Activities_RecentCard_Image}
-                  />
-                  <div className={styles.Activities_RecentCard_Content}>
-                    <h3 className={styles.Activities_RecentCard_Title}>
-                      Cuộc thi lập trình
-                    </h3>
-                    <p className={styles.Activities_RecentCard_Desc}>
-                      Khoa CNTT tổ chức | CTF CHALLENGE
-                    </p>
-                    <p className={styles.Activities_RecentCard_Date}>
-                      Ngày 10 tháng 03 năm 2025
-                    </p>
-                  </div>
-                </div>
-              </a>
-              <a href="/ActivitiesPost">
-                <div className={styles.Activities_RecentCard}>
-                  <img
-                    src="/Img/Homepage/card1.png"
-                    alt="Seminar Blockchain"
-                    className={styles.Activities_RecentCard_Image}
-                  />
-                  <div className={styles.Activities_RecentCard_Content}>
-                    <h3 className={styles.Activities_RecentCard_Title}>
-                      Seminar Blockchain
-                    </h3>
-                    <p className={styles.Activities_RecentCard_Desc}>
-                      Khoa Mạng máy tính | CẬP NHẬT XU HƯỚNG BLOCKCHAIN
-                    </p>
-                    <p className={styles.Activities_RecentCard_Date}>
-                      Ngày 18 tháng 03 năm 2025
-                    </p>
-                  </div>
-                </div>
-              </a>
+              {loadingRecent ? (
+                <div>Đang tải hoạt động...</div>
+              ) : recentActivities.length === 0 ? (
+                <div>Không có hoạt động gần đây.</div>
+              ) : (
+                recentActivities.map((activity) => (
+                  <a
+                    key={activity._id}
+                    href={`/Activities/${activity._id}`}
+                    className={styles.Activities_RecentCard}
+                  >
+                    <div className={styles.Activities_RecentCard_Container}>
+                      <img
+                        src={activity.image || "/Img/Homepage/card1.png"}
+                        alt={activity.title}
+                        className={styles.Activities_RecentCard_Image}
+                      />
+                    </div>
+
+                    <div className={styles.Activities_RecentCard_Content}>
+                      <h3 className={styles.Activities_RecentCard_Title}>
+                        {activity.title}
+                      </h3>
+                      <p className={styles.Activities_RecentCard_Desc}>
+                        {activity.description ||
+                          activity.content?.slice(0, 80) + "..."}
+                      </p>
+                      <p className={styles.Activities_RecentCard_Date}>
+                        {activity.createdAt
+                          ? `Ngày ${new Date(
+                              activity.createdAt
+                            ).toLocaleDateString("vi-VN")}`
+                          : ""}
+                      </p>
+                    </div>
+                  </a>
+                ))
+              )}
             </div>
             <Link
               href="/ActivitiesOverview"
