@@ -3,8 +3,8 @@ import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import "./../style.css";
-
-export default function VerifyAccount() {
+// Tạo component con chứa logic chính
+function VerifyAccountContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
@@ -155,5 +155,22 @@ export default function VerifyAccount() {
         </Link>
       </div>
     </div>
+  );
+}
+
+export default function VerifyAccount() {
+  return (
+    <Suspense
+      fallback={
+        <div className="verify-page-wrapper">
+          <div className="verification-container">
+            <h1>Đang tải...</h1>
+            <p>Vui lòng đợi trong giây lát</p>
+          </div>
+        </div>
+      }
+    >
+      <VerifyAccountContent />
+    </Suspense>
   );
 }
