@@ -26,7 +26,7 @@ export async function POST(request) {
     await dbConnect();
 
     // Parse the request body
-    const { email, password } = await request.json();
+    const { email, password, rememberMe } = await request.json();
 
     // Validation
     if (!email || !password) {
@@ -47,6 +47,20 @@ export async function POST(request) {
       );
     }
 
+    // Check if user is verified
+    if (!user.isVerified) {
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            "Tài khoản chưa được xác minh. Vui lòng kiểm tra email của bạn.",
+          needsVerification: true,
+          email: user.email,
+        },
+        { status: 403 }
+      );
+    }
+
     // Compare the provided password with the stored hash
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
@@ -58,6 +72,9 @@ export async function POST(request) {
       );
     }
 
+    // Update last active time
+    await User.findByIdAndUpdate(user._id, { lastActive: new Date() });
+
     // Create JWT payload - don't include sensitive information
     const payload = {
       id: user._id.toString(),
@@ -66,9 +83,12 @@ export async function POST(request) {
       role: user.role || "user",
     };
 
+    // Set expiration based on "Remember Me" option
+    const expiresIn = rememberMe ? "7d" : "2m"; // 7 days or 2 minutes
+
     // Generate JWT token
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "1d", // Token expires in 1 day
+      expiresIn: expiresIn,
     });
 
     // Return success response with token and user data
@@ -81,6 +101,7 @@ export async function POST(request) {
         email: user.email,
         role: user.role || "user",
       },
+      sessionTimeout: rememberMe ? false : 120000, // 2 minutes in milliseconds if not remembering
     });
   } catch (error) {
     console.error("Login error:", error);

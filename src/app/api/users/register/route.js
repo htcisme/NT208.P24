@@ -2,6 +2,11 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/mongodb";
 import User from "@/models/User";
+import { sendVerificationEmail } from "@/lib/emailService"; // Add this import
+
+function generateVerificationCode() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
 
 export async function POST(request) {
   try {
@@ -47,8 +52,7 @@ export async function POST(request) {
     let userRole = "user";
     if (role === "admin") {
       // Verify admin code (store this securely in your .env)
-      const validAdminCode =
-        process.env.ADMIN_SECRET_CODE || "XP8c!vK2#qRz7@tL9jWnE5$dYg6*pH";
+      const validAdminCode = process.env.ADMIN_SECRET_CODE;
 
       if (adminCode !== validAdminCode) {
         return NextResponse.json(
@@ -64,34 +68,40 @@ export async function POST(request) {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Generate verification code
+    const verificationCode = generateVerificationCode();
+    const verificationCodeExpires = new Date();
+    verificationCodeExpires.setMinutes(
+      verificationCodeExpires.getMinutes() + 10
+    ); // Code expires in 10 minutes
+
     // Create new user
     const newUser = new User({
       name,
       email,
       password: hashedPassword,
       role: userRole,
+      isVerified: false,
+      verificationCode,
+      verificationCodeExpires,
     });
 
     await newUser.save();
-
+    await sendVerificationEmail(email, verificationCode);
     return NextResponse.json(
       {
         success: true,
-        message: "Thêm người dùng thành công",
-        user: {
-          id: newUser._id,
-          name: newUser.name,
-          email: newUser.email,
-          role: newUser.role,
-          createdAt: new Date(newUser.createdAt).toLocaleDateString("vi-VN"),
-        },
+        message:
+          "Đăng ký thành công! Vui lòng kiểm tra email để xác minh tài khoản.",
+        userId: newUser._id,
+        email: newUser.email,
       },
       { status: 201 }
     );
   } catch (error) {
     console.error("Error creating user:", error);
     return NextResponse.json(
-      { success: false, message: "Lỗi khi thêm người dùng" },
+      { success: false, message: "Lỗi khi đăng ký người dùng" },
       { status: 500 }
     );
   }
