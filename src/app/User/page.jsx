@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import styles from "./style.css";
-import { useState, Suspense, useEffect } from "react";
+import { useState, Suspense, useEffect, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Script from "next/script";
 import Link from "next/link";
@@ -14,6 +14,12 @@ function UserContent() {
     tabParam === "login" ? "login" : "register"
   );
 
+  // Session timeout reference and state
+  const sessionTimeoutRef = useRef(null);
+  const activityTimeoutRef = useRef(null);
+  const [sessionExpiring, setSessionExpiring] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(0);
+
   // State for header
   const [user, setUser] = useState(null);
   const [showMenu, setShowMenu] = useState(false);
@@ -24,22 +30,113 @@ function UserContent() {
   const [loginFormData, setLoginFormData] = useState({
     email: "",
     password: "",
+    rememberMe: false,
   });
   const [loginError, setLoginError] = useState("");
   const [isLoginLoading, setIsLoginLoading] = useState(false);
+  const [verificationNeeded, setVerificationNeeded] = useState(false);
+  const [verificationEmail, setVerificationEmail] = useState("");
 
   // State for register form
   const [registerFormData, setRegisterFormData] = useState({
     name: "",
     email: "",
     password: "",
-    role: "user", // Thêm role mặc định là user
-    adminCode: "", // Mã xác thực cho admin
+    confirmPassword: "", // Thêm trường nhập lại mật khẩu
+    role: "user",
+    adminCode: "",
   });
   const [showAdminCode, setShowAdminCode] = useState(false);
   const [registerError, setRegisterError] = useState("");
   const [isRegisterLoading, setIsRegisterLoading] = useState(false);
   const [registerSuccess, setRegisterSuccess] = useState("");
+  const [passwordsMatch, setPasswordsMatch] = useState(true); // Trạng thái kiểm tra mật khẩu khớp
+
+  // Reset session timeout when there's activity
+  const resetSessionTimeout = () => {
+    if (!user || loginFormData.rememberMe) return;
+
+    // Clear existing timeouts
+    if (sessionTimeoutRef.current) clearTimeout(sessionTimeoutRef.current);
+    if (activityTimeoutRef.current) clearTimeout(activityTimeoutRef.current);
+
+    setSessionExpiring(false);
+
+    const userId = JSON.parse(localStorage.getItem("user"))?.id;
+    if (!userId) return;
+
+    // Call API to refresh the session
+    fetch("/api/users/refresh-session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          localStorage.setItem("token", data.token);
+          document.cookie = `token=${data.token}; path=/; max-age=120`; // 2 minutes
+
+          // Set a new timeout that will show the warning 30 seconds before expiration
+          activityTimeoutRef.current = setTimeout(() => {
+            setSessionExpiring(true);
+            setTimeLeft(30);
+
+            // Set interval to count down
+            const countdownInterval = setInterval(() => {
+              setTimeLeft((prev) => {
+                if (prev <= 1) {
+                  clearInterval(countdownInterval);
+                  return 0;
+                }
+                return prev - 1;
+              });
+            }, 1000);
+
+            // Set timeout to logout after 30 seconds of inactivity
+            sessionTimeoutRef.current = setTimeout(() => {
+              handleLogout();
+            }, 30000);
+          }, data.sessionTimeout - 30000); // Show warning 30 seconds before timeout
+        }
+      })
+      .catch((err) => {
+        console.error("Error refreshing session:", err);
+      });
+  };
+
+  // Event handlers to track user activity
+  useEffect(() => {
+    if (!user) return;
+
+    const activityEvents = [
+      "mousedown",
+      "mousemove",
+      "keypress",
+      "scroll",
+      "touchstart",
+    ];
+
+    const activityHandler = resetSessionTimeout;
+
+    // Add event listeners
+    activityEvents.forEach((event) => {
+      document.addEventListener(event, activityHandler);
+    });
+
+    // Initial session timeout
+    resetSessionTimeout();
+
+    // Cleanup
+    return () => {
+      activityEvents.forEach((event) => {
+        document.removeEventListener(event, activityHandler);
+      });
+
+      if (sessionTimeoutRef.current) clearTimeout(sessionTimeoutRef.current);
+      if (activityTimeoutRef.current) clearTimeout(activityTimeoutRef.current);
+    };
+  }, [user]);
 
   // Handle logout
   const handleLogout = () => {
@@ -90,6 +187,7 @@ function UserContent() {
       const storedUser = localStorage.getItem("user");
       if (storedUser) {
         setUser(JSON.parse(storedUser));
+        resetSessionTimeout(); // Initialize session timeout
       }
     } catch (error) {
       console.error("Error checking user:", error);
@@ -98,9 +196,10 @@ function UserContent() {
 
   // Handle login form input changes
   const handleLoginChange = (e) => {
+    const { name, value, type, checked } = e.target;
     setLoginFormData({
       ...loginFormData,
-      [e.target.name]: e.target.value,
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
@@ -108,30 +207,42 @@ function UserContent() {
   const handleRegisterChange = (e) => {
     const { name, value } = e.target;
 
-    if (name === "role" && value === "admin") {
-      setShowAdminCode(true);
-    } else if (name === "role" && value === "user") {
-      setShowAdminCode(false);
-      // Reset admin code when switching to user
-      setRegisterFormData({
-        ...registerFormData,
-        [name]: value,
-        adminCode: "",
-      });
-      return;
-    }
-
-    setRegisterFormData({
+    // Tạo bản sao mới của form data để cập nhật
+    const updatedFormData = {
       ...registerFormData,
       [name]: value,
-    });
-  };
+    };
 
+    // Xử lý trường hợp đặc biệt cho role admin/user
+    if (name === "role") {
+      if (value === "admin") {
+        setShowAdminCode(true);
+      } else if (value === "user") {
+        setShowAdminCode(false);
+        updatedFormData.adminCode = ""; // Reset admin code
+      }
+    }
+
+    // Cập nhật form data
+    setRegisterFormData(updatedFormData);
+
+    // Kiểm tra mật khẩu khớp nhau
+    if (
+      (name === "password" || name === "confirmPassword") &&
+      updatedFormData.password &&
+      updatedFormData.confirmPassword
+    ) {
+      setPasswordsMatch(
+        updatedFormData.password === updatedFormData.confirmPassword
+      );
+    }
+  };
   // Handle login form submission
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     setIsLoginLoading(true);
     setLoginError("");
+    setVerificationNeeded(false);
 
     try {
       const response = await fetch("/api/users/login", {
@@ -143,18 +254,29 @@ function UserContent() {
       const data = await response.json();
 
       if (!response.ok) {
+        if (data.needsVerification) {
+          setVerificationNeeded(true);
+          setVerificationEmail(data.email);
+          throw new Error(data.message);
+        }
         throw new Error(data.message || "Đăng nhập thất bại");
       }
 
-      // Sau khi nhận được response thành công
       // Lưu token vào localStorage
       localStorage.setItem("token", data.token);
 
-      // THÊM MỚI: Lưu token vào cookie
-      document.cookie = `token=${data.token}; path=/; max-age=86400`; // hết hạn sau 1 ngày
+      // Lưu token vào cookie
+      const maxAge = loginFormData.rememberMe ? 604800 : 120; // 7 days or 2 minutes
+      document.cookie = `token=${data.token}; path=/; max-age=${maxAge}`;
 
       // Lưu thông tin người dùng
       localStorage.setItem("user", JSON.stringify(data.user));
+      setUser(data.user);
+
+      // Set up session timeout if not using remember me
+      if (!loginFormData.rememberMe) {
+        resetSessionTimeout();
+      }
 
       // Redirect to homepage or dashboard
       router.push("/");
@@ -168,15 +290,27 @@ function UserContent() {
   // Handle register form submission
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
+
+    // Kiểm tra mật khẩu trước khi gửi form
+    if (registerFormData.password !== registerFormData.confirmPassword) {
+      setRegisterError("Mật khẩu nhập lại không khớp");
+      setPasswordsMatch(false);
+      return;
+    }
+
     setIsRegisterLoading(true);
     setRegisterError("");
     setRegisterSuccess("");
 
     try {
+      // Tạo một bản sao của form data, bỏ trường confirmPassword
+      const submitData = { ...registerFormData };
+      delete submitData.confirmPassword;
+
       const response = await fetch("/api/users/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(registerFormData),
+        body: JSON.stringify(submitData), // Sử dụng submitData đã xóa confirmPassword
       });
 
       const data = await response.json();
@@ -186,21 +320,25 @@ function UserContent() {
       }
 
       // Show success message
-      setRegisterSuccess(data.message || "Đăng ký thành công");
+      setRegisterSuccess(
+        data.message ||
+          "Đăng ký thành công! Vui lòng kiểm tra email để xác minh tài khoản."
+      );
 
       // Clear form
       setRegisterFormData({
         name: "",
         email: "",
         password: "",
+        confirmPassword: "", // Đảm bảo trường này cũng được xóa
         role: "user",
         adminCode: "",
       });
       setShowAdminCode(false);
 
-      // Switch to login tab after successful registration
+      // Redirect to verification page
       setTimeout(() => {
-        setActiveTab("login");
+        router.push(`/User/verify?email=${encodeURIComponent(data.email)}`);
       }, 2000);
     } catch (error) {
       setRegisterError(error.message);
@@ -209,8 +347,35 @@ function UserContent() {
     }
   };
 
+  // Go to verification page
+  const handleGoToVerification = () => {
+    router.push(`/User/verify?email=${encodeURIComponent(verificationEmail)}`);
+  };
+
   return (
     <div className="page-container">
+      {/* Session expiring modal */}
+      {sessionExpiring && (
+        <div className="session-timeout-warning">
+          <div className="session-timeout-content">
+            <h3>Phiên làm việc sắp hết hạn</h3>
+            <p>Phiên làm việc của bạn sẽ hết hạn trong {timeLeft} giây.</p>
+            <p>Bạn có muốn tiếp tục?</p>
+            <div className="session-timeout-actions">
+              <button
+                className="session-extend-btn"
+                onClick={resetSessionTimeout}
+              >
+                Tiếp tục phiên làm việc
+              </button>
+              <button className="session-logout-btn" onClick={handleLogout}>
+                Đăng xuất
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <header className="header">
         <div className="header-logo">
           <Link href="/">SUCTREMMT</Link>
@@ -376,7 +541,17 @@ function UserContent() {
                   </div>
 
                   {loginError && (
-                    <div className="error-message">{loginError}</div>
+                    <div className="error-message">
+                      {loginError}
+                      {verificationNeeded && (
+                        <button
+                          className="verification-redirect-btn"
+                          onClick={handleGoToVerification}
+                        >
+                          Xác minh ngay
+                        </button>
+                      )}
+                    </div>
                   )}
 
                   <form onSubmit={handleLoginSubmit}>
@@ -406,6 +581,17 @@ function UserContent() {
                         onChange={handleLoginChange}
                         required
                       />
+                    </div>
+
+                    <div className="form-group form-checkbox">
+                      <input
+                        type="checkbox"
+                        id="rememberMe"
+                        name="rememberMe"
+                        checked={loginFormData.rememberMe}
+                        onChange={handleLoginChange}
+                      />
+                      <label htmlFor="rememberMe">Ghi nhớ đăng nhập</label>
                     </div>
 
                     <button
@@ -497,7 +683,31 @@ function UserContent() {
                         minLength="6"
                       />
                     </div>
-
+                    <div className="form-group">
+                      <label htmlFor="confirm-password">
+                        Nhập lại mật khẩu
+                      </label>
+                      <input
+                        type="password"
+                        className={`form-control ${
+                          registerFormData.confirmPassword && !passwordsMatch
+                            ? "password-mismatch"
+                            : ""
+                        }`}
+                        id="confirm-password"
+                        name="confirmPassword"
+                        placeholder="Nhập lại mật khẩu"
+                        value={registerFormData.confirmPassword}
+                        onChange={handleRegisterChange}
+                        required
+                        minLength="6"
+                      />
+                      {registerFormData.confirmPassword && !passwordsMatch && (
+                        <div className="password-mismatch-message">
+                          Mật khẩu không khớp
+                        </div>
+                      )}
+                    </div>
                     <div className="form-group">
                       <label htmlFor="register-role">Vai trò</label>
                       <select
