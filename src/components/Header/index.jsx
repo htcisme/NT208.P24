@@ -99,29 +99,33 @@ export default function Header() {
 
     setIsSearching(true);
     try {
-      const response = await fetch(`/api/activities/search?q=${encodeURIComponent(searchTerm.trim())}`);
+      const response = await fetch(
+        `/api/activities/search?q=${encodeURIComponent(searchTerm.trim())}`
+      );
       if (!response.ok) {
-        throw new Error('Failed to fetch search results');
+        throw new Error("Failed to fetch search results");
       }
       const data = await response.json();
-      
+
       if (data.success) {
-        const filteredResults = data.data.filter(activity => {
+        const filteredResults = data.data.filter((activity) => {
           const searchLower = searchTerm.toLowerCase();
           return (
             activity.title.toLowerCase().includes(searchLower) ||
-            (activity.description && activity.description.toLowerCase().includes(searchLower)) ||
-            (activity.content && activity.content.toLowerCase().includes(searchLower))
+            (activity.description &&
+              activity.description.toLowerCase().includes(searchLower)) ||
+            (activity.content &&
+              activity.content.toLowerCase().includes(searchLower))
           );
         });
-        
+
         setSearchResults(filteredResults);
         setShowSearchResults(true);
       } else {
         setSearchResults([]);
       }
     } catch (error) {
-      console.error('Search error:', error);
+      console.error("Search error:", error);
       setSearchResults([]);
     } finally {
       setIsSearching(false);
@@ -131,7 +135,7 @@ export default function Header() {
   const handleSearchChange = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
-    
+
     if (value.trim()) {
       handleSearch(e);
     } else {
@@ -176,14 +180,17 @@ export default function Header() {
         <div className="Header-Topbar-Authsearch">
           <div className="Header-Topbar-Authsearch-Searchbox" ref={searchRef}>
             <form onSubmit={handleSearch}>
-              <input 
-                type="text" 
-                placeholder="Tìm kiếm hoạt động..." 
+              <input
+                type="text"
+                placeholder="Tìm kiếm hoạt động..."
                 value={searchTerm}
                 onChange={handleSearchChange}
                 onFocus={() => searchTerm.trim() && setShowSearchResults(true)}
               />
-              <button type="submit" className="Header-Topbar-Authsearch-Searchbox-Searchicon">
+              <button
+                type="submit"
+                className="Header-Topbar-Authsearch-Searchbox-Searchicon"
+              >
                 <svg
                   className="Header-Topbar-Authsearch-Searchbox-Searchicon-Icon"
                   aria-hidden="true"
