@@ -288,3 +288,22 @@
 .loading-news p {
   color: #0288d1;
 }
+
+/* Styles cho phần hiển thị kết quả tìm kiếm */
+.search-results-info {
+  background-color: #f8f9fa;
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  border-left: 4px solid #042354;
+}
+
+.search-results-info p {
+  margin: 5px 0;
+  color: #042354;
+  font-size: 14px;
+}
+
+.search-results-info p:first-child {
+  font-weight: 600;
+}

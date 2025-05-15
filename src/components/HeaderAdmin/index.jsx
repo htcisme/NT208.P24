@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "@/styles-comp/style.css";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -10,6 +10,22 @@ const HeaderAdmin = () => {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     // Kiểm tra user trong localStorage khi component mount
@@ -62,7 +78,10 @@ const HeaderAdmin = () => {
         <div className="admin-header-user">
           <span className="admin-header-username">{user?.name || "Khách"}</span>
           <div className="admin-header-user-dropdown">
-            <div className="admin-header-user-icon">
+            <div
+              className="admin-header-user-icon"
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -78,11 +97,13 @@ const HeaderAdmin = () => {
                 <circle cx="12" cy="7" r="4"></circle>
               </svg>
             </div>
-            <div className="admin-header-dropdown-content">
-              <button onClick={handleLogout} className="admin-logout-btn">
-                Đăng xuất
-              </button>
-            </div>
+            {dropdownOpen && (
+              <div className="admin-header-dropdown-content">
+                <button onClick={handleLogout} className="admin-logout-btn">
+                  Đăng xuất
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

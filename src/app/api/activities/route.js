@@ -1,14 +1,13 @@
-
-import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/mongodb';
-import Activity from '@/models/Activity';
-import upload from '@/lib/multer';
+import { NextResponse } from "next/server";
+import dbConnect from "@/lib/mongodb";
+import Activity from "@/models/Activity";
+import upload from "@/lib/multer";
 
 // GET - Lấy danh sách hoạt động
 export async function GET(request) {
   try {
     await dbConnect();
-    
+
     // Phân tích query params
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page")) || 1;
@@ -18,7 +17,7 @@ export async function GET(request) {
 
     // Xây dựng query
     let query = {};
-    
+
     // Nếu có parameter status, lọc theo status
     if (status) {
       query.status = status;
@@ -60,30 +59,30 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     await dbConnect();
-    
+
     // Xử lý request với multer
     const formData = await request.formData();
     let body = {};
-    
+
     // Chuyển formData sang đối tượng
     formData.forEach((value, key) => {
       body[key] = value;
     });
-    
+
     // Lưu file nếu có
     let imageUrl = null;
-    const image = formData.get('image');
-    
+    const image = formData.get("image");
+
     if (image) {
       // Lưu file vào thư mục uploads
       const buffer = Buffer.from(await image.arrayBuffer());
-      const filename = Date.now() + '-' + image.name.replace(/\s/g, '_');
+      const filename = Date.now() + "-" + image.name.replace(/\s/g, "_");
       const filepath = `public/uploads/${filename}`;
-      
-      require('fs').writeFileSync(filepath, buffer);
+
+      require("fs").writeFileSync(filepath, buffer);
       imageUrl = `/uploads/${filename}`;
     }
-    
+
     // Tạo hoạt động mới với hình ảnh
     const newActivity = new Activity({
       title: body.title,
@@ -96,18 +95,54 @@ export async function POST(request) {
       createdAt: new Date(),
       updatedAt: new Date(),
     });
-    
+
     await newActivity.save();
-    
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Tạo hoạt động thành công",
+        data: newActivity,
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("Error creating activity:", error);
+    return NextResponse.json(
+      { success: false, message: "Lỗi khi tạo hoạt động" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function SEARCH(request) {
+  try {
+    await dbConnect();
+    const { searchParams } = new URL(request.url);
+    const q = searchParams.get("q") || "";
+    const limit = parseInt(searchParams.get("limit")) || 8;
+
+    // Regex không phân biệt hoa thường
+    const regex = new RegExp(q, "i");
+
+    // Tìm kiếm theo title, content, description, chỉ lấy status published
+    const activities = await Activity.find({
+      status: "published",
+      $or: [{ title: regex }, { content: regex }, { description: regex }],
+    })
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .select("-comments")
+      .lean();
+
     return NextResponse.json({
       success: true,
-      message: 'Tạo hoạt động thành công',
-      data: newActivity,
-    }, { status: 201 });
+      data: activities,
+    });
   } catch (error) {
-    console.error('Error creating activity:', error);
+    console.error("Error searching activities:", error);
     return NextResponse.json(
-      { success: false, message: 'Lỗi khi tạo hoạt động' },
+      { success: false, message: "Lỗi khi tìm kiếm hoạt động" },
       { status: 500 }
     );
   }

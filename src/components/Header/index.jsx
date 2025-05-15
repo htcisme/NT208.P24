@@ -11,10 +11,28 @@ export default function Header() {
   const [user, setUser] = useState(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [logoError, setLogoError] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
   const router = useRouter();
+  const userMenuRef = useRef(null);
+  const searchRef = useRef(null);
 
   useEffect(() => {
-    // Kiểm tra dark mode
+    function handleClickOutside(event) {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setShowUserMenu(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
     const savedMode = localStorage.getItem("darkMode");
     if (savedMode === "true") {
       setIsDarkMode(true);
@@ -24,7 +42,6 @@ export default function Header() {
       document.body.classList.remove("dark");
     }
 
-    // Kiểm tra thông tin đăng nhập
     try {
       const storedUser = localStorage.getItem("user");
       if (storedUser) {
@@ -33,6 +50,19 @@ export default function Header() {
     } catch (error) {
       console.error("Error checking user:", error);
     }
+  }, []);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowSearchResults(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   const toggleDarkMode = () => {
@@ -49,16 +79,71 @@ export default function Header() {
   };
 
   const handleLogout = () => {
-    // Xóa từ localStorage
     localStorage.removeItem("user");
     localStorage.removeItem("token");
 
-    // THÊM MỚI: Xóa cookie token
     document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
 
     setUser(null);
     setShowUserMenu(false);
     router.push("/");
+  };
+
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    if (!searchTerm.trim()) {
+      setSearchResults([]);
+      setShowSearchResults(false);
+      return;
+    }
+
+    setIsSearching(true);
+    try {
+      const response = await fetch(`/api/activities/search?q=${encodeURIComponent(searchTerm.trim())}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch search results');
+      }
+      const data = await response.json();
+      
+      if (data.success) {
+        const filteredResults = data.data.filter(activity => {
+          const searchLower = searchTerm.toLowerCase();
+          return (
+            activity.title.toLowerCase().includes(searchLower) ||
+            (activity.description && activity.description.toLowerCase().includes(searchLower)) ||
+            (activity.content && activity.content.toLowerCase().includes(searchLower))
+          );
+        });
+        
+        setSearchResults(filteredResults);
+        setShowSearchResults(true);
+      } else {
+        setSearchResults([]);
+      }
+    } catch (error) {
+      console.error('Search error:', error);
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    
+    if (value.trim()) {
+      handleSearch(e);
+    } else {
+      setSearchResults([]);
+      setShowSearchResults(false);
+    }
+  };
+
+  const handleResultClick = (id) => {
+    setShowSearchResults(false);
+    setSearchTerm("");
+    router.push(`/Activities/${id}`);
   };
 
   return (
@@ -89,34 +174,79 @@ export default function Header() {
         </div>
 
         <div className="Header-Topbar-Authsearch">
-          <div className="Header-Topbar-Authsearch-Searchbox">
-            <input type="text" placeholder="Tìm kiếm..." />
-            <span className="Header-Topbar-Authsearch-Searchbox-Searchicon">
-              <svg
-                className="Header-Topbar-Authsearch-Searchbox-Searchicon-Icon"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeWidth="2"
-                  d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
-                />
-              </svg>
-            </span>
+          <div className="Header-Topbar-Authsearch-Searchbox" ref={searchRef}>
+            <form onSubmit={handleSearch}>
+              <input 
+                type="text" 
+                placeholder="Tìm kiếm hoạt động..." 
+                value={searchTerm}
+                onChange={handleSearchChange}
+                onFocus={() => searchTerm.trim() && setShowSearchResults(true)}
+              />
+              <button type="submit" className="Header-Topbar-Authsearch-Searchbox-Searchicon">
+                <svg
+                  className="Header-Topbar-Authsearch-Searchbox-Searchicon-Icon"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeWidth="2"
+                    d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
+                  />
+                </svg>
+              </button>
+            </form>
+
+            {showSearchResults && (
+              <div className="search-results-dropdown">
+                {isSearching ? (
+                  <div className="search-loading">Đang tìm kiếm...</div>
+                ) : searchResults.length > 0 ? (
+                  <>
+                    <div className="search-results-header">
+                      <span>Tìm thấy {searchResults.length} kết quả</span>
+                    </div>
+                    <div className="search-results-list">
+                      {searchResults.map((result) => (
+                        <div
+                          key={result._id}
+                          className="search-result-item"
+                          onClick={() => handleResultClick(result._id)}
+                        >
+                          <h4>{result.title}</h4>
+                          <p>{result.description?.substring(0, 100)}...</p>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <div className="search-no-results">
+                    Không tìm thấy kết quả nào
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
-          {/* Hiển thị thông tin người dùng hoặc nút đăng nhập/đăng ký */}
           {user ? (
-            <div className="Header-Topbar-Authsearch-UserInfo">
+            <div
+              className="Header-Topbar-Authsearch-UserInfo"
+              ref={userMenuRef}
+            >
               <div
                 className="Header-Topbar-Authsearch-UserInfo-Button"
                 onClick={() => setShowUserMenu(!showUserMenu)}
+                role="button"
+                tabIndex={0}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") setShowUserMenu(!showUserMenu);
+                }}
               >
                 <span className="Header-Topbar-Authsearch-UserInfo-Name">
                   Chào, {user.name}

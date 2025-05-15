@@ -69,13 +69,15 @@
 }
 
 .Header-Topbar-Authsearch-Searchbox {
-  display: flex;
+  display: grid;
   align-items: center;
   justify-content: space-between;
   background: #ffffff;
   padding: 6px 15px;
   border-radius: 10px;
   caret-color: #00274d;
+  position: relative;
+  width: 300px;
 }
 
 .Header-Topbar-Authsearch-Searchbox input {
@@ -84,8 +86,18 @@
   font-size: 16px;
   color: #003366 !important;
   background: #ffffff !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 0px;
   margin: 0px;
+  width: 230px;
+}
+
+.Header-Topbar-Authsearch-Searchbox form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
 }
 
@@ -93,6 +105,16 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  margin-left: 8px;
+  transition: transform 0.2s ease;
+}
+
+.Header-Topbar-Authsearch-Searchbox-Searchicon:hover {
+  transform: scale(1.1);
 }
 
 .Header-Topbar-Authsearch-Searchbox-Searchicon-Icon {
@@ -427,9 +449,9 @@
   /* Register Form Variables */
   --regiter-bg: #ffffff;
   --register-input-bg: #fafafa;
-  --register-input-border: #e0e0e0;
+  --register-input-border: #90a7cc;
   --register-button-bg: #fafafa;
-  --register-button-border: #e0e0e0;
+  --register-button-border: #848e9e;
   --register-button-text: #042354;
   --register-button-hover: #f0f0f0;
   --footer-link-hover: #446ca1;
@@ -727,4 +749,160 @@
     border-right: none;
     border-bottom: 1px solid #e0e0e0;
   }
+}
+
+.Header-Topbar-Authsearch-UserInfo {
+  position: relative;
+  margin-top: 8px;
+}
+
+.Header-Topbar-Authsearch-UserInfo-Button {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 0px 10px;
+  border-radius: 18px;
+  color: #fff !important;
+  font-weight: 500;
+  font-size: 16px;
+  border: none;
+  gap: 8px;
+  width: auto;
+  transition: background 0.2s;
+}
+
+.Header-Topbar-Authsearch-UserInfo-Button:hover {
+  background: #accfe4;
+  color: #04255a !important;
+}
+
+.Header-Topbar-Authsearch-UserInfo-Button .arrow {
+  margin-left: 8px;
+  font-size: 14px;
+  color: #04255a;
+}
+
+.Header-Topbar-Authsearch-UserInfo-Name {
+  font-weight: 500;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #04255a !important;
+}
+
+.Header-Topbar-Authsearch-UserInfo-Arrow {
+  color: #04255a;
+}
+
+.Header-Topbar-Authsearch-UserInfo-Menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 180px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+  overflow: hidden;
+  border: 1px solid #e2f4ff;
+  padding: 6px 0;
+}
+
+.Header-Topbar-Authsearch-UserInfo-Menu a,
+.Header-Topbar-Authsearch-UserInfo-Menu button {
+  display: block;
+  width: 100%;
+  padding: 12px 20px;
+  background: none;
+  border: none;
+  text-align: left;
+  color: #04255a;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  text-decoration: none;
+}
+
+.Header-Topbar-Authsearch-UserInfo-Menu a:hover,
+.Header-Topbar-Authsearch-UserInfo-Menu button:hover {
+  background: #e2f4ff;
+  color: #04255a;
+}
+
+/* Styles cho dropdown kết quả tìm kiếm */
+.search-results-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  margin-top: 8px;
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.search-results-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.search-results-list {
+  padding: 8px 0;
+}
+
+.search-result-item {
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.search-result-item:hover {
+  background-color: #f3f4f6;
+}
+
+.search-result-item h4 {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  color: #042354;
+  font-weight: 600;
+}
+
+.search-result-item p {
+  margin: 0;
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+.search-loading,
+.search-no-results {
+  padding: 16px;
+  text-align: center;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* Thêm scrollbar tùy chỉnh cho dropdown */
+.search-results-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.search-results-dropdown::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.search-results-dropdown::-webkit-scrollbar-thumb {
+  background: #042354;
+  border-radius: 3px;
+}
+
+.search-results-dropdown::-webkit-scrollbar-thumb:hover {
+  background: #031a3e;
 }

@@ -4,14 +4,19 @@ import React, { useState, useEffect } from "react"; // Thêm useEffect vào đâ
 import Image from "next/image";
 import Footer from "@/components/Footer";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import "@/styles-comp/style.css";
 import "@/app/Activities/style.css";
 
 export default function Activities() {
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get('search');
+
   // State cho tin tức mới nhất
   const [latestNews, setLatestNews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [filteredNews, setFilteredNews] = useState([]);
 
   // Fetch tin tức mới nhất từ API
   useEffect(() => {
@@ -25,6 +30,7 @@ export default function Activities() {
 
         if (data.success) {
           setLatestNews(data.data);
+          setFilteredNews(data.data);
         } else {
           throw new Error(data.message || 'Error fetching latest news');
         }
@@ -38,6 +44,19 @@ export default function Activities() {
 
     fetchLatestNews();
   }, []);
+
+  // Xử lý tìm kiếm khi có query parameter
+  useEffect(() => {
+    if (searchQuery) {
+      const filtered = latestNews.filter(news => 
+        news.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        news.description?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredNews(filtered);
+    } else {
+      setFilteredNews(latestNews);
+    }
+  }, [searchQuery, latestNews]);
 
   // Hàm định dạng thời gian cho tin tức mới nhất (định dạng "Thứ ... - DD/MM/YYYY")
   const formatNewsDate = (dateString) => {
@@ -134,11 +153,19 @@ export default function Activities() {
               </div>
             )}
 
+            {/* Hiển thị kết quả tìm kiếm */}
+            {searchQuery && (
+              <div className="search-results-info">
+                <p>Kết quả tìm kiếm cho: "{searchQuery}"</p>
+                <p>Tìm thấy {filteredNews.length} kết quả</p>
+              </div>
+            )}
+
             {/* Hiển thị tin tức từ API */}
             {!loading && !error && (
               <ul className="light-news-list">
-                {latestNews.length > 0 ? (
-                  latestNews.map((news) => (
+                {filteredNews.length > 0 ? (
+                  filteredNews.map((news) => (
                     <li key={news._id}>
                       <Link href={`/Activities/${news._id}`}>
                         {news.title}
