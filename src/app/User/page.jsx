@@ -1,30 +1,27 @@
 "use client";
-import Image from "next/image";
-import styles from "./style.css";
-import { useState, Suspense, useEffect, useRef } from "react";
+import { useState, Suspense, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import Script from "next/script";
 import Link from "next/link";
+import { useSession } from "@/context/SessionContext";
+import "./style.css";
 
 function UserContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab");
+  const {
+    user,
+    setUser,
+    sessionExpiring,
+    timeLeft,
+    resetSessionTimeout,
+    handleLogout,
+  } = useSession();
+
+  // State cho tabs và forms
   const [activeTab, setActiveTab] = useState(
     tabParam === "login" ? "login" : "register"
   );
-
-  // Session timeout reference and state
-  const sessionTimeoutRef = useRef(null);
-  const activityTimeoutRef = useRef(null);
-  const [sessionExpiring, setSessionExpiring] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(0);
-
-  // State for header
-  const [user, setUser] = useState(null);
-  const [showMenu, setShowMenu] = useState(false);
-  const [showUserMenu, setShowUserMenu] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
 
   // State for login form
   const [loginFormData, setLoginFormData] = useState({
@@ -42,7 +39,7 @@ function UserContent() {
     name: "",
     email: "",
     password: "",
-    confirmPassword: "", // Thêm trường nhập lại mật khẩu
+    confirmPassword: "",
     role: "user",
     adminCode: "",
   });
@@ -50,149 +47,12 @@ function UserContent() {
   const [registerError, setRegisterError] = useState("");
   const [isRegisterLoading, setIsRegisterLoading] = useState(false);
   const [registerSuccess, setRegisterSuccess] = useState("");
-  const [passwordsMatch, setPasswordsMatch] = useState(true); // Trạng thái kiểm tra mật khẩu khớp
+  const [passwordsMatch, setPasswordsMatch] = useState(true);
 
-  // Reset session timeout when there's activity
-  const resetSessionTimeout = () => {
-    if (!user || loginFormData.rememberMe) return;
-
-    // Clear existing timeouts
-    if (sessionTimeoutRef.current) clearTimeout(sessionTimeoutRef.current);
-    if (activityTimeoutRef.current) clearTimeout(activityTimeoutRef.current);
-
-    setSessionExpiring(false);
-
-    const userId = JSON.parse(localStorage.getItem("user"))?.id;
-    if (!userId) return;
-
-    // Call API to refresh the session
-    fetch("/api/users/refresh-session", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          localStorage.setItem("token", data.token);
-          document.cookie = `token=${data.token}; path=/; max-age=120`; // 2 minutes
-
-          // Set a new timeout that will show the warning 30 seconds before expiration
-          activityTimeoutRef.current = setTimeout(() => {
-            setSessionExpiring(true);
-            setTimeLeft(30);
-
-            // Set interval to count down
-            const countdownInterval = setInterval(() => {
-              setTimeLeft((prev) => {
-                if (prev <= 1) {
-                  clearInterval(countdownInterval);
-                  return 0;
-                }
-                return prev - 1;
-              });
-            }, 1000);
-
-            // Set timeout to logout after 30 seconds of inactivity
-            sessionTimeoutRef.current = setTimeout(() => {
-              handleLogout();
-            }, 30000);
-          }, data.sessionTimeout - 30000); // Show warning 30 seconds before timeout
-        }
-      })
-      .catch((err) => {
-        console.error("Error refreshing session:", err);
-      });
-  };
-
-  // Event handlers to track user activity
+  // Update active tab based on URL parameter
   useEffect(() => {
-    if (!user) return;
-
-    const activityEvents = [
-      "mousedown",
-      "mousemove",
-      "keypress",
-      "scroll",
-      "touchstart",
-    ];
-
-    const activityHandler = resetSessionTimeout;
-
-    // Add event listeners
-    activityEvents.forEach((event) => {
-      document.addEventListener(event, activityHandler);
-    });
-
-    // Initial session timeout
-    resetSessionTimeout();
-
-    // Cleanup
-    return () => {
-      activityEvents.forEach((event) => {
-        document.removeEventListener(event, activityHandler);
-      });
-
-      if (sessionTimeoutRef.current) clearTimeout(sessionTimeoutRef.current);
-      if (activityTimeoutRef.current) clearTimeout(activityTimeoutRef.current);
-    };
-  }, [user]);
-
-  // Handle logout
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-    setUser(null);
-    setShowUserMenu(false);
-    window.location.reload();
-  };
-
-  // Toggle menu
-  const toggleMenu = () => {
-    setShowMenu(!showMenu);
-  };
-
-  // Toggle user menu
-  const toggleUserMenu = () => {
-    setShowUserMenu(!showUserMenu);
-  };
-
-  // Toggle dark mode
-  const toggleDarkMode = () => {
-    const newMode = !isDarkMode;
-    setIsDarkMode(newMode);
-
-    if (newMode) {
-      document.body.classList.add("dark");
-      localStorage.setItem("darkMode", "true");
-    } else {
-      document.body.classList.remove("dark");
-      localStorage.setItem("darkMode", "false");
-    }
-  };
-
-  // Check dark mode and user on mount
-  useEffect(() => {
-    const savedMode = localStorage.getItem("darkMode");
-    if (savedMode === "true") {
-      setIsDarkMode(true);
-      document.body.classList.add("dark");
-    } else {
-      setIsDarkMode(false);
-      document.body.classList.remove("dark");
-    }
-
-    try {
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-        resetSessionTimeout(); // Initialize session timeout
-      }
-    } catch (error) {
-      console.error("Error checking user:", error);
-    }
-  }, []);
+    setActiveTab(tabParam === "login" ? "login" : "register");
+  }, [tabParam]);
 
   // Handle login form input changes
   const handleLoginChange = (e) => {
@@ -237,6 +97,7 @@ function UserContent() {
       );
     }
   };
+
   // Handle login form submission
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -261,6 +122,7 @@ function UserContent() {
         }
         throw new Error(data.message || "Đăng nhập thất bại");
       }
+      localStorage.setItem("rememberMe", loginFormData.rememberMe);
 
       // Lưu token vào localStorage
       localStorage.setItem("token", data.token);
@@ -272,11 +134,6 @@ function UserContent() {
       // Lưu thông tin người dùng
       localStorage.setItem("user", JSON.stringify(data.user));
       setUser(data.user);
-
-      // Set up session timeout if not using remember me
-      if (!loginFormData.rememberMe) {
-        resetSessionTimeout();
-      }
 
       // Redirect to homepage or dashboard
       router.push("/");
@@ -310,7 +167,7 @@ function UserContent() {
       const response = await fetch("/api/users/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(submitData), // Sử dụng submitData đã xóa confirmPassword
+        body: JSON.stringify(submitData),
       });
 
       const data = await response.json();
@@ -330,7 +187,7 @@ function UserContent() {
         name: "",
         email: "",
         password: "",
-        confirmPassword: "", // Đảm bảo trường này cũng được xóa
+        confirmPassword: "",
         role: "user",
         adminCode: "",
       });
@@ -354,7 +211,7 @@ function UserContent() {
 
   return (
     <div className="page-container">
-      {/* Session expiring modal */}
+      {/* Hiển thị popup session timeout từ context */}
       {sessionExpiring && (
         <div className="session-timeout-warning">
           <div className="session-timeout-content">
@@ -375,123 +232,6 @@ function UserContent() {
           </div>
         </div>
       )}
-
-      <header className="header">
-        <div className="header-logo">
-          <Link href="/">SUCTREMMT</Link>
-        </div>
-        <div className="header-nav">
-          <div className="header-nav-search-wrapper">
-            <div className="header-topbar-authsearch-searchbox">
-              <input type="text" placeholder="Tìm kiếm..." />
-              <span className="header-topbar-authsearch-searchbox-searchicon">
-                <svg
-                  className="header-topbar-authsearch-searchbox-searchicon-icon"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeWidth="2"
-                    d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
-                  />
-                </svg>
-              </span>
-            </div>
-          </div>
-
-          <div className="header-nav-menu-wrapper">
-            <button
-              className="header-nav-menu-wrapper-menu-button"
-              onClick={toggleMenu}
-              aria-expanded={showMenu}
-            >
-              ☰
-            </button>
-            <div
-              className={`header-nav-menu-wrapper-dropdown-menu ${
-                showMenu ? "header-nav-menu-wrapper-menu-button-show-menu" : ""
-              }`}
-            >
-              <Link
-                href="/Introduction"
-                className="header-nav-menu-wrapper-dropdown-menu-item"
-              >
-                Giới thiệu
-              </Link>
-              <Link
-                href="/Activities"
-                className="header-nav-menu-wrapper-dropdown-menu-item"
-              >
-                Hoạt động
-              </Link>
-              <Link
-                href="/Awards"
-                className="header-nav-menu-wrapper-dropdown-menu-item"
-              >
-                Thành tích
-              </Link>
-              <Link
-                href="/Booking"
-                className="header-nav-menu-wrapper-dropdown-menu-item"
-              >
-                Đặt phòng
-              </Link>
-              <Link
-                href="/Contact"
-                className="header-nav-menu-wrapper-dropdown-menu-item"
-              >
-                Liên hệ
-              </Link>
-            </div>
-          </div>
-
-          <button
-            className="header-nav-dark-mode-toggle"
-            onClick={toggleDarkMode}
-            aria-label="Toggle dark mode"
-          >
-            {isDarkMode ? (
-              <svg
-                className="w-6 h-6 text-gray-800 dark:text-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M13 3a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0V3ZM6.343 4.929A1 1 0 0 0 4.93 6.343l1.414 1.414a1 1 0 0 0 1.414-1.414L6.343 4.929Zm12.728 1.414a1 1 0 0 0-1.414-1.414l-1.414 1.414a1 1 0 0 0 1.414 1.414l1.414-1.414ZM12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm-9 4a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2H3Zm16 0a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2h-2ZM7.757 17.657a1 1 0 1 0-1.414-1.414l-1.414 1.414a1 1 0 1 0 1.414 1.414l1.414-1.414Zm9.9-1.414a1 1 0 0 0-1.414 1.414l1.414 1.414a1 1 0 0 0 1.414-1.414l-1.414-1.414ZM13 19a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0v-2Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            ) : (
-              <svg
-                className="w-6 h-6 text-gray-800 dark:text-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="#042354"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M11.675 2.015a.998.998 0 0 0-.403.011C6.09 2.4 2 6.722 2 12c0 5.523 4.477 10 10 10 4.356 0 8.058-2.784 9.43-6.667a1 1 0 0 0-1.02-1.33c-.08.006-.105.005-.127.005h-.001l-.028-.002A5.227 5.227 0 0 0 20 14a8 8 0 0 1-8-8c0-.952.121-1.752.404-2.558a.996.996 0 0 0 .096-.428V3a1 1 0 0 0-.825-.985Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            )}
-          </button>
-        </div>
-      </header>
 
       <div className="form-container">
         {/* Tabs */}
