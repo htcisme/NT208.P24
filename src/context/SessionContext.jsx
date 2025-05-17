@@ -114,6 +114,9 @@ export function SessionProvider({ children }) {
 
   // Handle logout
   const handleLogout = () => {
+    // Đầu tiên, đặt lại sessionExpiring thành false
+    setSessionExpiring(false);
+    setTimeLeft(0);
     // Clear all timeouts and intervals
     if (sessionTimeoutRef.current) clearTimeout(sessionTimeoutRef.current);
     if (activityTimeoutRef.current) clearTimeout(activityTimeoutRef.current);
@@ -129,7 +132,11 @@ export function SessionProvider({ children }) {
     setUser(null);
 
     // Redirect to login page
-    router.push("/User?tab=login");
+    const currentPath = window.location.pathname;
+    if (!currentPath.includes("/User")) {
+      // Redirect to login page
+      router.push("/User?tab=login");
+    }
   };
 
   // Function to add activity event listeners - với debouncing và điều kiện
