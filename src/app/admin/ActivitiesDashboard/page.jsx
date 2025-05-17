@@ -62,6 +62,7 @@ const ActivitiesDashboard = () => {
           // Chuyển đổi dữ liệu API thành định dạng hiện tại của ứng dụng
           const formattedTasks = data.data.map(activity => ({
             id: activity._id,
+            slug: activity.slug,
             title: activity.title,
             content: activity.content,
             author: activity.author,
@@ -105,19 +106,19 @@ const ActivitiesDashboard = () => {
   };
 
   // Handle checkbox selection for tasks
-  const handleTaskSelection = (id) => {
+  const handleTaskSelection = (slug) => {
     setTasks(
       tasks.map((task) =>
-        task.id === id ? { ...task, selected: !task.selected } : task
+        task.slug === slug ? { ...task, selected: !task.selected } : task
       )
     );
   };
 
   // Handle checkbox selection for comments
-  const handleCommentSelection = (id) => {
+  const handleCommentSelection = (slug) => {
     setComments(
       comments.map((comment) =>
-        comment.id === id
+        comment.slug === slug
           ? { ...comment, selected: !comment.selected }
           : comment
       )
@@ -149,7 +150,7 @@ const ActivitiesDashboard = () => {
       if (window.confirm("Bạn có chắc muốn xóa các bài viết đã chọn?")) {
         try {
           for (const task of selectedTasks) {
-            await fetch(`/api/activities/${task.id}`, {
+            await fetch(`/api/activities/${task.slug}`, {
               method: 'DELETE'
             });
           }
@@ -186,6 +187,7 @@ const ActivitiesDashboard = () => {
           if (data.success) {
             newTasks.push({
               id: data.data._id,
+              slug: data.data.slug,
               title: data.data.title,
               content: data.data.content,
               author: data.data.author,
@@ -207,7 +209,7 @@ const ActivitiesDashboard = () => {
       // For simplicity, we'll just edit the first selected task
       const selectedTask = tasks.find((task) => task.selected);
       if (selectedTask) {
-        editTask(selectedTask.id);
+        editTask(selectedTask.slug);
       }
     }
   };
@@ -220,31 +222,29 @@ const ActivitiesDashboard = () => {
       // For simplicity, edit the first selected comment
       const selectedComment = comments.find((comment) => comment.selected);
       if (selectedComment) {
-        toggleEdit(selectedComment.id);
+        toggleEdit(selectedComment.slug);
       }
     } else if (commentBatchAction === "reply") {
       // For simplicity, reply to the first selected comment
       const selectedComment = comments.find((comment) => comment.selected);
       if (selectedComment) {
-        toggleReply(selectedComment.id);
+        toggleReply(selectedComment.slug);
       }
     }
   };
 
   // Delete a single task
-  const deleteTask = async (id) => {
+  const deleteTask = async (slug) => {
     if (window.confirm("Bạn có chắc muốn xóa bài viết này?")) {
       try {
-        const response = await fetch(`/api/activities/${id}`, {
+        const response = await fetch(`/api/activities/${slug}`, {
           method: 'DELETE'
         });
         
-        const data = await response.json();
-        
-        if (data.success) {
-          setTasks(tasks.filter((task) => task.id !== id));
+        if (response.ok) {
+          setTasks(tasks.filter((task) => task.slug !== slug));
         } else {
-          alert(data.message || "Có lỗi xảy ra khi xóa bài viết!");
+          throw new Error('Lỗi khi xóa bài viết');
         }
       } catch (error) {
         console.error("Lỗi khi xóa bài viết:", error);
@@ -254,8 +254,8 @@ const ActivitiesDashboard = () => {
   };
 
   // Delete a single comment
-  const deleteComment = (id) => {
-    setComments(comments.filter((comment) => comment.id !== id));
+  const deleteComment = (slug) => {
+    setComments(comments.filter((comment) => comment.slug !== slug));
   };
 
   // Copy a task
@@ -281,6 +281,7 @@ const ActivitiesDashboard = () => {
       if (data.success) {
         setTasks([...tasks, {
           id: data.data._id,
+          slug: data.data.slug,
           title: data.data.title,
           content: data.data.content,
           author: data.data.author,
@@ -290,8 +291,6 @@ const ActivitiesDashboard = () => {
           commentOption: data.data.commentOption,
           selected: false,
         }]);
-      } else {
-        alert(data.message || "Có lỗi xảy ra khi sao chép bài viết!");
       }
     } catch (error) {
       console.error("Lỗi khi sao chép bài viết:", error);
@@ -300,115 +299,76 @@ const ActivitiesDashboard = () => {
   };
 
   // Edit a task
-  const editTask = async (id) => {
-    try {
-      const response = await fetch(`/api/activities/${id}`);
-      
-      if (!response.ok) {
-        throw new Error('Không thể lấy thông tin bài viết');
-      }
-      
-      const data = await response.json();
-      
-      if (data.success) {
-        const taskToEdit = {
-          id: data.data._id,
-          title: data.data.title,
-          content: data.data.content,
-          author: data.data.author,
-          image: data.data.image,
-          status: data.data.status || "published",
-          commentOption: data.data.commentOption || "open"
-        };
-        
-        setEditingTask(taskToEdit);
-        setNewTitle(taskToEdit.title);
-        setNewContent(taskToEdit.content);
-        setPageStatus(taskToEdit.status);
-        setCommentOption(taskToEdit.commentOption);
-        
-        // Hiển thị hình ảnh hiện có nếu có
-        if (taskToEdit.image) {
-          setImagePreview(taskToEdit.image);
-        } else {
-          setImagePreview("");
-        }
-        
-        setActiveView("editPage");
-      } else {
-        throw new Error(data.message || 'Lỗi khi lấy thông tin bài viết');
-      }
-    } catch (error) {
-      console.error("Error fetching task:", error);
-      alert("Có lỗi xảy ra khi lấy thông tin bài viết!");
+  const editTask = async (slug) => {
+    const task = tasks.find(t => t.slug === slug);
+    if (task) {
+      setEditingTask(task);
+      setNewTitle(task.title);
+      setNewContent(task.content);
+      setPageStatus(task.status);
+      setCommentOption(task.commentOption);
+      setImagePreview(task.image || "");
+      setActiveView("editPage");
     }
   };
 
   // Update edited task
   const updateTask = async () => {
-    if (newTitle.trim() === "") {
-      alert("Tiêu đề không được để trống!");
-      return;
-    }
+    if (!editingTask) return;
 
     try {
-      // Tạo FormData để gửi cả dữ liệu và file
       const formData = new FormData();
       formData.append('title', newTitle);
       formData.append('content', newContent);
       formData.append('status', pageStatus);
       formData.append('commentOption', commentOption);
-      
-      if (publishOption === "scheduled") {
-        formData.append('scheduledPublish', new Date(`${scheduledDate}T${scheduledTime}`).toISOString());
-      }
-      
-      // Thêm ảnh mới nếu có
       if (uploadedImage) {
         formData.append('image', uploadedImage);
       }
 
-      const response = await fetch(`/api/activities/${editingTask.id}`, {
+      const response = await fetch(`/api/activities/${editingTask.slug}`, {
         method: 'PUT',
-        body: formData,
+        body: formData
       });
 
-      const data = await response.json();
-      
-      if (data.success) {
-        setTasks(tasks.map(task => 
-          task.id === editingTask.id 
-            ? {
-                ...task,
-                title: newTitle,
-                content: newContent,
-                image: uploadedImage ? data.data.image : (imagePreview || task.image),
-                status: pageStatus,
-                commentOption: commentOption
-              } 
-            : task
-        ));
-
-        setNewTitle("");
-        setNewContent("");
-        setUploadedImage(null);
-        setImagePreview("");
-        setEditingTask(null);
-        setActiveView("allPages");
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          setTasks(tasks.map(task => 
+            task.slug === editingTask.slug 
+              ? {
+                  ...task,
+                  title: newTitle,
+                  content: newContent,
+                  status: pageStatus,
+                  commentOption: commentOption,
+                  image: data.data.image || task.image
+                }
+              : task
+          ));
+          setActiveView("allPages");
+          setEditingTask(null);
+          setNewTitle("");
+          setNewContent("");
+          setPageStatus("published");
+          setCommentOption("open");
+          setImagePreview("");
+          setUploadedImage(null);
+        }
       } else {
-        alert(data.message || "Có lỗi xảy ra khi cập nhật bài viết");
+        throw new Error('Lỗi khi cập nhật bài viết');
       }
     } catch (error) {
-      console.error("Error updating activity:", error);
-      alert("Có lỗi xảy ra khi cập nhật bài viết");
+      console.error("Lỗi khi cập nhật bài viết:", error);
+      alert("Có lỗi xảy ra khi cập nhật bài viết!");
     }
   };
 
   // Toggle reply for a comment
-  const toggleReply = (id) => {
+  const toggleReply = (slug) => {
     setComments(
       comments.map((comment) =>
-        comment.id === id
+        comment.slug === slug
           ? { ...comment, isReplying: !comment.isReplying, isEditing: false }
           : { ...comment, isReplying: false }
       )
@@ -417,13 +377,13 @@ const ActivitiesDashboard = () => {
   };
 
   // Toggle edit for a comment
-  const toggleEdit = (id) => {
-    const commentToEdit = comments.find((comment) => comment.id === id);
+  const toggleEdit = (slug) => {
+    const commentToEdit = comments.find((comment) => comment.slug === slug);
     setEditCommentText(commentToEdit.comment);
 
     setComments(
       comments.map((comment) =>
-        comment.id === id
+        comment.slug === slug
           ? { ...comment, isEditing: !comment.isEditing, isReplying: false }
           : { ...comment, isEditing: false }
       )
@@ -431,7 +391,7 @@ const ActivitiesDashboard = () => {
   };
 
   // Submit comment reply
-  const submitReply = (id) => {
+  const submitReply = (slug) => {
     if (replyCommentText.trim() === "") return;
 
     const newComment = {
@@ -439,23 +399,23 @@ const ActivitiesDashboard = () => {
       comment: replyCommentText,
       author: "Nguyễn Đình Khang",
       time: formatDate(new Date()),
-      reply: comments.find((comment) => comment.id === id).comment,
+      reply: comments.find((comment) => comment.slug === slug).comment,
       selected: false,
       isReplying: false,
       isEditing: false,
     };
 
     setComments([...comments, newComment]);
-    toggleReply(id);
+    toggleReply(slug);
   };
 
   // Submit comment edit
-  const submitEdit = (id) => {
+  const submitEdit = (slug) => {
     if (editCommentText.trim() === "") return;
 
     setComments(
       comments.map((comment) =>
-        comment.id === id
+        comment.slug === slug
           ? { ...comment, comment: editCommentText, isEditing: false }
           : comment
       )
@@ -509,6 +469,7 @@ const ActivitiesDashboard = () => {
         // Thêm vào danh sách hiển thị
         setTasks([...tasks, {
           id: data.data._id,
+          slug: data.data.slug,
           title: data.data.title,
           content: data.data.content,
           author: data.data.author,
@@ -532,6 +493,31 @@ const ActivitiesDashboard = () => {
     } catch (error) {
       console.error("Error creating activity:", error);
       alert("Có lỗi xảy ra khi tạo hoạt động mới");
+    }
+  };
+
+  // Thêm hàm cập nhật slug
+  const updateSlugs = async () => {
+    try {
+      const response = await fetch('/api/activities/update-slugs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        alert(data.message);
+        // Refresh danh sách hoạt động
+        fetchActivities();
+      } else {
+        alert('Lỗi: ' + data.message);
+      }
+    } catch (error) {
+      console.error('Lỗi khi cập nhật slug:', error);
+      alert('Có lỗi xảy ra khi cập nhật slug');
     }
   };
 
@@ -743,6 +729,12 @@ const ActivitiesDashboard = () => {
             >
               THÊM TRANG MỚI
             </button>
+            <button
+              className="update-slugs-btn"
+              onClick={updateSlugs}
+            >
+              CẬP NHẬT SLUG
+            </button>
           </div>
 
           {activeView === "allPages" && (
@@ -790,12 +782,12 @@ const ActivitiesDashboard = () => {
                 </thead>
                 <tbody>
                   {tasks.map((task) => (
-                    <tr key={task.id}>
+                    <tr key={task.slug}>
                       <td>
                         <input
                           type="checkbox"
                           checked={task.selected}
-                          onChange={() => handleTaskSelection(task.id)}
+                          onChange={() => handleTaskSelection(task.slug)}
                         />
                       </td>
                       <td className="task-image-cell">
@@ -813,13 +805,13 @@ const ActivitiesDashboard = () => {
                       <td>
                         <button
                           className="action-btn edit-btn"
-                          onClick={() => editTask(task.id)}
+                          onClick={() => editTask(task.slug)}
                         >
                           Chỉnh sửa
                         </button>
                         <button
                           className="action-btn delete-btn"
-                          onClick={() => deleteTask(task.id)}
+                          onClick={() => deleteTask(task.slug)}
                         >
                           Xóa
                         </button>
@@ -890,13 +882,13 @@ const ActivitiesDashboard = () => {
               </thead>
               <tbody>
                 {comments.map((comment) => (
-                  <React.Fragment key={comment.id}>
+                  <React.Fragment key={comment.slug}>
                     <tr className="comment-row">
                       <td>
                         <input
                           type="checkbox"
                           checked={comment.selected}
-                          onChange={() => handleCommentSelection(comment.id)}
+                          onChange={() => handleCommentSelection(comment.slug)}
                         />
                       </td>
                       <td className="comment-text">{comment.comment}</td>
@@ -906,19 +898,19 @@ const ActivitiesDashboard = () => {
                       <td>
                         <button
                           className="action-btn reply-btn"
-                          onClick={() => toggleReply(comment.id)}
+                          onClick={() => toggleReply(comment.slug)}
                         >
                           Trả lời
                         </button>
                         <button
                           className="action-btn edit-btn"
-                          onClick={() => toggleEdit(comment.id)}
+                          onClick={() => toggleEdit(comment.slug)}
                         >
                           Chỉnh sửa
                         </button>
                         <button
                           className="action-btn delete-btn"
-                          onClick={() => deleteComment(comment.id)}
+                          onClick={() => deleteComment(comment.slug)}
                         >
                           Xóa
                         </button>
@@ -941,13 +933,13 @@ const ActivitiesDashboard = () => {
                             <div className="reply-actions">
                               <button
                                 className="btn-publish"
-                                onClick={() => submitReply(comment.id)}
+                                onClick={() => submitReply(comment.slug)}
                               >
                                 Bình luận
                               </button>
                               <button
                                 className="btn-cancel"
-                                onClick={() => toggleReply(comment.id)}
+                                onClick={() => toggleReply(comment.slug)}
                               >
                                 Hủy
                               </button>
@@ -970,13 +962,13 @@ const ActivitiesDashboard = () => {
                             <div className="edit-actions">
                               <button
                                 className="btn-publish"
-                                onClick={() => submitEdit(comment.id)}
+                                onClick={() => submitEdit(comment.slug)}
                               >
                                 Cập nhật
                               </button>
                               <button
                                 className="btn-cancel"
-                                onClick={() => toggleEdit(comment.id)}
+                                onClick={() => toggleEdit(comment.slug)}
                               >
                                 Hủy
                               </button>

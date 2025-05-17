@@ -3,14 +3,24 @@ import dbConnect from "@/lib/mongodb";
 import Activity from "@/models/Activity";
 import { writeFile } from "fs/promises";
 import path from "path";
+import { ObjectId } from "mongodb";
+import Notification from "@/models/Notification";
+
+// Helper function to find activity by ID or slug
+async function findActivityByIdOrSlug(slug) {
+  if (ObjectId.isValid(slug)) {
+    return await Activity.findById(slug);
+  }
+  return await Activity.findOne({ slug });
+}
 
 // GET - Lấy chi tiết một hoạt động
-export async function GET(request, { params }) {
+export async function GET(request, context) {
   try {
     await dbConnect();
-    const id = params.id;
+    const slug = await context.params.slug;
 
-    const activity = await Activity.findById(id).lean();
+    const activity = await findActivityByIdOrSlug(slug);
 
     if (!activity) {
       return NextResponse.json(
@@ -30,10 +40,10 @@ export async function GET(request, { params }) {
 }
 
 // PUT - Cập nhật hoạt động
-export async function PUT(request, { params }) {
+export async function PUT(request, context) {
   try {
     await dbConnect();
-    const id = params.id;
+    const slug = await context.params.slug;
 
     // Xử lý FormData thay vì JSON
     const formData = await request.formData();
@@ -69,24 +79,34 @@ export async function PUT(request, { params }) {
     // Cập nhật thời gian
     updateData.updatedAt = new Date();
 
-    // Cập nhật hoạt động
-    const updatedActivity = await Activity.findByIdAndUpdate(
-      id,
-      updateData,
-      { new: true } // Trả về document đã cập nhật
-    );
-
-    if (!updatedActivity) {
+    // Tìm và cập nhật hoạt động
+    const activity = await findActivityByIdOrSlug(slug);
+    if (!activity) {
       return NextResponse.json(
         { success: false, message: "Không tìm thấy hoạt động" },
         { status: 404 }
       );
     }
 
+    // Cập nhật các trường
+    Object.assign(activity, updateData);
+    await activity.save();
+
+    await Notification.create({
+      userId: activity.author,
+      title: `Hoạt động đã được cập nhật: ${activity.title}`,
+      message: `Hoạt động do bạn tạo đã được cập nhật thành công.`,
+      read: false,
+      link: `/Activities/${activity.slug}`,
+      activityId: activity._id,
+      type: "notification",
+      token: "",
+    });
+
     return NextResponse.json({
       success: true,
       message: "Cập nhật hoạt động thành công",
-      data: updatedActivity,
+      data: activity,
     });
   } catch (error) {
     console.error("Error updating activity:", error);
@@ -98,22 +118,23 @@ export async function PUT(request, { params }) {
 }
 
 // DELETE - Xóa hoạt động
-export async function DELETE(request, { params }) {
+export async function DELETE(request, context) {
   try {
     await dbConnect();
-    const id = params.id;
+    const slug = await context.params.slug;
 
     // Kiểm tra quyền admin (có thể thêm middleware riêng)
     // ...
 
-    const deletedActivity = await Activity.findByIdAndDelete(id);
-
-    if (!deletedActivity) {
+    const activity = await findActivityByIdOrSlug(slug);
+    if (!activity) {
       return NextResponse.json(
         { success: false, message: "Không tìm thấy hoạt động" },
         { status: 404 }
       );
     }
+
+    await activity.deleteOne();
 
     return NextResponse.json({
       success: true,
@@ -126,4 +147,4 @@ export async function DELETE(request, { params }) {
       { status: 500 }
     );
   }
-}
+} 

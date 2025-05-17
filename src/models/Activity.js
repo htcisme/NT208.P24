@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import slugify from "slugify";
 
 // Tránh định nghĩa lại model nếu đã tồn tại
 let Activity;
@@ -21,9 +22,18 @@ try {
     status: { type: String, enum: ['published', 'draft'], default: 'draft' },
     commentOption: { type: String, enum: ['open', 'closed'], default: 'open' },
     scheduledPublish: { type: Date },
+    slug: { type: String, unique: true },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
     comments: [commentSchema],
+  });
+
+  // Middleware để tự động tạo slug từ title
+  activitySchema.pre('save', async function(next) {
+    if (this.isModified('title') || !this.slug) {
+      this.slug = slugify(this.title, { lower: true, strict: true });
+    }
+    next();
   });
 
   Activity = mongoose.model("Activity", activitySchema);
