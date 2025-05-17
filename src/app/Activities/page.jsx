@@ -199,17 +199,12 @@ function ActivitiesContent() {
                 {filteredNews.length > 0 ? (
                   filteredNews.map((news) => (
                     <li key={news._id}>
-<<<<<<< HEAD
-                      <Link href={`/Activities/${news._id}`}>{news.title}</Link>
-                      <span className="news-date">
-                        {formatNewsDate(news.createdAt)}
-                      </span>
-=======
                       <Link href={`/Activities/${news.slug || news._id}`}>
                         {news.title}
                       </Link>
-                      <span className="news-date">{formatNewsDate(news.createdAt)}</span>
->>>>>>> 9dca7d1 (Update slug)
+                      <span className="news-date">
+                        {formatNewsDate(news.createdAt)}
+                      </span>
                     </li>
                   ))
                 ) : (
