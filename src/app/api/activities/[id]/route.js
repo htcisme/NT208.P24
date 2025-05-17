@@ -34,38 +34,38 @@ export async function PUT(request, { params }) {
   try {
     await dbConnect();
     const id = params.id;
-    
+
     // Xử lý FormData thay vì JSON
     const formData = await request.formData();
     const updateData = {};
-    
+
     // Lấy các trường dữ liệu từ formData
     formData.forEach((value, key) => {
-      if (key !== 'image') {
+      if (key !== "image") {
         updateData[key] = value;
       }
     });
-    
+
     // Xử lý hình ảnh nếu được gửi lên
-    const imageFile = formData.get('image');
+    const imageFile = formData.get("image");
     if (imageFile && imageFile.size > 0) {
       const bytes = await imageFile.arrayBuffer();
       const buffer = Buffer.from(bytes);
-      
+
       // Tạo tên file duy nhất
-      const filename = `${Date.now()}-${imageFile.name.replace(/\s/g, '_')}`;
-      
+      const filename = `${Date.now()}-${imageFile.name.replace(/\s/g, "_")}`;
+
       // Đảm bảo thư mục uploads tồn tại
-      const uploadsDir = path.join(process.cwd(), 'public/uploads');
-      
+      const uploadsDir = path.join(process.cwd(), "public/uploads");
+
       // Lưu file vào thư mục public/uploads
       const imagePath = path.join(uploadsDir, filename);
       await writeFile(imagePath, buffer);
-      
+
       // Cập nhật đường dẫn hình ảnh
       updateData.image = `/uploads/${filename}`;
     }
-    
+
     // Cập nhật thời gian
     updateData.updatedAt = new Date();
 

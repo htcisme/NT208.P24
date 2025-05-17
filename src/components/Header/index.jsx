@@ -5,6 +5,7 @@ import "@/styles-comp/style.css";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import NotificationBell from "@/components/NotificationBell"; // Thêm import cho component NotificationBell
 
 export default function Header() {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -89,6 +90,7 @@ export default function Header() {
     router.push("/");
   };
 
+  // Cập nhật hàm handleSearch để sử dụng đúng tham số API 'q' thay vì 'search'
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!searchTerm.trim()) {
@@ -99,8 +101,11 @@ export default function Header() {
 
     setIsSearching(true);
     try {
+      // Sử dụng tham số 'q' thay vì 'search' để phù hợp với API đã cải tiến
       const response = await fetch(
-        `/api/activities/search?q=${encodeURIComponent(searchTerm.trim())}`
+        `/api/activities/search?q=${encodeURIComponent(
+          searchTerm.trim()
+        )}&limit=8`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch search results");
@@ -108,18 +113,7 @@ export default function Header() {
       const data = await response.json();
 
       if (data.success) {
-        const filteredResults = data.data.filter((activity) => {
-          const searchLower = searchTerm.toLowerCase();
-          return (
-            activity.title.toLowerCase().includes(searchLower) ||
-            (activity.description &&
-              activity.description.toLowerCase().includes(searchLower)) ||
-            (activity.content &&
-              activity.content.toLowerCase().includes(searchLower))
-          );
-        });
-
-        setSearchResults(filteredResults);
+        setSearchResults(data.data);
         setShowSearchResults(true);
       } else {
         setSearchResults([]);
@@ -132,15 +126,40 @@ export default function Header() {
     }
   };
 
-  const handleSearchChange = (e) => {
-    const value = e.target.value;
+  // Thêm hàm xử lý tìm kiếm khi người dùng nhập
+  const handleSearchInput = async (value) => {
     setSearchTerm(value);
 
-    if (value.trim()) {
-      handleSearch(e);
-    } else {
+    if (!value.trim()) {
       setSearchResults([]);
       setShowSearchResults(false);
+      return;
+    }
+
+    // Chỉ tìm kiếm khi người dùng nhập ít nhất 2 ký tự
+    if (value.trim().length >= 2) {
+      setIsSearching(true);
+      try {
+        const response = await fetch(
+          `/api/activities/search?q=${encodeURIComponent(value.trim())}&limit=8`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch search results");
+        }
+        const data = await response.json();
+
+        if (data.success) {
+          setSearchResults(data.data);
+          setShowSearchResults(true);
+        } else {
+          setSearchResults([]);
+        }
+      } catch (error) {
+        console.error("Search error:", error);
+        setSearchResults([]);
+      } finally {
+        setIsSearching(false);
+      }
     }
   };
 
@@ -184,8 +203,10 @@ export default function Header() {
                 type="text"
                 placeholder="Tìm kiếm hoạt động..."
                 value={searchTerm}
-                onChange={handleSearchChange}
-                onFocus={() => searchTerm.trim() && setShowSearchResults(true)}
+                onChange={(e) => handleSearchInput(e.target.value)}
+                onFocus={() =>
+                  searchTerm.trim().length >= 2 && setShowSearchResults(true)
+                }
               />
               <button
                 type="submit"
@@ -242,52 +263,55 @@ export default function Header() {
           </div>
 
           {user ? (
-            <div
-              className="Header-Topbar-Authsearch-UserInfo"
-              ref={userMenuRef}
-            >
+            <>
               <div
-                className="Header-Topbar-Authsearch-UserInfo-Button"
-                onClick={() => setShowUserMenu(!showUserMenu)}
-                role="button"
-                tabIndex={0}
-                onKeyPress={(e) => {
-                  if (e.key === "Enter") setShowUserMenu(!showUserMenu);
-                }}
+                className="Header-Topbar-Authsearch-UserInfo"
+                ref={userMenuRef}
               >
-                <span className="Header-Topbar-Authsearch-UserInfo-Name">
-                  Chào, {user.name}
-                </span>
-                <span className="Header-Topbar-Authsearch-UserInfo-Arrow">
-                  ▼
-                </span>
-              </div>
+                <NotificationBell user={user} />
+                <div
+                  className="Header-Topbar-Authsearch-UserInfo-Button"
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter") setShowUserMenu(!showUserMenu);
+                  }}
+                >
+                  <span className="Header-Topbar-Authsearch-UserInfo-Name">
+                    Chào, {user.name}
+                  </span>
+                  <span className="Header-Topbar-Authsearch-UserInfo-Arrow">
+                    ▼
+                  </span>
+                </div>
 
-              {showUserMenu && (
-                <div className="Header-Topbar-Authsearch-UserInfo-Menu">
-                  <Link
-                    href="/profile"
-                    className="Header-Topbar-Authsearch-UserInfo-MenuItem"
-                  >
-                    Trang cá nhân
-                  </Link>
-                  {user.role === "admin" && (
+                {showUserMenu && (
+                  <div className="Header-Topbar-Authsearch-UserInfo-Menu">
                     <Link
-                      href="/admin/UsersDashboard"
+                      href="/profile"
                       className="Header-Topbar-Authsearch-UserInfo-MenuItem"
                     >
-                      Quản trị
+                      Trang cá nhân
                     </Link>
-                  )}
-                  <button
-                    className="Header-Topbar-Authsearch-UserInfo-MenuItem"
-                    onClick={handleLogout}
-                  >
-                    Đăng xuất
-                  </button>
-                </div>
-              )}
-            </div>
+                    {user.role === "admin" && (
+                      <Link
+                        href="/admin/UsersDashboard"
+                        className="Header-Topbar-Authsearch-UserInfo-MenuItem"
+                      >
+                        Quản trị
+                      </Link>
+                    )}
+                    <button
+                      className="Header-Topbar-Authsearch-UserInfo-MenuItem"
+                      onClick={handleLogout}
+                    >
+                      Đăng xuất
+                    </button>
+                  </div>
+                )}
+              </div>
+            </>
           ) : (
             <div className="Header-Topbar-Authsearch-Authlinks">
               <a href="/User?tab=register">

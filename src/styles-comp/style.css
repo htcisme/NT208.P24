@@ -210,7 +210,7 @@
 .Header-Topbar-Dark-mode-toggle {
   align-items: top;
   justify-content: top;
-  margin: 0px 0px 32px 10px;
+  margin: 0px 0px 45px 10px !important;
   background: #ffffff;
   border: none;
   cursor: pointer;
@@ -754,6 +754,8 @@
 .Header-Topbar-Authsearch-UserInfo {
   position: relative;
   margin-top: 8px;
+  display: flex;
+  columns: 2;
 }
 
 .Header-Topbar-Authsearch-UserInfo-Button {
@@ -906,6 +908,288 @@
 .search-results-dropdown::-webkit-scrollbar-thumb:hover {
   background: #031a3e;
 }
+
+.Header-Topbar-Authsearch-Notification {
+  position: relative;
+  margin-right: 5px;
+}
+
+.Header-Topbar-Authsearch-Notification-Button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.Header-Topbar-Authsearch-Notification-Button:hover {
+  background: #accfe4;
+}
+
+.dark .Header-Topbar-Authsearch-Notification-Button:hover {
+  background: #accfe4;
+}
+
+.Header-Topbar-Authsearch-Notification-Icon {
+  width: 24px;
+  height: 24px;
+  color: #042354;
+}
+
+.Header-Topbar-Authsearch-Notification-Badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #e74c3c;
+  color: white;
+  border-radius: 50%;
+  font-size: 10px;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.Header-Topbar-Authsearch-Notification-Dropdown {
+  position: absolute;
+  top: 100%;
+  right: -8px;
+  width: 320px;
+  max-width: 90vw;
+  max-height: 80vh;
+  background-color: #ecf9ff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.dark .Header-Topbar-Authsearch-Notification-Dropdown {
+  background-color: #0a1f3c;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.Header-Topbar-Authsearch-Notification-Header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.dark .Header-Topbar-Authsearch-Notification-Header {
+  border-bottom: 1px solid #333;
+}
+
+.Header-Topbar-Authsearch-Notification-Title {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.Header-Topbar-Authsearch-Notification-Clear {
+  background: none;
+  border: none;
+  color: #3498db;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.Header-Topbar-Authsearch-Notification-Clear:hover {
+  background-color: rgba(52, 152, 219, 0.1);
+}
+
+.dark .Header-Topbar-Authsearch-Notification-Clear {
+  color: #5dade2;
+}
+
+.Header-Topbar-Authsearch-Notification-List {
+  overflow-y: auto;
+  max-height: 400px;
+  padding: 8px 0;
+}
+
+.Header-Topbar-Authsearch-Notification-Item {
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border-left: 4px solid transparent;
+  position: relative;
+}
+
+.Header-Topbar-Authsearch-Notification-Item.unread {
+  background-color: rgba(52, 152, 219, 0.05);
+  border-left-color: #3498db;
+}
+
+.Header-Topbar-Authsearch-Notification-Item:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dark .Header-Topbar-Authsearch-Notification-Item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.Header-Topbar-Authsearch-Notification-Item-Content {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.Header-Topbar-Authsearch-Notification-Item-Text {
+  flex: 1;
+  padding-right: 16px; /* Space for the action buttons */
+}
+
+.Header-Topbar-Authsearch-Notification-Item-Title {
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--text-color, #333);
+}
+
+.dark .Header-Topbar-Authsearch-Notification-Item-Title {
+  color: var(--text-color-dark, #eee);
+}
+
+.Header-Topbar-Authsearch-Notification-Item-Description {
+  font-size: 14px;
+  color: var(--text-secondary, #666);
+  margin-bottom: 4px;
+}
+
+.dark .Header-Topbar-Authsearch-Notification-Item-Description {
+  color: var(--text-secondary-dark, #aaa);
+}
+
+.Header-Topbar-Authsearch-Notification-Item-Time {
+  font-size: 12px;
+  color: var(--text-tertiary, #999);
+}
+
+.dark .Header-Topbar-Authsearch-Notification-Item-Time {
+  color: var(--text-tertiary-dark, #777);
+}
+
+/* Container for action buttons */
+.Header-Topbar-Authsearch-Notification-Item-Actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.Header-Topbar-Authsearch-Notification-Item:hover
+  .Header-Topbar-Authsearch-Notification-Item-Actions {
+  opacity: 1;
+}
+
+/* Style for read toggle button */
+.Header-Topbar-Authsearch-Notification-Item-ReadToggle {
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.Header-Topbar-Authsearch-Notification-Item-ReadToggle:hover {
+  background-color: rgba(52, 152, 219, 0.1);
+  color: #3498db;
+}
+
+.dark .Header-Topbar-Authsearch-Notification-Item-ReadToggle {
+  color: #777;
+}
+
+.dark .Header-Topbar-Authsearch-Notification-Item-ReadToggle:hover {
+  background-color: rgba(52, 152, 219, 0.2);
+  color: #5dade2;
+}
+
+/* Style for delete button */
+.Header-Topbar-Authsearch-Notification-Item-Delete {
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.Header-Topbar-Authsearch-Notification-Item-Delete:hover {
+  background-color: rgba(231, 76, 60, 0.1);
+  color: #e74c3c;
+}
+
+.dark .Header-Topbar-Authsearch-Notification-Item-Delete {
+  color: #777;
+}
+
+.dark .Header-Topbar-Authsearch-Notification-Item-Delete:hover {
+  background-color: rgba(231, 76, 60, 0.2);
+  color: #e74c3c;
+}
+
+.Header-Topbar-Authsearch-Notification-Empty {
+  padding: 24px 16px;
+  text-align: center;
+  color: var(--text-tertiary, #999);
+  font-size: 14px;
+}
+
+.dark .Header-Topbar-Authsearch-Notification-Empty {
+  color: var(--text-tertiary-dark, #777);
+}
+
+.Header-Topbar-Authsearch-Notification-Loading {
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.Header-Topbar-Authsearch-Notification-Loading .spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: #3498db;
+  animation: spin 0.8s linear infinite;
+}
+
+.dark .Header-Topbar-Authsearch-Notification-Loading .spinner {
+  border-color: rgba(255, 255, 255, 0.1);
+  border-top-color: #3498db;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 
 .session-timeout-warning {
   position: fixed;
