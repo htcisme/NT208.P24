@@ -1,40 +1,59 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import Activity from "@/models/Activity";
-import upload from "@/lib/multer";
+import Notification from "@/models/Notification";
+import User from "@/models/User";
+import { ObjectId } from "mongodb";
+import jwt from "jsonwebtoken";
+import fs from "fs";
 
-// GET - Lấy danh sách hoạt động
+// Hàm tạo token duy nhất bằng JWT
+function generateUniqueToken(userId, title = "") {
+  try {
+    if (!userId) {
+      console.error("UserId is required for token generation");
+      return Date.now().toString(); // Fallback nếu không có userId
+    }
+
+    const payload = {
+      uid: userId.toString(),
+      title,
+      ts: Date.now(),
+    };
+
+    if (!process.env.JWT_SECRET) {
+      console.error("JWT_SECRET is not defined");
+      return Date.now().toString(); // Fallback nếu không có JWT_SECRET
+    }
+
+    return jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+  } catch (error) {
+    console.error("Error generating token:", error);
+    return Date.now().toString(); // Fallback nếu có lỗi
+  }
+}
+
 export async function GET(request) {
   try {
     await dbConnect();
 
-    // Phân tích query params
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page")) || 1;
     const limit = parseInt(searchParams.get("limit")) || 8;
     const status = searchParams.get("status");
     const skip = (page - 1) * limit;
 
-    // Xây dựng query
-    let query = {};
+    const query = status ? { status } : { status: "published" };
 
-    // Nếu có parameter status, lọc theo status
-    if (status) {
-      query.status = status;
-    } else {
-      // Mặc định chỉ lấy các bài đã xuất bản nếu không chỉ định status
-      query.status = "published";
-    }
-
-    // Tìm các bài viết theo query
     const activities = await Activity.find(query)
-      .sort({ createdAt: -1 }) // Sắp xếp theo thời gian giảm dần (mới nhất lên đầu)
+      .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .select("-comments") // Không lấy comments để giảm kích thước dữ liệu
+      .select("-comments")
       .lean();
 
-    // Đếm tổng số bài viết thỏa mãn query
     const total = await Activity.countDocuments(query);
 
     return NextResponse.json({
@@ -60,30 +79,24 @@ export async function POST(request) {
   try {
     await dbConnect();
 
-    // Xử lý request với multer
     const formData = await request.formData();
     let body = {};
-
-    // Chuyển formData sang đối tượng
     formData.forEach((value, key) => {
       body[key] = value;
     });
 
-    // Lưu file nếu có
+    // Xử lý hình ảnh nếu có
     let imageUrl = null;
     const image = formData.get("image");
-
-    if (image) {
-      // Lưu file vào thư mục uploads
+    if (image && image.name) {
       const buffer = Buffer.from(await image.arrayBuffer());
       const filename = Date.now() + "-" + image.name.replace(/\s/g, "_");
       const filepath = `public/uploads/${filename}`;
-
-      require("fs").writeFileSync(filepath, buffer);
+      fs.writeFileSync(filepath, buffer);
       imageUrl = `/uploads/${filename}`;
     }
 
-    // Tạo hoạt động mới với hình ảnh
+    // Tạo hoạt động mới
     const newActivity = new Activity({
       title: body.title,
       content: body.content,
@@ -97,6 +110,134 @@ export async function POST(request) {
     });
 
     await newActivity.save();
+
+    // Gửi thông báo nếu status là published
+    if (body.status === "published") {
+      try {
+        console.log("Author from form:", body.author);
+
+        let authorUser = null;
+        if (ObjectId.isValid(body.author)) {
+          authorUser = await User.findById(body.author).lean();
+        } else {
+          // Try to find by name, case insensitive
+          authorUser = await User.findOne({
+            name: { $regex: new RegExp(`^${body.author}$`, "i") },
+          }).lean();
+        }
+
+        console.log("Author user found:", authorUser ? "Yes" : "No");
+
+        const allUsers = await User.find().select("_id name role").lean();
+        const adminUsers = allUsers.filter(
+          (user) =>
+            user.role === "admin" &&
+            (!authorUser || user._id.toString() !== authorUser._id.toString())
+        );
+        const otherUsers = allUsers.filter(
+          (user) =>
+            (!authorUser ||
+              user._id.toString() !== authorUser._id.toString()) &&
+            user.role !== "admin"
+        );
+
+        // Tạo thông báo cho tác giả
+        if (authorUser) {
+          try {
+            const token = generateUniqueToken(
+              authorUser._id.toString(),
+              newActivity.title
+            );
+            console.log("Generated token:", token); // Thêm log này
+            await Notification.create({
+              userId: authorUser._id.toString(),
+              title: `Hoạt động mới đã được đăng tải: ${newActivity.title}`,
+              message: `Hoạt động do bạn tạo đã được xuất bản thành công.`,
+              read: false,
+              link: `/Activities/${newActivity._id}`,
+              activityId: newActivity._id,
+              type: "notification",
+              token,
+            });
+            console.log("Đã tạo thông báo cho tác giả");
+          } catch (err) {
+            console.error("Lỗi khi tạo thông báo cho tác giả:", err.message);
+          }
+        }
+
+        // Tạo thông báo cho admin
+        let adminCreated = 0;
+        for (const admin of adminUsers) {
+          try {
+            const token = generateUniqueToken(
+              admin._id.toString(),
+              newActivity.title
+            );
+            console.log("Generated token:", token); // Thêm log này
+            await Notification.create({
+              userId: admin._id.toString(),
+              title: `[ADMIN] Hoạt động mới: ${newActivity.title}`,
+              message: `Có hoạt động mới vừa được đăng tải: ${newActivity.title}`,
+              read: false,
+              link: `/Activities/${newActivity._id}`,
+              activityId: newActivity._id,
+              type: "notification",
+              token,
+            });
+            adminCreated++;
+          } catch (err) {
+            console.error(
+              `Lỗi khi tạo thông báo cho admin ${admin.name}:`,
+              err.message
+            );
+          }
+        }
+        console.log(`Đã tạo ${adminCreated} thông báo cho admin`);
+
+        // Tạo thông báo cho người dùng thường
+        let userCreated = 0;
+        let userErrors = 0;
+        const batchSize = 10;
+        for (let i = 0; i < otherUsers.length; i += batchSize) {
+          const batch = otherUsers.slice(i, i + batchSize);
+          const createPromises = batch.map(async (user) => {
+            try {
+              const token = generateUniqueToken(
+                user._id.toString(),
+                newActivity.title
+              );
+              console.log("Generated token:", token); // Thêm log này
+              await Notification.create({
+                userId: user._id.toString(),
+                title: `Hoạt động mới: ${newActivity.title}`,
+                message: `Có hoạt động mới vừa được đăng tải: ${newActivity.title}`,
+                read: false,
+                link: `/Activities/${newActivity._id}`,
+                activityId: newActivity._id,
+                type: "notification",
+                token,
+              });
+              userCreated++;
+            } catch (err) {
+              userErrors++;
+              console.error(
+                `Lỗi khi tạo thông báo cho user ${user.name}:`,
+                err.message
+              );
+            }
+          });
+          await Promise.allSettled(createPromises);
+        }
+        console.log(
+          `Đã tạo ${userCreated} thông báo cho người dùng thường, ${userErrors} lỗi`
+        );
+        console.log(
+          `Tổng cộng đã tạo ${1 + adminCreated + userCreated} thông báo`
+        );
+      } catch (notificationError) {
+        console.error("Lỗi khi tạo thông báo:", notificationError);
+      }
+    }
 
     return NextResponse.json(
       {
@@ -122,10 +263,8 @@ export async function SEARCH(request) {
     const q = searchParams.get("q") || "";
     const limit = parseInt(searchParams.get("limit")) || 8;
 
-    // Regex không phân biệt hoa thường
     const regex = new RegExp(q, "i");
 
-    // Tìm kiếm theo title, content, description, chỉ lấy status published
     const activities = await Activity.find({
       status: "published",
       $or: [{ title: regex }, { content: regex }, { description: regex }],
