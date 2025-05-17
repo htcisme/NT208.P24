@@ -1,15 +1,23 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import Activity from "@/models/Activity";
+import { ObjectId } from "mongodb";
+
+// Helper function to find activity by ID or slug
+async function findActivityByIdOrSlug(slug) {
+  if (ObjectId.isValid(slug)) {
+    return await Activity.findById(slug);
+  }
+  return await Activity.findOne({ slug });
+}
 
 // GET - Lấy tất cả bình luận của một hoạt động
 export async function GET(request, { params }) {
   try {
     await dbConnect();
-    const { id } = params;
+    const { slug } = params;
 
-    const activity = await Activity.findById(id).select("comments").lean();
-
+    const activity = await findActivityByIdOrSlug(slug);
     if (!activity) {
       return NextResponse.json(
         { success: false, message: "Không tìm thấy hoạt động" },
@@ -31,7 +39,7 @@ export async function GET(request, { params }) {
 export async function POST(request, { params }) {
   try {
     await dbConnect();
-    const { id } = params;
+    const { slug } = params;
     const body = await request.json();
 
     // Validate dữ liệu
@@ -50,7 +58,7 @@ export async function POST(request, { params }) {
     };
 
     // Thêm bình luận vào hoạt động
-    const activity = await Activity.findById(id);
+    const activity = await findActivityByIdOrSlug(slug);
     
     if (!activity) {
       return NextResponse.json(
@@ -85,4 +93,4 @@ export async function POST(request, { params }) {
       { status: 500 }
     );
   }
-}
+} 

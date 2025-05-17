@@ -2,13 +2,16 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function NotificationBell({ user }) {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const notificationRef = useRef(null);
+  const router = useRouter();
 
   // Xử lý click bên ngoài để đóng dropdown
   useEffect(() => {
@@ -43,6 +46,7 @@ export default function NotificationBell({ user }) {
     if (!user) return;
 
     setIsLoading(true);
+    setError(null);
     try {
       const response = await fetch(`/api/notifications?userId=${user.id}`);
       const data = await response.json();
@@ -50,79 +54,77 @@ export default function NotificationBell({ user }) {
       if (data.success) {
         setNotifications(data.notifications);
         setUnreadCount(data.notifications.filter((n) => !n.read).length);
+      } else {
+        throw new Error(data.message || 'Lỗi khi lấy thông báo');
       }
     } catch (error) {
       console.error("Error fetching notifications:", error);
+      setError('Không thể tải thông báo. Vui lòng thử lại sau.');
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleNotificationClick = async (notification) => {
-    // Chỉ xử lý click khi thông báo chưa đọc
-    if (!notification.read) {
-      try {
-        // Đánh dấu đã đọc
-        await fetch(`/api/notifications/${notification._id}/read`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ userId: user.id }),
-        });
-
-        // Cập nhật UI ngay lập tức
-        setNotifications(
-          notifications.map((n) =>
-            n._id === notification._id ? { ...n, read: true } : n
-          )
-        );
-        setUnreadCount((prev) => Math.max(0, prev - 1));
-      } catch (error) {
-        console.error("Error marking notification as read:", error);
-      }
-    }
-
-    // Chuyển hướng nếu có link
-    if (notification.link) {
-      window.location.href = notification.link;
-    }
-  };
-
-  // Thêm hàm xóa một thông báo cụ thể
-  const handleDeleteNotification = async (e, notificationId) => {
-    e.stopPropagation(); // Ngăn chặn sự kiện click lan tỏa lên parent
-
     try {
-      const response = await fetch(
-        `/api/notifications/${notificationId}/delete`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ userId: user.id }),
-        }
-      );
+      // Đánh dấu thông báo đã đọc
+      const response = await fetch(`/api/notifications/${notification._id}/read`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId: user.id }),
+      });
 
-      if (response.ok) {
-        // Cập nhật UI bằng cách xóa thông báo khỏi state
-        const updatedNotifications = notifications.filter(
-          (n) => n._id !== notificationId
-        );
-        setNotifications(updatedNotifications);
+      if (!response.ok) {
+        throw new Error('Không thể cập nhật trạng thái thông báo');
+      }
 
-        // Cập nhật số lượng thông báo chưa đọc
-        setUnreadCount(updatedNotifications.filter((n) => !n.read).length);
+      // Cập nhật state
+      setNotifications(notifications.map(n => 
+        n._id === notification._id ? { ...n, read: true } : n
+      ));
+      setUnreadCount(prev => Math.max(0, prev - 1));
+
+      // Chuyển hướng đến trang tương ứng
+      if (notification.link) {
+        router.push(notification.link);
+        setShowNotifications(false);
       }
     } catch (error) {
-      console.error("Error deleting notification:", error);
+      console.error('Error handling notification click:', error);
+      setError('Không thể xử lý thông báo. Vui lòng thử lại sau.');
     }
   };
 
-  // Thêm hàm để toggle trạng thái đã đọc
+  const handleDeleteNotification = async (e, notificationId) => {
+    e.stopPropagation();
+
+    try {
+      const response = await fetch(`/api/notifications/${notificationId}/delete`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: user.id }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Không thể xóa thông báo');
+      }
+
+      // Cập nhật UI
+      const updatedNotifications = notifications.filter(n => n._id !== notificationId);
+      setNotifications(updatedNotifications);
+      setUnreadCount(updatedNotifications.filter(n => !n.read).length);
+    } catch (error) {
+      console.error("Error deleting notification:", error);
+      setError('Không thể xóa thông báo. Vui lòng thử lại sau.');
+    }
+  };
+
   const handleToggleReadStatus = async (e, notification) => {
-    e.stopPropagation(); // Ngăn chặn sự kiện click lan tỏa lên parent
+    e.stopPropagation();
 
     try {
       const endpoint = notification.read
@@ -137,17 +139,19 @@ export default function NotificationBell({ user }) {
         body: JSON.stringify({ userId: user.id }),
       });
 
-      if (response.ok) {
-        // Cập nhật UI ngay lập tức
-        const updatedNotifications = notifications.map((n) =>
-          n._id === notification._id ? { ...n, read: !n.read } : n
-        );
-
-        setNotifications(updatedNotifications);
-        setUnreadCount(updatedNotifications.filter((n) => !n.read).length);
+      if (!response.ok) {
+        throw new Error('Không thể cập nhật trạng thái thông báo');
       }
+
+      // Cập nhật UI
+      const updatedNotifications = notifications.map(n =>
+        n._id === notification._id ? { ...n, read: !n.read } : n
+      );
+      setNotifications(updatedNotifications);
+      setUnreadCount(updatedNotifications.filter(n => !n.read).length);
     } catch (error) {
       console.error("Error toggling read status:", error);
+      setError('Không thể cập nhật trạng thái thông báo. Vui lòng thử lại sau.');
     }
   };
 
@@ -161,13 +165,17 @@ export default function NotificationBell({ user }) {
         body: JSON.stringify({ userId: user.id }),
       });
 
-      if (response.ok) {
-        // Chỉ giữ lại thông báo chưa đọc
-        const unreadNotifications = notifications.filter((n) => !n.read);
-        setNotifications(unreadNotifications);
+      if (!response.ok) {
+        throw new Error('Không thể xóa thông báo đã đọc');
       }
+
+      // Chỉ giữ lại thông báo chưa đọc
+      const unreadNotifications = notifications.filter(n => !n.read);
+      setNotifications(unreadNotifications);
+      setUnreadCount(unreadNotifications.length);
     } catch (error) {
       console.error("Error clearing notifications:", error);
+      setError('Không thể xóa thông báo đã đọc. Vui lòng thử lại sau.');
     }
   };
 
@@ -219,6 +227,12 @@ export default function NotificationBell({ user }) {
               </button>
             )}
           </div>
+
+          {error && (
+            <div className="Header-Topbar-Authsearch-Notification-Error">
+              {error}
+            </div>
+          )}
 
           <div className="Header-Topbar-Authsearch-Notification-List">
             {isLoading ? (

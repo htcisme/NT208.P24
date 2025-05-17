@@ -1190,6 +1190,7 @@
   to {
     transform: rotate(360deg);
   }
+}
 
 .session-timeout-warning {
   position: fixed;
