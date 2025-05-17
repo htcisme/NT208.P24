@@ -549,6 +549,49 @@
   margin-bottom: 5px;
 }
 
+/* Đặt màu cố định cho placeholder, không phụ thuộc vào chế độ dark/light */
+.registerform-footer-form input::placeholder {
+  color: rgba(0, 39, 77, 0.7) !important; /* #00274d với độ mờ 70% */
+  opacity: 1; /* Firefox yêu cầu opacity: 1 để hiển thị màu */
+}
+
+/* Hỗ trợ cho các trình duyệt cũ */
+.registerform-footer-form input::-webkit-input-placeholder {
+  /* Chrome/Opera/Safari */
+  color: rgba(0, 39, 77, 0.7) !important;
+  opacity: 1;
+}
+.registerform-footer-form input::-moz-placeholder {
+  /* Firefox 19+ */
+  color: rgba(0, 39, 77, 0.7) !important;
+  opacity: 1;
+}
+.registerform-footer-form input:-ms-input-placeholder {
+  /* IE 10+ */
+  color: rgba(0, 39, 77, 0.7) !important;
+  opacity: 1;
+}
+.registerform-footer-form input:-moz-placeholder {
+  /* Firefox 18- */
+  color: rgba(0, 39, 77, 0.7) !important;
+  opacity: 1;
+}
+
+/* Màu của input khi đang nhập văn bản vào */
+.registerform-footer-form input {
+  /* Giữ lại các thuộc tính CSS khác từ code gốc */
+  height: 40px;
+  width: 100%;
+  padding: 12px;
+  background-color: var(--register-input-bg);
+  border: 1px solid var(--register-input-border);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  font-size: 18px;
+  /* Đặt màu văn bản sử dụng biến CSS để thích ứng với dark/light mode */
+  color: var(--register-text);
+}
+
 .registerform-header h1 {
   color: var(--register-text);
   font-size: 28px;
@@ -564,6 +607,8 @@
 .registerform-footer-form {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   text-align: left;
   max-width: 660px;
   width: 660px;
@@ -574,6 +619,12 @@
   font-size: 18px;
   margin-bottom: 40px;
   background-color: var(--register-bg);
+}
+
+.registerform-footer-form form {
+  width: 100%; /* Đảm bảo form chiếm toàn bộ chiều rộng container */
+  display: flex;
+  flex-direction: column;
 }
 
 .registerform-footer-form input {
@@ -599,6 +650,10 @@
   background-color: var(--register-button-bg);
   width: 250px;
   height: 40px;
+  /* Cách 1: Dùng margin để căn giữa */
+  margin-left: auto;
+  margin-right: auto;
+  /* Cách 2: Dùng align-self để căn giữa */
   align-self: center;
   color: var(--register-button-text);
   padding: 12px;
@@ -617,6 +672,19 @@
 .registerform-footer-form button:hover {
   background-color: var(--register-button-hover);
   border-color: var(--register-text);
+}
+
+/* Thêm styling cho thông báo thành công/lỗi */
+.registerform-error {
+  color: #ff4d4f;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.registerform-success {
+  color: #52c41a;
+  text-align: center;
+  margin: 10px 0;
 }
 
 /* --------------- HEADER ADMIN -------------*/

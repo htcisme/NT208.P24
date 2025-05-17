@@ -7,49 +7,88 @@ export async function POST(request) {
   try {
     await dbConnect();
 
-    // Lấy tất cả các bài viết chưa có slug
-    const activities = await Activity.find({ slug: { $exists: false } });
+    // Lấy tất cả hoạt động
+    const activities = await Activity.find({});
+    const results = [];
 
-    if (activities.length === 0) {
-      return NextResponse.json({
-        success: true,
-        message: "Không có bài viết nào cần cập nhật slug",
-        updated: 0
-      });
-    }
-
-    // Cập nhật slug cho từng bài viết
-    let updatedCount = 0;
     for (const activity of activities) {
       try {
+        console.log("Raw title:", activity.title);
+
         // Tạo slug từ tiêu đề
-        const baseSlug = slugify(activity.title, { lower: true, strict: true });
-        
+        const baseSlug = slugify(activity.title, {
+          lower: true,
+          strict: true,
+          locale: "vi",
+          remove: /[*+~.()'"!:@]/g,
+          replacement: "-",
+          custom: {
+            "𝐍𝐄𝐓": "net",
+            "𝐂𝐇𝐀𝐋𝐋𝐄𝐍𝐆𝐄": "challenge",
+            "𝟐𝟎𝟐𝟒": "2024",
+            "𝐂𝐎𝐌𝐌𝐔𝐍𝐈𝐓𝐘": "community",
+            "𝐓𝐎𝐔𝐑": "tour",
+            "𝐍𝐄𝐓𝐒𝐄𝐂": "netsec",
+            "|": "-",
+            "&": "va",
+            "💐": "",
+            "[": "",
+            "]": "",
+            "/": "-",
+            "\\": "-",
+          },
+        });
+
         // Kiểm tra xem slug đã tồn tại chưa
         let slug = baseSlug;
         let counter = 1;
-        
-        while (await Activity.findOne({ slug, _id: { $ne: activity._id } })) {
-          slug = `${baseSlug}-${counter}`;
-          counter++;
+        let isUnique = false;
+
+        while (!isUnique) {
+          const existingActivity = await Activity.findOne({
+            slug: slug,
+            _id: { $ne: activity._id }, // Loại trừ activity hiện tại
+          });
+
+          if (!existingActivity) {
+            isUnique = true;
+          } else {
+            slug = `${baseSlug}-${counter}`;
+            counter++;
+          }
         }
 
-        // Cập nhật slug cho bài viết
+        console.log("Generated slug:", slug);
+
+        // Cập nhật slug cho activity
         activity.slug = slug;
         await activity.save();
-        updatedCount++;
 
-      } catch (err) {
-        console.error(`Lỗi khi cập nhật slug cho bài viết ${activity._id}:`, err);
+        results.push({
+          id: activity._id,
+          title: activity.title,
+          slug: slug,
+          success: true,
+        });
+      } catch (error) {
+        console.error(
+          `Lỗi khi cập nhật slug cho bài viết ${activity._id}:`,
+          error
+        );
+        results.push({
+          id: activity._id,
+          title: activity.title,
+          error: error.message,
+          success: false,
+        });
       }
     }
 
     return NextResponse.json({
       success: true,
-      message: `Đã cập nhật slug cho ${updatedCount} bài viết`,
-      updated: updatedCount
+      message: "Đã cập nhật slug cho tất cả hoạt động",
+      results,
     });
-
   } catch (error) {
     console.error("Error updating slugs:", error);
     return NextResponse.json(
@@ -57,4 +96,4 @@ export async function POST(request) {
       { status: 500 }
     );
   }
-} 
+}

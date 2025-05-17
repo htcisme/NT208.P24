@@ -203,10 +203,10 @@ export default function Home() {
   };
 
   // Khi click vào kết quả
-  const handleResultClick = (id) => {
+  const handleResultClick = (slug) => {
     setShowSearchResults(false);
     setSearchTerm("");
-    window.location.href = `/Activities/${id}`;
+    window.location.href = `/Activities/${slug}`;
   };
 
   useEffect(() => {
@@ -341,7 +341,7 @@ export default function Home() {
                         <div
                           key={result._id}
                           className={styles.searchResultItem}
-                          onClick={() => handleResultClick(result._id)}
+                          onClick={() => handleResultClick(result.slug)}
                         >
                           <h4>{result.title}</h4>
                           <p>{result.description?.substring(0, 100)}...</p>

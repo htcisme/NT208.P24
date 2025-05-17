@@ -1,7 +1,61 @@
+"use client";
 import "@/styles-comp/style.css";
 import Image from "next/image";
+import { useState } from "react";
 
 export default function RegisterForm() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+  });
+  const [status, setStatus] = useState({
+    loading: false,
+    success: false,
+    error: null,
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus({ loading: true, success: false, error: null });
+
+    try {
+      const response = await fetch("/api/notification-subscriptions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setStatus({
+          loading: false,
+          success: true,
+          error: null,
+        });
+        setFormData({ name: "", email: "" });
+      } else {
+        throw new Error(data.message || "Đăng ký thất bại");
+      }
+    } catch (error) {
+      setStatus({
+        loading: false,
+        success: false,
+        error: error.message,
+      });
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   return (
     <div className="registerform">
       <div className="registerform-header">
@@ -12,13 +66,42 @@ export default function RegisterForm() {
         </p>
       </div>
       <div className="registerform-footer-form">
-        <label for="name">Họ và Tên</label>
-        <input type="text" id="name" placeholder="Nhập tên" required />
+        <form onSubmit={handleSubmit}>
+          <label htmlFor="name">Họ và Tên</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="Nhập tên"
+            required
+          />
 
-        <label for="email">Email</label>
-        <input type="email" id="email" placeholder="Nhập Email" required />
+          <label htmlFor="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Nhập Email"
+            required
+          />
 
-        <button type="submit">Submit</button>
+          {status.error && (
+            <div className="registerform-error">{status.error}</div>
+          )}
+          {status.success && (
+            <div className="registerform-success">
+              Đăng ký thành công! Cảm ơn bạn đã đăng ký nhận thông báo.
+            </div>
+          )}
+
+          <button type="submit" disabled={status.loading}>
+            {status.loading ? "Đang xử lý..." : "Đăng ký"}
+          </button>
+        </form>
       </div>
     </div>
   );
