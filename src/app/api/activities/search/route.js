@@ -78,7 +78,7 @@ export async function GET(request) {
     })
       .sort({ createdAt: -1 })
       .limit(limit)
-      .select("-comments")
+      .select("title description content slug createdAt image") // Thêm slug vào select
       .lean();
 
     // Cải thiện logic lọc kết quả với độ chính xác cao hơn
@@ -86,9 +86,7 @@ export async function GET(request) {
     const filteredActivities = activities.filter((activity) => {
       const titleNoSign = removeVietnameseTones(activity.title || "");
       const contentNoSign = removeVietnameseTones(activity.content || "");
-      const descriptionNoSign = removeVietnameseTones(
-        activity.description || ""
-      );
+      const descriptionNoSign = removeVietnameseTones(activity.description || "");
 
       // Tìm chính xác hơn với từng từ trong cụm từ tìm kiếm
       const searchWords = searchTermNoSign

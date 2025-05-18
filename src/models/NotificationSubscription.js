@@ -1,15 +1,27 @@
 import mongoose from "mongoose";
 
-const NotificationSubscriptionSchema = new mongoose.Schema(
+const notificationSubscriptionSchema = new mongoose.Schema(
   {
-    userId: {
+    name: {
       type: String,
-      required: true,
-      index: true,
+      required: [true, "Vui lòng nhập tên"],
+      trim: true,
     },
-    token: {
+    email: {
       type: String,
-      required: true,
+      required: [true, "Vui lòng nhập email"],
+      unique: true,
+      lowercase: true,
+      trim: true,
+      match: [
+        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+        "Vui lòng nhập email hợp lệ",
+      ],
+    },
+    platform: {
+      type: String,
+      enum: ["gmail", "outlook", "yahoo"],
+      default: "gmail",
     },
     isActive: {
       type: Boolean,
@@ -17,20 +29,12 @@ const NotificationSubscriptionSchema = new mongoose.Schema(
     },
     topics: {
       type: [String],
+      enum: ["newPosts", "updates", "events"],
       default: ["newPosts"],
     },
-    platform: {
-      type: String,
-      enum: ["web", "gmail"],
-      default: "web",
-    },
-    createdAt: {
+    lastNotified: {
       type: Date,
-      default: Date.now,
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.now,
+      default: null,
     },
   },
   {
@@ -38,8 +42,11 @@ const NotificationSubscriptionSchema = new mongoose.Schema(
   }
 );
 
+// Tạo index cho email để tìm kiếm nhanh hơn
+notificationSubscriptionSchema.index({ email: 1 });
+
 const NotificationSubscription =
   mongoose.models.NotificationSubscription ||
-  mongoose.model("NotificationSubscription", NotificationSubscriptionSchema);
+  mongoose.model("NotificationSubscription", notificationSubscriptionSchema);
 
 export default NotificationSubscription;
