@@ -18,7 +18,7 @@ async function findActivityByIdOrSlug(slug) {
 export async function GET(request, context) {
   try {
     await dbConnect();
-    const slug = await context.params.slug;
+    const slug = context.params.slug;
 
     const activity = await findActivityByIdOrSlug(slug);
 
@@ -43,9 +43,26 @@ export async function GET(request, context) {
 export async function PUT(request, context) {
   try {
     await dbConnect();
-    const slug = await context.params.slug;
+    const slug = context.params.slug;
+    console.log("Updating activity with slug:", slug);
 
-    // Xử lý FormData thay vì JSON
+    if (!slug) {
+      return NextResponse.json(
+        { success: false, message: "Slug không được cung cấp" },
+        { status: 400 }
+      );
+    }
+
+    // Tìm hoạt động trước tiên để đảm bảo tồn tại
+    const activity = await findActivityByIdOrSlug(slug);
+    if (!activity) {
+      return NextResponse.json(
+        { success: false, message: "Không tìm thấy hoạt động" },
+        { status: 404 }
+      );
+    }
+
+    // Xử lý FormData
     const formData = await request.formData();
     const updateData = {};
 
@@ -59,49 +76,69 @@ export async function PUT(request, context) {
     // Xử lý hình ảnh nếu được gửi lên
     const imageFile = formData.get("image");
     if (imageFile && imageFile.size > 0) {
-      const bytes = await imageFile.arrayBuffer();
-      const buffer = Buffer.from(bytes);
+      try {
+        const bytes = await imageFile.arrayBuffer();
+        const buffer = Buffer.from(bytes);
 
-      // Tạo tên file duy nhất
-      const filename = `${Date.now()}-${imageFile.name.replace(/\s/g, "_")}`;
+        // Tạo tên file duy nhất, giảm độ dài
+        const fileExt = path.extname(imageFile.name);
+        const baseName = path
+          .basename(imageFile.name, fileExt)
+          .replace(/\s/g, "_")
+          .substring(0, 30);
+        const filename = `${Date.now()}-${baseName}${fileExt}`;
 
-      // Đảm bảo thư mục uploads tồn tại
-      const uploadsDir = path.join(process.cwd(), "public/uploads");
+        // Đảm bảo thư mục uploads tồn tại
+        const uploadsDir = path.join(process.cwd(), "public/uploads");
 
-      // Lưu file vào thư mục public/uploads
-      const imagePath = path.join(uploadsDir, filename);
-      await writeFile(imagePath, buffer);
+        // Kiểm tra và tạo thư mục nếu không tồn tại
+        if (!fs.existsSync(uploadsDir)) {
+          await mkdir(uploadsDir, { recursive: true });
+        }
 
-      // Cập nhật đường dẫn hình ảnh
-      updateData.image = `/uploads/${filename}`;
+        // Lưu file
+        const imagePath = path.join(uploadsDir, filename);
+        await writeFile(imagePath, buffer);
+
+        // Cập nhật đường dẫn hình ảnh
+        updateData.image = `/uploads/${filename}`;
+        console.log("Image saved successfully at:", updateData.image);
+      } catch (imageError) {
+        console.error("Error processing image:", imageError);
+        // Không throw lỗi ở đây, tiếp tục cập nhật các thông tin khác
+      }
     }
 
     // Cập nhật thời gian
     updateData.updatedAt = new Date();
 
-    // Tìm và cập nhật hoạt động
-    const activity = await findActivityByIdOrSlug(slug);
-    if (!activity) {
-      return NextResponse.json(
-        { success: false, message: "Không tìm thấy hoạt động" },
-        { status: 404 }
-      );
-    }
-
     // Cập nhật các trường
+    console.log("Updating fields:", Object.keys(updateData));
     Object.assign(activity, updateData);
-    await activity.save();
 
-    await Notification.create({
-      userId: activity.author,
-      title: `Hoạt động đã được cập nhật: ${activity.title}`,
-      message: `Hoạt động do bạn tạo đã được cập nhật thành công.`,
-      read: false,
-      link: `/Activities/${activity.slug}`,
-      activityId: activity._id,
-      type: "notification",
-      token: "",
-    });
+    // Lưu vào database
+    await activity.save();
+    console.log("Activity saved successfully");
+
+    // Tạo thông báo riêng biệt, không ảnh hưởng đến kết quả trả về
+    try {
+      const token = generateUniqueToken(activity.author, activity.title);
+
+      await Notification.create({
+        userId: activity.author,
+        title: `Hoạt động đã được cập nhật: ${activity.title}`,
+        message: `Hoạt động do bạn tạo đã được cập nhật thành công.`,
+        read: false,
+        link: `/Activities/${activity.slug}`,
+        activityId: activity._id,
+        type: "notification",
+        token,
+      });
+      console.log("Notification created successfully");
+    } catch (notificationError) {
+      console.error("Error creating notification:", notificationError);
+      // Không throw lỗi ở đây, vẫn trả về thành công
+    }
 
     return NextResponse.json({
       success: true,
@@ -110,8 +147,12 @@ export async function PUT(request, context) {
     });
   } catch (error) {
     console.error("Error updating activity:", error);
+    console.error("Stack trace:", error.stack);
     return NextResponse.json(
-      { success: false, message: "Lỗi khi cập nhật hoạt động" },
+      {
+        success: false,
+        message: `Lỗi khi cập nhật hoạt động: ${error.message}`,
+      },
       { status: 500 }
     );
   }
@@ -121,7 +162,7 @@ export async function PUT(request, context) {
 export async function DELETE(request, context) {
   try {
     await dbConnect();
-    const slug = await context.params.slug;
+    const slug = context.params.slug;
 
     // Kiểm tra quyền admin (có thể thêm middleware riêng)
     // ...
@@ -147,4 +188,4 @@ export async function DELETE(request, context) {
       { status: 500 }
     );
   }
-} 
+}
