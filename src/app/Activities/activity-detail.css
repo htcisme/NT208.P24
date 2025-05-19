@@ -1,6 +1,11 @@
 /* Import Montserrat font */
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap");
 
+.activity-detail-page {
+  font-family: "Montserrat", sans-serif;
+  background-color: var(--page-background);
+}
+
 /* Layout cho trang chi tiết bài viết */
 .activity-detail-container {
   display: flex;
