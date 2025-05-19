@@ -116,7 +116,7 @@ export default function ActivityPost() {
   }
 
   return (
-    <div>
+    <div className="activity-detail-page">
       <div className="activity-detail-container">
         <div className="activity-content">
           <div className="activity-header">
