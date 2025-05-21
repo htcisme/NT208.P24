@@ -22,6 +22,17 @@ export async function GET(request) {
       );
     }
 
+    // Kiểm tra xem userId có phải là một MongoDB ObjectId hợp lệ không
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "UserId không hợp lệ",
+        },
+        { status: 400 }
+      );
+    }
+
     // Kiểm tra xem user có tồn tại không
     const user = await User.findById(userId);
     if (!user) {
@@ -99,6 +110,17 @@ export async function POST(request) {
         {
           success: false,
           message: "userId và content là bắt buộc",
+        },
+        { status: 400 }
+      );
+    }
+
+    // Kiểm tra xem userId có phải là một MongoDB ObjectId hợp lệ không
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "UserId không hợp lệ",
         },
         { status: 400 }
       );

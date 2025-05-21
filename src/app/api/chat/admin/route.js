@@ -46,7 +46,6 @@ export async function GET(request) {
                 { sender: admin._id.toString() },
               ],
             },
-            { isBot: { $ne: true } }, // Loại trừ tin nhắn từ bot
           ],
         },
       },
@@ -96,7 +95,7 @@ export async function GET(request) {
         });
 
         return {
-          userId: sender._id,
+          userId: sender._id.userId, // Extract the actual userId string from the _id object
           name: sender.name,
           lastActive: sender.latestMessage,
           unreadCount,
@@ -125,7 +124,7 @@ export async function POST(request) {
   try {
     await dbConnect();
     const body = await request.json();
-    const { adminId, userId, content } = body;
+    let { adminId, userId, content } = body;
 
     if (!adminId || !userId || !content) {
       return NextResponse.json(
@@ -137,7 +136,32 @@ export async function POST(request) {
       );
     }
 
-    // Kiểm tra admin có tồn tại và có quyền admin không
+    // Kiểm tra và xử lý nếu userId là object
+    if (typeof userId === "object" && userId.userId) {
+      userId = userId.userId;
+    }
+
+    // Kiểm tra xem userId có phải là một MongoDB ObjectId hợp lệ không
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "UserId không hợp lệ",
+        },
+        { status: 400 }
+      );
+    }
+
+    // Kiểm tra xem adminId có phải là một MongoDB ObjectId hợp lệ không
+    if (!mongoose.Types.ObjectId.isValid(adminId)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "AdminId không hợp lệ",
+        },
+        { status: 400 }
+      );
+    }
     const admin = await User.findById(adminId);
     if (!admin || admin.role !== "admin") {
       return NextResponse.json(
@@ -148,19 +172,6 @@ export async function POST(request) {
         { status: 403 }
       );
     }
-
-    // Kiểm tra user có tồn tại không
-    const user = await User.findById(userId);
-    if (!user) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Không tìm thấy người dùng",
-        },
-        { status: 404 }
-      );
-    }
-
     // Tạo tin nhắn mới từ admin cho user
     const newMessage = new Chat({
       sender: adminId,
