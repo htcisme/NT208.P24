@@ -36,6 +36,8 @@ function AdminChatDashboard() {
     if (!user || !selectedUser) return;
 
     try {
+      console.log("User object:", selectedUser);
+      console.log("User ID being sent:", selectedUser.userId);
       // Đánh dấu tin nhắn là đã đọc
       await fetch(`/api/chat/read`, {
         method: "POST",
@@ -50,6 +52,7 @@ function AdminChatDashboard() {
       const response = await fetch(
         `/api/chat?userId=${selectedUser.userId}&excludeBot=true`
       );
+
       if (response.ok) {
         const data = await response.json();
         setMessages(data.messages || []);
@@ -176,7 +179,7 @@ function AdminChatDashboard() {
               <ul>
                 {users.map((user) => (
                   <li
-                    key={user.userId}
+                    key={user.userId.toString()}
                     className={`user-item ${
                       selectedUser?.userId === user.userId ? "active" : ""
                     }`}
