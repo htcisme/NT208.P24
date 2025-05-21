@@ -134,7 +134,7 @@ export async function POST(request) {
 
     // Gửi email xác nhận
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: "Đoàn khoa MMT&TT <" + process.env.EMAIL_USER + ">",
       to: email,
       subject: "Xác nhận đăng ký nhận thông báo - Đoàn khoa MMT&TT",
       html: `
