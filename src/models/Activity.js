@@ -30,6 +30,7 @@ try {
         "course",
         "volunteer",
         "event",
+        "sport",
         "conference",
         "vnutour",
         "netsec",
@@ -82,28 +83,29 @@ try {
 export const getActivityTypes = () => {
   return [
     // Academic
-    { value: "academic", label: "Học tập", icon: "📚" },
-    { value: "competition", label: "Cuộc thi", icon: "🏆" },
-    { value: "seminar", label: "Seminar", icon: "🎤" },
-    { value: "research", label: "Nghiên cứu", icon: "🔬" },
-    { value: "course", label: "Khóa học", icon: "🎓" },
+    { value: "academic", label: "Học tập" },
+    { value: "competition", label: "Cuộc thi" },
+    { value: "seminar", label: "Seminar" },
+    { value: "research", label: "Nghiên cứu" },
+    { value: "course", label: "Khóa học" },
 
     // Event
-    { value: "volunteer", label: "Tình nguyện", icon: "🤝" },
-    { value: "event", label: "Sự kiện", icon: "🎉" },
-    { value: "conference", label: "Hội nghị", icon: "🏛️" },
-    { value: "vnutour", label: "VNUTour", icon: "🗺️" },
-    { value: "netsec", label: "Netsec", icon: "🔐" },
+    { value: "volunteer", label: "Tình nguyện" },
+    { value: "sport", label: "Thể thao" },
+    { value: "event", label: "Sự kiện" },
+    { value: "conference", label: "Hội nghị" },
+    { value: "vnutour", label: "VNUTour" },
+    { value: "netsec", label: "Netsec" },
 
     // Work
-    { value: "internship", label: "Thực tập", icon: "💼" },
-    { value: "scholarship", label: "Học bổng", icon: "🎓" },
-    { value: "startup", label: "Khởi nghiệp", icon: "🚀" },
-    { value: "jobfair", label: "Ngày hội việc làm", icon: "🏢" },
-    { value: "career", label: "Hướng nghiệp", icon: "👔" },
+    { value: "internship", label: "Thực tập" },
+    { value: "scholarship", label: "Học bổng" },
+    { value: "startup", label: "Khởi nghiệp" },
+    { value: "jobfair", label: "Ngày hội việc làm" },
+    { value: "career", label: "Hướng nghiệp" },
 
     // Other
-    { value: "other", label: "Khác", icon: "📋" },
+    { value: "other", label: "Khác" },
   ];
 };
 

@@ -90,9 +90,20 @@ export async function GET(request) {
     const page = parseInt(searchParams.get("page")) || 1;
     const limit = parseInt(searchParams.get("limit")) || 8;
     const status = searchParams.get("status");
+    const type = searchParams.get("type");
+    const types = searchParams.get("types");
     const skip = (page - 1) * limit;
 
     const query = status ? { status } : { status: "published" };
+
+    // Add type filter
+    if (type) {
+      query.type = type;
+    } else if (types) {
+      // Multiple types filter
+      const typeArray = types.split(",");
+      query.type = { $in: typeArray };
+    }
 
     const activities = await Activity.find(query)
       .sort({ createdAt: -1 })
