@@ -1,234 +1,312 @@
 "use client";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import dynamic from "next/dynamic";
 import styles from "./page.module.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import RegisterForm from "@/components/RegisterForm";
-import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
 
-const images = [
+// Lazy load RegisterForm vì không cần ngay khi trang load
+const RegisterForm = dynamic(() => import("@/components/RegisterForm"), {
+  ssr: false,
+  loading: () => <div>Đang tải...</div>,
+});
+
+// Constants được đưa ra ngoài component để tránh re-create
+const IMAGES = [
   "/Img/Homepage/BCH1.png",
   "/Img/Homepage/BCH2.png",
   "/Img/Homepage/BCH3.png",
 ];
 
-export default function Home() {
+const EVENTS = [
+  { title: "VNU TOUR 2024", image: "/Img/Homepage/Slider1.png" },
+  { title: "NGỌN ĐUỐC XANH 2025", image: "/Img/Homepage/Slider3.png" },
+  { title: "NETSEC DAY 2024", image: "/Img/Homepage/Slider2.png" },
+  { title: "TẬN “TỴ” ĐÓN TẾT", image: "/Img/Homepage/Slider4.png" },
+  { title: "CHÀO ĐÓN TÂN SINH VIÊN", image: "/Img/Homepage/Slider5.png" },
+];
+
+const TIMELINE_ITEMS = [
+  {
+    date: "20.01.2025",
+    text: 'Đoàn khoa Mạng máy tính và Truyền thông đã sẵn sàng mang đến chuỗi truyền thống TẬN"TỴ"ĐÓN TẾT vô cùng hấp dẫn, đầy ý nghĩa để cùng các bạn tận hưởng một cái Tết Nguyên đán trọn vẹn nhất!!',
+  },
+  // Repeat items...
+];
+
+const MEMBER_ITEMS = [
+  {
+    img: "/Img/Homepage/TTSK_Img.png",
+    alt: "Ban Truyền thông & Sự kiện",
+    label: "Ban Truyền thông & Sự kiện",
+  },
+  {
+    img: "/Img/Homepage/BTK_Img.png",
+    alt: "Ban Thiết kế",
+    label: "Ban Thiết kế",
+  },
+  {
+    img: "/Img/Homepage/BHT_Img.png",
+    alt: "Ban Học tập",
+    label: "Ban Học tập",
+  },
+];
+
+// Custom hooks
+const useUser = () => {
   const [user, setUser] = useState(null);
-  // Danh sách 5 sự kiện với tiêu đề
-  const events = [
-    { title: "VNU TOUR 2024", image: "/Img/Homepage/Slider1.png" },
-    { title: "NGỌN ĐUỐC XANH 2025", image: "/Img/Homepage/Slider3.png" },
-    { title: "NETSEC DAY 2024", image: "/Img/Homepage/Slider2.png" },
-    { title: "EVENT 4 2024", image: "/Img/Homepage/BCH1.png" },
-    { title: "EVENT 5 2024", image: "/Img/Homepage/BCH2.png" },
-  ];
 
-  // State quản lý
-  const [startIndex, setStartIndex] = useState(0);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [fade, setFade] = useState(true);
-  const [showMenu, setShowMenu] = useState(false);
-  const [showUserMenu, setShowUserMenu] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [showSearchResults, setShowSearchResults] = useState(false);
-  const [isSearching, setIsSearching] = useState(false);
-  const searchRef = useRef(null);
-  const userMenuRef = useRef(null);
-  const [recentActivities, setRecentActivities] = useState([]);
-  const [loadingRecent, setLoadingRecent] = useState(true);
-
-  const handleLogout = () => {
-    // Xóa từ localStorage
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-
-    // Xóa cookie token
-    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-
-    // Cập nhật state
-    setUser(null);
-    setShowUserMenu(false);
-
-    // Tải lại trang để cập nhật giao diện
-    window.location.reload();
-  };
-  // Hàm xử lý bấm mũi tên trái
-  const handlePrev = () => {
-    setStartIndex(
-      (prevIndex) => (prevIndex - 1 + events.length) % events.length
-    );
-  };
-
-  // Hàm xử lý bấm mũi tên phải
-  const handleNext = () => {
-    setStartIndex((prevIndex) => (prevIndex + 1) % events.length);
-  };
-
-  // Toggle menu
-  const toggleMenu = () => {
-    setShowMenu(!showMenu);
-  };
-
-  // Toggle user menu
-  const toggleUserMenu = () => {
-    setShowUserMenu(!showUserMenu);
-  };
-
-  // Lấy 3 sự kiện kế tiếp từ startIndex, lặp lại nếu vượt quá độ dài
-  const visibleEvents = Array.from(
-    { length: 3 },
-    (_, i) => events[(startIndex + i) % events.length]
-  );
-
-  const items = [
-    {
-      date: "20.01.2025",
-      text: 'Đoàn khoa Mạng máy tính và Truyền thông đã sẵn sàng mang đến chuỗi truyền thống TẬN"TỴ"ĐÓN TẾT vô cùng hấp dẫn, đầy ý nghĩa để cùng các bạn tận hưởng một cái Tết Nguyên đán trọn vẹn nhất!!',
-    },
-    {
-      date: "20.01.2025",
-      text: 'Đoàn khoa Mạng máy tính và Truyền thông đã sẵn sàng mang đến chuỗi truyền thống TẬN"TỴ"ĐÓN TẾT vô cùng hấp dẫn, đầy ý nghĩa để cùng các bạn tận hưởng một cái Tết Nguyên đán trọn vẹn nhất!!',
-    },
-    {
-      date: "20.01.2025",
-      text: 'Đoàn khoa Mạng máy tính và Truyền thông đã sẵn sàng mang đến chuỗi truyền thống TẬN"TỴ"ĐÓN TẾT vô cùng hấp dẫn, đầy ý nghĩa để cùng các bạn tận hưởng một cái Tết Nguyên đán trọn vẹn nhất!!',
-    },
-    {
-      date: "20.01.2025",
-      text: 'Đoàn khoa Mạng máy tính và Truyền thông đã sẵn sàng mang đến chuỗi truyền thống TẬN"TỴ"ĐÓN TẾT vô cùng hấp dẫn, đầy ý nghĩa để cùng các bạn tận hưởng một cái Tết Nguyên đán trọn vẹn nhất!!',
-    },
-  ];
-
-  // Thêm vào đầu component Home.jsx
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  // Thêm useEffect để kiểm tra dark mode từ localStorage khi trang tải
   useEffect(() => {
-    // Kiểm tra dark mode
-    const savedMode = localStorage.getItem("darkMode");
-    if (savedMode === "true") {
-      setIsDarkMode(true);
-      document.body.classList.add("dark");
-    } else {
-      setIsDarkMode(false);
-      document.body.classList.remove("dark");
-    }
-
-    // Kiểm tra đăng nhập
     try {
       const storedUser = localStorage.getItem("user");
       if (storedUser) {
         setUser(JSON.parse(storedUser));
       }
     } catch (error) {
-      console.error("Error checking user:", error);
+      console.error("Error loading user:", error);
     }
   }, []);
 
-  // Thêm hàm toggleDarkMode
-  const toggleDarkMode = () => {
+  const logout = useCallback(() => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    setUser(null);
+    window.location.reload();
+  }, []);
+
+  return { user, setUser, logout };
+};
+
+const useDarkMode = () => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    const savedMode = localStorage.getItem("darkMode") === "true";
+    setIsDarkMode(savedMode);
+    document.body.classList.toggle("dark", savedMode);
+  }, []);
+
+  const toggleDarkMode = useCallback(() => {
     const newMode = !isDarkMode;
     setIsDarkMode(newMode);
+    document.body.classList.toggle("dark", newMode);
+    localStorage.setItem("darkMode", String(newMode));
+  }, [isDarkMode]);
 
-    if (newMode) {
-      document.body.classList.add("dark");
-      localStorage.setItem("darkMode", "true");
-    } else {
-      document.body.classList.remove("dark");
-      localStorage.setItem("darkMode", "false");
-    }
-  };
+  return { isDarkMode, toggleDarkMode };
+};
 
-  // Đóng dropdown khi click ra ngoài
+const useClickOutside = (ref, callback) => {
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setShowSearchResults(false);
+    const handleClick = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) {
+        callback();
       }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    };
+
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [ref, callback]);
+};
+
+const useImageCarousel = (images, interval = 3000) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [fade, setFade] = useState(true);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setFade(false);
+      setTimeout(() => {
+        setCurrentIndex((prev) => (prev + 1) % images.length);
+        setFade(true);
+      }, 300);
+    }, interval);
+
+    return () => clearInterval(timer);
+  }, [images.length, interval]);
+
+  return { currentIndex, fade };
+};
+
+// Debounce hook cho search
+const useDebounce = (value, delay) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => clearTimeout(handler);
+  }, [value, delay]);
+
+  return debouncedValue;
+};
+
+export default function Home() {
+  // Custom hooks
+  const { user, logout } = useUser();
+  const { isDarkMode, toggleDarkMode } = useDarkMode();
+  const { currentIndex, fade } = useImageCarousel(IMAGES);
+
+  // State
+  const [startIndex, setStartIndex] = useState(0);
+  const [showMenu, setShowMenu] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const [recentActivities, setRecentActivities] = useState([]);
+  const [loadingRecent, setLoadingRecent] = useState(true);
+  // State để quản lý dữ liệu awards
+  const [awards, setAwards] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Refs
+  const searchRef = useRef(null);
+  const userMenuRef = useRef(null);
+
+  // Debounced search term
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+
+  // Click outside handlers
+  useClickOutside(searchRef, () => setShowSearchResults(false));
+  useClickOutside(userMenuRef, () => setShowUserMenu(false));
+
+  // Memoized values
+  const visibleEvents = useMemo(
+    () =>
+      Array.from(
+        { length: 3 },
+        (_, i) => EVENTS[(startIndex + i) % EVENTS.length]
+      ),
+    [startIndex]
+  );
+
+  // Handlers
+  const handlePrev = useCallback(() => {
+    setStartIndex((prev) => (prev - 1 + EVENTS.length) % EVENTS.length);
   }, []);
 
+  const handleNext = useCallback(() => {
+    setStartIndex((prev) => (prev + 1) % EVENTS.length);
+  }, []);
+
+  const toggleMenu = useCallback(() => setShowMenu((prev) => !prev), []);
+  const toggleUserMenu = useCallback(
+    () => setShowUserMenu((prev) => !prev),
+    []
+  );
+
+  // Fetch dữ liệu giải thưởng từ API
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
-        setShowUserMenu(false);
+    const fetchAwards = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("/api/awards");
+
+        if (!response.ok) {
+          throw new Error("Không thể tải danh sách giải thưởng");
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+          setAwards(data.data);
+          setAwards(data.data.slice(0, 5));
+        } else {
+          throw new Error(data.message || "Lỗi khi tải dữ liệu");
+        }
+      } catch (err) {
+        setError(err.message);
+        console.error("Error fetching awards:", err);
+      } finally {
+        setLoading(false);
       }
-    }
-    if (showUserMenu) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [showUserMenu]);
 
-  // Hàm tìm kiếm
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    if (!searchTerm.trim()) {
-      setSearchResults([]);
-      setShowSearchResults(false);
-      return;
-    }
-    setIsSearching(true);
-    try {
-      const response = await fetch(
-        `/api/activities/search?q=${encodeURIComponent(searchTerm.trim())}`
-      );
-      const data = await response.json();
-      if (data.success) {
-        setSearchResults(data.data);
-        setShowSearchResults(true);
-      } else {
-        setSearchResults([]);
-      }
-    } catch (error) {
-      setSearchResults([]);
-    } finally {
-      setIsSearching(false);
-    }
-  };
+    fetchAwards();
+  }, []);
 
-  // Khi thay đổi input
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-    if (!e.target.value.trim()) {
+  // Nhóm giải thưởng theo tổ chức
+  const groupedAwards = awards.reduce((acc, award) => {
+    if (!acc[award.organization]) {
+      acc[award.organization] = [];
+    }
+    acc[award.organization].push(award);
+    return acc;
+  }, {});
+
+  const handleSearchChange = useCallback((e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    if (!value.trim()) {
       setSearchResults([]);
       setShowSearchResults(false);
     }
-  };
+  }, []);
 
-  // Khi click vào kết quả
-  const handleResultClick = (slug) => {
+  const handleResultClick = useCallback((slug) => {
     setShowSearchResults(false);
     setSearchTerm("");
     window.location.href = `/Activities/${slug}`;
-  };
+  }, []);
 
+  // Search effect
   useEffect(() => {
-    async function fetchRecentActivities() {
+    if (!debouncedSearchTerm.trim()) return;
+
+    const searchActivities = async () => {
+      setIsSearching(true);
+      try {
+        const response = await fetch(
+          `/api/activities/search?q=${encodeURIComponent(
+            debouncedSearchTerm.trim()
+          )}`
+        );
+        const data = await response.json();
+        setSearchResults(data.success ? data.data : []);
+        setShowSearchResults(true);
+      } catch (error) {
+        console.error("Search error:", error);
+        setSearchResults([]);
+      } finally {
+        setIsSearching(false);
+      }
+    };
+
+    searchActivities();
+  }, [debouncedSearchTerm]);
+
+  // Fetch recent activities
+  useEffect(() => {
+    const fetchRecentActivities = async () => {
       setLoadingRecent(true);
       try {
         const res = await fetch(
           "/api/activities?page=1&limit=4&status=published"
         );
         const data = await res.json();
-        if (data.success) {
-          setRecentActivities(data.data);
-        } else {
-          setRecentActivities([]);
-        }
+        setRecentActivities(data.success ? data.data : []);
       } catch (err) {
+        console.error("Error fetching activities:", err);
         setRecentActivities([]);
       } finally {
         setLoadingRecent(false);
       }
-    }
+    };
+
     fetchRecentActivities();
+  }, []);
+
+  // Prevent form submission on search
+  const handleSearchSubmit = useCallback((e) => {
+    e.preventDefault();
   }, []);
 
   return (
@@ -237,21 +315,26 @@ export default function Home() {
         <div className={styles.Header_Logo}>
           <Link href="/">SUCTREMMT</Link>
         </div>
-        <div className={styles.Header_Nav}>
+
+        <nav className={styles.Header_Nav}>
+          {/* User Menu */}
           <div className={styles.Header_Nav_MenuWrapper}>
             <button
               className={styles.Header_Nav_AuthButton}
               onClick={toggleUserMenu}
+              aria-label={user ? `Menu của ${user.name}` : "Menu tài khoản"}
+              aria-expanded={showUserMenu}
             >
               {user ? `Xin chào, ${user.name}` : "Tài khoản"}
               <span className={styles.Header_Nav_AuthButton_Arrow}>▼</span>
             </button>
+
             {showUserMenu && (
               <div className={styles.Header_Nav_AuthMenu} ref={userMenuRef}>
                 {user ? (
                   <>
                     <Link
-                      href="/profile"
+                      href="/Profile"
                       className={styles.Header_Nav_AuthMenu_Item}
                     >
                       Trang cá nhân
@@ -265,7 +348,7 @@ export default function Home() {
                       </Link>
                     )}
                     <button
-                      onClick={handleLogout}
+                      onClick={logout}
                       className={styles.Header_Nav_AuthMenu_Item}
                     >
                       Đăng xuất
@@ -291,9 +374,10 @@ export default function Home() {
             )}
           </div>
 
+          {/* Search */}
           <div className={styles.Header_Nav_SearchWrapper} ref={searchRef}>
             <form
-              onSubmit={handleSearch}
+              onSubmit={handleSearchSubmit}
               className={styles.Header_Topbar_Authsearch_Searchbox}
             >
               <input
@@ -302,10 +386,12 @@ export default function Home() {
                 value={searchTerm}
                 onChange={handleSearchChange}
                 onFocus={() => searchTerm.trim() && setShowSearchResults(true)}
+                aria-label="Tìm kiếm hoạt động"
               />
               <button
                 type="submit"
                 className={styles.Header_Topbar_Authsearch_Searchbox_Searchicon}
+                aria-label="Tìm kiếm"
               >
                 <svg
                   className={
@@ -327,6 +413,7 @@ export default function Home() {
                 </svg>
               </button>
             </form>
+
             {showSearchResults && (
               <div className={styles.searchResultsDropdown}>
                 {isSearching ? (
@@ -342,6 +429,11 @@ export default function Home() {
                           key={result._id}
                           className={styles.searchResultItem}
                           onClick={() => handleResultClick(result.slug)}
+                          role="button"
+                          tabIndex={0}
+                          onKeyPress={(e) =>
+                            e.key === "Enter" && handleResultClick(result.slug)
+                          }
                         >
                           <h4>{result.title}</h4>
                           <p>{result.description?.substring(0, 100)}...</p>
@@ -358,15 +450,17 @@ export default function Home() {
             )}
           </div>
 
+          {/* Navigation Menu */}
           <div className={styles.Header_Nav_MenuWrapper}>
             <button
               className={styles.Header_Nav_MenuWrapper_MenuButton}
               onClick={toggleMenu}
               aria-expanded={showMenu}
+              aria-label="Menu điều hướng"
             >
               ☰
             </button>
-            <div
+            <nav
               className={`${styles.Header_Nav_MenuWrapper_DropdownMenu} ${
                 showMenu
                   ? styles.Header_Nav_MenuWrapper_MenuButton_ShowMenu
@@ -403,13 +497,16 @@ export default function Home() {
               >
                 Liên hệ
               </Link>
-            </div>
+            </nav>
           </div>
 
+          {/* Dark Mode Toggle */}
           <button
             className={styles.Header_Nav_DarkModeToggle}
             onClick={toggleDarkMode}
-            aria-label="Toggle dark mode"
+            aria-label={
+              isDarkMode ? "Chuyển sang chế độ sáng" : "Chuyển sang chế độ tối"
+            }
           >
             {isDarkMode ? (
               <svg
@@ -445,9 +542,10 @@ export default function Home() {
               </svg>
             )}
           </button>
-        </div>
+        </nav>
       </header>
 
+      {/* Hero Section */}
       <section className={styles.hero}>
         <div className={styles.heroBackground}></div>
         <div className={styles.heroOverlay}></div>
@@ -471,8 +569,10 @@ export default function Home() {
         </div>
       </section>
 
-      <section className={styles.Body}>
+      {/* Main Content */}
+      <main className={styles.Body}>
         <div className={styles.Body_Container}>
+          {/* Introduction Section */}
           <section className={styles.Body_Container_Introduction}>
             <div
               className={styles.Body_Container_Introduction_BodyShape01}
@@ -486,11 +586,13 @@ export default function Home() {
             <div
               className={styles.Body_Container_Introduction_BodyShape04}
             ></div>
-            <a href="/Introduction">
+
+            <Link href="/Introduction">
               <h2 className={styles.Body_Container_Introduction_Title}>
                 GIỚI THIỆU
               </h2>
-            </a>
+            </Link>
+
             <div className={styles.Body_Container_Introduction_ContentWrapper}>
               <div
                 className={
@@ -498,7 +600,7 @@ export default function Home() {
                 }
               >
                 <Image
-                  src={images[currentIndex]}
+                  src={IMAGES[currentIndex]}
                   alt={`Giới thiệu ${currentIndex + 1}`}
                   width={800}
                   height={400}
@@ -517,7 +619,7 @@ export default function Home() {
                     styles.Body_Container_Introduction_ContentWrapper_ImageContainer_Dots
                   }
                 >
-                  {images.map((_, index) => (
+                  {IMAGES.map((_, index) => (
                     <span
                       key={index}
                       className={`${
@@ -531,6 +633,7 @@ export default function Home() {
                   ))}
                 </div>
               </div>
+
               <div
                 className={
                   styles.Body_Container_Introduction_ContentWrapper_TextContainer
@@ -588,44 +691,32 @@ export default function Home() {
               </div>
             </div>
 
+            {/* Member Items */}
             <div className={styles.Body_Container_MemberWrap}>
-              <div className={styles.Body_Container_MemberItem}>
-                <img
-                  src="/Img/Homepage/TTSK_Img.png"
-                  alt="Ban Truyền thông & Sự kiện"
-                  className={styles.Body_Container_MemberImage}
-                />
-                <p className={styles.Body_Container_MemberLabel}>
-                  Ban Truyền thông & Sự kiện
-                </p>
-              </div>
-              <div className={styles.Body_Container_MemberItem}>
-                <img
-                  src="/Img/Homepage/BTK_Img.png"
-                  alt="Ban Thiết kế"
-                  className={styles.Body_Container_MemberImage}
-                />
-                <p className={styles.Body_Container_MemberLabel}>
-                  Ban Thiết kế
-                </p>
-              </div>
-              <div className={styles.Body_Container_MemberItem}>
-                <img
-                  src="/Img/Homepage/BHT_Img.png"
-                  alt="Ban Học tập"
-                  className={styles.Body_Container_MemberImage}
-                />
-                <p className={styles.Body_Container_MemberLabel}>Ban Học tập</p>
-              </div>
+              {MEMBER_ITEMS.map((member, index) => (
+                <div key={index} className={styles.Body_Container_MemberItem}>
+                  <img
+                    src={member.img}
+                    alt={member.alt}
+                    className={styles.Body_Container_MemberImage}
+                    loading="lazy"
+                  />
+                  <p className={styles.Body_Container_MemberLabel}>
+                    {member.label}
+                  </p>
+                </div>
+              ))}
             </div>
           </section>
 
+          {/* Activities Section */}
           <section className={styles.Body_Container_Activities}>
-            <a href="/Activities">
+            <Link href="/Activities">
               <h2 className={styles.Activities_RecentLabel}>
                 HOẠT ĐỘNG GẦN ĐÂY
               </h2>
-            </a>
+            </Link>
+
             <div className={styles.Activities_RecentCards}>
               {loadingRecent ? (
                 <div>Đang tải hoạt động...</div>
@@ -633,9 +724,9 @@ export default function Home() {
                 <div>Không có hoạt động gần đây.</div>
               ) : (
                 recentActivities.map((activity) => (
-                  <a
+                  <Link
                     key={activity._id}
-                    href={`/Activities/${activity._id}`}
+                    href={`/Activities/${activity.slug}`}
                     className={styles.Activities_RecentCard}
                   >
                     <div className={styles.Activities_RecentCard_Container}>
@@ -643,9 +734,9 @@ export default function Home() {
                         src={activity.image || "/Img/Homepage/card1.png"}
                         alt={activity.title}
                         className={styles.Activities_RecentCard_Image}
+                        loading="lazy"
                       />
                     </div>
-
                     <div className={styles.Activities_RecentCard_Content}>
                       <h3 className={styles.Activities_RecentCard_Title}>
                         {activity.title}
@@ -662,10 +753,11 @@ export default function Home() {
                           : ""}
                       </p>
                     </div>
-                  </a>
+                  </Link>
                 ))
               )}
             </div>
+
             <Link
               href="/ActivitiesOverview"
               className={styles.Activities_ViewMore}
@@ -673,6 +765,7 @@ export default function Home() {
               Xem thêm ...
             </Link>
 
+            {/* Focus Section */}
             <div className={styles.Activities_Focus}>
               <div className={styles.Activities_Focus_Shape01}></div>
               <div className={styles.Activities_Focus_ContentWrapper}>
@@ -681,67 +774,73 @@ export default function Home() {
                     src="/Img/Homepage/Hotimage.png"
                     alt="Tiêu điểm hoạt động"
                     className={styles.Activities_Focus_Image}
+                    loading="lazy"
                   />
                   <div className={styles.Activities_Focus_Shape02}></div>
                 </div>
                 <div className={styles.Activities_Focus_Content}>
                   <div className={styles.Activities_Focus_Content_Title}>
-                    TIÊU ĐIỂM
+                    TIÊU ĐIỂM KHEN THƯỞNG
                   </div>
                   <div className={styles.Activities_Focus_Content_Timeline}>
-                    {items.map((item, index) => (
-                      <div
-                        key={index}
-                        className={styles.Activities_Focus_Content_TimelineItem}
-                      >
-                        <div
-                          className={
-                            styles.Activities_Focus_Content_TimelineItem_Circle
-                          }
-                        ></div>
-                        <div
-                          className={
-                            styles.Activities_Focus_Content_TimelineItem_Content
-                          }
-                        >
-                          <div
-                            className={
-                              styles.Activities_Focus_Content_TimelineItem_Date
-                            }
-                          >
-                            {item.date}
-                          </div>
-                          <div
-                            className={
-                              styles.Activities_Focus_Content_TimelineItem_Text
-                            }
-                          >
-                            {item.text}
-                          </div>
-                        </div>
+                    {loading ? (
+                      <div className="loading-container">
+                        <p>Đang tải danh sách thành tích...</p>
                       </div>
-                    ))}
+                    ) : error ? (
+                      <div className="error-container">
+                        <p>{error}</p>
+                        <button onClick={() => window.location.reload()}>
+                          Thử lại
+                        </button>
+                      </div>
+                    ) : (
+                      Object.entries(groupedAwards).map(
+                        ([organization, orgAwards]) => (
+                          <div key={organization} className="timeline-item">
+                            <h3>{organization} trao tặng</h3>
+                            {orgAwards.map((award) => (
+                              <p key={award._id}>
+                                {award.content} ({award.year})
+                              </p>
+                            ))}
+                          </div>
+                        )
+                      )
+                    )}
+
+                    {/* Hiển thị tin nhắn nếu không có dữ liệu */}
+                    {!loading && !error && awards.length === 0 && (
+                      <div className="timeline-item">
+                        <p>Chưa có thành tích nào được cập nhật</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
           </section>
 
+          {/* Highlight Section */}
           <section className={styles.Body_Container_Hightlight}>
             <div className={styles.Body_Container_Hightlight_Title}>
               HOẠT ĐỘNG NỔI BẬT
             </div>
             <div className={styles.Body_Container_Hightlight_Shape}></div>
-            {/* Slider hoạt động */}
+
             <section className={styles.light_slider_container}>
               <button
                 className={styles.light_slider_arrow}
                 onClick={handlePrev}
+                aria-label="Sự kiện trước"
               >
                 ←
               </button>
               {visibleEvents.map((event, index) => (
-                <div className={styles.light_slider_item} key={index}>
+                <div
+                  className={styles.light_slider_item}
+                  key={`${startIndex}-${index}`}
+                >
                   <div
                     className={`${styles.slider_image_placeholder} ${
                       index === 1 ? styles.slider_image_placeholder_active : ""
@@ -751,6 +850,7 @@ export default function Home() {
                       src={event.image}
                       alt={event.title}
                       className={styles.slider_image}
+                      loading="lazy"
                     />
                   </div>
                   <h4>{event.title}</h4>
@@ -759,30 +859,34 @@ export default function Home() {
               <button
                 className={styles.light_slider_arrow}
                 onClick={handleNext}
+                aria-label="Sự kiện tiếp theo"
               >
                 →
               </button>
             </section>
-            {/* Dots điều hướng */}
+
             <div className={styles.light_slider_dots}>
-              {events.map((_, index) => (
-                <span
+              {EVENTS.map((_, index) => (
+                <button
                   key={index}
                   className={`${styles.light_slider_dot} ${
                     startIndex === index ? styles.light_slider_dot_active : ""
                   }`}
                   onClick={() => setStartIndex(index)}
-                ></span>
+                  aria-label={`Chuyển đến sự kiện ${index + 1}`}
+                ></button>
               ))}
             </div>
           </section>
 
+          {/* Awards Section */}
           <section className={styles.Body_Container_Awards}>
             <div className={styles.Body_Container_Awards_Title}>
               THÀNH TÍCH NỔI BẬT
             </div>
             <div className={styles.Body_Container_Awards_Shape01}></div>
             <div className={styles.Body_Container_Awards_Shape02}></div>
+
             <div className={styles.Body_Container_Awards_ContentWrapper}>
               <div className={styles.Body_Container_Awards_Content}>
                 <div className={styles.Body_Container_Awards_Content_Title}>
@@ -829,18 +933,18 @@ export default function Home() {
             </div>
             <div className={styles.Image_Grid_Container}>
               <img
-                src="/images/top-image.jpg"
+                src="/Img/Homepage/banner1.png"
                 alt="Top Banner"
                 className={styles.Image_Top}
               />
               <div className={styles.Image_Bottom_Row}>
                 <img
-                  src="/images/bottom-left.jpg"
+                  src="/Img/Homepage/banner2.png"
                   alt="Bottom Left"
                   className={styles.Image_Bottom}
                 />
                 <img
-                  src="/images/bottom-right.jpg"
+                  src="/Img/Homepage/banner3.png"
                   alt="Bottom Right"
                   className={styles.Image_Bottom}
                 />
@@ -853,7 +957,7 @@ export default function Home() {
           </section>
         </div>
         <Footer />
-      </section>
+      </main>
     </div>
   );
 }

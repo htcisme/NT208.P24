@@ -1,7 +1,6 @@
 .admin-dashboard {
   font-family: Arial, sans-serif;
   margin: 0 auto;
-  background-color: #ffff;
   border: 1px solid #d1d1d1;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -25,6 +24,12 @@
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.admin-content {
+  max-width: 1200px;
+  margin: 30px auto;
+  background-color: white !important;
 }
 
 .user-avatar {
@@ -67,19 +72,22 @@
 .admin-action-bar {
   display: flex;
   justify-content: space-between;
-  padding: 10px 20px;
+  color: #000 !important;
   background-color: #fff;
+  border-bottom: 1px solid #dce7f5;
+  margin-bottom: 20px;
 }
 
 .btn-all-pages,
 .btn-batch-action {
-  padding: 8px 15px;
+  padding: 12px 19px;
+  border-radius: 5px;
   background-color: #1a3b7c;
   color: white;
   border: none;
   cursor: pointer;
   font-weight: bold;
-  font-size: 12px;
+  font-size: 16px;
 }
 
 .btn-add-page {
@@ -100,8 +108,12 @@
 }
 
 .content-section {
-  padding: 0 20px;
-  margin-bottom: 20px;
+  margin-top: 20px;
+  background-color: #fff !important;
+  color: #000 !important;
+  border-radius: 8px;
+  padding: 25px;
+  box-shadow: 0 2px 10px #0000001a;
 }
 
 .data-table {
@@ -119,7 +131,7 @@
 
 .data-table th {
   background-color: #e8e8e8;
-  color: #333;
+  color: #333 !important;
   font-weight: 600;
   font-size: 13px;
 }
@@ -235,6 +247,7 @@
 .add-page-container {
   display: flex;
   background-color: #f0f2f5;
+  color: #031a3e !important;
   border-radius: 10px;
   padding: 20px;
 }
@@ -258,16 +271,26 @@
   padding: 10px;
   margin-bottom: 15px;
   border: 1px solid #ced4da;
+  color: #031a3e !important;
   border-radius: 4px;
 }
 
+.add-title-input::placeholder {
+  color: #6c757d;
+}
+
 .add-content-textarea {
+  color: #031a3e !important;
   width: 100%;
   min-height: 200px;
   padding: 10px;
   border: 1px solid #ced4da;
   border-radius: 4px;
   margin-bottom: 15px;
+}
+
+.add-content-textarea::placeholder {
+  color: #6c757d;
 }
 
 .info-tabs {
@@ -342,17 +365,18 @@
 }
 
 .btn-nav {
-  padding: 8px 15px;
-  background-color: transparent;
+  padding: 12px 19px;
+  border-radius: 5px;
+  background-color: #e9ecef !important;
   border: none;
   cursor: pointer;
-  font-weight: bold;
-  font-size: 12px;
+  font-size: 16px;
   color: #1a3b7c;
+  font-weight: bold;
 }
 
 .btn-nav.active {
-  background-color: #1a3b7c;
+  background-color: #1a3b7c !important;
   color: white;
 }
 
@@ -361,21 +385,33 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  font-size: 16px;
+  font-weight: 500;
 }
 
 .batch-action-select {
-  padding: 8px;
+  padding: 12px;
   border: 1px solid #ced4da;
-  border-radius: 4px;
+  border-radius: 7px;
+  color: black !important;
   background-color: #fff;
+}
+
+.batch-action-select option {
+  font-size: 14px;
+  padding: 10px;
+  background-color: #fff;
+  color: black !important;
 }
 
 /* Status select dropdown */
 .status-select {
   padding: 8px;
+  font-size: 14px;
   border: 1px solid #ced4da;
   border-radius: 4px;
   background-color: #fff;
+  color: #031a3e !important;
 }
 
 /* Button toggle containers */
@@ -602,13 +638,14 @@
 }
 
 .update-slugs-btn {
-  background-color: #4CAF50;
+  background-color: #6ea970;
   color: white;
   padding: 8px 16px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
+  font-weight: bold;
   margin-right: 10px;
   transition: background-color 0.3s;
 }
