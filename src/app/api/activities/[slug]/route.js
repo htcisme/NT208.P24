@@ -5,6 +5,34 @@ import { writeFile } from "fs/promises";
 import path from "path";
 import { ObjectId } from "mongodb";
 import Notification from "@/models/Notification";
+import jwt from "jsonwebtoken";
+
+function generateUniqueToken(userId, title = "") {
+  try {
+    if (!userId) {
+      console.error("UserId is required for token generation");
+      return Date.now().toString();
+    }
+
+    const payload = {
+      uid: userId.toString(),
+      title,
+      ts: Date.now(),
+    };
+
+    if (!process.env.JWT_SECRET) {
+      console.error("JWT_SECRET is not defined");
+      return Date.now().toString();
+    }
+
+    return jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+  } catch (error) {
+    console.error("Error generating token:", error);
+    return Date.now().toString();
+  }
+}
 
 // Helper function to find activity by ID or slug
 async function findActivityByIdOrSlug(slug) {
@@ -79,6 +107,11 @@ export async function PUT(request, context) {
     // Cập nhật thời gian
     updateData.updatedAt = new Date();
 
+    // Kiểm tra và cập nhật type
+    if (!updateData.type) {
+      updateData.type = "news";
+    }
+
     // Tìm và cập nhật hoạt động
     const activity = await findActivityByIdOrSlug(slug);
     if (!activity) {
@@ -100,7 +133,7 @@ export async function PUT(request, context) {
       link: `/Activities/${activity.slug}`,
       activityId: activity._id,
       type: "notification",
-      token: "",
+      token: Date.now().toString(),
     });
 
     return NextResponse.json({

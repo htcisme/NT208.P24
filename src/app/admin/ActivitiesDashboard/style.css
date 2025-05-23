@@ -86,7 +86,7 @@
   color: white;
   border: none;
   cursor: pointer;
-  font-weight: bold;
+  font-weight: 500;
   font-size: 16px;
 }
 
@@ -95,7 +95,7 @@
   background-color: transparent;
   border: none;
   cursor: pointer;
-  font-weight: bold;
+  font-weight: 500;
   font-size: 12px;
   color: #1a3b7c;
   text-decoration: underline;
@@ -372,7 +372,7 @@
   cursor: pointer;
   font-size: 16px;
   color: #1a3b7c;
-  font-weight: bold;
+  font-weight: 500;
 }
 
 .btn-nav.active {
@@ -645,11 +645,180 @@
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
-  font-weight: bold;
+  font-weight: 500;
   margin-right: 10px;
   transition: background-color 0.3s;
 }
 
 .update-slugs-btn:hover {
   background-color: #45a049;
+}
+
+/* Type selection dropdown */
+.type-select {
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #031a3e !important;
+  width: 100%;
+}
+
+.type-select option {
+  padding: 5px;
+  font-size: 14px;
+}
+
+/* Type badge trong bảng */
+.type-cell {
+  min-width: 120px;
+}
+
+.type-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: white;
+  background-color: #6c757d;
+  white-space: nowrap;
+}
+
+/* Màu sắc theo từng loại */
+.type-badge[data-type="academic"] {
+  background-color: #007bff;
+}
+
+.type-badge[data-type="volunteer"] {
+  background-color: #28a745;
+}
+
+.type-badge[data-type="seminar"] {
+  background-color: #fd7e14;
+}
+
+.type-badge[data-type="research"] {
+  background-color: #6f42c1;
+}
+
+.type-badge[data-type="news"] {
+  background-color: #dc3545;
+}
+
+.type-badge[data-type="other"] {
+  background-color: #6c757d;
+}
+
+/* Responsive cho mobile */
+@media (max-width: 768px) {
+  .type-cell {
+    min-width: 100px;
+  }
+
+  .type-badge {
+    font-size: 11px;
+    padding: 3px 6px;
+  }
+}
+
+/* Loading states */
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.loading-spinner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.loading-spinner::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ffffff;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Loading overlay cho toàn bộ form */
+.form-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.form-loading-content {
+  background: white;
+  padding: 20px 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Full-screen loading overlay for the entire dashboard */
+.dashboard-loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* High z-index to ensure it covers everything */
+  pointer-events: auto; /* Ensure the overlay captures all events */
+}
+
+.dashboard-loading-content {
+  background: white;
+  padding: 20px 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 16px;
+  color: #042354;
+}
+
+.spinner-large {
+  width: 30px;
+  height: 30px;
+  border: 3px solid #042354;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Optional: Disable interactions on the content when overlay is active */
+.admin-dashboard.loading-active {
+  pointer-events: none; /* Prevent interactions with the dashboard content */
+  opacity: 0.7; /* Slightly dim the content to indicate it's inactive */
 }

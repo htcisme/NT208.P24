@@ -1,16 +1,21 @@
-"use client"; // Client Component indicator
+"use client";
 
-import React, { useState, useEffect } from "react";
+import { getActivityTypes, getActivityTypeInfo } from "@/models/Activity";
+import React, { useState, useEffect, use } from "react";
+import { useSession } from "@/context/SessionContext";
 import Image from "next/image";
 import Footer from "@/components/Footer";
 import HeaderAdmin from "@/components/HeaderAdmin";
 import Link from "next/link";
 import "@/styles-comp/style.css";
 import "@/app/admin/ActivitiesDashboard/style.css";
+import { set } from "mongoose";
 
 const ActivitiesDashboard = () => {
+  const { user, username } = useSession();
+  const [activityType, setActivityType] = useState("news");
   const [activeTab, setActiveTab] = useState("activities");
-  const [activeView, setActiveView] = useState("allPages"); // 'allPages', 'addPage', or 'editPage'
+  const [activeView, setActiveView] = useState("allPages");
   const [editingTask, setEditingTask] = useState(null);
 
   // Khởi tạo state với mảng rỗng thay vì dữ liệu mẫu
@@ -50,17 +55,17 @@ const ActivitiesDashboard = () => {
     const fetchActivities = async () => {
       try {
         setLoading(true);
-        const response = await fetch('/api/activities');
-        
+        const response = await fetch("/api/activities");
+
         if (!response.ok) {
-          throw new Error('Không thể lấy dữ liệu hoạt động');
+          throw new Error("Không thể lấy dữ liệu hoạt động");
         }
-        
+
         const data = await response.json();
-        
+
         if (data.success) {
           // Chuyển đổi dữ liệu API thành định dạng hiện tại của ứng dụng
-          const formattedTasks = data.data.map(activity => ({
+          const formattedTasks = data.data.map((activity) => ({
             id: activity._id,
             slug: activity.slug,
             title: activity.title,
@@ -70,15 +75,16 @@ const ActivitiesDashboard = () => {
             image: activity.image,
             status: activity.status,
             commentOption: activity.commentOption,
+            type: activity.type || "other",
             selected: false,
           }));
-          
+
           setTasks(formattedTasks);
         } else {
-          throw new Error(data.message || 'Lỗi khi lấy dữ liệu hoạt động');
+          throw new Error(data.message || "Lỗi khi lấy dữ liệu hoạt động");
         }
       } catch (error) {
-        console.error('Error fetching activities:', error);
+        console.error("Error fetching activities:", error);
         setError(error.message);
       } finally {
         setLoading(false);
@@ -93,12 +99,12 @@ const ActivitiesDashboard = () => {
     const file = e.target.files[0];
     if (file) {
       if (file.size > 2 * 1024 * 1024) {
-        alert('Kích thước file không được vượt quá 2MB');
+        alert("Kích thước file không được vượt quá 2MB");
         return;
       }
-      
+
       setUploadedImage(file);
-      
+
       // Tạo URL preview cho ảnh
       const previewUrl = URL.createObjectURL(file);
       setImagePreview(previewUrl);
@@ -139,22 +145,22 @@ const ActivitiesDashboard = () => {
 
   // Execute batch action on tasks
   const executeBatchActionOnTasks = async () => {
-    const selectedTasks = tasks.filter(task => task.selected);
-    
+    const selectedTasks = tasks.filter((task) => task.selected);
+
     if (selectedTasks.length === 0) {
       alert("Vui lòng chọn ít nhất một bài viết!");
       return;
     }
-    
+
     if (batchAction === "delete") {
       if (window.confirm("Bạn có chắc muốn xóa các bài viết đã chọn?")) {
         try {
           for (const task of selectedTasks) {
             await fetch(`/api/activities/${task.slug}`, {
-              method: 'DELETE'
+              method: "DELETE",
             });
           }
-          
+
           setTasks(tasks.filter((task) => !task.selected));
         } catch (error) {
           console.error("Lỗi khi xóa bài viết:", error);
@@ -164,26 +170,29 @@ const ActivitiesDashboard = () => {
     } else if (batchAction === "copy") {
       const selectedTasks = tasks.filter((task) => task.selected);
       const newTasks = [...tasks];
-      
+
       for (const task of selectedTasks) {
         try {
-          const response = await fetch('/api/activities', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              title: `${task.title} (Sao chép)`,
-              content: task.content,
-              author: task.author,
-              status: task.status,
-              commentOption: task.commentOption,
-              image: task.image
-            }),
+          const formData = new FormData();
+          formData.append("title", `${task.title} (Sao chép)`);
+          formData.append("content", task.content);
+          formData.append(
+            "author",
+            user?.name || user?.username || task.author
+          );
+          formData.append("status", task.status);
+          formData.append("commentOption", task.commentOption);
+          formData.append("type", task.type || "news");
+          if (task.image) {
+            formData.append("imageUrl", task.image); // Gửi URL của image
+          }
+          const response = await fetch("/api/activities", {
+            method: "POST",
+            body: formData,
           });
-          
+
           const data = await response.json();
-          
+
           if (data.success) {
             newTasks.push({
               id: data.data._id,
@@ -195,6 +204,7 @@ const ActivitiesDashboard = () => {
               time: formatDate(data.data.createdAt),
               status: data.data.status,
               commentOption: data.data.commentOption,
+              type: data.data.type,
               selected: false,
             });
           }
@@ -202,7 +212,7 @@ const ActivitiesDashboard = () => {
           console.error("Lỗi khi sao chép bài viết:", error);
         }
       }
-      
+
       setTasks(newTasks);
     } else if (batchAction === "edit") {
       // For editing multiple tasks, we can implement a bulk edit interface
@@ -238,13 +248,13 @@ const ActivitiesDashboard = () => {
     if (window.confirm("Bạn có chắc muốn xóa bài viết này?")) {
       try {
         const response = await fetch(`/api/activities/${slug}`, {
-          method: 'DELETE'
+          method: "DELETE",
         });
-        
+
         if (response.ok) {
           setTasks(tasks.filter((task) => task.slug !== slug));
         } else {
-          throw new Error('Lỗi khi xóa bài viết');
+          throw new Error("Lỗi khi xóa bài viết");
         }
       } catch (error) {
         console.error("Lỗi khi xóa bài viết:", error);
@@ -261,36 +271,43 @@ const ActivitiesDashboard = () => {
   // Copy a task
   const copyTask = async (task) => {
     try {
-      const response = await fetch('/api/activities', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: `${task.title} (Sao chép)`,
-          content: task.content,
-          author: task.author,
-          status: task.status,
-          commentOption: task.commentOption,
-          image: task.image
-        }),
+      const formData = new FormData();
+      formData.append("title", `${task.title} (Sao chép)`);
+      formData.append("content", task.content);
+      formData.append("author", user?.name || user?.username || task.author);
+      formData.append("status", task.status);
+      formData.append("commentOption", task.commentOption);
+      formData.append("type", task.type || "news");
+      if (task.image) {
+        formData.append("imageUrl", task.image); // Gửi URL của image
+      }
+      const response = await fetch("/api/activities", {
+        method: "POST",
+        body: formData,
       });
-      
+
       const data = await response.json();
-      
+
       if (data.success) {
-        setTasks([...tasks, {
-          id: data.data._id,
-          slug: data.data.slug,
-          title: data.data.title,
-          content: data.data.content,
-          author: data.data.author,
-          image: data.data.image,
-          time: formatDate(data.data.createdAt),
-          status: data.data.status,
-          commentOption: data.data.commentOption,
-          selected: false,
-        }]);
+        setTasks([
+          ...tasks,
+          {
+            id: data.data._id,
+            slug: data.data.slug,
+            title: data.data.title,
+            content: data.data.content,
+            author: data.data.author,
+            image: data.data.image,
+            time: formatDate(data.data.createdAt),
+            status: data.data.status,
+            commentOption: data.data.commentOption,
+            selected: false,
+          },
+        ]);
+
+        alert(`Đã sao chép thành công: "${data.data.title}"`);
+      } else {
+        alert(`Lỗi khi sao chép: ${data.message || "Không xác định"}`);
       }
     } catch (error) {
       console.error("Lỗi khi sao chép bài viết:", error);
@@ -300,13 +317,14 @@ const ActivitiesDashboard = () => {
 
   // Edit a task
   const editTask = async (slug) => {
-    const task = tasks.find(t => t.slug === slug);
+    const task = tasks.find((t) => t.slug === slug);
     if (task) {
       setEditingTask(task);
       setNewTitle(task.title);
       setNewContent(task.content);
       setPageStatus(task.status);
       setCommentOption(task.commentOption);
+      setActivityType(task.type || "news");
       setImagePreview(task.image || "");
       setActiveView("editPage");
     }
@@ -318,34 +336,38 @@ const ActivitiesDashboard = () => {
 
     try {
       const formData = new FormData();
-      formData.append('title', newTitle);
-      formData.append('content', newContent);
-      formData.append('status', pageStatus);
-      formData.append('commentOption', commentOption);
+      formData.append("title", newTitle);
+      formData.append("content", newContent);
+      formData.append("status", pageStatus);
+      formData.append("commentOption", commentOption);
+      formData.append("type", activityType);
       if (uploadedImage) {
-        formData.append('image', uploadedImage);
+        formData.append("image", uploadedImage);
       }
 
       const response = await fetch(`/api/activities/${editingTask.slug}`, {
-        method: 'PUT',
-        body: formData
+        method: "PUT",
+        body: formData,
       });
 
       if (response.ok) {
         const data = await response.json();
         if (data.success) {
-          setTasks(tasks.map(task => 
-            task.slug === editingTask.slug 
-              ? {
-                  ...task,
-                  title: newTitle,
-                  content: newContent,
-                  status: pageStatus,
-                  commentOption: commentOption,
-                  image: data.data.image || task.image
-                }
-              : task
-          ));
+          setTasks(
+            tasks.map((task) =>
+              task.slug === editingTask.slug
+                ? {
+                    ...task,
+                    title: newTitle,
+                    content: newContent,
+                    status: pageStatus,
+                    commentOption: commentOption,
+                    type: activityType,
+                    image: data.data.image || task.image,
+                  }
+                : task
+            )
+          );
           setActiveView("allPages");
           setEditingTask(null);
           setNewTitle("");
@@ -353,10 +375,11 @@ const ActivitiesDashboard = () => {
           setPageStatus("published");
           setCommentOption("open");
           setImagePreview("");
+          setActivityType("news");
           setUploadedImage(null);
         }
       } else {
-        throw new Error('Lỗi khi cập nhật bài viết');
+        throw new Error("Lỗi khi cập nhật bài viết");
       }
     } catch (error) {
       console.error("Lỗi khi cập nhật bài viết:", error);
@@ -443,47 +466,58 @@ const ActivitiesDashboard = () => {
     try {
       // Tạo FormData để gửi cả dữ liệu và file
       const formData = new FormData();
-      formData.append('title', newTitle);
-      formData.append('content', newContent);
-      formData.append('author', "Nguyễn Đình Khang"); // Hoặc lấy từ thông tin người dùng hiện tại
-      formData.append('status', pageStatus);
-      formData.append('commentOption', commentOption);
-      
+      formData.append("title", newTitle);
+      formData.append("content", newContent);
+      formData.append(
+        "author",
+        user?.name || user?.username || "Nguyễn Đình Khang"
+      );
+      formData.append("status", pageStatus);
+      formData.append("commentOption", commentOption);
+      formData.append("type", activityType);
+
       if (publishOption === "scheduled") {
-        formData.append('scheduledPublish', new Date(`${scheduledDate}T${scheduledTime}`).toISOString());
-      }
-      
-      // Thêm ảnh nếu có
-      if (uploadedImage) {
-        formData.append('image', uploadedImage);
+        formData.append(
+          "scheduledPublish",
+          new Date(`${scheduledDate}T${scheduledTime}`).toISOString()
+        );
       }
 
-      const response = await fetch('/api/activities', {
-        method: 'POST',
-        body: formData, // Không cần đặt Content-Type khi dùng FormData
+      if (uploadedImage) {
+        formData.append("image", uploadedImage);
+      }
+
+      const response = await fetch("/api/activities", {
+        method: "POST",
+        body: formData,
       });
 
       const data = await response.json();
-      
+
       if (data.success) {
         // Thêm vào danh sách hiển thị
-        setTasks([...tasks, {
-          id: data.data._id,
-          slug: data.data.slug,
-          title: data.data.title,
-          content: data.data.content,
-          author: data.data.author,
-          image: data.data.image, // Thêm trường image
-          time: formatDate(data.data.createdAt),
-          status: data.data.status,
-          commentOption: data.data.commentOption,
-          selected: false,
-        }]);
-        
+        setTasks([
+          ...tasks,
+          {
+            id: data.data._id,
+            slug: data.data.slug,
+            title: data.data.title,
+            content: data.data.content,
+            author: data.data.author,
+            image: data.data.image,
+            time: formatDate(data.data.createdAt),
+            status: data.data.status,
+            commentOption: data.data.commentOption,
+            type: data.data.type,
+            selected: false,
+          },
+        ]);
+
         setNewTitle("");
         setNewContent("");
         setUploadedImage(null);
         setImagePreview("");
+        setActivityType("news");
         setActiveView("allPages");
         // Hiển thị thông báo thành công
       } else {
@@ -499,25 +533,25 @@ const ActivitiesDashboard = () => {
   // Thêm hàm cập nhật slug
   const updateSlugs = async () => {
     try {
-      const response = await fetch('/api/activities/update-slugs', {
-        method: 'POST',
+      const response = await fetch("/api/activities/update-slugs", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
 
       const data = await response.json();
-      
+
       if (data.success) {
         alert(data.message);
         // Refresh danh sách hoạt động
         fetchActivities();
       } else {
-        alert('Lỗi: ' + data.message);
+        alert("Lỗi: " + data.message);
       }
     } catch (error) {
-      console.error('Lỗi khi cập nhật slug:', error);
-      alert('Có lỗi xảy ra khi cập nhật slug');
+      console.error("Lỗi khi cập nhật slug:", error);
+      alert("Có lỗi xảy ra khi cập nhật slug");
     }
   };
 
@@ -533,27 +567,27 @@ const ActivitiesDashboard = () => {
           onChange={(e) => setNewTitle(e.target.value)}
           className="add-title-input"
         />
-        
+
         {/* Phần upload ảnh */}
         <div className="image-upload-container">
           <h3>Hình ảnh đại diện</h3>
           <div className="image-upload-box">
-            <input 
-              type="file" 
-              accept="image/*" 
+            <input
+              type="file"
+              accept="image/*"
               id="image-upload"
               onChange={handleImageChange}
-              className="image-input" 
+              className="image-input"
             />
             <label htmlFor="image-upload" className="image-upload-label">
               {imagePreview ? "Thay đổi ảnh" : "Chọn ảnh"}
             </label>
-            
+
             {imagePreview && (
               <div className="image-preview">
                 <img src={imagePreview} alt="Preview" />
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="remove-image-btn"
                   onClick={() => {
                     setUploadedImage(null);
@@ -565,9 +599,11 @@ const ActivitiesDashboard = () => {
               </div>
             )}
           </div>
-          <p className="image-hint">Kích thước đề xuất: 800x400px, tối đa 2MB</p>
+          <p className="image-hint">
+            Kích thước đề xuất: 800x400px, tối đa 2MB
+          </p>
         </div>
-        
+
         <textarea
           placeholder="Nhập nội dung bài viết"
           value={newContent}
@@ -575,7 +611,7 @@ const ActivitiesDashboard = () => {
           className="add-content-textarea"
         />
       </div>
-      
+
       <div className="add-page-sidebar">
         <h3>Thông tin bài viết</h3>
         <div className="info-tabs">
@@ -606,6 +642,21 @@ const ActivitiesDashboard = () => {
                   <option value="draft">Bản nháp</option>
                 </select>
               </div>
+              <div className="info-row">
+                <label>Loại hoạt động:</label>
+                <select
+                  value={activityType}
+                  onChange={(e) => setActivityType(e.target.value)}
+                  className="type-select"
+                >
+                  {getActivityTypes().map((type) => (
+                    <option key={type.value} value={type.value}>
+                      {type.icon} {type.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div className="info-row">
                 <label>Bình luận:</label>
                 <div className="button-toggle">
@@ -729,10 +780,7 @@ const ActivitiesDashboard = () => {
             >
               THÊM TRANG MỚI
             </button>
-            <button
-              className="update-slugs-btn"
-              onClick={updateSlugs}
-            >
+            <button className="update-slugs-btn" onClick={updateSlugs}>
               CẬP NHẬT SLUG
             </button>
           </div>
@@ -769,61 +817,71 @@ const ActivitiesDashboard = () => {
                         type="checkbox"
                         onChange={handleSelectAllTasks}
                         checked={
-                          tasks.length > 0 && tasks.every((task) => task.selected)
+                          tasks.length > 0 &&
+                          tasks.every((task) => task.selected)
                         }
                       />
                     </th>
                     <th className="image-col">HÌNH ẢNH</th>
                     <th>TIÊU ĐỀ</th>
+                    <th>LOẠI</th>
                     <th>TÁC GIẢ</th>
                     <th>THỜI GIAN</th>
                     <th>TÁC VỤ</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {tasks.map((task) => (
-                    <tr key={task.slug}>
-                      <td>
-                        <input
-                          type="checkbox"
-                          checked={task.selected}
-                          onChange={() => handleTaskSelection(task.slug)}
-                        />
-                      </td>
-                      <td className="task-image-cell">
-                        {task.image ? (
-                          <div className="task-thumbnail">
-                            <img src={task.image} alt={task.title} />
-                          </div>
-                        ) : (
-                          <div className="no-image">Không có ảnh</div>
-                        )}
-                      </td>
-                      <td>{task.title}</td>
-                      <td>{task.author}</td>
-                      <td>{task.time}</td>
-                      <td>
-                        <button
-                          className="action-btn edit-btn"
-                          onClick={() => editTask(task.slug)}
-                        >
-                          Chỉnh sửa
-                        </button>
-                        <button
-                          className="action-btn delete-btn"
-                          onClick={() => deleteTask(task.slug)}
-                        >
-                          Xóa
-                        </button>
-                        <button
-                          className="action-btn copy-btn"
-                          onClick={() => copyTask(task)}
-                        >
-                          Sao chép
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                  {tasks.map((task) => {
+                    const typeInfo = getActivityTypeInfo(task.type);
+                    return (
+                      <tr key={task.slug}>
+                        <td>
+                          <input
+                            type="checkbox"
+                            checked={task.selected}
+                            onChange={() => handleTaskSelection(task.slug)}
+                          />
+                        </td>
+                        <td className="task-image-cell">
+                          {task.image ? (
+                            <div className="task-thumbnail">
+                              <img src={task.image} alt={task.title} />
+                            </div>
+                          ) : (
+                            <div className="no-image">Không có ảnh</div>
+                          )}
+                        </td>
+                        <td>{task.title}</td>
+                        <td className="type-cell">
+                          <span className="type-badge" data-type={task.type}>
+                            {typeInfo.icon} {typeInfo.label}
+                          </span>
+                        </td>
+                        <td>{task.author}</td>
+                        <td>{task.time}</td>
+                        <td>
+                          <button
+                            className="action-btn edit-btn"
+                            onClick={() => editTask(task.slug)}
+                          >
+                            Chỉnh sửa
+                          </button>
+                          <button
+                            className="action-btn delete-btn"
+                            onClick={() => deleteTask(task.slug)}
+                          >
+                            Xóa
+                          </button>
+                          <button
+                            className="action-btn copy-btn"
+                            onClick={() => copyTask(task)}
+                          >
+                            Sao chép
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             ) : (
@@ -956,7 +1014,9 @@ const ActivitiesDashboard = () => {
                             <h4>Chỉnh sửa bình luận</h4>
                             <textarea
                               value={editCommentText}
-                              onChange={(e) => setEditCommentText(e.target.value)}
+                              onChange={(e) =>
+                                setEditCommentText(e.target.value)
+                              }
                               className="edit-textarea"
                             />
                             <div className="edit-actions">
@@ -982,9 +1042,7 @@ const ActivitiesDashboard = () => {
               </tbody>
             </table>
           ) : (
-            <div className="no-data-message">
-              Chưa có bình luận nào.
-            </div>
+            <div className="no-data-message">Chưa có bình luận nào.</div>
           )}
         </div>
       </div>
