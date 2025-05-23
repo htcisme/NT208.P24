@@ -189,6 +189,7 @@ const ActivitiesDashboard = () => {
           const response = await fetch("/api/activities", {
             method: "POST",
             body: formData,
+
           });
 
           const data = await response.json();
@@ -284,6 +285,7 @@ const ActivitiesDashboard = () => {
       const response = await fetch("/api/activities", {
         method: "POST",
         body: formData,
+
       });
 
       const data = await response.json();
@@ -308,6 +310,7 @@ const ActivitiesDashboard = () => {
         alert(`Đã sao chép thành công: "${data.data.title}"`);
       } else {
         alert(`Lỗi khi sao chép: ${data.message || "Không xác định"}`);
+
       }
     } catch (error) {
       console.error("Lỗi khi sao chép bài viết:", error);
@@ -341,6 +344,7 @@ const ActivitiesDashboard = () => {
       formData.append("status", pageStatus);
       formData.append("commentOption", commentOption);
       formData.append("type", activityType);
+
       if (uploadedImage) {
         formData.append("image", uploadedImage);
       }
@@ -349,6 +353,15 @@ const ActivitiesDashboard = () => {
         method: "PUT",
         body: formData,
       });
+
+      // Xử lý response đúng cách
+      let data;
+      try {
+        data = await response.json();
+      } catch (e) {
+        console.error("Không thể parse JSON từ response:", e);
+        throw new Error("Lỗi định dạng dữ liệu từ server");
+      }
 
       if (response.ok) {
         const data = await response.json();
@@ -380,10 +393,11 @@ const ActivitiesDashboard = () => {
         }
       } else {
         throw new Error("Lỗi khi cập nhật bài viết");
+
       }
     } catch (error) {
       console.error("Lỗi khi cập nhật bài viết:", error);
-      alert("Có lỗi xảy ra khi cập nhật bài viết!");
+      alert("Có lỗi xảy ra khi cập nhật bài viết: " + error.message);
     }
   };
 
@@ -476,13 +490,13 @@ const ActivitiesDashboard = () => {
       formData.append("commentOption", commentOption);
       formData.append("type", activityType);
 
+
       if (publishOption === "scheduled") {
         formData.append(
           "scheduledPublish",
           new Date(`${scheduledDate}T${scheduledTime}`).toISOString()
         );
       }
-
       if (uploadedImage) {
         formData.append("image", uploadedImage);
       }
@@ -490,6 +504,7 @@ const ActivitiesDashboard = () => {
       const response = await fetch("/api/activities", {
         method: "POST",
         body: formData,
+
       });
 
       const data = await response.json();
@@ -509,6 +524,7 @@ const ActivitiesDashboard = () => {
             status: data.data.status,
             commentOption: data.data.commentOption,
             type: data.data.type,
+
             selected: false,
           },
         ]);

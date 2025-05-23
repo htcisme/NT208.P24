@@ -124,12 +124,14 @@ const HeaderAdmin = () => {
         >
           THÀNH TÍCH
         </Link>
-
         <Link
           href="/admin/UsersDashboard"
           className={isActive("/admin/UsersDashboard")}
         >
           NGƯỜI DÙNG
+        </Link>
+        <Link href="/admin/Chat" className={isActive("/admin/Chat")}>
+          TIN NHẮN
         </Link>
       </div>
     </div>

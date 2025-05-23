@@ -1328,3 +1328,376 @@
 .session-logout-btn:hover {
   background-color: #c53030;
 }
+
+/* Chatpopup */
+.chat-widget {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  font-family: Arial, sans-serif;
+}
+
+.chat-toggle-button {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #042354;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.chat-toggle-button:hover {
+  background-color: #031b43;
+  transform: scale(1.05);
+}
+
+.chat-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #ff4d4f;
+  color: white;
+  font-size: 12px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chat-popup {
+  width: 350px;
+  height: 500px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chat-header {
+  padding: 15px;
+  background-color: #042354;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chat-header h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  line-height: 0.6;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  background-color: #f8f9fa;
+}
+
+.message {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-message {
+  align-items: flex-end;
+}
+
+.admin-message {
+  align-items: flex-start;
+}
+
+.message-bubble {
+  max-width: 80%;
+  padding: 10px 15px;
+  border-radius: 18px;
+  position: relative;
+}
+
+.user-message .message-bubble {
+  background-color: #0084ff;
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.admin-message .message-bubble {
+  background-color: #e4e6eb;
+  color: #1c1e21;
+  border-bottom-left-radius: 4px;
+}
+
+.message-time {
+  font-size: 11px;
+  opacity: 0.7;
+  margin-top: 5px;
+  display: block;
+}
+
+.user-message .message-time {
+  text-align: right;
+}
+
+.welcome-message {
+  text-align: center;
+  color: #666;
+  margin: 30px 0;
+}
+
+.welcome-message p {
+  background-color: #f0f2f5;
+  padding: 10px 15px;
+  border-radius: 18px;
+  display: inline-block;
+}
+
+.chat-input {
+  display: flex;
+  padding: 10px;
+  background-color: white;
+  border-top: 1px solid #e4e6eb;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  outline: none;
+  font-size: 14px;
+}
+
+.chat-input button {
+  width: 40px;
+  height: 40px;
+  margin-left: 8px;
+  background-color: #042354;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chat-input button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  padding: 5px 0;
+}
+
+.typing-indicator span {
+  height: 8px;
+  width: 8px;
+  background-color: #999;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+  animation: blink 1.4s linear infinite;
+}
+
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.bot-badge,
+.admin-badge {
+  font-size: 10px;
+  padding: 2px 5px;
+  border-radius: 10px;
+  margin-bottom: 5px;
+  display: inline-block;
+}
+
+.bot-badge {
+  background-color: #ffc107;
+  color: #333;
+}
+
+.admin-badge {
+  background-color: #28a745;
+  color: white;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0.2;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.2;
+  }
+}
+
+.admin-badge-icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #28a745;
+  color: white;
+  font-size: 12px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.bot-hint {
+  color: #666;
+  font-size: 13px;
+  margin-top: 10px;
+  text-align: left;
+}
+
+.bot-hint-list {
+  color: #666;
+  font-size: 13px;
+  text-align: left;
+  margin-top: 5px;
+  padding-left: 20px;
+}
+
+.bot-hint-list li {
+  margin-bottom: 3px;
+}
+
+/* Thêm style cho thông báo nhỏ */
+.chat-notification {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  max-width: 300px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  overflow: hidden;
+  animation: slide-in 0.3s ease-out;
+  cursor: pointer;
+}
+
+.notification-content {
+  padding: 10px;
+}
+
+.notification-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.notification-header strong {
+  color: #042354;
+}
+
+.notification-close {
+  color: #666;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.chat-notification p {
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.chat-mode-toggle {
+  display: flex;
+  margin-right: 10px;
+}
+
+.mode-button {
+  background: none;
+  border: none;
+  color: #fff;
+  opacity: 0.7;
+  padding: 3px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: all 0.2s;
+}
+
+.mode-button:hover {
+  opacity: 1;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.mode-button.active {
+  opacity: 1;
+  background-color: rgba(255, 255, 255, 0.2);
+  font-weight: bold;
+}
+
+.admin-hint {
+  color: #ff9800;
+  font-size: 13px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.chat-header {
+  padding: 15px;
+  background-color: #042354;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Điều chỉnh lại kích thước tiêu đề để chứa các nút */
+.chat-header h3 {
+  margin: 0;
+  font-size: 16px;
+  flex-shrink: 0;
+}
