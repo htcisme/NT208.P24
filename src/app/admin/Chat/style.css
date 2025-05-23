@@ -1,0 +1,267 @@
+/* filepath: d:\Study\UIT\Web\NT208.P24\NT208.P24\src\app\admin\Chat\style.css */
+.chat-dashboard {
+  display: flex;
+  height: calc(100vh - 200px);
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.users-list {
+  width: 300px;
+  border-right: 1px solid #eaeaea;
+  background-color: #f9f9f9;
+  overflow-y: auto;
+}
+
+.users-header {
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eaeaea;
+  background-color: #f2f2f2;
+}
+
+.users-header h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.refresh-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+}
+
+.refresh-button:hover {
+  color: #042354;
+}
+
+.user-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  border-bottom: 1px solid #eaeaea;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  position: relative;
+}
+
+.user-item:hover {
+  background-color: #f0f0f0;
+}
+
+.user-item.active {
+  background-color: #e6f7ff;
+  border-right: 3px solid #1890ff;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  background-color: #042354;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-right: 12px;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-name {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.last-active {
+  font-size: 12px;
+  color: #666;
+}
+
+.unread-badge {
+  background-color: #ff4d4f;
+  color: white;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 0 5px;
+}
+
+.chat-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-header-admin {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eaeaea;
+  background-color: #f9f9f9;
+}
+
+.chat-header-admin .user-avatar {
+  width: 36px;
+  height: 36px;
+  font-size: 14px;
+}
+
+.chat-header-admin .user-name {
+  margin-bottom: 0;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.messages-container {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  background-color: #f5f5f5;
+}
+
+.message-item {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.admin-message {
+  align-items: flex-end;
+}
+
+.user-message {
+  align-items: flex-start;
+}
+
+.message-content {
+  max-width: 70%;
+  padding: 10px 15px;
+  border-radius: 18px;
+  position: relative;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.admin-message .message-content {
+  background-color: #0084ff;
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.user-message .message-content {
+  background-color: white;
+  color: #333;
+  border-bottom-left-radius: 4px;
+}
+
+.message-time {
+  font-size: 11px;
+  opacity: 0.7;
+  margin-top: 5px;
+  display: block;
+}
+
+.admin-message .message-time {
+  color: #e0e0e0;
+  text-align: right;
+}
+
+.user-message .message-time {
+  color: #888;
+}
+
+.message-input {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #eaeaea;
+}
+
+.message-input input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  outline: none;
+  font-size: 14px;
+}
+
+.message-input input:focus {
+  border-color: #40a9ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.send-button {
+  width: 40px;
+  height: 40px;
+  margin-left: 8px;
+  background-color: #042354;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.send-button:disabled {
+  background-color: #d9d9d9;
+  cursor: not-allowed;
+}
+
+.no-selection,
+.no-messages,
+.no-users {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #888;
+  text-align: center;
+  padding: 20px;
+}
+
+.bot-tag {
+  background-color: #ffc107;
+  color: #333;
+  font-size: 10px;
+  padding: 2px 5px;
+  border-radius: 10px;
+  margin-bottom: 5px;
+  align-self: flex-start;
+}
+
+.page-title {
+  margin-bottom: 20px;
+  color: #042354;
+}
+
+/* Media queries for responsive layout */
+@media screen and (max-width: 768px) {
+  .chat-dashboard {
+    flex-direction: column;
+    height: calc(100vh - 150px);
+  }
+
+  .users-list {
+    width: 100%;
+    height: 200px;
+    border-right: none;
+    border-bottom: 1px solid #eaeaea;
+  }
+}

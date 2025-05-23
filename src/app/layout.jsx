@@ -2,7 +2,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/context/ThemeContext";
 import "./globals.css";
 import SessionPopup from "@/components/SessionPopup";
-import { SessionProvider } from "@/context/SessionContext"; // Thêm import này
+import ChatPopup from "@/components/ChatPopup";
+import { SessionProvider } from "@/context/SessionContext";
 
 export const metadata = {
   title: "Trang chủ",
@@ -16,6 +17,7 @@ export default function RootLayout({ children }) {
         <ThemeProvider>
           <SessionProvider>
             <SessionPopup />
+            <ChatPopup /> {/* Thêm component ChatPopup */}
             {children}
           </SessionProvider>
         </ThemeProvider>

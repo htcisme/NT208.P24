@@ -20,7 +20,7 @@ export async function POST(request) {
 
     // Tìm và cập nhật trạng thái đăng ký
     const subscription = await NotificationSubscription.findOne({ email });
-    
+
     if (!subscription) {
       console.log(`Không tìm thấy đăng ký cho email: ${email}`);
       return NextResponse.json(
@@ -53,10 +53,10 @@ export async function POST(request) {
     console.error("Lỗi:", error.message);
     console.error("Stack:", error.stack);
     console.error("=========================");
-    
+
     return NextResponse.json(
       { success: false, message: "Lỗi khi xử lý yêu cầu hủy đăng ký" },
       { status: 500 }
     );
   }
-} 
+}
