@@ -146,7 +146,6 @@ export async function PUT(request, context) {
     }
 
     // Tìm và cập nhật hoạt động
-    const activity = await findActivityByIdOrSlug(slug);
     if (!activity) {
       return NextResponse.json(
         { success: false, message: "Không tìm thấy hoạt động" },
