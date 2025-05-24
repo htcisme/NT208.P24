@@ -1,3 +1,10 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #ffff;
+  display: block;
+}
+
 .admin-dashboard {
   font-family: Arial, sans-serif;
   margin: 0 auto;
@@ -82,11 +89,11 @@
 .btn-batch-action {
   padding: 12px 19px;
   border-radius: 5px;
-  background-color: #1a3b7c;
+  background-color: #042354 !important;
   color: white;
   border: none;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: bold;
   font-size: 16px;
 }
 
@@ -114,6 +121,19 @@
   border-radius: 8px;
   padding: 25px;
   box-shadow: 0 2px 10px #0000001a;
+}
+
+.content-section .data-table {
+  display: block;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.data-table thead {
+  position: sticky;
+  top: 0;
+  background-color: #e8e8e8;
+  z-index: 1;
 }
 
 .data-table {
@@ -145,7 +165,7 @@
 }
 
 .comment-section {
-  padding: 0 20px;
+  padding: 0;
   margin-bottom: 20px;
 }
 
@@ -153,10 +173,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-radius: 4px;
   margin: 20px 0 10px 0;
   background-color: #1a3b7c;
   color: white;
   padding: 8px 15px;
+  width: 100%;
 }
 
 .section-header h3 {
@@ -183,11 +205,37 @@
 }
 
 .delete-btn {
-  color: #dc3545;
+  background-color: #cd4552;
+  color: white !important;
+  width: 75px;
+  padding: 2px 0px !important;
+  border-radius: 4px !important;
+  transition: background-color 0.2s;
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  margin: 2px 0;
+}
+
+.delete-btn:hover {
+  background-color: #c82333 !important;
 }
 
 .edit-btn {
-  color: #28a745;
+  background-color: #67b96b !important;
+  color: white !important;
+  width: 75px;
+  padding: 2px 0px !important;
+  border-radius: 4px !important;
+  transition: background-color 0.2s;
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  margin: 2px 0;
+}
+
+.edit-btn:hover {
+  background-color: #3e8e41 !important;
 }
 
 .reply-btn {
@@ -195,7 +243,20 @@
 }
 
 .copy-btn {
-  color: #6c757d;
+  background-color: #8b939a !important;
+  color: white !important;
+  width: 75px;
+  padding: 2px 0px !important;
+  border-radius: 4px !important;
+  transition: background-color 0.2s;
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  margin: 2px 0;
+}
+
+.copy-btn:hover {
+  background-color: #6c757d !important;
 }
 
 .reply-container,
@@ -225,7 +286,7 @@
 
 .btn-publish {
   padding: 8px 15px;
-  background-color: #007bff;
+  background-color: #1a3b7c;
   color: white;
   border: none;
   border-radius: 4px;
@@ -372,11 +433,12 @@
   cursor: pointer;
   font-size: 16px;
   color: #1a3b7c;
-  font-weight: 500;
+  font-weight: bold;
+  transition: background-color 0.2s, color 0.2s;
 }
 
 .btn-nav.active {
-  background-color: #1a3b7c !important;
+  background-color: #042354 !important;
   color: white;
 }
 
@@ -645,8 +707,7 @@
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
-  font-weight: 500;
-  margin-right: 10px;
+  font-weight: bold;
   transition: background-color 0.3s;
 }
 
@@ -679,37 +740,66 @@
   display: inline-block;
   padding: 4px 8px;
   border-radius: 12px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   color: white;
-  background-color: #6c757d;
   white-space: nowrap;
 }
 
-/* Màu sắc theo từng loại */
 .type-badge[data-type="academic"] {
   background-color: #007bff;
-}
-
-.type-badge[data-type="volunteer"] {
-  background-color: #28a745;
-}
-
+} /* Xanh dương */
+.type-badge[data-type="competition"] {
+  background-color: #ff9800;
+} /* Cam tươi */
 .type-badge[data-type="seminar"] {
   background-color: #fd7e14;
-}
-
+} /* Cam đậm */
 .type-badge[data-type="research"] {
   background-color: #6f42c1;
-}
-
+} /* Tím */
+.type-badge[data-type="course"] {
+  background-color: #20c997;
+} /* Xanh ngọc */
+.type-badge[data-type="volunteer"] {
+  background-color: #28a745;
+} /* Xanh lá */
+.type-badge[data-type="event"] {
+  background-color: #17a2b8;
+} /* Xanh cyan */
+.type-badge[data-type="sport"] {
+  background-color: #f44336;
+} /* Đỏ thể thao */
+.type-badge[data-type="conference"] {
+  background-color: #795548;
+} /* Nâu */
+.type-badge[data-type="vnutour"] {
+  background-color: #ff4081;
+} /* Hồng nổi bật */
+.type-badge[data-type="netsec"] {
+  background-color: #37474f;
+} /* Xám xanh đậm */
+.type-badge[data-type="internship"] {
+  background-color: #9c27b0;
+} /* Tím sậm */
+.type-badge[data-type="scholarship"] {
+  background-color: #00bcd4;
+} /* Xanh sáng */
+.type-badge[data-type="startup"] {
+  background-color: #ff5722;
+} /* Cam startup */
+.type-badge[data-type="jobfair"] {
+  background-color: #3f51b5;
+} /* Xanh đậm */
+.type-badge[data-type="career"] {
+  background-color: #8bc34a;
+} /* Xanh lá nhạt */
 .type-badge[data-type="news"] {
   background-color: #dc3545;
-}
-
+} /* Đỏ tin tức */
 .type-badge[data-type="other"] {
   background-color: #6c757d;
-}
+} /* Xám mặc định */
 
 /* Responsive cho mobile */
 @media (max-width: 768px) {
@@ -821,4 +911,49 @@ button:disabled {
 .admin-dashboard.loading-active {
   pointer-events: none; /* Prevent interactions with the dashboard content */
   opacity: 0.7; /* Slightly dim the content to indicate it's inactive */
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
 }

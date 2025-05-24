@@ -74,7 +74,9 @@ const HeaderAdmin = () => {
   return (
     <div className="admin-header-container">
       <div className="admin-header-topbar">
-        <div className="admin-header-title">TRANG QUẢN TRỊ</div>
+        <a href="/">
+          <div className="admin-header-title">TRANG QUẢN TRỊ</div>
+        </a>
         <div className="admin-header-user">
           <span className="admin-header-username">{user?.name || "Khách"}</span>
           <div className="admin-header-user-dropdown">
