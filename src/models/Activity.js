@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { type } from "os";
 import slugify from "slugify";
 
 // Tránh định nghĩa lại model nếu đã tồn tại
@@ -18,7 +19,30 @@ try {
     title: { type: String, required: true },
     content: { type: String, required: true },
     author: { type: String, required: true },
-    image: { type: String }, // URL hình ảnh
+    image: { type: String },
+    type: {
+      type: String,
+      enum: [
+        "academic",
+        "competition",
+        "seminar",
+        "research",
+        "course",
+        "volunteer",
+        "event",
+        "sport",
+        "conference",
+        "vnutour",
+        "netsec",
+        "internship",
+        "scholarship",
+        "startup",
+        "jobfair",
+        "career",
+        "other",
+      ],
+      required: true,
+    },
     status: { type: String, enum: ["published", "draft"], default: "draft" },
     commentOption: { type: String, enum: ["open", "closed"], default: "open" },
     scheduledPublish: { type: Date },
@@ -37,7 +61,6 @@ try {
         locale: "vi",
         remove: /[*+~.()'"!:@]/g,
         replacement: "-",
-        // Thêm mapping cho các ký tự tiếng Việt
         custom: {
           "𝐍𝐄𝐓": "Net",
           "𝐂𝐇𝐀𝐋𝐋𝐄𝐍𝐆𝐄": "Challenge",
@@ -55,5 +78,43 @@ try {
 
   Activity = mongoose.model("Activity", activitySchema);
 }
+
+// Helper function để lấy danh sách các type có sẵn
+export const getActivityTypes = () => {
+  return [
+    // Academic
+    { value: "academic", label: "Học tập" },
+    { value: "competition", label: "Cuộc thi" },
+    { value: "seminar", label: "Seminar" },
+    { value: "research", label: "Nghiên cứu" },
+    { value: "course", label: "Khóa học" },
+
+    // Event
+    { value: "volunteer", label: "Tình nguyện" },
+    { value: "sport", label: "Thể thao" },
+    { value: "event", label: "Sự kiện" },
+    { value: "conference", label: "Hội nghị" },
+    { value: "vnutour", label: "VNUTour" },
+    { value: "netsec", label: "Netsec" },
+
+    // Work
+    { value: "internship", label: "Thực tập" },
+    { value: "scholarship", label: "Học bổng" },
+    { value: "startup", label: "Khởi nghiệp" },
+    { value: "jobfair", label: "Ngày hội việc làm" },
+    { value: "career", label: "Hướng nghiệp" },
+
+    // Other
+    { value: "other", label: "Khác" },
+  ];
+};
+
+// Helper function để lấy thông tin type theo value
+export const getActivityTypeInfo = (typeValue) => {
+  const types = getActivityTypes();
+  return (
+    types.find((type) => type.value === typeValue) || types[types.length - 1]
+  );
+};
 
 export default Activity;

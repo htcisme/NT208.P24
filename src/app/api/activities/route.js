@@ -90,9 +90,20 @@ export async function GET(request) {
     const page = parseInt(searchParams.get("page")) || 1;
     const limit = parseInt(searchParams.get("limit")) || 8;
     const status = searchParams.get("status");
+    const type = searchParams.get("type");
+    const types = searchParams.get("types");
     const skip = (page - 1) * limit;
 
     const query = status ? { status } : { status: "published" };
+
+    // Add type filter
+    if (type) {
+      query.type = type;
+    } else if (types) {
+      // Multiple types filter
+      const typeArray = types.split(",");
+      query.type = { $in: typeArray };
+    }
 
     const activities = await Activity.find(query)
       .sort({ createdAt: -1 })
@@ -140,12 +151,16 @@ export async function POST(request) {
     // Xử lý hình ảnh nếu có
     let imageUrl = null;
     const image = formData.get("image");
+
     if (image && image.name) {
       const buffer = Buffer.from(await image.arrayBuffer());
       const filename = Date.now() + "-" + image.name.replace(/\s/g, "_");
       const filepath = `public/uploads/${filename}`;
       fs.writeFileSync(filepath, buffer);
       imageUrl = `/uploads/${filename}`;
+    } else if (body.imageUrl) {
+      // Nếu là URL (khi copy), giữ nguyên
+      imageUrl = body.imageUrl;
     }
 
     // Tạo hoạt động mới
@@ -155,6 +170,7 @@ export async function POST(request) {
       author: body.author,
       status: body.status,
       commentOption: body.commentOption,
+      type: body.type || "news",
       image: imageUrl,
       scheduledPublish: body.scheduledPublish,
       createdAt: new Date(),

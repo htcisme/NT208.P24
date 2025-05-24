@@ -1,16 +1,21 @@
-"use client"; // Client Component indicator
+"use client";
 
-import React, { useState, useEffect } from "react";
+import { getActivityTypes, getActivityTypeInfo } from "@/models/Activity";
+import React, { useState, useEffect, use } from "react";
+import { useSession } from "@/context/SessionContext";
 import Image from "next/image";
 import Footer from "@/components/Footer";
 import HeaderAdmin from "@/components/HeaderAdmin";
 import Link from "next/link";
 import "@/styles-comp/style.css";
 import "@/app/admin/ActivitiesDashboard/style.css";
+import { set } from "mongoose";
 
 const ActivitiesDashboard = () => {
+  const { user, username } = useSession();
+  const [activityType, setActivityType] = useState("news");
   const [activeTab, setActiveTab] = useState("activities");
-  const [activeView, setActiveView] = useState("allPages"); // 'allPages', 'addPage', or 'editPage'
+  const [activeView, setActiveView] = useState("allPages");
   const [editingTask, setEditingTask] = useState(null);
 
   // Khởi tạo state với mảng rỗng thay vì dữ liệu mẫu
@@ -70,6 +75,7 @@ const ActivitiesDashboard = () => {
             image: activity.image,
             status: activity.status,
             commentOption: activity.commentOption,
+            type: activity.type || "other",
             selected: false,
           }));
 
@@ -167,19 +173,23 @@ const ActivitiesDashboard = () => {
 
       for (const task of selectedTasks) {
         try {
+          const formData = new FormData();
+          formData.append("title", `${task.title} (Sao chép)`);
+          formData.append("content", task.content);
+          formData.append(
+            "author",
+            user?.name || user?.username || task.author
+          );
+          formData.append("status", task.status);
+          formData.append("commentOption", task.commentOption);
+          formData.append("type", task.type || "news");
+          if (task.image) {
+            formData.append("imageUrl", task.image); // Gửi URL của image
+          }
           const response = await fetch("/api/activities", {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              title: `${task.title} (Sao chép)`,
-              content: task.content,
-              author: task.author,
-              status: task.status,
-              commentOption: task.commentOption,
-              image: task.image,
-            }),
+            body: formData,
+
           });
 
           const data = await response.json();
@@ -195,6 +205,7 @@ const ActivitiesDashboard = () => {
               time: formatDate(data.data.createdAt),
               status: data.data.status,
               commentOption: data.data.commentOption,
+              type: data.data.type,
               selected: false,
             });
           }
@@ -261,19 +272,20 @@ const ActivitiesDashboard = () => {
   // Copy a task
   const copyTask = async (task) => {
     try {
+      const formData = new FormData();
+      formData.append("title", `${task.title} (Sao chép)`);
+      formData.append("content", task.content);
+      formData.append("author", user?.name || user?.username || task.author);
+      formData.append("status", task.status);
+      formData.append("commentOption", task.commentOption);
+      formData.append("type", task.type || "news");
+      if (task.image) {
+        formData.append("imageUrl", task.image); // Gửi URL của image
+      }
       const response = await fetch("/api/activities", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title: `${task.title} (Sao chép)`,
-          content: task.content,
-          author: task.author,
-          status: task.status,
-          commentOption: task.commentOption,
-          image: task.image,
-        }),
+        body: formData,
+
       });
 
       const data = await response.json();
@@ -294,6 +306,11 @@ const ActivitiesDashboard = () => {
             selected: false,
           },
         ]);
+
+        alert(`Đã sao chép thành công: "${data.data.title}"`);
+      } else {
+        alert(`Lỗi khi sao chép: ${data.message || "Không xác định"}`);
+
       }
     } catch (error) {
       console.error("Lỗi khi sao chép bài viết:", error);
@@ -310,6 +327,7 @@ const ActivitiesDashboard = () => {
       setNewContent(task.content);
       setPageStatus(task.status);
       setCommentOption(task.commentOption);
+      setActivityType(task.type || "news");
       setImagePreview(task.image || "");
       setActiveView("editPage");
     }
@@ -325,6 +343,8 @@ const ActivitiesDashboard = () => {
       formData.append("content", newContent);
       formData.append("status", pageStatus);
       formData.append("commentOption", commentOption);
+      formData.append("type", activityType);
+
       if (uploadedImage) {
         formData.append("image", uploadedImage);
       }
@@ -344,41 +364,36 @@ const ActivitiesDashboard = () => {
       }
 
       if (response.ok) {
-        // Cập nhật UI trước khi hiển thị thông báo
-        setTasks(
-          tasks.map((task) =>
-            task.slug === editingTask.slug
-              ? {
-                  ...task,
-                  title: newTitle,
-                  content: newContent,
-                  status: pageStatus,
-                  commentOption: commentOption,
-                  image: data.data?.image || task.image,
-                }
-              : task
-          )
-        );
-
-        // Reset và quay lại danh sách
-        setActiveView("allPages");
-        setEditingTask(null);
-        setNewTitle("");
-        setNewContent("");
-        setPageStatus("published");
-        setCommentOption("open");
-        setImagePreview("");
-        setUploadedImage(null);
-
-        // Hiển thị thông báo thành công sau khi đã cập nhật UI
-        setTimeout(() => {
-          alert("Cập nhật bài viết thành công!");
-        }, 100);
+        const data = await response.json();
+        if (data.success) {
+          setTasks(
+            tasks.map((task) =>
+              task.slug === editingTask.slug
+                ? {
+                    ...task,
+                    title: newTitle,
+                    content: newContent,
+                    status: pageStatus,
+                    commentOption: commentOption,
+                    type: activityType,
+                    image: data.data.image || task.image,
+                  }
+                : task
+            )
+          );
+          setActiveView("allPages");
+          setEditingTask(null);
+          setNewTitle("");
+          setNewContent("");
+          setPageStatus("published");
+          setCommentOption("open");
+          setImagePreview("");
+          setActivityType("news");
+          setUploadedImage(null);
+        }
       } else {
-        // Xử lý lỗi chi tiết hơn
-        const errorMessage =
-          data.message || data.error || "Lỗi khi cập nhật hoạt động";
-        throw new Error(errorMessage);
+        throw new Error("Lỗi khi cập nhật bài viết");
+
       }
     } catch (error) {
       console.error("Lỗi khi cập nhật bài viết:", error);
@@ -467,9 +482,14 @@ const ActivitiesDashboard = () => {
       const formData = new FormData();
       formData.append("title", newTitle);
       formData.append("content", newContent);
-      formData.append("author", "Nguyễn Đình Khang"); // Hoặc lấy từ thông tin người dùng hiện tại
+      formData.append(
+        "author",
+        user?.name || user?.username || "Nguyễn Đình Khang"
+      );
       formData.append("status", pageStatus);
       formData.append("commentOption", commentOption);
+      formData.append("type", activityType);
+
 
       if (publishOption === "scheduled") {
         formData.append(
@@ -477,15 +497,14 @@ const ActivitiesDashboard = () => {
           new Date(`${scheduledDate}T${scheduledTime}`).toISOString()
         );
       }
-
-      // Thêm ảnh nếu có
       if (uploadedImage) {
         formData.append("image", uploadedImage);
       }
 
       const response = await fetch("/api/activities", {
         method: "POST",
-        body: formData, // Không cần đặt Content-Type khi dùng FormData
+        body: formData,
+
       });
 
       const data = await response.json();
@@ -500,10 +519,12 @@ const ActivitiesDashboard = () => {
             title: data.data.title,
             content: data.data.content,
             author: data.data.author,
-            image: data.data.image, // Thêm trường image
+            image: data.data.image,
             time: formatDate(data.data.createdAt),
             status: data.data.status,
             commentOption: data.data.commentOption,
+            type: data.data.type,
+
             selected: false,
           },
         ]);
@@ -512,6 +533,7 @@ const ActivitiesDashboard = () => {
         setNewContent("");
         setUploadedImage(null);
         setImagePreview("");
+        setActivityType("news");
         setActiveView("allPages");
         // Hiển thị thông báo thành công
       } else {
@@ -636,6 +658,21 @@ const ActivitiesDashboard = () => {
                   <option value="draft">Bản nháp</option>
                 </select>
               </div>
+              <div className="info-row">
+                <label>Loại hoạt động:</label>
+                <select
+                  value={activityType}
+                  onChange={(e) => setActivityType(e.target.value)}
+                  className="type-select"
+                >
+                  {getActivityTypes().map((type) => (
+                    <option key={type.value} value={type.value}>
+                      {type.icon} {type.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div className="info-row">
                 <label>Bình luận:</label>
                 <div className="button-toggle">
@@ -803,55 +840,64 @@ const ActivitiesDashboard = () => {
                     </th>
                     <th className="image-col">HÌNH ẢNH</th>
                     <th>TIÊU ĐỀ</th>
+                    <th>LOẠI</th>
                     <th>TÁC GIẢ</th>
                     <th>THỜI GIAN</th>
                     <th>TÁC VỤ</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {tasks.map((task) => (
-                    <tr key={task.slug}>
-                      <td>
-                        <input
-                          type="checkbox"
-                          checked={task.selected}
-                          onChange={() => handleTaskSelection(task.slug)}
-                        />
-                      </td>
-                      <td className="task-image-cell">
-                        {task.image ? (
-                          <div className="task-thumbnail">
-                            <img src={task.image} alt={task.title} />
-                          </div>
-                        ) : (
-                          <div className="no-image">Không có ảnh</div>
-                        )}
-                      </td>
-                      <td>{task.title}</td>
-                      <td>{task.author}</td>
-                      <td>{task.time}</td>
-                      <td>
-                        <button
-                          className="action-btn edit-btn"
-                          onClick={() => editTask(task.slug)}
-                        >
-                          Chỉnh sửa
-                        </button>
-                        <button
-                          className="action-btn delete-btn"
-                          onClick={() => deleteTask(task.slug)}
-                        >
-                          Xóa
-                        </button>
-                        <button
-                          className="action-btn copy-btn"
-                          onClick={() => copyTask(task)}
-                        >
-                          Sao chép
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                  {tasks.map((task) => {
+                    const typeInfo = getActivityTypeInfo(task.type);
+                    return (
+                      <tr key={task.slug}>
+                        <td>
+                          <input
+                            type="checkbox"
+                            checked={task.selected}
+                            onChange={() => handleTaskSelection(task.slug)}
+                          />
+                        </td>
+                        <td className="task-image-cell">
+                          {task.image ? (
+                            <div className="task-thumbnail">
+                              <img src={task.image} alt={task.title} />
+                            </div>
+                          ) : (
+                            <div className="no-image">Không có ảnh</div>
+                          )}
+                        </td>
+                        <td>{task.title}</td>
+                        <td className="type-cell">
+                          <span className="type-badge" data-type={task.type}>
+                            {typeInfo.icon} {typeInfo.label}
+                          </span>
+                        </td>
+                        <td>{task.author}</td>
+                        <td>{task.time}</td>
+                        <td>
+                          <button
+                            className="action-btn edit-btn"
+                            onClick={() => editTask(task.slug)}
+                          >
+                            Chỉnh sửa
+                          </button>
+                          <button
+                            className="action-btn delete-btn"
+                            onClick={() => deleteTask(task.slug)}
+                          >
+                            Xóa
+                          </button>
+                          <button
+                            className="action-btn copy-btn"
+                            onClick={() => copyTask(task)}
+                          >
+                            Sao chép
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             ) : (

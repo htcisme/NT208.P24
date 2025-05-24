@@ -43,7 +43,7 @@
   }
 
   .Header_Nav_DarkModeToggle:hover {
-    background-color: #e2f4ff;
+    background-color: #e2f4ff !important;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
@@ -1755,17 +1755,18 @@ body.dark-mode .Activities_RecentCard {
 
 .searchResultsDropdown {
   position: absolute;
-  top: 80%;
-  width: 20%;
-  left: 1250;
-  right: 0;
+  width: 260px; /* Sử dụng 100% thay vì fixed width */
+  top: 100%; /* Đặt ngay dưới search box */
+  right: 0; /* Căn phải theo container */
+  margin-right: 105px;
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  margin-top: 8px;
+  margin-top: 4px;
   max-height: 400px;
   overflow-y: auto;
   z-index: 1000;
+  transition: all 0.3s ease;
 }
 .searchResultsHeader {
   padding: 12px 16px;

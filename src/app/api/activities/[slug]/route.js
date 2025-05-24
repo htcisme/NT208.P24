@@ -5,6 +5,34 @@ import { writeFile } from "fs/promises";
 import path from "path";
 import { ObjectId } from "mongodb";
 import Notification from "@/models/Notification";
+import jwt from "jsonwebtoken";
+
+function generateUniqueToken(userId, title = "") {
+  try {
+    if (!userId) {
+      console.error("UserId is required for token generation");
+      return Date.now().toString();
+    }
+
+    const payload = {
+      uid: userId.toString(),
+      title,
+      ts: Date.now(),
+    };
+
+    if (!process.env.JWT_SECRET) {
+      console.error("JWT_SECRET is not defined");
+      return Date.now().toString();
+    }
+
+    return jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+  } catch (error) {
+    console.error("Error generating token:", error);
+    return Date.now().toString();
+  }
+}
 
 // Helper function to find activity by ID or slug
 async function findActivityByIdOrSlug(slug) {
@@ -112,33 +140,33 @@ export async function PUT(request, context) {
     // Cập nhật thời gian
     updateData.updatedAt = new Date();
 
+    // Kiểm tra và cập nhật type
+    if (!updateData.type) {
+      updateData.type = "news";
+    }
+
+    // Tìm và cập nhật hoạt động
+    if (!activity) {
+      return NextResponse.json(
+        { success: false, message: "Không tìm thấy hoạt động" },
+        { status: 404 }
+      );
+    }
+
     // Cập nhật các trường
     console.log("Updating fields:", Object.keys(updateData));
     Object.assign(activity, updateData);
 
-    // Lưu vào database
-    await activity.save();
-    console.log("Activity saved successfully");
-
-    // Tạo thông báo riêng biệt, không ảnh hưởng đến kết quả trả về
-    try {
-      const token = generateUniqueToken(activity.author, activity.title);
-
-      await Notification.create({
-        userId: activity.author,
-        title: `Hoạt động đã được cập nhật: ${activity.title}`,
-        message: `Hoạt động do bạn tạo đã được cập nhật thành công.`,
-        read: false,
-        link: `/Activities/${activity.slug}`,
-        activityId: activity._id,
-        type: "notification",
-        token,
-      });
-      console.log("Notification created successfully");
-    } catch (notificationError) {
-      console.error("Error creating notification:", notificationError);
-      // Không throw lỗi ở đây, vẫn trả về thành công
-    }
+    await Notification.create({
+      userId: activity.author,
+      title: `Hoạt động đã được cập nhật: ${activity.title}`,
+      message: `Hoạt động do bạn tạo đã được cập nhật thành công.`,
+      read: false,
+      link: `/Activities/${activity.slug}`,
+      activityId: activity._id,
+      type: "notification",
+      token: Date.now().toString(),
+    });
 
     return NextResponse.json({
       success: true,
