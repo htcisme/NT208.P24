@@ -1,7 +1,7 @@
 "use client";
 
 import { getActivityTypes, getActivityTypeInfo } from "@/models/Activity";
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect, use, act } from "react";
 import { useSession } from "@/context/SessionContext";
 import Image from "next/image";
 import Footer from "@/components/Footer";
@@ -49,13 +49,18 @@ const ActivitiesDashboard = () => {
   // Selected batch action
   const [batchAction, setBatchAction] = useState("delete"); // 'delete', 'copy', 'edit'
   const [commentBatchAction, setCommentBatchAction] = useState("delete"); // 'delete', 'edit', 'reply'
+  const [batchEditOptions, setBatchEditOptions] = useState({
+    status: "",
+    type: "",
+  });
+  const [showBatchEditModal, setShowBatchEditModal] = useState(false);
 
   // Fetch dữ liệu khi component được mount
   useEffect(() => {
     const fetchActivities = async () => {
       try {
         setLoading(true);
-        const response = await fetch("/api/activities");
+        const response = await fetch("/api/activities?limit=100000");
 
         if (!response.ok) {
           throw new Error("Không thể lấy dữ liệu hoạt động");
@@ -160,7 +165,6 @@ const ActivitiesDashboard = () => {
               method: "DELETE",
             });
           }
-
           setTasks(tasks.filter((task) => !task.selected));
         } catch (error) {
           console.error("Lỗi khi xóa bài viết:", error);
@@ -184,12 +188,12 @@ const ActivitiesDashboard = () => {
           formData.append("commentOption", task.commentOption);
           formData.append("type", task.type || "news");
           if (task.image) {
-            formData.append("imageUrl", task.image); // Gửi URL của image
+            formData.append("imageUrl", task.image);
           }
+
           const response = await fetch("/api/activities", {
             method: "POST",
             body: formData,
-
           });
 
           const data = await response.json();
@@ -213,15 +217,65 @@ const ActivitiesDashboard = () => {
           console.error("Lỗi khi sao chép bài viết:", error);
         }
       }
-
       setTasks(newTasks);
     } else if (batchAction === "edit") {
-      // For editing multiple tasks, we can implement a bulk edit interface
-      // For simplicity, we'll just edit the first selected task
-      const selectedTask = tasks.find((task) => task.selected);
-      if (selectedTask) {
-        editTask(selectedTask.slug);
+      // Hiển thị modal để chọn giá trị muốn sửa
+      setShowBatchEditModal(true);
+      return; // Không thực hiện ngay, chờ user chọn
+    }
+
+    // Reset selection sau khi hoàn thành
+    setTasks((prev) => prev.map((task) => ({ ...task, selected: false })));
+  };
+
+  // Hàm thực hiện batch edit sau khi user chọn options
+  const executeBatchEdit = async () => {
+    const selectedTasks = tasks.filter((task) => task.selected);
+
+    try {
+      for (const task of selectedTasks) {
+        const formData = new FormData();
+
+        // Giữ nguyên các thông tin cũ
+        formData.append("title", task.title);
+        formData.append("content", task.content);
+        formData.append("author", task.author);
+        formData.append("commentOption", task.commentOption);
+
+        // Chỉ cập nhật status và type nếu user đã chọn
+        formData.append("status", batchEditOptions.status || task.status);
+        formData.append("type", batchEditOptions.type || task.type);
+
+        if (task.image) {
+          formData.append("imageUrl", task.image);
+        }
+
+        await fetch(`/api/activities/${task.slug}`, {
+          method: "PUT",
+          body: formData,
+        });
       }
+
+      // Cập nhật state với giá trị mới
+      setTasks((prev) =>
+        prev.map((task) =>
+          task.selected
+            ? {
+                ...task,
+                status: batchEditOptions.status || task.status,
+                type: batchEditOptions.type || task.type,
+                selected: false,
+              }
+            : { ...task, selected: false }
+        )
+      );
+
+      alert("Đã chỉnh sửa tất cả bài viết đã chọn!");
+      setShowBatchEditModal(false);
+      setBatchEditOptions({ status: "", type: "" });
+    } catch (error) {
+      console.error("Lỗi khi chỉnh sửa hàng loạt:", error);
+      alert("Có lỗi khi chỉnh sửa bài viết!");
     }
   };
 
@@ -285,7 +339,6 @@ const ActivitiesDashboard = () => {
       const response = await fetch("/api/activities", {
         method: "POST",
         body: formData,
-
       });
 
       const data = await response.json();
@@ -310,7 +363,6 @@ const ActivitiesDashboard = () => {
         alert(`Đã sao chép thành công: "${data.data.title}"`);
       } else {
         alert(`Lỗi khi sao chép: ${data.message || "Không xác định"}`);
-
       }
     } catch (error) {
       console.error("Lỗi khi sao chép bài viết:", error);
@@ -363,37 +415,34 @@ const ActivitiesDashboard = () => {
         throw new Error("Lỗi định dạng dữ liệu từ server");
       }
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success) {
-          setTasks(
-            tasks.map((task) =>
-              task.slug === editingTask.slug
-                ? {
-                    ...task,
-                    title: newTitle,
-                    content: newContent,
-                    status: pageStatus,
-                    commentOption: commentOption,
-                    type: activityType,
-                    image: data.data.image || task.image,
-                  }
-                : task
-            )
-          );
-          setActiveView("allPages");
-          setEditingTask(null);
-          setNewTitle("");
-          setNewContent("");
-          setPageStatus("published");
-          setCommentOption("open");
-          setImagePreview("");
-          setActivityType("news");
-          setUploadedImage(null);
-        }
+      if (data.success && response.ok) {
+        setTasks(
+          tasks.map((task) =>
+            task.slug === editingTask.slug
+              ? {
+                  ...task,
+                  title: newTitle,
+                  content: newContent,
+                  status: pageStatus,
+                  commentOption: commentOption,
+                  type: activityType,
+                  image: data.data.image || task.image,
+                }
+              : task
+          )
+        );
+        setActiveView("allPages");
+        setEditingTask(null);
+        setNewTitle("");
+        setNewContent("");
+        setPageStatus("published");
+        setCommentOption("open");
+        setImagePreview("");
+        setActivityType("news");
+        setUploadedImage(null);
+        alert("Cập nhật bài viết thành công!");
       } else {
         throw new Error("Lỗi khi cập nhật bài viết");
-
       }
     } catch (error) {
       console.error("Lỗi khi cập nhật bài viết:", error);
@@ -490,7 +539,6 @@ const ActivitiesDashboard = () => {
       formData.append("commentOption", commentOption);
       formData.append("type", activityType);
 
-
       if (publishOption === "scheduled") {
         formData.append(
           "scheduledPublish",
@@ -504,7 +552,6 @@ const ActivitiesDashboard = () => {
       const response = await fetch("/api/activities", {
         method: "POST",
         body: formData,
-
       });
 
       const data = await response.json();
@@ -796,10 +843,13 @@ const ActivitiesDashboard = () => {
             >
               THÊM TRANG MỚI
             </button>
-            <button className="update-slugs-btn" onClick={updateSlugs}>
-              CẬP NHẬT SLUG
-            </button>
           </div>
+
+          {activeView === "allPages" && (
+            <button className="update-slugs-btn" onClick={updateSlugs}>
+              CẬP NHẬT TẤT CẢ SLUG
+            </button>
+          )}
 
           {activeView === "allPages" && (
             <div className="batch-action-container">
@@ -1061,6 +1111,87 @@ const ActivitiesDashboard = () => {
             <div className="no-data-message">Chưa có bình luận nào.</div>
           )}
         </div>
+        {showBatchEditModal && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <h3>Chỉnh sửa hàng loạt</h3>
+
+              <div className="form-group">
+                <label>
+                  Trạng thái mới (để trống nếu không muốn thay đổi):
+                </label>
+                <select
+                  value={batchEditOptions.status}
+                  onChange={(e) =>
+                    setBatchEditOptions((prev) => ({
+                      ...prev,
+                      status: e.target.value,
+                    }))
+                  }
+                >
+                  <option value="">-- Giữ nguyên --</option>
+                  <option value="draft">Nháp</option>
+                  <option value="published">Đã xuất bản</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Loại mới (để trống nếu không muốn thay đổi):</label>
+                <select
+                  value={batchEditOptions.type}
+                  onChange={(e) =>
+                    setBatchEditOptions((prev) => ({
+                      ...prev,
+                      type: e.target.value,
+                    }))
+                  }
+                >
+                  <option value="">-- Giữ nguyên --</option>
+
+                  {/* Academic */}
+                  <option value="academic">Học tập</option>
+                  <option value="competition">Cuộc thi</option>
+                  <option value="seminar">Seminar</option>
+                  <option value="research">Nghiên cứu</option>
+                  <option value="course">Khóa học</option>
+
+                  {/* Event */}
+                  <option value="volunteer">Tình nguyện</option>
+                  <option value="sport">Thể thao</option>
+                  <option value="event">Sự kiện</option>
+                  <option value="conference">Hội nghị</option>
+                  <option value="vnutour">VNUTour</option>
+                  <option value="netsec">Netsec</option>
+
+                  {/* Work */}
+                  <option value="internship">Thực tập</option>
+                  <option value="scholarship">Học bổng</option>
+                  <option value="startup">Khởi nghiệp</option>
+                  <option value="jobfair">Ngày hội việc làm</option>
+                  <option value="career">Hướng nghiệp</option>
+
+                  {/* Other */}
+                  <option value="other">Khác</option>
+                </select>
+              </div>
+
+              <div className="modal-actions">
+                <button className="btn-publish" onClick={executeBatchEdit}>
+                  Cập nhật
+                </button>
+                <button
+                  className="btn-cancel"
+                  onClick={() => {
+                    setShowBatchEditModal(false);
+                    setBatchEditOptions({ status: "", type: "" });
+                  }}
+                >
+                  Hủy
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

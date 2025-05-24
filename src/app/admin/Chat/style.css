@@ -9,7 +9,6 @@
 }
 
 .users-list {
-  width: 300px;
   border-right: 1px solid #eaeaea;
   background-color: #f9f9f9;
   overflow-y: auto;
