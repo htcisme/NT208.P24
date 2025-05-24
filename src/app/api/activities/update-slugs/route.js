@@ -10,6 +10,7 @@ export async function POST(request) {
     // Lấy tất cả hoạt động
     const activities = await Activity.find({});
     const results = [];
+    console.log(`Tổng số hoạt động: ${activities.length}`);
 
     for (const activity of activities) {
       try {
@@ -43,6 +44,28 @@ export async function POST(request) {
         let slug = baseSlug;
         let counter = 1;
         let isUnique = false;
+
+        // Nếu slug hiện tại của activity đã đúng, bỏ qua
+        if (activity.slug === baseSlug || activity.slug?.startsWith(baseSlug)) {
+          const existingActivity = await Activity.findOne({
+            slug: activity.slug,
+            _id: { $ne: activity._id },
+          });
+
+          if (!existingActivity) {
+            results.push({
+              id: activity._id,
+              title: activity.title,
+              slug: activity.slug,
+              skipped: true,
+            });
+            console.log(
+              `Đã bỏ qua "${activity.title}" - slug đã hợp lệ: ${activity.slug}`
+            );
+
+            continue; // Bỏ qua nếu slug đang dùng là hợp lệ và không trùng
+          }
+        }
 
         while (!isUnique) {
           const existingActivity = await Activity.findOne({
@@ -91,6 +114,7 @@ export async function POST(request) {
     });
   } catch (error) {
     console.error("Error updating slugs:", error);
+
     return NextResponse.json(
       { success: false, message: "Lỗi khi cập nhật slug" },
       { status: 500 }

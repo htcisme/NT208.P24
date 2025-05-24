@@ -636,7 +636,7 @@
   border-radius: 10px;
   margin-bottom: 10px;
   font-size: 18px;
-  color: var(--register-text);
+  color: #031a3e !important;
 }
 
 .registerform-footer-form label {
@@ -712,6 +712,7 @@
 
 .admin-header-username {
   font-size: 14px;
+  color: black !important;
 }
 
 .admin-header-user-icon {

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import styles from "@/styles-comp/style.module.css";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,9 +17,11 @@ export default function Headeruser() {
   const [fade, setFade] = useState(true);
   const [user, setUser] = useState(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
   const router = useRouter();
+  const menuRef = useRef(null); // Create a ref for the menu
 
-  // Kiểm tra thông tin đăng nhập khi component được tải
+  // Check user login status
   useEffect(() => {
     const checkUser = () => {
       try {
@@ -40,19 +42,36 @@ export default function Headeruser() {
     setShowUserMenu(!showUserMenu);
   };
 
-  // Xử lý đăng xuất
+  // Handle logout
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
-
-    // Xóa cookie token
     document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-
     setUser(null);
     setShowUserMenu(false);
     router.push("/");
   };
 
+  // Toggle menu
+  const toggleMenu = () => {
+    setShowMenu(!showMenu);
+  };
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Image slideshow
   useEffect(() => {
     const interval = setInterval(() => {
       setFade(false);
@@ -70,105 +89,56 @@ export default function Headeruser() {
         <Link href="/">XANGFUTING</Link>
       </div>
       <div className={styles.Header_Nav}>
-        {/* Điều hướng chính */}
-        <div className={styles.Header_Nav_Items}>
-          <Link href="/Introduction" className={styles.Header_Nav_Item}>
-            Giới thiệu
-          </Link>
-          <Link href="/Activities" className={styles.Header_Nav_Item}>
-            Hoạt động
-          </Link>
-          <Link href="/Awards" className={styles.Header_Nav_Item}>
-            Thành tích
-          </Link>
-          <Link href="/Booking" className={styles.Header_Nav_Item}>
-            Đặt phòng
-          </Link>
-          <Link href="/Contact" className={styles.Header_Nav_Item}>
-            Liên hệ
-          </Link>
-        </div>
-
-        {/* Phần tài khoản */}
-        <div className={styles.Header_Nav_AuthContainer}>
+        {/* Navigation */}
+        <div className={styles.Header_Nav_MenuWrapper} ref={menuRef}>
           <button
-            className={styles.Header_Nav_AuthButton}
-            onClick={toggleUserMenu}
+            className={styles.Header_Nav_MenuWrapper_MenuButton}
+            onClick={toggleMenu}
+            aria-expanded={showMenu}
           >
-            {user ? `Xin chào, ${user.name}` : "Tài khoản"}
-            <span className={styles.Header_Nav_AuthButton_Arrow}>▼</span>
+            ☰
           </button>
-          {showUserMenu && (
-            <div className={styles.Header_Nav_AuthMenu}>
-              {user ? (
-                <>
-                  <Link
-                    href="/profile"
-                    className={styles.Header_Nav_AuthMenu_Item}
-                  >
-                    Trang cá nhân
-                  </Link>
-                  {user.role === "admin" && (
-                    <Link
-                      href="/admin/UsersDashboard"
-                      className={styles.Header_Nav_AuthMenu_Item}
-                    >
-                      Quản trị
-                    </Link>
-                  )}
-                  <button
-                    onClick={handleLogout}
-                    className={styles.Header_Nav_AuthMenu_Item}
-                  >
-                    Đăng xuất
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link
-                    href="/User?tab=login"
-                    className={styles.Header_Nav_AuthMenu_Item}
-                  >
-                    Đăng nhập
-                  </Link>
-                  <Link
-                    href="/User?tab=register"
-                    className={styles.Header_Nav_AuthMenu_Item}
-                  >
-                    Đăng ký
-                  </Link>
-                </>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Ô tìm kiếm */}
-        <div className={styles.Header_Topbar_Authsearch}>
-          <div className={styles.Header_Topbar_Authsearch_Searchbox}>
-            <input type="text" placeholder="Tìm kiếm..." />
-            <span
-              className={styles.Header_Topbar_Authsearch_Searchbox_Searchicon}
+          <div
+            className={`${styles.Header_Nav_MenuWrapper_DropdownMenu} ${
+              showMenu ? styles.Header_Nav_MenuWrapper_MenuButton_ShowMenu : ""
+            }`}
+          >
+            <Link
+              href="/"
+              className={styles.Header_Nav_MenuWrapper_DropdownMenu_Item}
             >
-              <svg
-                className={
-                  styles.Header_Topbar_Authsearch_Searchbox_Searchicon_Icon
-                }
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeWidth="2"
-                  d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
-                />
-              </svg>
-            </span>
+              Trang chủ
+            </Link>
+            <Link
+              href="/Introduction"
+              className={styles.Header_Nav_MenuWrapper_DropdownMenu_Item}
+            >
+              Giới thiệu
+            </Link>
+            <Link
+              href="/Activities"
+              className={styles.Header_Nav_MenuWrapper_DropdownMenu_Item}
+            >
+              Hoạt động
+            </Link>
+            <Link
+              href="/Awards"
+              className={styles.Header_Nav_MenuWrapper_DropdownMenu_Item}
+            >
+              Thành tích
+            </Link>
+            <Link
+              href="/Booking"
+              className={styles.Header_Nav_MenuWrapper_DropdownMenu_Item}
+            >
+              Đặt phòng
+            </Link>
+            <Link
+              href="/Contact"
+              className={styles.Header_Nav_MenuWrapper_DropdownMenu_Item}
+            >
+              Liên hệ
+            </Link>
           </div>
         </div>
       </div>

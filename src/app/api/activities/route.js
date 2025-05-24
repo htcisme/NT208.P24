@@ -245,7 +245,7 @@ export async function POST(request) {
                   <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; text-align: center;">
                     <p style="font-size: 12px; color: #666; margin: 0;">
                       Đây là email tự động, vui lòng không trả lời email này.<br>
-                      © 2024 Đoàn khoa Mạng máy tính và Truyền thông
+                      © 2025 Đoàn khoa Mạng máy tính và Truyền thông
                     </p>
                   </div>
                 </div>

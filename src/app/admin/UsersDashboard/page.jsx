@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import withAdminAuth from "@/components/WithAdminAuth";
 import HeaderAdmin from "@/components/HeaderAdmin";
-import "@/styles-comp/style.css";
 import "./style.css";
 
 function UsersDashboard() {
@@ -570,7 +569,7 @@ function UsersDashboard() {
               )}
 
               <div className="form-actions">
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="submit-form-action">
                   Thêm Người Dùng
                 </button>
                 <button

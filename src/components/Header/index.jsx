@@ -289,7 +289,7 @@ export default function Header() {
                 {showUserMenu && (
                   <div className="Header-Topbar-Authsearch-UserInfo-Menu">
                     <Link
-                      href="/profile"
+                      href="/Profile"
                       className="Header-Topbar-Authsearch-UserInfo-MenuItem"
                     >
                       Trang cá nhân

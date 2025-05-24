@@ -832,7 +832,7 @@
 
 .Activities_RecentCard {
   width: 270px;
-  background-color: var(--text);
+  background-color: white;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
@@ -862,18 +862,19 @@
 .Activities_RecentCard_Content {
   padding: 15px;
   text-align: left;
+  height: auto;
 }
 
 .Activities_RecentCard_Title {
   font-weight: 600;
   font-size: 15px;
-  color: var(--background);
+  color: #0a1f3c;
   margin-bottom: 5px;
 }
 
 .Activities_RecentCard_Desc {
   font-size: 13px;
-  color: var(--background);
+  color: #0a1f3c;
   margin-bottom: 8px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -885,7 +886,10 @@
 .Activities_RecentCard_Date {
   font-size: 12px;
   font-style: italic;
-  color: var(--secondary);
+  color: #5f6368;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
 .Activities_ViewMore {
@@ -1259,7 +1263,7 @@
   text-align: center;
   font-weight: bold;
   color: #ffffff;
-  background-color: #09517586;
+  background-color: #04255ad1;
   padding: 10px 0px;
 }
 
@@ -1272,7 +1276,7 @@
 
 .Image_Top {
   width: 100%;
-  height: 200px;
+  height: 350px;
   background-color: #5b6b86;
   object-fit: cover;
   display: block;
@@ -1286,7 +1290,7 @@
 
 .Image_Bottom {
   flex: 1;
-  height: 200px;
+  height: 250px;
   object-fit: cover;
   background-color: #5b6b86;
   display: block;
@@ -1797,4 +1801,77 @@ body.dark-mode .Activities_RecentCard {
   text-align: center;
   color: #6b7280;
   font-size: 14px;
+}
+
+.timeline-section {
+  max-width: 100%;
+  margin: 0;
+  position: relative;
+  padding: 40px 0;
+  background-color: #ffffff;
+  width: 100%;
+  box-shadow: 0 2px 5px #0003;
+}
+
+.timeline {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 40px;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 18px; /* Đặt đường thẳng sao cho dấu chấm tròn nằm chính giữa */
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: #003087;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  left: -37px; /* Điều chỉnh để dấu chấm tròn nằm chính giữa đường thẳng */
+  top: 5px;
+  width: 16px;
+  height: 16px;
+  background-color: #003087;
+  border-radius: 50%;
+  transform: translateX(
+    50%
+  ); /* Dịch chuyển dấu chấm tròn về bên phải 50% chiều rộng của nó để căn giữa */
+}
+
+.timeline-item h3 {
+  font-size: 1.2rem;
+  color: #003087;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.timeline-item p {
+  font-size: 1rem;
+  color: #042354;
+}
+
+.timeline-description {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative; /* Cần thiết để pseudo-element ::before hoạt động đúng */
+  padding: 40px 20px;
+  margin-top: 20px;
+  padding: 25px;
+  padding-bottom: 40px;
+  text-align: justify;
+}
+
+.timeline-description p {
+  font-size: 1.1rem;
 }

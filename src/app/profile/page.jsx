@@ -9,7 +9,7 @@ export default function ProfilePage() {
     name: "",
     email: "",
     role: "",
-    avatar: "/images/default-avatar.png",
+    avatar: "/Img/default-avatar.png",
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
@@ -19,11 +19,14 @@ export default function ProfilePage() {
   const [changePassword, setChangePassword] = useState(false);
   const [notification, setNotification] = useState({ message: "", type: "" });
   const [avatarPreview, setAvatarPreview] = useState(null);
+  const [avatarBase64, setAvatarBase64] = useState(null);
   const notificationTimeoutRef = useRef(null);
   const fileInputRef = useRef(null);
 
   // Hàm hiển thị thông báo
   const showNotification = (message, type = "error") => {
+    console.log(`Notification (${type}):`, message);
+
     // Xóa timeout cũ nếu có
     if (notificationTimeoutRef.current) {
       clearTimeout(notificationTimeoutRef.current);
@@ -36,6 +39,131 @@ export default function ProfilePage() {
     notificationTimeoutRef.current = setTimeout(() => {
       setNotification({ message: "", type: "" });
     }, 3000);
+  };
+
+  // Hàm convert file thành base64
+  const convertFileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
+    });
+  };
+
+  // Hàm compress image để giảm dung lượng
+  const compressImage = (file, maxWidth = 800, quality = 0.8) => {
+    return new Promise((resolve, reject) => {
+      console.log("Compressing image...", {
+        originalSize: file.size,
+        maxWidth,
+        quality,
+        fileType: file.type,
+      });
+
+      try {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        if (!ctx) {
+          console.error("Cannot get canvas context");
+          reject(new Error("Canvas not supported"));
+          return;
+        }
+
+        const img = new Image();
+
+        img.onload = () => {
+          try {
+            console.log("Image loaded successfully:", {
+              width: img.width,
+              height: img.height,
+              naturalWidth: img.naturalWidth,
+              naturalHeight: img.naturalHeight,
+            });
+
+            // Kiểm tra kích thước ảnh hợp lệ
+            if (img.width === 0 || img.height === 0) {
+              console.error("Invalid image dimensions");
+              reject(new Error("Invalid image dimensions"));
+              return;
+            }
+
+            // Tính toán kích thước mới
+            let newWidth = img.width;
+            let newHeight = img.height;
+
+            // Chỉ resize nếu ảnh lớn hơn maxWidth
+            if (img.width > maxWidth || img.height > maxWidth) {
+              const ratio = Math.min(
+                maxWidth / img.width,
+                maxWidth / img.height
+              );
+              newWidth = Math.floor(img.width * ratio);
+              newHeight = Math.floor(img.height * ratio);
+            }
+
+            console.log("Image dimensions:", {
+              original: { width: img.width, height: img.height },
+              new: { width: newWidth, height: newHeight },
+            });
+
+            canvas.width = newWidth;
+            canvas.height = newHeight;
+
+            // Clear canvas
+            ctx.clearRect(0, 0, newWidth, newHeight);
+
+            // Vẽ image với kích thước mới
+            ctx.drawImage(img, 0, 0, newWidth, newHeight);
+
+            // Convert thành base64
+            const compressedBase64 = canvas.toDataURL("image/jpeg", quality);
+
+            if (!compressedBase64 || compressedBase64 === "data:,") {
+              console.error("Failed to convert canvas to base64");
+              reject(new Error("Failed to convert image"));
+              return;
+            }
+
+            console.log("Compression result:", {
+              originalSize: file.size,
+              compressedSize: Math.round((compressedBase64.length * 3) / 4),
+              compressionRatio:
+                (
+                  ((file.size - (compressedBase64.length * 3) / 4) /
+                    file.size) *
+                  100
+                ).toFixed(2) + "%",
+            });
+
+            resolve(compressedBase64);
+          } catch (error) {
+            console.error("Error during compression:", error);
+            reject(error);
+          }
+        };
+
+        img.onerror = (error) => {
+          console.error("Error loading image for compression:", error);
+          reject(new Error("Failed to load image"));
+        };
+
+        // Create object URL và gán src
+        const objectUrl = URL.createObjectURL(file);
+        img.src = objectUrl;
+
+        // Cleanup object URL sau khi load
+        img.onload = ((originalOnload) =>
+          function () {
+            URL.revokeObjectURL(objectUrl);
+            return originalOnload.call(this);
+          })(img.onload);
+      } catch (error) {
+        console.error("Error setting up image compression:", error);
+        reject(error);
+      }
+    });
   };
 
   useEffect(() => {
@@ -70,7 +198,7 @@ export default function ProfilePage() {
             name: data.user.name,
             email: data.user.email,
             role: data.user.role || "user",
-            avatar: data.user.avatar || "/images/default-avatar.png",
+            avatar: data.user.avatar || "/Img/default-avatar.png",
           });
         } else {
           showNotification(
@@ -98,9 +226,17 @@ export default function ProfilePage() {
     }));
   };
 
-  const handleAvatarChange = (e) => {
+  const handleAvatarChange = async (e) => {
+    console.log("=== Avatar change started ===");
     const file = e.target.files[0];
+
     if (file) {
+      console.log("File selected:", {
+        name: file.name,
+        size: file.size,
+        type: file.type,
+      });
+
       // Kiểm tra kích thước file (tối đa 5MB)
       if (file.size > 5 * 1024 * 1024) {
         showNotification("Kích thước ảnh không được vượt quá 5MB");
@@ -113,17 +249,52 @@ export default function ProfilePage() {
         return;
       }
 
-      // Tạo preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setAvatarPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
+      try {
+        // Thử compress image
+        const compressedBase64 = await compressImage(file);
+
+        // Kiểm tra kích thước sau khi compress
+        const base64Size = Math.round((compressedBase64.length * 3) / 4);
+        console.log("Final base64 size:", base64Size, "bytes");
+
+        if (base64Size > 5 * 1024 * 1024) {
+          showNotification("Ảnh quá lớn sau khi nén, vui lòng chọn ảnh khác");
+          return;
+        }
+
+        console.log("Avatar processing successful");
+        setAvatarPreview(compressedBase64);
+        setAvatarBase64(compressedBase64);
+      } catch (error) {
+        console.error("Lỗi khi xử lý ảnh:", error);
+
+        // Fallback: Thử convert trực tiếp mà không compress
+        console.log("Trying fallback method without compression...");
+        try {
+          const directBase64 = await convertFileToBase64(file);
+          const directSize = Math.round((directBase64.length * 3) / 4);
+
+          console.log("Direct conversion size:", directSize, "bytes");
+
+          if (directSize > 5 * 1024 * 1024) {
+            showNotification("Ảnh quá lớn, vui lòng chọn ảnh nhỏ hơn");
+            return;
+          }
+
+          console.log("Fallback method successful");
+          setAvatarPreview(directBase64);
+          setAvatarBase64(directBase64);
+        } catch (fallbackError) {
+          console.error("Fallback method also failed:", fallbackError);
+          showNotification("Không thể xử lý ảnh này, vui lòng thử ảnh khác");
+        }
+      }
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("=== Form submission started ===");
     setUpdating(true);
 
     // Kiểm tra mật khẩu mới và xác nhận mật khẩu
@@ -141,58 +312,91 @@ export default function ProfilePage() {
         return;
       }
 
-      const formData = new FormData();
-      formData.append("name", user.name);
-      formData.append("email", user.email);
+      // Chuẩn bị data để gửi (JSON thay vì FormData)
+      const requestData = {
+        name: user.name,
+        email: user.email,
+      };
 
       // Chỉ thêm thông tin mật khẩu nếu người dùng muốn thay đổi
       if (changePassword) {
-        formData.append("currentPassword", user.currentPassword);
-        formData.append("newPassword", user.newPassword);
+        requestData.currentPassword = user.currentPassword;
+        requestData.newPassword = user.newPassword;
       }
 
-      // Thêm avatar nếu có thay đổi
-      if (fileInputRef.current?.files[0]) {
-        formData.append("avatar", fileInputRef.current.files[0]);
+      // Thêm avatar base64 nếu có thay đổi
+      if (avatarBase64) {
+        requestData.avatar = avatarBase64;
+        console.log(
+          "Sending avatar with request (first 100 chars):",
+          avatarBase64.substring(0, 100)
+        );
       }
+
+      console.log("Request data keys:", Object.keys(requestData));
+      console.log("Making API request...");
 
       const response = await fetch("/api/users/profile", {
         method: "PUT",
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: formData,
+        body: JSON.stringify(requestData),
       });
 
+      console.log("Response status:", response.status);
+      console.log(
+        "Response headers:",
+        Object.fromEntries(response.headers.entries())
+      );
+
       const data = await response.json();
+      console.log("Response data:", data);
 
       if (data.success) {
         showNotification("Cập nhật thông tin thành công", "success");
 
+        // Cập nhật user state với dữ liệu mới
+        setUser((prev) => ({
+          ...prev,
+          name: data.user.name,
+          email: data.user.email,
+          avatar: data.user.avatar,
+        }));
+
         // Reset form mật khẩu sau khi cập nhật thành công
         if (changePassword) {
-          setUser({
-            ...user,
+          setUser((prev) => ({
+            ...prev,
             currentPassword: "",
             newPassword: "",
             confirmPassword: "",
-          });
+          }));
           setChangePassword(false);
         }
 
         // Reset avatar preview và file input sau khi cập nhật thành công
         setAvatarPreview(null);
+        setAvatarBase64(null);
         if (fileInputRef.current) {
           fileInputRef.current.value = "";
         }
       } else {
+        console.error("API returned error:", data);
         showNotification(data.message || "Cập nhật thông tin thất bại");
+
+        // Hiển thị debug info nếu có
+        if (data.debug) {
+          console.error("Debug info:", data.debug);
+        }
       }
     } catch (error) {
-      console.error("Lỗi khi cập nhật thông tin:", error);
+      console.error("Request failed:", error);
       showNotification("Đã xảy ra lỗi khi cập nhật thông tin");
     } finally {
       setUpdating(false);
+      console.log("=== Form submission completed ===");
     }
   };
 
@@ -247,6 +451,7 @@ export default function ProfilePage() {
                 onChange={handleAvatarChange}
                 style={{ display: "none" }}
               />
+              {avatarPreview && <p className="avatar-note"></p>}
             </div>
 
             <div className="info-group">
@@ -322,7 +527,7 @@ export default function ProfilePage() {
                       value={user.newPassword}
                       onChange={handleChange}
                       placeholder="Nhập mật khẩu mới"
-                      minLength="8"
+                      minLength="6"
                       required={changePassword}
                     />
                   </div>
@@ -336,7 +541,7 @@ export default function ProfilePage() {
                       value={user.confirmPassword}
                       onChange={handleChange}
                       placeholder="Nhập lại mật khẩu mới"
-                      minLength="8"
+                      minLength="6"
                       required={changePassword}
                     />
                   </div>

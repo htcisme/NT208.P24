@@ -176,6 +176,7 @@ export async function DELETE(request, context) {
     }
 
     await activity.deleteOne();
+    await Notification.deleteMany({ activityId: activity._id });
 
     return NextResponse.json({
       success: true,

@@ -129,6 +129,84 @@
   display: block;
 }
 
+@media (max-width: 480px) {
+  body.dark-mode .Header_Nav_MenuWrapper_MenuButton {
+    color: #f0f0f0 !important;
+  }
+
+  body.dark-mode .Header_Nav_MenuWrapper_DropdownMenu {
+    background-color: #1f2937 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  body.dark-mode .Header_Nav_MenuWrapper_DropdownMenu_Item {
+    color: #f0f0f0 !important;
+    border-color: #374151 !important;
+  }
+
+  body.dark-mode .Header_Nav_MenuWrapper_DropdownMenu_Item:hover {
+    background-color: #374151 !important;
+  }
+  .Header_Nav_MenuWrapper_MenuButton {
+    font-size: 20px;
+  }
+}
+
+.Header_Nav_MenuWrapper {
+  position: relative;
+}
+
+.Header_Nav_MenuWrapper_MenuButton {
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 3px;
+  border-radius: 5px;
+  transition: all 0.2s ease;
+}
+
+.Header_Nav_MenuWrapper_MenuButton:hover {
+  background-color: var(--hover);
+}
+
+.Header_Nav_MenuWrapper_DropdownMenu {
+  display: none;
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background-color: var(--card-background);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 20;
+  min-width: 180px;
+  transition: background-color 0.3s ease;
+}
+
+.Header_Nav_MenuWrapper_MenuButton_ShowMenu {
+  display: block;
+}
+
+.Header_Nav_MenuWrapper_DropdownMenu_Item {
+  display: block;
+  padding: 12px 16px;
+  text-decoration: none;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  transition: all 0.2s ease;
+}
+
+.Header_Nav_MenuWrapper_DropdownMenu_Item:hover {
+  background-color: var(--hover);
+}
+
+body.dark-mode .Header_Nav_MenuWrapper_DropdownMenu {
+  background: rgba(20, 30, 50, 0.95) !important;
+  color: #f0f0f0 !important;
+}
+
 .Header-Topbar-Authsearch-UserInfo {
   position: relative;
 }

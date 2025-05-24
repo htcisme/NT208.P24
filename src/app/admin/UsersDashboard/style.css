@@ -1,14 +1,12 @@
 .admin-container {
-  min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #ffff !important;
 }
 
 .admin-content {
-  width: 90%;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 30 auto;
   padding: 30px 0;
-  background-color: #f5f5f5;
+  background-color: #f5f5f5 !important;
 }
 
 .content-tabs {
@@ -19,18 +17,18 @@
 
 .tab-button {
   padding: 12px 20px;
-  background-color: #e9ecef;
+  background-color: #e9ecef !important;
   border: none;
   border-radius: 5px;
   font-weight: bold;
-  color: #495057;
+  color: #495057 !important;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .tab-button.active {
-  background-color: #007bff;
-  color: white;
+  background-color: #042354 !important;
+  color: white !important;
 }
 
 .tab-button:hover:not(.active) {
@@ -40,6 +38,7 @@
 .users-list {
   margin-top: 20px;
   background-color: #fff;
+  color: black;
   border-radius: 8px;
   padding: 25px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -144,18 +143,20 @@
 .form-group {
   display: flex;
   flex-direction: column;
+  color: black !important;
 }
 
 .form-group label {
   margin-bottom: 8px;
   font-weight: bold;
-  color: #495057;
+  color: #495057 !important;
 }
 
 .form-group input,
 .form-group select {
   padding: 12px;
   border: 1px solid #ddd;
+  color: black !important;
   border-radius: 5px;
   font-size: 15px;
   transition: border 0.3s ease;
@@ -369,6 +370,7 @@
   width: 100%;
   padding: 10px 35px 10px 15px;
   border: 1px solid #ddd;
+  color: black !important;
   border-radius: 5px;
   font-size: 15px;
   transition: border 0.3s ease, box-shadow 0.3s ease;
@@ -414,6 +416,7 @@
 .filter-select {
   padding: 10px 15px;
   border: 1px solid #ddd;
+  color: black !important;
   border-radius: 5px;
   font-size: 15px;
   min-width: 150px;
@@ -454,4 +457,19 @@
   .filter-select {
     flex: 1;
   }
+}
+
+.submit-form-action {
+  background-color: #1d427d !important;
+  padding: 15px;
+  border-radius: 5px;
+  color: white !important;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.submit-form-action:hover {
+  background-color: #042354 !important;
 }

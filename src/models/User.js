@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
-      default: "/images/default-avatar.png", // Đường dẫn mặc định đến ảnh đại diện
+      default: "/Img/default-avatar.png", // Đường dẫn mặc định đến ảnh đại diện
     },
     isVerified: { type: Boolean, default: false },
     verificationCode: { type: String },
@@ -38,5 +38,25 @@ const userSchema = new mongoose.Schema(
 );
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);
+userSchema.pre("save", function (next) {
+  // Nếu avatar là base64, kiểm tra format
+  if (this.avatar && this.avatar.startsWith("data:image/")) {
+    const base64Regex = /^data:image\/(jpeg|jpg|png|gif|webp);base64,/;
+    if (!base64Regex.test(this.avatar)) {
+      return next(new Error("Định dạng avatar base64 không hợp lệ"));
+    }
+
+    // Kiểm tra kích thước base64 (tối đa 5MB)
+    const base64Data = this.avatar.split(",")[1];
+    const padding = (base64Data.match(/=/g) || []).length;
+    const bytes = (base64Data.length * 3) / 4 - padding;
+
+    if (bytes > 5 * 1024 * 1024) {
+      return next(new Error("Kích thước avatar không được vượt quá 5MB"));
+    }
+  }
+
+  next();
+});
 
 export default User;

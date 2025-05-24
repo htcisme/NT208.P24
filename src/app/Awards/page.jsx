@@ -17,7 +17,7 @@ const images = [
 export default function Awards() {
   // State để quản lý hình ảnh hiện tại
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  
+
   // State để quản lý dữ liệu awards
   const [awards, setAwards] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -39,22 +39,22 @@ export default function Awards() {
     const fetchAwards = async () => {
       try {
         setLoading(true);
-        const response = await fetch('/api/awards');
-        
+        const response = await fetch("/api/awards");
+
         if (!response.ok) {
-          throw new Error('Không thể tải danh sách giải thưởng');
+          throw new Error("Không thể tải danh sách giải thưởng");
         }
-        
+
         const data = await response.json();
-        
+
         if (data.success) {
           setAwards(data.data);
         } else {
-          throw new Error(data.message || 'Lỗi khi tải dữ liệu');
+          throw new Error(data.message || "Lỗi khi tải dữ liệu");
         }
       } catch (err) {
         setError(err.message);
-        console.error('Error fetching awards:', err);
+        console.error("Error fetching awards:", err);
       } finally {
         setLoading(false);
       }
@@ -83,7 +83,8 @@ export default function Awards() {
         {/* Tiêu đề */}
         <section className="title-section">
           <h1 className="main-title">
-            ĐOÀN KHOA MẠNG MÁY TÍNH VÀ TRUYỀN THÔNG LÀ ĐƠN VỊ XUẤT SẮC DẪN ĐẦU <br />
+            ĐOÀN KHOA MẠNG MÁY TÍNH VÀ TRUYỀN THÔNG LÀ ĐƠN VỊ XUẤT SẮC DẪN ĐẦU{" "}
+            <br />
             TRONG CÔNG TÁC ĐOÀN VÀ PHONG TRÀO THANH NIÊN
           </h1>
           <p className="subtitle">NĂM HỌC 2023 - 2024</p>
@@ -92,7 +93,7 @@ export default function Awards() {
         {/* Hình ảnh tràn viền */}
         <section className="full-width-image">
           <Image
-            src="/Img/Awards/BanChapHanhDoanKhoa.png" 
+            src="/Img/Awards/BanChapHanhDoanKhoa.png"
             alt="Award Banner"
             width={1920}
             height={600}
@@ -136,7 +137,9 @@ export default function Awards() {
                 {images.map((_, index) => (
                   <span
                     key={index}
-                    className={`dot ${currentImageIndex === index ? "active" : ""}`}
+                    className={`dot ${
+                      currentImageIndex === index ? "active" : ""
+                    }`}
                     onClick={() => handleDotClick(index)}
                   ></span>
                 ))}
@@ -155,13 +158,15 @@ export default function Awards() {
             ) : error ? (
               <div className="error-container">
                 <p>{error}</p>
-                <button onClick={() => window.location.reload()}>Thử lại</button>
+                <button onClick={() => window.location.reload()}>
+                  Thử lại
+                </button>
               </div>
             ) : (
               Object.entries(groupedAwards).map(([organization, orgAwards]) => (
                 <div key={organization} className="timeline-item">
                   <h3>{organization} trao tặng</h3>
-                  {orgAwards.map(award => (
+                  {orgAwards.map((award) => (
                     <p key={award._id}>
                       {award.content} ({award.year})
                     </p>
@@ -169,7 +174,7 @@ export default function Awards() {
                 </div>
               ))
             )}
-            
+
             {/* Hiển thị tin nhắn nếu không có dữ liệu */}
             {!loading && !error && awards.length === 0 && (
               <div className="timeline-item">
@@ -181,9 +186,10 @@ export default function Awards() {
 
         <div className="timeline-description">
           <p>
-            Hơn thế, Đoàn khoa còn là đơn vị xuất sắc dẫn đầu trong công tác Đoàn và phong trào sinh viên, nhận Cờ thi đua
-            của Đoàn trường năm học 2014-2015, 2017-2018, 2018-2019, đề nghị Tặng Cờ thi đua đơn vị xuất sắc của Ban Chấp 
-            hành Thành Đoàn thành phố Hồ Chí Minh.
+            Hơn thế, Đoàn khoa còn là đơn vị xuất sắc dẫn đầu trong công tác
+            Đoàn và phong trào sinh viên, nhận Cờ thi đua của Đoàn trường năm
+            học 2014-2015, 2017-2018, 2018-2019, đề nghị Tặng Cờ thi đua đơn vị
+            xuất sắc của Ban Chấp hành Thành Đoàn thành phố Hồ Chí Minh.
           </p>
         </div>
 
