@@ -93,7 +93,7 @@ body {
   color: white;
   border: none;
   cursor: pointer;
-  font-weight: bold;
+  font-weight: 500;
   font-size: 16px;
 }
 
@@ -433,7 +433,7 @@ body {
   cursor: pointer;
   font-size: 16px;
   color: #1a3b7c;
-  font-weight: bold;
+  font-weight: 500;
   transition: background-color 0.2s, color 0.2s;
 }
 
@@ -707,7 +707,7 @@ body {
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
-  font-weight: bold;
+  font-weight: 500;
   transition: background-color 0.3s;
 }
 
