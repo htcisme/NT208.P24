@@ -40,12 +40,19 @@ export async function GET(request) {
           $and: [
             {
               $or: [
-                // Tin nhắn gửi đến admin
+                // Tin nhắn gửi đến admin hoặc các admin khác
                 { receiver: "admin" },
-                // Tin nhắn admin gửi đi
-                { sender: admin._id.toString() },
+                // Tin nhắn admin gửi đi cho users
+                {
+                  sender: {
+                    $in: await User.find({ role: "admin" })
+                      .distinct("_id")
+                      .then((ids) => ids.map((id) => id.toString())),
+                  },
+                },
               ],
             },
+            { isBot: { $ne: true } }, // Loại trừ tin nhắn bot
           ],
         },
       },
@@ -76,7 +83,7 @@ export async function GET(request) {
       },
       {
         $match: {
-          "_id.userId": { $ne: admin._id.toString() }, // Loại bỏ chính admin
+          "_id.userId": { $ne: admin._id.toString() }, // Loại bỏ chính admin đang đăng nhập
         },
       },
       {
@@ -88,7 +95,7 @@ export async function GET(request) {
     const usersWithUnread = await Promise.all(
       distinctSenders.map(async (sender) => {
         const unreadCount = await Chat.countDocuments({
-          sender: sender._id,
+          sender: sender._id.userId,
           receiver: "admin",
           isRead: false,
           isBot: false, // Không đếm tin nhắn từ bot
@@ -162,6 +169,7 @@ export async function POST(request) {
         { status: 400 }
       );
     }
+
     const admin = await User.findById(adminId);
     if (!admin || admin.role !== "admin") {
       return NextResponse.json(
@@ -172,12 +180,27 @@ export async function POST(request) {
         { status: 403 }
       );
     }
+
+    // Lấy thông tin người nhận
+    const receiver = await User.findById(userId);
+    if (!receiver) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Người nhận không tồn tại",
+        },
+        { status: 404 }
+      );
+    }
+
     // Tạo tin nhắn mới từ admin cho user
     const newMessage = new Chat({
       sender: adminId,
       senderName: admin.name,
       receiver: userId,
+      receiverName: receiver.name,
       content,
+      isAdmin: true, // Đánh dấu đây là tin nhắn từ admin
       createdAt: new Date(),
       updatedAt: new Date(),
     });

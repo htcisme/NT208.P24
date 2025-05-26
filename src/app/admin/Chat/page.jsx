@@ -224,24 +224,35 @@ function AdminChatDashboard() {
                     </div>
                   ) : (
                     <>
-                      {messages.map((msg) => (
-                        <div
-                          key={msg._id}
-                          className={`message-item ${
-                            msg.sender === user.id
-                              ? "admin-message"
-                              : "user-message"
-                          }`}
-                        >
-                          {msg.isBot && <div className="bot-tag">BOT</div>}
-                          <div className="message-content">
-                            <p>{msg.content}</p>
-                            <span className="message-time">
-                              {new Date(msg.createdAt).toLocaleString()}
-                            </span>
+                      {messages.map((msg) => {
+                        // Kiểm tra xem tin nhắn có phải từ admin không
+                        const isFromAdmin =
+                          msg.isAdmin || msg.receiver === selectedUser.userId;
+
+                        return (
+                          <div
+                            key={msg._id}
+                            className={`message-item ${
+                              isFromAdmin ? "admin-message" : "user-message"
+                            }`}
+                          >
+                            {msg.isBot && <div className="bot-tag">BOT</div>}
+                            <div className="message-content">
+                              <p>{msg.content}</p>
+                              <div className="message-footer">
+                                <span className="message-time">
+                                  {new Date(msg.createdAt).toLocaleString()}
+                                </span>
+                                {isFromAdmin && (
+                                  <span className="sender-name">
+                                    - {msg.senderName || "Admin"}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                       <div ref={messagesEndRef} />
                     </>
                   )}
