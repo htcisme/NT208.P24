@@ -21,7 +21,9 @@ const ActivitiesDashboard = () => {
   // Khởi tạo state với mảng rỗng thay vì dữ liệu mẫu
   const [tasks, setTasks] = useState([]);
   const [comments, setComments] = useState([]);
+  const [realComments, setRealComments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [commentLoading, setCommentLoading] = useState(false);
   const [error, setError] = useState(null);
 
   // State cho việc tải ảnh lên
@@ -55,48 +57,92 @@ const ActivitiesDashboard = () => {
   });
   const [showBatchEditModal, setShowBatchEditModal] = useState(false);
 
+  // Fetch activities
+  const fetchActivities = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch("/api/activities?limit=100000");
+
+      if (!response.ok) {
+        throw new Error("Không thể lấy dữ liệu hoạt động");
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Chuyển đổi dữ liệu API thành định dạng hiện tại của ứng dụng
+        const formattedTasks = data.data.map((activity) => ({
+          id: activity._id,
+          slug: activity.slug,
+          title: activity.title,
+          content: activity.content,
+          author: activity.author,
+          time: formatDate(activity.createdAt),
+          image: activity.image,
+          status: activity.status,
+          commentOption: activity.commentOption,
+          type: activity.type || "other",
+          selected: false,
+        }));
+
+        setTasks(formattedTasks);
+      } else {
+        throw new Error(data.message || "Lỗi khi lấy dữ liệu hoạt động");
+      }
+    } catch (error) {
+      console.error("Error fetching activities:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch real comments
+  const fetchRealComments = async () => {
+    try {
+      setCommentLoading(true);
+      const response = await fetch("/api/admin/comments?limit=50");
+      
+      if (!response.ok) {
+        throw new Error("Không thể lấy dữ liệu bình luận");
+      }
+
+      const data = await response.json();
+      
+      if (data.success) {
+        const formattedComments = data.data.map((comment) => ({
+          id: comment._id,
+          slug: comment._id, // Use comment ID as slug for selection
+          comment: comment.content,
+          author: comment.author,
+          time: formatDate(comment.createdAt),
+          activityTitle: comment.activityTitle,
+          activitySlug: comment.activitySlug,
+          reply: comment.replyTo ? "Trả lời bình luận" : "",
+          selected: false,
+          isReplying: false,
+          isEditing: false,
+        }));
+        
+        setRealComments(formattedComments);
+      } else {
+        throw new Error(data.message || "Lỗi khi lấy dữ liệu bình luận");
+      }
+    } catch (error) {
+      console.error("Error fetching real comments:", error);
+      setError(error.message);
+    } finally {
+      setCommentLoading(false);
+    }
+  };
+
   // Fetch dữ liệu khi component được mount
   useEffect(() => {
-    const fetchActivities = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch("/api/activities?limit=100000");
-
-        if (!response.ok) {
-          throw new Error("Không thể lấy dữ liệu hoạt động");
-        }
-
-        const data = await response.json();
-
-        if (data.success) {
-          // Chuyển đổi dữ liệu API thành định dạng hiện tại của ứng dụng
-          const formattedTasks = data.data.map((activity) => ({
-            id: activity._id,
-            slug: activity.slug,
-            title: activity.title,
-            content: activity.content,
-            author: activity.author,
-            time: formatDate(activity.createdAt),
-            image: activity.image,
-            status: activity.status,
-            commentOption: activity.commentOption,
-            type: activity.type || "other",
-            selected: false,
-          }));
-
-          setTasks(formattedTasks);
-        } else {
-          throw new Error(data.message || "Lỗi khi lấy dữ liệu hoạt động");
-        }
-      } catch (error) {
-        console.error("Error fetching activities:", error);
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
+    const fetchData = async () => {
+      await Promise.all([fetchActivities(), fetchRealComments()]);
     };
-
-    fetchActivities();
+    
+    fetchData();
   }, []);
 
   // Xử lý khi chọn ảnh
@@ -125,11 +171,11 @@ const ActivitiesDashboard = () => {
     );
   };
 
-  // Handle checkbox selection for comments
-  const handleCommentSelection = (slug) => {
-    setComments(
-      comments.map((comment) =>
-        comment.slug === slug
+  // Handle checkbox selection for real comments
+  const handleRealCommentSelection = (id) => {
+    setRealComments(
+      realComments.map((comment) =>
+        comment.id === id
           ? { ...comment, selected: !comment.selected }
           : comment
       )
@@ -141,11 +187,75 @@ const ActivitiesDashboard = () => {
     setTasks(tasks.map((task) => ({ ...task, selected: e.target.checked })));
   };
 
-  // Handle select all comments
-  const handleSelectAllComments = (e) => {
-    setComments(
-      comments.map((comment) => ({ ...comment, selected: e.target.checked }))
+  // Handle select all real comments
+  const handleSelectAllRealComments = (e) => {
+    setRealComments(
+      realComments.map((comment) => ({ ...comment, selected: e.target.checked }))
     );
+  };
+
+  // Delete real comment
+  const deleteRealComment = async (commentId) => {
+    const comment = realComments.find(c => c.id === commentId);
+    if (!comment) return;
+
+    if (window.confirm("Bạn có chắc muốn xóa bình luận này?")) {
+      try {
+        const response = await fetch("/api/admin/comments", {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            commentId: comment.id,
+            activitySlug: comment.activitySlug,
+          }),
+        });
+
+        if (response.ok) {
+          setRealComments(realComments.filter((c) => c.id !== commentId));
+          alert("Xóa bình luận thành công!");
+        } else {
+          throw new Error("Lỗi khi xóa bình luận");
+        }
+      } catch (error) {
+        console.error("Lỗi khi xóa bình luận:", error);
+        alert("Có lỗi xảy ra khi xóa bình luận!");
+      }
+    }
+  };
+
+  // Update real comment
+  const updateRealComment = async (commentId, newContent) => {
+    const comment = realComments.find(c => c.id === commentId);
+    if (!comment) return;
+
+    try {
+      const response = await fetch(`/api/admin/comments/${commentId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content: newContent,
+          activitySlug: comment.activitySlug,
+        }),
+      });
+
+      if (response.ok) {
+        setRealComments(
+          realComments.map((c) =>
+            c.id === commentId ? { ...c, comment: newContent, isEditing: false } : c
+          )
+        );
+        alert("Cập nhật bình luận thành công!");
+      } else {
+        throw new Error("Lỗi khi cập nhật bình luận");
+      }
+    } catch (error) {
+      console.error("Lỗi khi cập nhật bình luận:", error);
+      alert("Có lỗi xảy ra khi cập nhật bình luận!");
+    }
   };
 
   // Execute batch action on tasks
@@ -228,6 +338,22 @@ const ActivitiesDashboard = () => {
     setTasks((prev) => prev.map((task) => ({ ...task, selected: false })));
   };
 
+  // Execute batch action on real comments
+  const executeBatchActionOnRealComments = () => {
+    const selectedComments = realComments.filter((comment) => comment.selected);
+    
+    if (selectedComments.length === 0) {
+      alert("Vui lòng chọn ít nhất một bình luận!");
+      return;
+    }
+    
+    if (commentBatchAction === "delete") {
+      if (window.confirm(`Bạn có chắc muốn xóa ${selectedComments.length} bình luận đã chọn?`)) {
+        selectedComments.forEach(comment => deleteRealComment(comment.id));
+      }
+    }
+  };
+
   // Hàm thực hiện batch edit sau khi user chọn options
   const executeBatchEdit = async () => {
     const selectedTasks = tasks.filter((task) => task.selected);
@@ -279,25 +405,6 @@ const ActivitiesDashboard = () => {
     }
   };
 
-  // Execute batch action on comments
-  const executeBatchActionOnComments = () => {
-    if (commentBatchAction === "delete") {
-      setComments(comments.filter((comment) => !comment.selected));
-    } else if (commentBatchAction === "edit") {
-      // For simplicity, edit the first selected comment
-      const selectedComment = comments.find((comment) => comment.selected);
-      if (selectedComment) {
-        toggleEdit(selectedComment.slug);
-      }
-    } else if (commentBatchAction === "reply") {
-      // For simplicity, reply to the first selected comment
-      const selectedComment = comments.find((comment) => comment.selected);
-      if (selectedComment) {
-        toggleReply(selectedComment.slug);
-      }
-    }
-  };
-
   // Delete a single task
   const deleteTask = async (slug) => {
     if (window.confirm("Bạn có chắc muốn xóa bài viết này?")) {
@@ -316,11 +423,6 @@ const ActivitiesDashboard = () => {
         alert("Có lỗi xảy ra khi xóa bài viết!");
       }
     }
-  };
-
-  // Delete a single comment
-  const deleteComment = (slug) => {
-    setComments(comments.filter((comment) => comment.slug !== slug));
   };
 
   // Copy a task
@@ -448,64 +550,6 @@ const ActivitiesDashboard = () => {
       console.error("Lỗi khi cập nhật bài viết:", error);
       alert("Có lỗi xảy ra khi cập nhật bài viết: " + error.message);
     }
-  };
-
-  // Toggle reply for a comment
-  const toggleReply = (slug) => {
-    setComments(
-      comments.map((comment) =>
-        comment.slug === slug
-          ? { ...comment, isReplying: !comment.isReplying, isEditing: false }
-          : { ...comment, isReplying: false }
-      )
-    );
-    setReplyCommentText("");
-  };
-
-  // Toggle edit for a comment
-  const toggleEdit = (slug) => {
-    const commentToEdit = comments.find((comment) => comment.slug === slug);
-    setEditCommentText(commentToEdit.comment);
-
-    setComments(
-      comments.map((comment) =>
-        comment.slug === slug
-          ? { ...comment, isEditing: !comment.isEditing, isReplying: false }
-          : { ...comment, isEditing: false }
-      )
-    );
-  };
-
-  // Submit comment reply
-  const submitReply = (slug) => {
-    if (replyCommentText.trim() === "") return;
-
-    const newComment = {
-      id: Date.now(),
-      comment: replyCommentText,
-      author: "Nguyễn Đình Khang",
-      time: formatDate(new Date()),
-      reply: comments.find((comment) => comment.slug === slug).comment,
-      selected: false,
-      isReplying: false,
-      isEditing: false,
-    };
-
-    setComments([...comments, newComment]);
-    toggleReply(slug);
-  };
-
-  // Submit comment edit
-  const submitEdit = (slug) => {
-    if (editCommentText.trim() === "") return;
-
-    setComments(
-      comments.map((comment) =>
-        comment.slug === slug
-          ? { ...comment, comment: editCommentText, isEditing: false }
-          : comment
-      )
-    );
   };
 
   // Hàm format date
@@ -961,9 +1005,10 @@ const ActivitiesDashboard = () => {
         {activeView === "addPage" && renderPageEditor(false)}
         {activeView === "editPage" && renderPageEditor(true)}
 
+        {/* Real Comments Section */}
         <div className="comment-section">
           <div className="section-header">
-            <h3>BÌNH LUẬN</h3>
+            <h3>BÌNH LUẬN ({realComments.length})</h3>
             <div className="batch-action-container">
               <select
                 className="batch-action-select"
@@ -972,106 +1017,105 @@ const ActivitiesDashboard = () => {
               >
                 <option value="delete">Xóa</option>
                 <option value="edit">Chỉnh sửa</option>
-                <option value="reply">Trả lời</option>
               </select>
               <button
                 className="btn-batch-action"
-                onClick={executeBatchActionOnComments}
+                onClick={executeBatchActionOnRealComments}
               >
                 THỰC HIỆN
+              </button>
+              <button
+                className="btn-refresh"
+                onClick={fetchRealComments}
+                disabled={commentLoading}
+              >
+                {commentLoading ? "Đang tải..." : "Làm mới"}
               </button>
             </div>
           </div>
 
-          {comments.length > 0 ? (
+          {commentLoading ? (
+            <div className="loading">Đang tải bình luận...</div>
+          ) : realComments.length > 0 ? (
             <table className="data-table">
               <thead>
                 <tr>
                   <th className="checkbox-col">
                     <input
                       type="checkbox"
-                      onChange={handleSelectAllComments}
+                      onChange={handleSelectAllRealComments}
                       checked={
-                        comments.length > 0 &&
-                        comments.every((comment) => comment.selected)
+                        realComments.length > 0 &&
+                        realComments.every((comment) => comment.selected)
                       }
                     />
                   </th>
                   <th>BÌNH LUẬN</th>
                   <th>TÁC GIẢ</th>
+                  <th>BÀI VIẾT</th>
                   <th>THỜI GIAN</th>
-                  <th>TRẢ LỜI CHO</th>
                   <th>TÁC VỤ</th>
                 </tr>
               </thead>
               <tbody>
-                {comments.map((comment) => (
-                  <React.Fragment key={comment.slug}>
+                {realComments.map((comment) => (
+                  <React.Fragment key={comment.id}>
                     <tr className="comment-row">
                       <td>
                         <input
                           type="checkbox"
                           checked={comment.selected}
-                          onChange={() => handleCommentSelection(comment.slug)}
+                          onChange={() => handleRealCommentSelection(comment.id)}
                         />
                       </td>
-                      <td className="comment-text">{comment.comment}</td>
+                      <td className="comment-text">
+                        <div style={{ 
+                          maxWidth: '300px', 
+                          overflow: 'hidden', 
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap'
+                        }}>
+                          {comment.comment}
+                        </div>
+                      </td>
                       <td>{comment.author}</td>
+                      <td>
+                        <a 
+                          href={`/Activities/${comment.activitySlug}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ color: '#042354', textDecoration: 'none' }}
+                        >
+                          {comment.activityTitle}
+                        </a>
+                      </td>
                       <td>{comment.time}</td>
-                      <td>{comment.reply}</td>
                       <td>
                         <button
-                          className="action-btn reply-btn"
-                          onClick={() => toggleReply(comment.slug)}
-                        >
-                          Trả lời
-                        </button>
-                        <button
                           className="action-btn edit-btn"
-                          onClick={() => toggleEdit(comment.slug)}
+                          onClick={() => {
+                            setRealComments(
+                              realComments.map((c) =>
+                                c.id === comment.id
+                                  ? { ...c, isEditing: !c.isEditing }
+                                  : { ...c, isEditing: false }
+                              )
+                            );
+                            if (!comment.isEditing) {
+                              setEditCommentText(comment.comment);
+                            }
+                          }}
                         >
-                          Chỉnh sửa
+                          {comment.isEditing ? "Hủy" : "Chỉnh sửa"}
                         </button>
                         <button
                           className="action-btn delete-btn"
-                          onClick={() => deleteComment(comment.slug)}
+                          onClick={() => deleteRealComment(comment.id)}
                         >
                           Xóa
                         </button>
                       </td>
                     </tr>
-
-                    {comment.isReplying && (
-                      <tr className="reply-row">
-                        <td colSpan="6">
-                          <div className="reply-container">
-                            <h4>Trả lời bình luận</h4>
-                            <textarea
-                              value={replyCommentText}
-                              onChange={(e) =>
-                                setReplyCommentText(e.target.value)
-                              }
-                              className="reply-textarea"
-                              placeholder="Nhập trả lời của bạn"
-                            />
-                            <div className="reply-actions">
-                              <button
-                                className="btn-publish"
-                                onClick={() => submitReply(comment.slug)}
-                              >
-                                Bình luận
-                              </button>
-                              <button
-                                className="btn-cancel"
-                                onClick={() => toggleReply(comment.slug)}
-                              >
-                                Hủy
-                              </button>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    )}
 
                     {comment.isEditing && (
                       <tr className="edit-row">
@@ -1080,21 +1124,32 @@ const ActivitiesDashboard = () => {
                             <h4>Chỉnh sửa bình luận</h4>
                             <textarea
                               value={editCommentText}
-                              onChange={(e) =>
-                                setEditCommentText(e.target.value)
-                              }
+                              onChange={(e) => setEditCommentText(e.target.value)}
                               className="edit-textarea"
+                              rows="3"
                             />
                             <div className="edit-actions">
                               <button
                                 className="btn-publish"
-                                onClick={() => submitEdit(comment.slug)}
+                                onClick={() => {
+                                  if (editCommentText.trim()) {
+                                    updateRealComment(comment.id, editCommentText.trim());
+                                  }
+                                }}
                               >
                                 Cập nhật
                               </button>
                               <button
                                 className="btn-cancel"
-                                onClick={() => toggleEdit(comment.slug)}
+                                onClick={() => {
+                                  setRealComments(
+                                    realComments.map((c) =>
+                                      c.id === comment.id
+                                        ? { ...c, isEditing: false }
+                                        : c
+                                    )
+                                  );
+                                }}
                               >
                                 Hủy
                               </button>
@@ -1111,6 +1166,7 @@ const ActivitiesDashboard = () => {
             <div className="no-data-message">Chưa có bình luận nào.</div>
           )}
         </div>
+
         {showBatchEditModal && (
           <div className="modal-overlay">
             <div className="modal-content">

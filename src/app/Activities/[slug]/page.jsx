@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import Footer from "@/components/Footer";
+import CommentSection from "@/components/Comments/CommentSection";
 import "@/styles-comp/style.css";
 import "@/app/Activities/activity-detail.css";
 
@@ -89,7 +90,7 @@ export default function ActivityPost() {
 
     const daysOfWeek = [
       "Chủ Nhật",
-      "Thứ Hai", 
+      "Thứ Hai",
       "Thứ Ba",
       "Thứ Tư",
       "Thứ Năm",
@@ -112,123 +113,207 @@ export default function ActivityPost() {
     return `${hours}:${minutes} - ${day}/${month}/${year}`;
   };
 
+  // Helper function để lấy nhãn loại hoạt động
+  const getActivityTypeLabel = (type) => {
+    const typeLabels = {
+      news: "Tin tức",
+      academic: "Học tập",
+      competition: "Cuộc thi",
+      seminar: "Seminar",
+      research: "Nghiên cứu",
+      course: "Khóa học",
+      volunteer: "Tình nguyện",
+      sport: "Thể thao",
+      event: "Sự kiện",
+      conference: "Hội nghị",
+      vnutour: "VNUTour",
+      netsec: "Netsec",
+      internship: "Thực tập",
+      scholarship: "Học bổng",
+      startup: "Khởi nghiệp",
+      jobfair: "Ngày hội việc làm",
+      career: "Hướng nghiệp",
+      other: "Khác"
+    };
+
+    return typeLabels[type] || "Khác";
+  };
+
   if (loading) {
     return (
-      <div className="activity-detail-page">
-        <div className="activity-detail-container">
-          <div className="loading-message">Đang tải bài viết...</div>
+      <div className="min-h-screen">
+        <div className="activity-detail-page">
+          <div className="activity-detail-container">
+            <div className="loading-container">
+              <div className="loading-spinner"></div>
+              <p>Đang tải bài viết...</p>
+            </div>
+          </div>
         </div>
+        <Footer />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="activity-detail-page">
-        <div className="activity-detail-container">
-          <div className="error-message">{error}</div>
+      <div className="min-h-screen">
+        <div className="activity-detail-page">
+          <div className="activity-detail-container">
+            <div className="error-container">
+              <h2>Lỗi</h2>
+              <p>{error}</p>
+              <Link href="/Activities" className="back-button">
+                ← Quay lại trang hoạt động
+              </Link>
+            </div>
+          </div>
         </div>
+        <Footer />
       </div>
     );
   }
 
   if (!post) {
     return (
-      <div className="activity-detail-page">
-        <div className="activity-detail-container">
-          <div className="error-message">Không tìm thấy bài viết</div>
+      <div className="min-h-screen">
+        <div className="activity-detail-page">
+          <div className="activity-detail-container">
+            <div className="error-container">
+              <h2>Không tìm thấy bài viết</h2>
+              <Link href="/Activities" className="back-button">
+                ← Quay lại trang hoạt động
+              </Link>
+            </div>
+          </div>
         </div>
+        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="activity-detail-page">
-      <div className="activity-detail-container">
-        <div className="activity-content">
-          <div className="activity-header">
-            <h1>{post.title}</h1>
-            <div className="activity-meta">
-              <span className="author">Tác giả: {post.author}</span>
-              <span className="date">{formatDate(post.createdAt)}</span>
-            </div>
-          </div>
+    <div className="min-h-screen">
+      <main className="activity-detail-page">
+        <div className="activity-detail-container">
+          {/* Main Content */}
+          <div className="activity-content">
+            {/* Article Header */}
+            <header className="activity-header">
+              <h1 className="activity-title">{post.title}</h1>
 
-          {post.image && (
-            <div className="activity-image">
-              <Image
-                src={post.image}
-                alt={post.title}
-                width={800}
-                height={400}
-                style={{
-                  width: '100%',
-                  height: 'auto',
-                }}
-              />
-            </div>
-          )}
-
-          <div
-            className="activity-body"
-            dangerouslySetInnerHTML={{ __html: post.content }}
-          />
-
-          {/* Nút trở về */}
-          <div className="post-actions">
-            <Link href="/Activities" className="back-button">
-              Trở về
-            </Link>
-          </div>
-        </div>
-
-        {/* Sidebar tin tức mới nhất - ĐỒNG BỘ VỚI ACTIVITIES PAGE */}
-        <div className="activity-sidebar">
-          <h3>TIN TỨC MỚI NHẤT</h3>
-
-          {/* Loading state */}
-          {loadingNews && (
-            <div className="loading-news">
-              <p>Đang tải tin tức...</p>
-            </div>
-          )}
-
-          {/* Error state */}
-          {errorNews && (
-            <div className="error-news">
-              <p>{errorNews}</p>
-            </div>
-          )}
-
-          {/* News list */}
-          {!loadingNews && !errorNews && (
-            <>
-              <ul className="light-news-list">
-                {latestNews.length > 0 ? (
-                  latestNews.map((news) => (
-                    <li key={news._id}>
-                      <Link href={`/Activities/${news.slug || news._id}`}>
-                        {news.title}
-                      </Link>
-                      <span className="news-date">
-                        {formatNewsDate(news.createdAt)}
-                      </span>
-                    </li>
-                  ))
-                ) : (
-                  <li>Không có tin tức mới.</li>
+              <div className="activity-meta">
+                <div className="meta-item">
+                  <span className="meta-label">Tác giả:</span>
+                  <span className="meta-value">{post.author}</span>
+                </div>
+                <div className="meta-item">
+                  <span className="meta-label">Thời gian:</span>
+                  <span className="meta-value">{formatDate(post.createdAt)}</span>
+                </div>
+                {post.type && (
+                  <div className="meta-item">
+                    <span className="meta-label">Loại:</span>
+                    <span className={`activity-type-badge ${post.type}`}>
+                      {getActivityTypeLabel(post.type)}
+                    </span>
+                  </div>
                 )}
-              </ul>
-              
-              {/* See more button */}
-              <div className="light-news-more">
-                <Link href="/ActivitiesOverview">Xem thêm</Link>
               </div>
-            </>
-          )}
+            </header>
+
+            {/* Featured Image */}
+            {post.image && (
+              <div className="activity-image">
+                <img
+                  src={post.image}
+                  alt={post.title}
+                  className="featured-image"
+                  style={{
+                    width: '100%',
+                    height: 'auto',
+                  }}
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              </div>
+            )}
+
+            {/* Article Content */}
+            <div className="activity-body">
+              <div
+                className="content-text"
+                style={{ whiteSpace: 'pre-wrap' }}
+              >
+                {post.content}
+              </div>
+            </div>
+
+            {/* Article Footer */}
+            <footer className="activity-footer">
+              <div className="post-actions">
+                <Link href="/Activities" className="back-button">
+                  ← Trở về
+                </Link>
+              </div>
+            </footer>
+
+            {/* Comment Section - Tích hợp ở đây */}
+            <CommentSection
+              activitySlug={post.slug}
+              commentOption={post.commentOption}
+            />
+          </div>
+
+          {/* Sidebar tin tức mới nhất */}
+          <aside className="activity-sidebar">
+            <h3>TIN TỨC MỚI NHẤT</h3>
+
+            {/* Loading state */}
+            {loadingNews && (
+              <div className="loading-news">
+                <p>Đang tải tin tức...</p>
+              </div>
+            )}
+
+            {/* Error state */}
+            {errorNews && (
+              <div className="error-news">
+                <p>{errorNews}</p>
+              </div>
+            )}
+
+            {/* News list */}
+            {!loadingNews && !errorNews && (
+              <>
+                <ul className="light-news-list">
+                  {latestNews.length > 0 ? (
+                    latestNews.map((news) => (
+                      <li key={news._id}>
+                        <Link href={`/Activities/${news.slug || news._id}`}>
+                          {news.title}
+                        </Link>
+                        <span className="news-date">
+                          {formatNewsDate(news.createdAt)}
+                        </span>
+                      </li>
+                    ))
+                  ) : (
+                    <li>Không có tin tức mới.</li>
+                  )}
+                </ul>
+
+                {/* See more button */}
+                <div className="light-news-more">
+                  <Link href="/ActivitiesOverview">Xem thêm</Link>
+                </div>
+              </>
+            )}
+          </aside>
         </div>
-      </div>
-      <Footer />
+        <Footer />
+      </main>
     </div>
   );
 }

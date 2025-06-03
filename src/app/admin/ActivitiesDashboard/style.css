@@ -957,3 +957,58 @@ button:disabled {
   justify-content: flex-end;
   margin-top: 20px;
 }
+
+.btn-refresh {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+  margin-left: 10px;
+}
+
+.btn-refresh:hover:not(:disabled) {
+  background-color: #218838;
+}
+
+.btn-refresh:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.comment-text {
+  max-width: 300px;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.comment-section .section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.comment-section .section-header h3 {
+  margin: 0;
+  color: #042354;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.comment-section .batch-action-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

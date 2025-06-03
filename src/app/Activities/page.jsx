@@ -97,11 +97,11 @@ function ActivitiesContent() {
 
   // Danh sách 5 sự kiện với tiêu đề (có thể thêm hình ảnh sau)
   const events = [
-    { title: "VNU TOUR 2024", image: "/path-to-image-1.jpg" },
-    { title: "NGỌN ĐUỐC XANH 2025", image: "/path-to-image-2.jpg" },
-    { title: "NETSEC DAY 2024", image: "/path-to-image-3.jpg" },
-    { title: "EVENT 4 2024", image: "/path-to-image-4.jpg" },
-    { title: "EVENT 5 2024", image: "/path-to-image-5.jpg" },
+    { title: "VNU TOUR 2024", image: "/Img/Activities/Figure2-VNU-Tour.png" },
+    { title: "NGỌN ĐUỐC XANH 2025", image: "/Img/Activities/Figure3-Ngon-Duoc-Xanh.png" },
+    { title: "NETSEC DAY 2024", image: "/Img/Activities/Figure5-NETSEC-Day.png" },
+    { title: "TRUYỀN THÔNG TẾT 2025", image: "/Img/Activities/Figure4-Truyen-thong-Tet.png" },
+    { title: "CHÀO ĐÓN TSV KHÓA 2024", image: "/Img/Activities/Figure6-Tan-sinh-vien.png" },
   ];
 
   // Trạng thái để quản lý vị trí bắt đầu của slider
@@ -138,7 +138,7 @@ function ActivitiesContent() {
             </div>
             <div className="light-section-highlight">
               <Image
-                src="/path-to-image.jpg"
+                src="/Img/Activities/Figure1-Overall-Activities.png"
                 alt="Highlight"
                 width={800}
                 height={400}
@@ -220,7 +220,6 @@ function ActivitiesContent() {
           </div>
         </div>
 
-        {/* Slider hoạt động */}
         <section className="light-slider-container">
           <button className="light-slider-arrow" onClick={handlePrev}>
             ←
@@ -228,10 +227,29 @@ function ActivitiesContent() {
           {visibleEvents.map((event, index) => (
             <div className="light-slider-item" key={index}>
               <div
-                className={`slider-image-placeholder ${
-                  index === 1 ? "active" : ""
-                }`}
-              ></div>
+                className={`slider-image-placeholder ${index === 1 ? "active" : ""
+                  }`}
+              >
+                <Image
+                  src={event.image}
+                  alt={event.title}
+                  width={index === 1 ? 450 : 350} 
+                  height={index === 1 ? 400 : 300}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    borderRadius: "15px"
+                  }}
+                  priority={index === 1} 
+                  onError={(e) => {
+                    console.error(`Image load error for ${event.image}:`, e);
+                    e.target.style.display = 'none';
+                    e.target.parentElement.style.background = '#f5f5f5';
+                    e.target.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; font-size: 14px;">Không thể tải hình ảnh</div>';
+                  }}
+                />
+              </div>
               <h4>{event.title}</h4>
             </div>
           ))}
@@ -239,6 +257,7 @@ function ActivitiesContent() {
             →
           </button>
         </section>
+
         {/* Dots điều hướng */}
         <div className="light-slider-dots">
           {Array.from({ length: events.length - 2 }).map((_, index) => (
@@ -254,8 +273,15 @@ function ActivitiesContent() {
           {/* Section 1: Ngọn Đuốc Xanh - Hình ảnh bên trái, nội dung bên phải */}
           <div className="light-detail-item split-40-60">
             <div className="light-detail-image">
-              <div className="detail-image-placeholder"></div>{" "}
-              {/* Placeholder cho hình ảnh */}
+              <div className="detail-image-placeholder">
+                <Image
+                  src="/Img/Activities/Figure7-NDX.png"
+                  alt="Ngọn Đuốc Xanh"
+                  width={400}
+                  height={300}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              </div>
             </div>
             <div className="light-detail-content">
               <h3>
@@ -318,8 +344,15 @@ function ActivitiesContent() {
               </p>
             </div>
             <div className="light-detail-image">
-              <div className="detail-image-placeholder"></div>{" "}
-              {/* Placeholder cho hình ảnh */}
+              <div className="detail-image-placeholder">
+                <Image
+                  src="/Img/Activities/Figure8-VNT.JPG"
+                  alt="VNU Tour"
+                  width={400}
+                  height={300}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              </div>
             </div>
           </div>
         </div>

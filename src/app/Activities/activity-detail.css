@@ -4,37 +4,37 @@
 .activity-detail-page {
   font-family: "Montserrat", sans-serif;
   background-color: #ECF9FF;
+  padding-top: 50px;
 }
 
-/* Layout cho trang chi tiết bài viết */
+/* Layout cho trang chi tiết bài viết - SỬA LẠI ĐỒNG BỘ VỚI ACTIVITIES MAIN */
 .activity-detail-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  padding-top: 2rem;
-  padding-left: 2rem;
-  padding-right: 2rem;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex; /* Chỉ dùng flexbox */
+  gap: 30px;
+  align-items: start;
   background-color: #ECF9FF;
   color: #042354;
   min-height: 100vh;
 }
 
-/* Phần nội dung bài viết chính */
+/* Phần nội dung bài viết chính - CHIẾM 70% */
 .activity-content {
-  flex: 1;
-  min-width: 65%;
-  background-color: #fff;
-  padding: 1.5rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  width: 70%; /* SỬA: Thêm width 70% */
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
   margin-bottom: 2.5rem;
 }
 
-/* Sidebar tin tức mới nhất - ĐỒNG NHẤT VỚI ACTIVITIES PAGE */
+/* Sidebar - CHIẾM 30% */
 .activity-sidebar {
-  width: 30%;
+  width: 30%; /* GIỮ NGUYÊN 30% */
   text-align: justify;
-  max-height: 700px;
+  max-height: 700px; 
   display: flex;
   flex-direction: column;
   background-color: #fff;
@@ -43,53 +43,115 @@
   padding: 1rem;
 }
 
-/* Tiêu đề bài viết */
-.activity-header h1 {
-  font-size: 1.8rem;
+/* Article Header */
+.activity-header {
+  padding: 40px 40px 30px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.activity-title {
+  font-size: 2.5rem;
   font-weight: 700;
   color: #042354;
-  margin-bottom: 1rem;
+  line-height: 1.2;
+  margin-bottom: 25px;
+  text-align: center;
 }
 
 /* Thông tin meta */
 .activity-meta {
-  font-size: 0.9rem;
-  color: #555;
-  margin-bottom: 1.5rem;
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
 }
 
-/* Hình ảnh bài viết */
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.meta-label {
+  font-weight: 600;
+  color: #6c757d;
+  font-size: 14px;
+}
+
+.meta-value {
+  color: #333;
+  font-size: 14px;
+}
+
+.activity-type-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Activity Type Colors */
+.activity-type-badge.news { background-color: #e3f2fd; color: #1976d2; }
+.activity-type-badge.academic { background-color: #f3e5f5; color: #7b1fa2; }
+.activity-type-badge.competition { background-color: #fff3e0; color: #f57c00; }
+.activity-type-badge.seminar { background-color: #e8f5e8; color: #388e3c; }
+.activity-type-badge.volunteer { background-color: #fce4ec; color: #c2185b; }
+.activity-type-badge.sport { background-color: #e0f2f1; color: #00695c; }
+.activity-type-badge.event { background-color: #fff8e1; color: #f9a825; }
+.activity-type-badge.vnutour { background-color: #e8eaf6; color: #3f51b5; }
+.activity-type-badge.netsec { background-color: #ffebee; color: #d32f2f; }
+.activity-type-badge.other { background-color: #f5f5f5; color: #616161; }
+
+/* Featured Image */
 .activity-image {
-  margin: 1.5rem 0;
-  border-radius: 0.5rem;
-  overflow: hidden;
+  padding: 0 40px 30px;
+  text-align: center;
 }
 
-.activity-image img {
-  width: 100%;
+.featured-image {
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
+  max-width: 100%;
   height: auto;
-  display: block;
-  object-fit: cover;
 }
 
-/* Nội dung bài viết */
+.featured-image:hover {
+  transform: scale(1.02);
+}
+
+/* Article Content */
 .activity-body {
-  font-size: 1rem;
-  line-height: 1.6;
+  padding: 40px;
+  font-size: 16px;
+  line-height: 1.8;
+  color: #333;
+  text-align: justify;
+}
+
+.content-text {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #333;
   text-align: justify;
   white-space: pre-line;
 }
 
-.activity-body p {
-  margin-bottom: 1.2rem;
+.content-text p {
+  margin-bottom: 20px;
 }
 
 .activity-body h2,
 .activity-body h3,
-.activity-body h4 {
+.activity-body h4,
+.content-text h2,
+.content-text h3,
+.content-text h4 {
   margin-top: 1.5rem;
   margin-bottom: 1rem;
   color: #042354;
@@ -97,28 +159,84 @@
 }
 
 .activity-body ul,
-.activity-body ol {
+.activity-body ol,
+.content-text ul,
+.content-text ol {
   margin-left: 1.5rem;
   margin-bottom: 1rem;
 }
 
-.activity-body img {
+.activity-body img,
+.content-text img {
   max-width: 100%;
   height: auto;
   margin: 1rem 0;
   border-radius: 0.5rem;
 }
 
-.activity-body a {
+.activity-body a,
+.content-text a {
   color: #0066cc;
   text-decoration: underline;
 }
 
-.activity-body a:hover {
+.activity-body a:hover,
+.content-text a:hover {
   color: #004080;
 }
 
-/* ===== PHẦN TIN TỨC MỚI NHẤT - ĐỒNG NHẤT HOÀN TOÀN VỚI ACTIVITIES ===== */
+/* Article Footer */
+.activity-footer {
+  padding: 30px 40px;
+  border-top: 1px solid #e9ecef;
+  background-color: #f8f9fa;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.activity-tags {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.post-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #042354;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  background-color: #031a3e;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(4, 35, 84, 0.3);
+}
+
+/* ===== PHẦN TIN TỨC MỚI NHẤT - SIDEBAR STYLES ===== */
 
 /* Tiêu đề "Tin tức mới nhất" */
 .activity-sidebar h3 {
@@ -129,6 +247,7 @@
   padding: 0.5rem 1rem;
   display: inline-block;
   margin-bottom: 1rem;
+  border-radius: 4px;
 }
 
 /* Danh sách tin tức */
@@ -183,7 +302,7 @@
   text-decoration: underline;
 }
 
-/* Ngày tháng năm - ĐỒNG NHẤT VỚI ACTIVITIES */
+/* Ngày tháng năm */
 .light-news-list .news-date {
   display: block;
   font-size: 12px;
@@ -193,7 +312,7 @@
   font-style: italic;
 }
 
-/* Phần "Xem thêm" - ĐỒNG NHẤT VỚI ACTIVITIES */
+/* Phần "Xem thêm" */
 .light-news-more {
   margin-top: auto;
   text-align: right;
@@ -216,7 +335,7 @@
   color: #fff;
 }
 
-/* Loading và error states - ĐỒNG NHẤT VỚI ACTIVITIES */
+/* Loading và error states */
 .loading-news,
 .error-news {
   padding: 15px;
@@ -231,75 +350,125 @@
   color: #0288d1;
 }
 
-/* Styles cho phần hiển thị kết quả tìm kiếm - ĐỒNG NHẤT VỚI ACTIVITIES */
-.search-results-info {
-  background-color: #f8f9fa;
-  padding: 10px 15px;
-  border-radius: 8px;
-  margin-bottom: 15px;
-  border-left: 4px solid #042354;
-}
-
-.search-results-info p {
-  margin: 5px 0;
-  color: #042354;
-  font-size: 14px;
-}
-
-.search-results-info p:first-child {
-  font-weight: 600;
-}
-
-/* Nút trở về */
-.post-actions {
-  width: 100%;
-  margin-top: 2rem;
+/* Loading and Error States cho main content */
+.loading-container, .error-container {
   display: flex;
-  justify-content: flex-start;
-}
-
-.back-button {
-  display: inline-block;
-  padding: 0.5rem 1.5rem;
-  background-color: #042354;
-  color: white;
-  text-decoration: none;
-  border-radius: 0.25rem;
-  font-weight: 500;
-  transition: background-color 0.2s;
-}
-
-.back-button:hover {
-  background-color: #031a3e;
-}
-
-/* Loading và error states cho main content */
-.loading-message,
-.error-message {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
   text-align: center;
-  padding: 2rem;
-  color: #666;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  margin: 40px auto;
+  max-width: 800px;
 }
 
-.error-message {
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #042354;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-container h2 {
   color: #dc3545;
+  margin-bottom: 15px;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .activity-detail-container {
-    padding: 1rem;
-    flex-direction: column;
-  }
+.error-container p {
+  color: #6c757d;
+  margin-bottom: 25px;
+}
 
-  .activity-content,
-  .activity-sidebar {
-    width: 100%;
-    min-width: 100%;
+/* Comment Section Integration */
+.comment-section {
+  margin-top: 0;
+  border-top: 1px solid #e9ecef;
+  padding: 30px 40px;
+}
+
+/* Responsive Design - ĐỒNG BỘ VỚI ACTIVITIES MAIN */
+@media (max-width: 992px) {
+  .activity-detail-container {
+    flex-direction: column; /* Stack vertically */
+    gap: 30px;
+  }
+  
+  .activity-content {
+    width: 100%; /* Full width trên tablet */
   }
   
   .activity-sidebar {
-    margin-top: 2rem;
+    width: 100%; /* Full width trên tablet */
+    order: -1; /* Hiển thị sidebar trước content trên tablet */
+    max-height: 400px; /* Giảm chiều cao trên tablet */
+  }
+}
+
+@media (max-width: 768px) {
+  .activity-detail-page {
+    padding: 15px 0;
+  }
+
+  .activity-detail-container {
+    padding: 0 15px;
+    gap: 20px;
+  }
+
+  .activity-header {
+    padding: 25px 20px 20px;
+  }
+
+  .activity-title {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+  }
+
+  .activity-meta {
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+  }
+
+  .meta-item {
+    justify-content: center;
+  }
+
+  .activity-body {
+    padding: 25px 20px;
+  }
+
+  .content-text {
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .activity-footer {
+    padding: 20px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .comment-section {
+    padding: 20px;
+  }
+
+  .activity-image {
+    padding: 0 20px 20px;
+  }
+
+  .activity-sidebar {
+    max-height: 300px; /* Giảm chiều cao trên mobile */
   }
 
   .activity-sidebar h3 {
@@ -308,7 +477,7 @@
   }
 
   .light-news-list {
-    max-height: 400px;
+    max-height: 200px;
   }
 
   .light-news-list li a {
@@ -317,5 +486,24 @@
 
   .light-news-list .news-date {
     font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .activity-title {
+    font-size: 1.5rem;
+  }
+
+  .content-text {
+    font-size: 14px;
+  }
+
+  .featured-image {
+    border-radius: 8px;
+  }
+
+  .activity-sidebar {
+    padding: 0.75rem;
+    max-height: 250px;
   }
 }
