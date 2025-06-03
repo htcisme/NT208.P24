@@ -17,7 +17,7 @@ export default function ActivityPost() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // State cho tin tức mới nhất
+  // State cho tin tức mới nhất - ĐỒNG BỘ VỚI ACTIVITIES PAGE
   const [latestNews, setLatestNews] = useState([]);
   const [loadingNews, setLoadingNews] = useState(true);
   const [errorNews, setErrorNews] = useState(null);
@@ -50,7 +50,7 @@ export default function ActivityPost() {
     }
   }, [slug]);
 
-  // Fetch tin tức mới nhất
+  // Fetch tin tức mới nhất - ĐỒNG BỘ VỚI ACTIVITIES PAGE
   useEffect(() => {
     const fetchLatestNews = async () => {
       try {
@@ -80,7 +80,28 @@ export default function ActivityPost() {
     fetchLatestNews();
   }, [slug]);
 
-  // Hàm định dạng thời gian
+  // Hàm định dạng thời gian cho tin tức mới nhất - ĐỒNG BỘ VỚI ACTIVITIES PAGE
+  const formatNewsDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+
+    const daysOfWeek = [
+      "Chủ Nhật",
+      "Thứ Hai", 
+      "Thứ Ba",
+      "Thứ Tư",
+      "Thứ Năm",
+      "Thứ Sáu",
+      "Thứ Bảy",
+    ];
+    const dayOfWeek = daysOfWeek[date.getDay()];
+
+    return `${dayOfWeek} - ${day}/${month}/${year}`;
+  };
+
+  // Hàm định dạng thời gian đầy đủ (cho meta info)
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = date.getDate().toString().padStart(2, "0");
@@ -93,24 +114,30 @@ export default function ActivityPost() {
 
   if (loading) {
     return (
-      <div className="activity-detail-container">
-        <div className="loading-message">Đang tải bài viết...</div>
+      <div className="activity-detail-page">
+        <div className="activity-detail-container">
+          <div className="loading-message">Đang tải bài viết...</div>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="activity-detail-container">
-        <div className="error-message">{error}</div>
+      <div className="activity-detail-page">
+        <div className="activity-detail-container">
+          <div className="error-message">{error}</div>
+        </div>
       </div>
     );
   }
 
   if (!post) {
     return (
-      <div className="activity-detail-container">
-        <div className="error-message">Không tìm thấy bài viết</div>
+      <div className="activity-detail-page">
+        <div className="activity-detail-container">
+          <div className="error-message">Không tìm thấy bài viết</div>
+        </div>
       </div>
     );
   }
@@ -134,7 +161,10 @@ export default function ActivityPost() {
                 alt={post.title}
                 width={800}
                 height={400}
-                layout="responsive"
+                style={{
+                  width: '100%',
+                  height: 'auto',
+                }}
               />
             </div>
           )}
@@ -143,25 +173,58 @@ export default function ActivityPost() {
             className="activity-body"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
+
+          {/* Nút trở về */}
+          <div className="post-actions">
+            <Link href="/Activities" className="back-button">
+              Trở về
+            </Link>
+          </div>
         </div>
 
+        {/* Sidebar tin tức mới nhất - ĐỒNG BỘ VỚI ACTIVITIES PAGE */}
         <div className="activity-sidebar">
-          <h3>Tin tức mới nhất</h3>
-          {loadingNews ? (
-            <div className="loading-message">Đang tải tin tức...</div>
-          ) : errorNews ? (
-            <div className="error-message">{errorNews}</div>
-          ) : (
-            <ul className="latest-news-list">
-              {latestNews.map((news) => (
-                <li key={news._id}>
-                  <Link href={`/Activities/${news.slug}`}>{news.title}</Link>
-                  <span className="news-date">
-                    {formatDate(news.createdAt)}
-                  </span>
-                </li>
-              ))}
-            </ul>
+          <h3>TIN TỨC MỚI NHẤT</h3>
+
+          {/* Loading state */}
+          {loadingNews && (
+            <div className="loading-news">
+              <p>Đang tải tin tức...</p>
+            </div>
+          )}
+
+          {/* Error state */}
+          {errorNews && (
+            <div className="error-news">
+              <p>{errorNews}</p>
+            </div>
+          )}
+
+          {/* News list */}
+          {!loadingNews && !errorNews && (
+            <>
+              <ul className="light-news-list">
+                {latestNews.length > 0 ? (
+                  latestNews.map((news) => (
+                    <li key={news._id}>
+                      <Link href={`/Activities/${news.slug || news._id}`}>
+                        {news.title}
+                      </Link>
+                      <span className="news-date">
+                        {formatNewsDate(news.createdAt)}
+                      </span>
+                    </li>
+                  ))
+                ) : (
+                  <li>Không có tin tức mới.</li>
+                )}
+              </ul>
+              
+              {/* See more button */}
+              <div className="light-news-more">
+                <Link href="/ActivitiesOverview">Xem thêm</Link>
+              </div>
+            </>
           )}
         </div>
       </div>

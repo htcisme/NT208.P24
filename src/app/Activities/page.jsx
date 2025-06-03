@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import "@/styles-comp/style.css";
 import "@/app/Activities/style.css";
+import "@/app/Activities/activity-detail.css";
 
 function ActivitiesContent() {
   const searchParams = useSearchParams();
@@ -168,7 +169,7 @@ function ActivitiesContent() {
           </div>
 
           {/* Bên phải: 30% - Tin tức mới nhất */}
-          <div className="light-split-right">
+          <div className="activity-sidebar">
             <h3>TIN TỨC MỚI NHẤT</h3>
 
             {/* Hiển thị loading state */}

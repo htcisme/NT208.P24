@@ -15,7 +15,9 @@ async function findActivityByIdOrSlug(slug) {
 export async function GET(request, { params }) {
   try {
     await dbConnect();
-    const { slug } = params;
+    // AWAIT params trước khi sử dụng
+    const resolvedParams = await params;
+    const { slug } = resolvedParams;
 
     const activity = await findActivityByIdOrSlug(slug);
     if (!activity) {
@@ -39,7 +41,9 @@ export async function GET(request, { params }) {
 export async function POST(request, { params }) {
   try {
     await dbConnect();
-    const { slug } = params;
+    // AWAIT params trước khi sử dụng
+    const resolvedParams = await params;
+    const { slug } = resolvedParams;
     const body = await request.json();
 
     // Validate dữ liệu
@@ -93,4 +97,4 @@ export async function POST(request, { params }) {
       { status: 500 }
     );
   }
-} 
+}
