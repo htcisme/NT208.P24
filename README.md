@@ -538,7 +538,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3000
 
 ## 📞 LIÊN HỆ
 
-- **Email nhóm:** 235212312@gm.uit.edu.vn
+- **Email nhóm:** 23521231@gm.uit.edu.vn
 - **Documentation:** [README.md](README.md)
 - **Project Demo:** [Live Demo](nt208p24.vercel.app)
 
@@ -552,4 +552,4 @@ Dự án này được phát triển cho mục đích học tập tại Trườn
 
 **© 2024 Nhóm 4 - NT208.P24. All rights reserved.**
 
-*Last updated: December 2024*
+*Last updated: June 2025*
