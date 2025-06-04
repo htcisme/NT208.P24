@@ -170,9 +170,14 @@ export async function POST(request) {
       author: body.author,
       status: body.status,
       commentOption: body.commentOption,
-      type: body.type || "news",
+      type: body.type || "other", // Changed from "news" to "other" (valid enum value)
       image: imageUrl,
       scheduledPublish: body.scheduledPublish,
+      slug:
+        body.title
+          ?.toLowerCase()
+          .replace(/\s+/g, "-")
+          .replace(/[^\w-]/g, "") || `activity-${Date.now()}`, // Add null check
       createdAt: new Date(),
       updatedAt: new Date(),
     });
