@@ -13,7 +13,7 @@ import { set } from "mongoose";
 
 const ActivitiesDashboard = () => {
   const { user, username } = useSession();
-  const [activityType, setActivityType] = useState("news");
+  const [activityType, setActivityType] = useState("other");
   const [activeTab, setActiveTab] = useState("activities");
   const [activeView, setActiveView] = useState("allPages");
   const [editingTask, setEditingTask] = useState(null);
@@ -102,13 +102,13 @@ const ActivitiesDashboard = () => {
     try {
       setCommentLoading(true);
       const response = await fetch("/api/admin/comments?limit=50");
-      
+
       if (!response.ok) {
         throw new Error("Không thể lấy dữ liệu bình luận");
       }
 
       const data = await response.json();
-      
+
       if (data.success) {
         const formattedComments = data.data.map((comment) => ({
           id: comment._id,
@@ -123,7 +123,7 @@ const ActivitiesDashboard = () => {
           isReplying: false,
           isEditing: false,
         }));
-        
+
         setRealComments(formattedComments);
       } else {
         throw new Error(data.message || "Lỗi khi lấy dữ liệu bình luận");
@@ -141,7 +141,7 @@ const ActivitiesDashboard = () => {
     const fetchData = async () => {
       await Promise.all([fetchActivities(), fetchRealComments()]);
     };
-    
+
     fetchData();
   }, []);
 
@@ -190,13 +190,16 @@ const ActivitiesDashboard = () => {
   // Handle select all real comments
   const handleSelectAllRealComments = (e) => {
     setRealComments(
-      realComments.map((comment) => ({ ...comment, selected: e.target.checked }))
+      realComments.map((comment) => ({
+        ...comment,
+        selected: e.target.checked,
+      }))
     );
   };
 
   // Delete real comment
   const deleteRealComment = async (commentId) => {
-    const comment = realComments.find(c => c.id === commentId);
+    const comment = realComments.find((c) => c.id === commentId);
     if (!comment) return;
 
     if (window.confirm("Bạn có chắc muốn xóa bình luận này?")) {
@@ -227,7 +230,7 @@ const ActivitiesDashboard = () => {
 
   // Update real comment
   const updateRealComment = async (commentId, newContent) => {
-    const comment = realComments.find(c => c.id === commentId);
+    const comment = realComments.find((c) => c.id === commentId);
     if (!comment) return;
 
     try {
@@ -245,7 +248,9 @@ const ActivitiesDashboard = () => {
       if (response.ok) {
         setRealComments(
           realComments.map((c) =>
-            c.id === commentId ? { ...c, comment: newContent, isEditing: false } : c
+            c.id === commentId
+              ? { ...c, comment: newContent, isEditing: false }
+              : c
           )
         );
         alert("Cập nhật bình luận thành công!");
@@ -296,7 +301,7 @@ const ActivitiesDashboard = () => {
           );
           formData.append("status", task.status);
           formData.append("commentOption", task.commentOption);
-          formData.append("type", task.type || "news");
+          formData.append("type", task.type || "other");
           if (task.image) {
             formData.append("imageUrl", task.image);
           }
@@ -341,15 +346,19 @@ const ActivitiesDashboard = () => {
   // Execute batch action on real comments
   const executeBatchActionOnRealComments = () => {
     const selectedComments = realComments.filter((comment) => comment.selected);
-    
+
     if (selectedComments.length === 0) {
       alert("Vui lòng chọn ít nhất một bình luận!");
       return;
     }
-    
+
     if (commentBatchAction === "delete") {
-      if (window.confirm(`Bạn có chắc muốn xóa ${selectedComments.length} bình luận đã chọn?`)) {
-        selectedComments.forEach(comment => deleteRealComment(comment.id));
+      if (
+        window.confirm(
+          `Bạn có chắc muốn xóa ${selectedComments.length} bình luận đã chọn?`
+        )
+      ) {
+        selectedComments.forEach((comment) => deleteRealComment(comment.id));
       }
     }
   };
@@ -434,7 +443,7 @@ const ActivitiesDashboard = () => {
       formData.append("author", user?.name || user?.username || task.author);
       formData.append("status", task.status);
       formData.append("commentOption", task.commentOption);
-      formData.append("type", task.type || "news");
+      formData.append("type", task.type || "other");
       if (task.image) {
         formData.append("imageUrl", task.image); // Gửi URL của image
       }
@@ -481,7 +490,7 @@ const ActivitiesDashboard = () => {
       setNewContent(task.content);
       setPageStatus(task.status);
       setCommentOption(task.commentOption);
-      setActivityType(task.type || "news");
+      setActivityType(task.type || "other");
       setImagePreview(task.image || "");
       setActiveView("editPage");
     }
@@ -540,7 +549,7 @@ const ActivitiesDashboard = () => {
         setPageStatus("published");
         setCommentOption("open");
         setImagePreview("");
-        setActivityType("news");
+        setActivityType("other");
         setUploadedImage(null);
         alert("Cập nhật bài viết thành công!");
       } else {
@@ -624,7 +633,7 @@ const ActivitiesDashboard = () => {
         setNewContent("");
         setUploadedImage(null);
         setImagePreview("");
-        setActivityType("news");
+        setActivityType("other");
         setActiveView("allPages");
         // Hiển thị thông báo thành công
       } else {
@@ -1065,26 +1074,30 @@ const ActivitiesDashboard = () => {
                         <input
                           type="checkbox"
                           checked={comment.selected}
-                          onChange={() => handleRealCommentSelection(comment.id)}
+                          onChange={() =>
+                            handleRealCommentSelection(comment.id)
+                          }
                         />
                       </td>
                       <td className="comment-text">
-                        <div style={{ 
-                          maxWidth: '300px', 
-                          overflow: 'hidden', 
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap'
-                        }}>
+                        <div
+                          style={{
+                            maxWidth: "300px",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
                           {comment.comment}
                         </div>
                       </td>
                       <td>{comment.author}</td>
                       <td>
-                        <a 
+                        <a
                           href={`/Activities/${comment.activitySlug}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          style={{ color: '#042354', textDecoration: 'none' }}
+                          style={{ color: "#042354", textDecoration: "none" }}
                         >
                           {comment.activityTitle}
                         </a>
@@ -1124,7 +1137,9 @@ const ActivitiesDashboard = () => {
                             <h4>Chỉnh sửa bình luận</h4>
                             <textarea
                               value={editCommentText}
-                              onChange={(e) => setEditCommentText(e.target.value)}
+                              onChange={(e) =>
+                                setEditCommentText(e.target.value)
+                              }
                               className="edit-textarea"
                               rows="3"
                             />
@@ -1133,7 +1148,10 @@ const ActivitiesDashboard = () => {
                                 className="btn-publish"
                                 onClick={() => {
                                   if (editCommentText.trim()) {
-                                    updateRealComment(comment.id, editCommentText.trim());
+                                    updateRealComment(
+                                      comment.id,
+                                      editCommentText.trim()
+                                    );
                                   }
                                 }}
                               >
