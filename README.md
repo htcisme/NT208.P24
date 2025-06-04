@@ -163,73 +163,96 @@ NT208.P24/
 
 ## IV. TÍNH NĂNG CHÍNH
 
-### 🏠 Trang chủ ([`page.js`](src/app/page.js))
-- [x] Hero banner với thông tin Đoàn khoa
-- [x] Carousel hoạt động nổi bật
-- [x] Thống kê và thành tích
+### 🏠 Trang Chủ
+- **Tổng quan website**:
+  - Hiển thị cấu trúc tổng quan của website.
+  - Cung cấp thông tin nổi bật về Đoàn khoa Mạng máy tính và Truyền thông.
+- **Tin tức và hoạt động nổi bật**:
+  - Carousel hiển thị các hoạt động gần đây và sự kiện nổi bật.
+  - Tóm tắt thành tích đạt được trong thời gian qua.
+- **Giới thiệu tóm tắt**:
+  - Thông tin về Đoàn khoa và các ban trực thuộc (Ban Học tập, Ban Truyền thông và Sự kiện, Ban Thiết kế).
+  - Hình ảnh minh họa các hoạt động gần đây.
 
-### 📰 Hệ thống hoạt động
-#### 📋 Danh sách hoạt động ([`Activities/page.jsx`](src/app/Activities/page.jsx))
-- [x] Hiển thị hoạt động nổi bật với carousel
-- [x] Sidebar tin tức mới nhất
-- [x] Integration với API [`/api/activities`](src/app/api/activities/route.js)
-- [x] Filtering và search functionality
+### 📖 Giới thiệu
+- **Thông tin Đoàn khoa**:
+  - Tổng quan về lịch sử hình thành và mô hình tổ chức.
+  - Vai trò và chức năng của các ban trực thuộc:
+    - Ban Học tập.
+    - Ban Truyền thông và Sự kiện.
+    - Ban Thiết kế.
 
-#### 📖 Chi tiết hoạt động ([`Activities/[slug]/page.jsx`](src/app/Activities/[slug]/page.jsx))
-- [x] Dynamic routing với slug parameter
-- [x] Hiển thị full content với metadata
-- [x] Activity type badges
-- [x] Responsive image handling
-- [x] Error handling và loading states
+### 📰 Hoạt động
+- **Danh sách hoạt động**:
+  - **Hoạt động gần đây**:
+    - Liệt kê các sự kiện mới nhất do Đoàn khoa tổ chức.
+    - Hiển thị danh sách theo dạng carousel hoặc danh sách cuộn.
+  - **Hoạt động nổi bật**:
+    - Liệt kê các chương trình trọng điểm, có sức ảnh hưởng lớn.
+    - Bao gồm hình ảnh, nội dung mô tả, và thông tin chi tiết.
+- **Chi tiết hoạt động**:
+  - Dynamic routing với slug để truy cập chi tiết từng hoạt động.
+  - Hiển thị nội dung đầy đủ với tiêu đề, hình ảnh, tác giả, ngày đăng.
+  - Hỗ trợ badge phân loại hoạt động (17 loại).
+- **Tương tác**:
+  - Hệ thống bình luận:
+    - Người dùng có thể để lại bình luận dưới bài viết.
+    - Hỗ trợ báo cáo bình luận xấu.
+  - Chia sẻ bài viết lên các nền tảng: Facebook, Twitter, LinkedIn, Zalo.
 
-### 💬 Hệ thống bình luận ([`Comments/`](src/components/Comments/))
-#### Core Features
-- [x] **Nested comments:** Tree structure với replies
-- [x] **Real-time updates:** Comment state management
-- [x] **User authentication:** Login required để comment
-- [x] **Admin controls:** Comment moderation
+### 🏆 Thành tích
+- **Danh sách thành tích**:
+  - Liệt kê các giải thưởng, thành tựu theo từng năm.
+  - Hiển thị hình ảnh và bài viết vinh danh cá nhân/tập thể xuất sắc.
 
-#### Implementation
-- [`CommentSection.jsx`](src/components/Comments/CommentSection.jsx): Main wrapper
-- [`CommentList.jsx`](src/components/Comments/CommentList.jsx): Display logic
-- [`CommentForm.jsx`](src/components/Comments/CommentForm.jsx): Input handling
-- API: [`/api/activities/[slug]/comments`](src/app/api/activities/[slug]/comments/route.js)
+### 🏢 Đặt phòng
+- **Hệ thống đặt phòng**:
+  - Biểu mẫu đăng ký đặt phòng sinh hoạt Chi đoàn hoặc họp lớp.
+  - Multi-step form với validation.
+  - Lựa chọn phòng và thời gian tổ chức.
+  - Yêu cầu chấp nhận điều khoản trước khi gửi đăng ký.
+- **Quản lý đăng ký**:
+  - Quản trị viên duyệt đơn đăng ký.
+  - Quản lý danh sách đăng ký.
 
-### 👤 User Management
-#### Profile System ([`Profile/page.jsx`](src/app/Profile/page.jsx))
-- [x] User profile management
-- [x] Avatar upload with compression
-- [x] Password change functionality
-- [x] Form validation và error handling
+### 📞 Liên hệ
+- **Kênh liên hệ**:
+  - Cung cấp thông tin liên hệ chính thức: Email, Facebook.
+  - Form liên hệ để sinh viên gửi ý kiến hoặc kết nối với Đoàn khoa.
 
-#### Authentication ([`User/page.jsx`](src/app/User/page.jsx))
-- [x] Login/Register forms
-- [x] Role-based access (user/admin)
-- [x] Session management với [`SessionContext`](src/context/SessionContext.jsx)
-
-### 🛠️ Admin Dashboard ([`admin/ActivitiesDashboard/`](src/app/admin/ActivitiesDashboard/))
-#### Activities Management
-- [x] **CRUD operations:** Create, Read, Update, Delete activities
-- [x] **Batch operations:** Multi-select actions
-- [x] **Image upload:** File handling với preview
-- [x] **Status management:** Draft/Published states
-- [x] **Activity types:** 17 predefined types với badges
-
-#### Comments Management  
-- [x] **Real-time monitoring:** All comments across activities
-- [x] **Moderation tools:** Edit, delete, batch actions
-- [x] **Activity linking:** Navigate to source activity
-
-### 🏢 Booking System ([`Booking/page.jsx`](src/app/Booking/page.jsx))
-- [x] Multi-step form với validation
-- [x] Room selection và time scheduling
-- [x] Terms acceptance
-- [ ] **TODO:** Calendar integration
-
-### 🔔 Notification System ([`NotificationBell/`](src/components/NotificationBell/))
-- [x] Real-time notifications
-- [x] Mark as read functionality
-- [x] Direct navigation to related content
+### 🛠️ Admin Dashboard
+- **Quản lý hoạt động**:
+  - **CRUD operations**:
+    - Tạo, đọc, cập nhật, xóa các bài viết hoạt động.
+  - **Batch operations**:
+    - Hỗ trợ chọn và xử lý nhiều hoạt động cùng lúc.
+  - **Image upload**:
+    - Tải lên hình ảnh với tính năng xem trước.
+  - **Status management**:
+    - Quản lý trạng thái bài viết: draft/published.
+  - **Activity types**:
+    - Hỗ trợ 17 loại hoạt động với badge phân loại.
+- **Quản lý thành tích**:
+  - Tạo, chỉnh sửa, xóa các bài viết về thành tích.
+  - Quản lý danh sách giải thưởng và bài viết vinh danh.
+- **Quản lý người dùng**:
+  - **Phân quyền**:
+    - Owner/Admin: Toàn quyền quản lý website, nội dung, và phân quyền.
+    - Editor: Đăng bài, chỉnh sửa bài viết, không có quyền quản trị hệ thống.
+    - User: Chỉ có thể bình luận và chia sẻ bài viết.
+  - **Quản lý tài khoản**:
+    - Duyệt tài khoản người dùng.
+    - Quản lý thông tin cá nhân: tên, email, avatar, vai trò.
+  - **Đăng nhập/Đăng ký**:
+    - Hỗ trợ đăng nhập qua Google.
+    - Quản lý tài khoản cá nhân.
+- **Quản lý tin nhắn (Bình luận)**:
+  - **Real-time monitoring**:
+    - Theo dõi tất cả bình luận trên các bài viết hoạt động.
+  - **Moderation tools**:
+    - Chỉnh sửa, xóa, hoặc xử lý hàng loạt bình luận.
+  - **Activity linking**:
+    - Điều hướng đến bài viết chứa bình luận để kiểm tra ngữ cảnh.
 
 ---
 
@@ -447,74 +470,6 @@ NEXT_PUBLIC_API_URL=http://localhost:3000
 // TODO: Standardized error response format
 // TODO: Proper HTTP status codes
 ```
-
-### 📊 Performance Metrics
-
-| Metric | Current | Target | Status |
-|--------|---------|--------|--------|
-| Page Load Time | ~2.5s | <2s | 🟡 In Progress |
-| Image Compression | 80% | 90% | ✅ Achieved |
-| API Response Time | ~500ms | <300ms | 🟡 Optimizing |
-| Mobile Score | 75/100 | 90/100 | 🔴 Needs Work |
-
----
-
-## IX. KẾ HOẠCH PHÁT TRIỂN
-
-### 📅 Phase 1 - Performance & Stability (Tuần 1-2)
-- [ ] **Image Storage Migration**
-  - Move từ Base64 sang cloud storage
-  - Implement lazy loading cho images
-  - Add WebP format support
-
-- [ ] **Database Optimization**
-  - Separate comments collection
-  - Add proper indexing
-  - Implement caching layer
-
-- [ ] **Mobile Responsiveness**
-  - Optimize admin dashboard cho mobile
-  - Improve touch interactions
-  - Better responsive breakpoints
-
-### 📅 Phase 2 - New Features (Tuần 3-4)
-- [ ] **Real-time Features**
-  - WebSocket cho live comments
-  - Real-time notifications
-  - Live user status
-
-- [ ] **Advanced Search**
-  - Full-text search cho activities
-  - Filter by multiple criteria
-  - Search suggestions
-
-- [ ] **Booking System Enhancement**
-  - Calendar integration
-  - Email confirmations
-  - Booking history
-
-### 📅 Phase 3 - Advanced Features (Tuần 5-6)
-- [ ] **Analytics Dashboard**
-  - User engagement metrics
-  - Popular content tracking
-  - Performance monitoring
-
-- [ ] **Content Management**
-  - Rich text editor
-  - Media gallery
-  - SEO optimization
-
-- [ ] **Social Features**
-  - User ratings/reviews
-  - Social sharing
-  - User activity feeds
-
-### 🎯 Success Metrics
-- Page load time < 2 seconds
-- Mobile performance score > 90
-- User engagement rate > 70%
-- Zero critical bugs in production
-
 ---
 
 ## 🤝 ĐÓNG GÓP
@@ -544,12 +499,6 @@ NEXT_PUBLIC_API_URL=http://localhost:3000
 
 ---
 
-## 📄 GIẤY PHÉP
-
-Dự án này được phát triển cho mục đích học tập tại Trường Đại học Công nghệ Thông tin, ĐHQG-HCM.
-
----
-
-**© 2024 Nhóm 4 - NT208.P24. All rights reserved.**
+**© 2025 Nhóm 4 - NT208.P24. All rights reserved.**
 
 *Last updated: June 2025*
