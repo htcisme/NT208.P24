@@ -42,7 +42,7 @@ _**3. Use Case Diagram:**_
 ## II. DANH SÁCH THÀNH VIÊN
 
 | STT | Họ và tên | MSSV | Vai trò | Đóng góp chính |
-|-----|-----------|------|---------|----------------|
+|-----|----------------|------|---------|----------------|
 | 1 | Hoàng Bảo Phước | 23521231 | Leader | Front End Development, Project Management |
 | 2 | Nguyễn Đình Khang | 23520694 | Member | UI/UX Design, Frontend Development, Product Integration |
 | 3 | Đỗ Quang Trung | 23521673 | Member | Backend Development, Quality Assurance, Testing |
