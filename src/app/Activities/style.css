@@ -26,7 +26,7 @@
 }
 
 /* Phần container cho tin tức mới nhất */
-.light-split-right {
+.activity-sidebar {
   width: 30%;
   text-align: justify;
   max-height: 700px; /* Chiều cao tối đa */
@@ -39,7 +39,7 @@
 }
 
 /* Tiêu đề "Tin tức mới nhất" */
-.light-split-right h3 {
+.activity-sidebar h3 {
   font-size: 15px;
   font-weight: 600;
   color: #fff; /* Chữ trắng */
@@ -135,7 +135,7 @@
 
 /* Phần tiêu đề mô tả */
 .light-section-title {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
   margin-bottom: 1.5rem;
   text-align: left;

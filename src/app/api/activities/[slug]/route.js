@@ -1,3 +1,4 @@
+/* filepath: d:\PROJECT\NT208.P24\src\app\api\activities\[slug]\route.js */
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import Activity from "@/models/Activity";
@@ -8,30 +9,15 @@ import Notification from "@/models/Notification";
 import jwt from "jsonwebtoken";
 
 function generateUniqueToken(userId, title = "") {
-  try {
-    if (!userId) {
-      console.error("UserId is required for token generation");
-      return Date.now().toString();
-    }
-
-    const payload = {
-      uid: userId.toString(),
-      title,
-      ts: Date.now(),
-    };
-
-    if (!process.env.JWT_SECRET) {
-      console.error("JWT_SECRET is not defined");
-      return Date.now().toString();
-    }
-
-    return jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "7d",
-    });
-  } catch (error) {
-    console.error("Error generating token:", error);
-    return Date.now().toString();
-  }
+  const payload = {
+    userId,
+    title,
+    timestamp: Date.now(),
+    random: Math.random().toString(36).substring(2, 15),
+  };
+  return jwt.sign(payload, process.env.JWT_SECRET || "default-secret", {
+    expiresIn: "7d",
+  });
 }
 
 // Helper function to find activity by ID or slug
@@ -46,7 +32,9 @@ async function findActivityByIdOrSlug(slug) {
 export async function GET(request, context) {
   try {
     await dbConnect();
-    const slug = context.params.slug;
+    // AWAIT params trước khi sử dụng
+    const params = await context.params;
+    const slug = params.slug;
 
     const activity = await findActivityByIdOrSlug(slug);
 
@@ -71,7 +59,9 @@ export async function GET(request, context) {
 export async function PUT(request, context) {
   try {
     await dbConnect();
-    const slug = context.params.slug;
+    // AWAIT params trước khi sử dụng
+    const params = await context.params;
+    const slug = params.slug;
     console.log("Updating activity with slug:", slug);
 
     if (!slug) {
@@ -95,28 +85,36 @@ export async function PUT(request, context) {
     const updateData = {};
 
     // Lấy các trường dữ liệu từ formData
-    formData.forEach((value, key) => {
-      if (key !== "image") {
-        updateData[key] = value;
-      }
-    });
-
-    // Xử lý hình ảnh nếu được gửi lên
+    const title = formData.get("title");
+    const content = formData.get("content");
+    const author = formData.get("author");
+    const status = formData.get("status");
+    const commentOption = formData.get("commentOption");
+    const type = formData.get("type");
     const imageFile = formData.get("image");
+    const imageUrl = formData.get("imageUrl");
+
+    // Cập nhật các trường cơ bản
+    if (title) updateData.title = title;
+    if (content) updateData.content = content;
+    if (author) updateData.author = author;
+    if (status) updateData.status = status;
+    if (commentOption) updateData.commentOption = commentOption;
+    if (type) updateData.type = type;
+
+    // Xử lý hình ảnh
     if (imageFile && imageFile.size > 0) {
       try {
         const bytes = await imageFile.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
-        // Tạo tên file duy nhất, giảm độ dài
-        const fileExt = path.extname(imageFile.name);
-        const baseName = path
-          .basename(imageFile.name, fileExt)
-          .replace(/\s/g, "_")
-          .substring(0, 30);
-        const filename = `${Date.now()}-${baseName}${fileExt}`;
+        // Tạo tên file unique
+        const timestamp = Date.now();
+        const originalName = imageFile.name;
+        const extension = originalName.split(".").pop();
+        const filename = `${timestamp}-${Math.random().toString(36).substring(2)}.${extension}`;
 
-        // Đảm bảo thư mục uploads tồn tại
+        // Tạo đường dẫn lưu file
         const uploadsDir = path.join(process.cwd(), "public/uploads");
 
         // Kiểm tra và tạo thư mục nếu không tồn tại
@@ -135,6 +133,8 @@ export async function PUT(request, context) {
         console.error("Error processing image:", imageError);
         // Không throw lỗi ở đây, tiếp tục cập nhật các thông tin khác
       }
+    } else if (imageUrl) {
+      updateData.image = imageUrl;
     }
 
     // Cập nhật thời gian
@@ -157,6 +157,9 @@ export async function PUT(request, context) {
     console.log("Updating fields:", Object.keys(updateData));
     Object.assign(activity, updateData);
 
+    await activity.save();
+
+    // Tạo thông báo cho tác giả
     await Notification.create({
       userId: activity.author,
       title: `Hoạt động đã được cập nhật: ${activity.title}`,
@@ -190,7 +193,9 @@ export async function PUT(request, context) {
 export async function DELETE(request, context) {
   try {
     await dbConnect();
-    const slug = context.params.slug;
+    // AWAIT params trước khi sử dụng
+    const params = await context.params;
+    const slug = params.slug;
 
     // Kiểm tra quyền admin (có thể thêm middleware riêng)
     // ...
