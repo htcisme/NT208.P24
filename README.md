@@ -1,6 +1,6 @@
 # NT208.P24 - LẬP TRÌNH ỨNG DỤNG WEB
 
-_**Lời ngỏ:**_Chào mừng quý thầy cô và các bạn đến với trang web đầu tiên của nhóm 4! Đây là sản phẩm mà cả nhóm đã cùng nhau lên ý tưởng, xây dựng và hoàn thiện với tất cả sự tâm huyết. Chúng mình hy vọng rằng trang web này sẽ mang lại những trải nghiệm hữu ích và thú vị cho mọi người._
+_**Lời ngỏ:**_ _Chào mừng quý thầy cô và các bạn đến với trang web đầu tiên của nhóm 4! Đây là sản phẩm mà cả nhóm đã cùng nhau lên ý tưởng, xây dựng và hoàn thiện với tất cả sự tâm huyết. Chúng mình hy vọng rằng trang web này sẽ mang lại những trải nghiệm hữu ích và thú vị cho mọi người._
 _Dù đã cố gắng hết sức, nhưng chắc chắn không thể tránh khỏi những thiếu sót. Nhóm rất mong nhận được những góp ý chân thành từ quý thầy cô và các bạn để có thể cải thiện và phát triển sản phẩm ngày càng tốt hơn. Sự ủng hộ và đóng góp của mọi người chính là động lực lớn nhất để nhóm tiếp tục học hỏi và hoàn thiện hơn trong những dự án tiếp theo._
 _Một lần nữa, nhóm 4 xin chân thành cảm ơn! ❤️_
 
