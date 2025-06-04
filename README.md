@@ -181,9 +181,6 @@ NT208.P24/
     - Ban Học tập.
     - Ban Truyền thông và Sự kiện.
     - Ban Thiết kế.
-- **Giao diện**:
-  - Hiển thị nội dung rõ ràng, dễ đọc.
-  - Hình ảnh sắc nét, bố cục thân thiện.
 
 ### 📰 Hoạt động
 - **Danh sách hoạt động**:
@@ -207,9 +204,6 @@ NT208.P24/
 - **Danh sách thành tích**:
   - Liệt kê các giải thưởng, thành tựu theo từng năm.
   - Hiển thị hình ảnh và bài viết vinh danh cá nhân/tập thể xuất sắc.
-- **Giao diện**:
-  - Bố cục rõ ràng, dễ đọc trên mọi thiết bị.
-  - Tích hợp hình ảnh minh họa và nội dung chi tiết.
 
 ### 🏢 Đặt phòng
 - **Hệ thống đặt phòng**:
@@ -225,9 +219,6 @@ NT208.P24/
 - **Kênh liên hệ**:
   - Cung cấp thông tin liên hệ chính thức: Email, Facebook.
   - Form liên hệ để sinh viên gửi ý kiến hoặc kết nối với Đoàn khoa.
-- **Giao diện**:
-  - Bố cục đơn giản, dễ truy cập.
-  - Hỗ trợ responsive trên các thiết bị.
 
 ### 🛠️ Admin Dashboard
 - **Quản lý hoạt động**:
