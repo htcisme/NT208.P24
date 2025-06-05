@@ -29,6 +29,7 @@ const ActivitiesDashboard = () => {
   // State cho việc tải ảnh lên
   const [uploadedImage, setUploadedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
+  const [imageUrls, setImageUrls] = useState([]);
 
   // For new page creation
   const [newTitle, setNewTitle] = useState("");
@@ -598,10 +599,9 @@ const ActivitiesDashboard = () => {
           new Date(`${scheduledDate}T${scheduledTime}`).toISOString()
         );
       }
-      if (uploadedImage) {
-        formData.append("image", uploadedImage);
+      if (imagePreview) {
+        formData.append("imageUrl", imagePreview); // Send as URL
       }
-
       const response = await fetch("/api/activities", {
         method: "POST",
         body: formData,
@@ -683,43 +683,62 @@ const ActivitiesDashboard = () => {
           onChange={(e) => setNewTitle(e.target.value)}
           className="add-title-input"
         />
-
         {/* Phần upload ảnh */}
         <div className="image-upload-container">
           <h3>Hình ảnh đại diện</h3>
           <div className="image-upload-box">
             <input
-              type="file"
-              accept="image/*"
-              id="image-upload"
-              onChange={handleImageChange}
-              className="image-input"
+              type="text"
+              name="image"
+              placeholder="Nhập URL hình ảnh"
+              className="form-input"
+              value={imagePreview}
+              onChange={(e) => {
+                setImagePreview(e.target.value);
+                setUploadedImage(null); // Clear any uploaded file
+              }}
             />
-            <label htmlFor="image-upload" className="image-upload-label">
-              {imagePreview ? "Thay đổi ảnh" : "Chọn ảnh"}
-            </label>
+            <button
+              type="button"
+              className="add-image-btn"
+              onClick={() => {
+                if (imagePreview) {
+                  setImageUrls([...imageUrls, imagePreview]);
+                  setImagePreview("");
+                }
+              }}
+            >
+              Thêm ảnh
+            </button>
 
-            {imagePreview && (
-              <div className="image-preview">
-                <img src={imagePreview} alt="Preview" />
-                <button
-                  type="button"
-                  className="remove-image-btn"
-                  onClick={() => {
-                    setUploadedImage(null);
-                    setImagePreview("");
-                  }}
-                >
-                  ×
-                </button>
-              </div>
-            )}
+            <div className="images-preview-container">
+              {imageUrls.map((url, index) => (
+                <div key={index} className="image-preview-item">
+                  <img
+                    src={url}
+                    alt={`Preview ${index + 1}`}
+                    onError={(e) => {
+                      console.error("Lỗi tải ảnh:", e);
+                      alert("Không thể tải ảnh. Vui lòng kiểm tra lại URL.");
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="remove-image-btn"
+                    onClick={() => {
+                      setImageUrls(imageUrls.filter((_, i) => i !== index));
+                    }}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
           <p className="image-hint">
-            Kích thước đề xuất: 800x400px, tối đa 2MB
+            Nhập URL hình ảnh từ Facebook hoặc nguồn khác
           </p>
         </div>
-
         <textarea
           placeholder="Nhập nội dung bài viết"
           value={newContent}
@@ -979,24 +998,26 @@ const ActivitiesDashboard = () => {
                         <td>{task.author}</td>
                         <td>{task.time}</td>
                         <td>
-                          <button
-                            className="action-btn edit-btn"
-                            onClick={() => editTask(task.slug)}
-                          >
-                            Chỉnh sửa
-                          </button>
-                          <button
-                            className="action-btn delete-btn"
-                            onClick={() => deleteTask(task.slug)}
-                          >
-                            Xóa
-                          </button>
-                          <button
-                            className="action-btn copy-btn"
-                            onClick={() => copyTask(task)}
-                          >
-                            Sao chép
-                          </button>
+                          <div class="button-column">
+                            <button
+                              className="action-btn edit-btn"
+                              onClick={() => editTask(task.slug)}
+                            >
+                              Chỉnh sửa
+                            </button>
+                            <button
+                              className="action-btn delete-btn"
+                              onClick={() => deleteTask(task.slug)}
+                            >
+                              Xóa
+                            </button>
+                            <button
+                              className="action-btn copy-btn"
+                              onClick={() => copyTask(task)}
+                            >
+                              Sao chép
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     );

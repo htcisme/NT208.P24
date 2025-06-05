@@ -152,15 +152,8 @@ export async function POST(request) {
     let imageUrl = null;
     const image = formData.get("image");
 
-    if (image && image.name) {
-      const buffer = Buffer.from(await image.arrayBuffer());
-      const filename = Date.now() + "-" + image.name.replace(/\s/g, "_");
-      const filepath = `public/uploads/${filename}`;
-      fs.writeFileSync(filepath, buffer);
-      imageUrl = `/uploads/${filename}`;
-    } else if (body.imageUrl) {
-      // Nếu là URL (khi copy), giữ nguyên
-      imageUrl = body.imageUrl;
+    if (image) {
+      imageUrl = image;
     }
 
     // Tạo hoạt động mới
@@ -177,7 +170,7 @@ export async function POST(request) {
         body.title
           ?.toLowerCase()
           .replace(/\s+/g, "-")
-          .replace(/[^\w-]/g, "") || `activity-${Date.now()}`, // Add null check
+          .replace(/[^\w-]/g, "") || `activity-${Date.now()}`,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
