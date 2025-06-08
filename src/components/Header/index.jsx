@@ -259,7 +259,7 @@ export default function Header() {
                   </Link>
                   {user.role === "admin" && (
                     <Link
-                      href="/admin/UsersDashboard"
+                      href="/admin/ActivitiesDashboard"
                       className="Header-Topbar-Authsearch-UserInfo-MenuItem"
                     >
                       Quản trị

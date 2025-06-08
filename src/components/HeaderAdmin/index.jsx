@@ -74,7 +74,7 @@ const HeaderAdmin = () => {
   return (
     <div className="admin-header-container">
       <div className="admin-header-topbar">
-        <a href="/">
+        <a href="/admin/">
           <div className="admin-header-title">TRANG QUẢN TRỊ</div>
         </a>
         <div className="admin-header-user">

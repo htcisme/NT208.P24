@@ -1,53 +1,48 @@
-import { NextResponse } from "next/server";
-import dbConnect from "@/lib/mongodb";
-import Activity from "@/models/Activity";
+import dbConnect from '@/lib/mongodb';
+import Comment from '@/models/Comment';
 
 // PUT - Cập nhật bình luận
 export async function PUT(request, { params }) {
   try {
     await dbConnect();
-    const resolvedParams = await params;
-    const { commentId } = resolvedParams;
-    const { content, activitySlug } = await request.json();
+    
+    const { commentId } = params;
+    const { content } = await request.json();
 
-    if (!content || !activitySlug) {
-      return NextResponse.json(
-        { success: false, message: "Thiếu thông tin cần thiết" },
+    if (!content || content.trim() === '') {
+      return Response.json(
+        { success: false, message: 'Nội dung bình luận không được để trống' },
         { status: 400 }
       );
     }
 
-    const activity = await Activity.findOne({ slug: activitySlug });
-    if (!activity) {
-      return NextResponse.json(
-        { success: false, message: "Không tìm thấy hoạt động" },
+    // Cập nhật bình luận
+    const updatedComment = await Comment.findByIdAndUpdate(
+      commentId,
+      { 
+        content: content.trim(),
+        updatedAt: new Date()
+      },
+      { new: true }
+    );
+
+    if (!updatedComment) {
+      return Response.json(
+        { success: false, message: 'Không tìm thấy bình luận' },
         { status: 404 }
       );
     }
 
-    // Tìm và cập nhật comment
-    const comment = activity.comments.id(commentId);
-    if (!comment) {
-      return NextResponse.json(
-        { success: false, message: "Không tìm thấy bình luận" },
-        { status: 404 }
-      );
-    }
-
-    comment.content = content;
-    comment.updatedAt = new Date();
-    
-    await activity.save();
-
-    return NextResponse.json({
+    return Response.json({
       success: true,
-      message: "Cập nhật bình luận thành công",
-      data: comment
+      message: 'Cập nhật bình luận thành công',
+      data: updatedComment
     });
+
   } catch (error) {
-    console.error("Error updating comment:", error);
-    return NextResponse.json(
-      { success: false, message: "Lỗi khi cập nhật bình luận" },
+    console.error('Error updating comment:', error);
+    return Response.json(
+      { success: false, message: 'Lỗi khi cập nhật bình luận' },
       { status: 500 }
     );
   }
@@ -57,40 +52,28 @@ export async function PUT(request, { params }) {
 export async function DELETE(request, { params }) {
   try {
     await dbConnect();
-    const resolvedParams = await params;
-    const { commentId } = resolvedParams;
-    const { activitySlug } = await request.json();
+    
+    const { commentId } = params;
 
-    if (!activitySlug) {
-      return NextResponse.json(
-        { success: false, message: "Thiếu thông tin activitySlug" },
-        { status: 400 }
-      );
-    }
-
-    const activity = await Activity.findOne({ slug: activitySlug });
-    if (!activity) {
-      return NextResponse.json(
-        { success: false, message: "Không tìm thấy hoạt động" },
+    // Xóa bình luận
+    const deletedComment = await Comment.findByIdAndDelete(commentId);
+    
+    if (!deletedComment) {
+      return Response.json(
+        { success: false, message: 'Không tìm thấy bình luận' },
         { status: 404 }
       );
     }
 
-    // Xóa comment
-    activity.comments = activity.comments.filter(
-      comment => comment._id.toString() !== commentId
-    );
-    
-    await activity.save();
-
-    return NextResponse.json({
+    return Response.json({
       success: true,
-      message: "Xóa bình luận thành công"
+      message: 'Xóa bình luận thành công'
     });
+
   } catch (error) {
-    console.error("Error deleting comment:", error);
-    return NextResponse.json(
-      { success: false, message: "Lỗi khi xóa bình luận" },
+    console.error('Error deleting comment:', error);
+    return Response.json(
+      { success: false, message: 'Lỗi khi xóa bình luận' },
       { status: 500 }
     );
   }

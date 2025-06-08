@@ -15,15 +15,16 @@
   z-index: 100;
   border-bottom: 5px solid #f3f9fd;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  min-height: 80px;
 }
 
 body {
-  padding-top: 70px; 
+  padding-top: 70px !important;
 }
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 80px; 
+  scroll-padding-top: 70px;
 }
 
 .dark .Header {
@@ -39,6 +40,7 @@ html {
   padding: 12px 15px;
   position: relative;
   flex-wrap: nowrap;
+  min-height: 60px;
 }
 
 .Header-Topbar-Logogroup {
@@ -50,7 +52,7 @@ html {
 
 .Header-Topbar-Titlegroup {
   text-align: left;
-  flex-shrink: 0; 
+  flex-shrink: 0;
   text-shadow: 1px 2px 3px rgba(0, 0, 0, 0.19);
   margin-left: 15px;
 }
@@ -98,7 +100,8 @@ html {
   position: relative;
   width: 250pxl;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  order: 2; /* Thứ tự thứ hai */
+  order: 2;
+  /* Thứ tự thứ hai */
 }
 
 .Header-Topbar-Authsearch-Searchbox input {
@@ -156,7 +159,8 @@ html {
   color: #003366;
   cursor: pointer;
   align-items: center;
-  order: 1; /* Thứ tự đầu tiên */
+  order: 1;
+  /* Thứ tự đầu tiên */
 }
 
 .Header-Topbar-Authsearch-Authlinks-Item:hover {
@@ -242,7 +246,8 @@ html {
   width: 40px;
   transition: all 0.3s ease;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  order: 4; /* Thứ tự cuối cùng */
+  order: 4;
+  /* Thứ tự cuối cùng */
 }
 
 .Header-Topbar-Dark-mode-toggle:hover {
@@ -286,16 +291,18 @@ html {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex: 1; 
-  margin: 0 20px; 
-  gap: 10px; 
+  flex: 1;
+  margin: 0 20px;
+  gap: 10px;
+  min-height: 50px;
+  padding: 5px 0;
 }
 
 .Header-Navbar-Navitem {
-  font-size: 15px; 
+  font-size: 15px;
   font-family: "montserrat", sans-serif;
   font-weight: bold;
-  padding: 8px 16px; 
+  padding: 8px 16px;
   border-radius: 5px;
   display: flex;
   justify-content: center;
@@ -305,9 +312,10 @@ html {
   transition: all 0.3s ease;
   text-decoration: none;
   color: #003366;
-  white-space: nowrap; 
-  border: none; 
+  white-space: nowrap;
+  border: none;
   position: relative;
+  min-height: 40px;
 }
 
 .Header-Navbar-Navitem:last-child {
@@ -365,6 +373,29 @@ html {
   background-color: #0f2d4a;
 }
 
+.page-container {
+  padding-top: 50px !important;
+  min-height: 100vh;
+}
+
+.activities-page-container {
+  padding-top: 140px !important;
+  min-height: 100vh;
+}
+
+.activity-detail-page {
+  padding-top: 140px !important;
+  min-height: 100vh;
+}
+
+.light-container-main {
+  padding-top: 20px !important;
+  /* Giảm padding vì đã có padding ở body */
+  padding-left: 2rem;
+  padding-right: 2rem;
+  min-height: calc(100vh - 140px);
+}
+
 /* Responsive styles */
 @media (max-width: 1200px) {
   .Header-Navbar-Navitem {
@@ -375,6 +406,7 @@ html {
 
 /* Tablet (834px và nhỏ hơn) - Ẩn tiêu đề */
 @media (max-width: 834px) {
+
   /* Ẩn thông tin trường và khoa trên thiết bị tablet */
   .Header-Topbar-Titlegroup {
     display: none;
@@ -387,15 +419,17 @@ html {
   }
 
   .Header-Topbar-Logogroup {
-    width: 160px; /* Kích thước phù hợp cho tablet */
+    width: 160px;
+    /* Kích thước phù hợp cho tablet */
   }
 
-.Header-Topbar-RightSection {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-shrink: 0; /* Không cho shrink */
-}
+  .Header-Topbar-RightSection {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+    /* Không cho shrink */
+  }
 
   .Header-Navbar-Navitem {
     font-size: 18px;
@@ -404,6 +438,7 @@ html {
 }
 
 @media (max-width: 768px) {
+
   /* Hiển thị nút mobile menu */
   .Header-Mobile-Menu-Button {
     display: flex;
@@ -436,7 +471,8 @@ html {
   }
 
   .Header-Topbar-Logogroup {
-    width: 140px; /* Giảm kích thước logo cho mobile */
+    width: 140px;
+    /* Giảm kích thước logo cho mobile */
   }
 }
 
@@ -463,7 +499,8 @@ html {
   }
 
   .Header-Topbar-Authsearch-Searchbox {
-    width: 150px; /* Thu nhỏ ô tìm kiếm trên mobile */
+    width: 150px;
+    /* Thu nhỏ ô tìm kiếm trên mobile */
   }
 }
 
@@ -627,8 +664,10 @@ html {
 
 /* Đặt màu cố định cho placeholder, không phụ thuộc vào chế độ dark/light */
 .registerform-footer-form input::placeholder {
-  color: rgba(0, 39, 77, 0.7) !important; /* #00274d với độ mờ 70% */
-  opacity: 1; /* Firefox yêu cầu opacity: 1 để hiển thị màu */
+  color: rgba(0, 39, 77, 0.7) !important;
+  /* #00274d với độ mờ 70% */
+  opacity: 1;
+  /* Firefox yêu cầu opacity: 1 để hiển thị màu */
 }
 
 /* Hỗ trợ cho các trình duyệt cũ */
@@ -637,16 +676,19 @@ html {
   color: rgba(0, 39, 77, 0.7) !important;
   opacity: 1;
 }
+
 .registerform-footer-form input::-moz-placeholder {
   /* Firefox 19+ */
   color: rgba(0, 39, 77, 0.7) !important;
   opacity: 1;
 }
+
 .registerform-footer-form input:-ms-input-placeholder {
   /* IE 10+ */
   color: rgba(0, 39, 77, 0.7) !important;
   opacity: 1;
 }
+
 .registerform-footer-form input:-moz-placeholder {
   /* Firefox 18- */
   color: rgba(0, 39, 77, 0.7) !important;
@@ -698,7 +740,8 @@ html {
 }
 
 .registerform-footer-form form {
-  width: 100%; /* Đảm bảo form chiếm toàn bộ chiều rộng container */
+  width: 100%;
+  /* Đảm bảo form chiếm toàn bộ chiều rộng container */
   display: flex;
   flex-direction: column;
 }
@@ -885,6 +928,7 @@ html {
   color: #666;
   background-color: #f8f9fa;
 }
+
 /* Responsive styles */
 @media (max-width: 768px) {
   .admin-header-navbar {
@@ -901,7 +945,8 @@ html {
   position: relative;
   display: flex;
   align-items: center;
-  order: 1; /* Thứ tự đầu tiên */
+  order: 1;
+  /* Thứ tự đầu tiên */
 }
 
 .Header-Topbar-Authsearch-UserInfo-Button {
@@ -996,19 +1041,25 @@ html {
   display: flex;
   align-items: center;
   cursor: pointer;
-  padding: 8px; /* Giảm padding để match với notification và dark mode */
-  border-radius: 50%; /* Đổi thành hình tròn như notification và dark mode */
+  padding: 8px;
+  /* Giảm padding để match với notification và dark mode */
+  border-radius: 50%;
+  /* Đổi thành hình tròn như notification và dark mode */
   background-color: #ffffff;
   color: #04255a !important;
   font-weight: 500;
   font-size: 14px;
   border: none;
-  width: 40px; /* Cùng width với notification và dark mode */
-  height: 40px; /* Cùng height với notification và dark mode */
-  justify-content: center; /* Center icon */
+  width: 40px;
+  /* Cùng width với notification và dark mode */
+  height: 40px;
+  /* Cùng height với notification và dark mode */
+  justify-content: center;
+  /* Center icon */
   transition: all 0.3s ease;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  order: 1; /* Thứ tự đầu tiên */
+  order: 1;
+  /* Thứ tự đầu tiên */
 }
 
 .Header-Topbar-Authsearch-UserInfo-Button:hover {
@@ -1103,7 +1154,8 @@ html {
   position: relative;
   display: flex;
   align-items: center;
-  order: 3; /* Thứ tự thứ ba */
+  order: 3;
+  /* Thứ tự thứ ba */
 }
 
 .Header-Topbar-Authsearch-Notification-Button {
@@ -1247,7 +1299,8 @@ html {
 
 .Header-Topbar-Authsearch-Notification-Item-Text {
   flex: 1;
-  padding-right: 16px; /* Space for the action buttons */
+  padding-right: 16px;
+  /* Space for the action buttons */
 }
 
 .Header-Topbar-Authsearch-Notification-Item-Title {
@@ -1288,8 +1341,7 @@ html {
   transition: opacity 0.2s;
 }
 
-.Header-Topbar-Authsearch-Notification-Item:hover
-  .Header-Topbar-Authsearch-Notification-Item-Actions {
+.Header-Topbar-Authsearch-Notification-Item:hover .Header-Topbar-Authsearch-Notification-Item-Actions {
   opacity: 1;
 }
 
@@ -1682,9 +1734,11 @@ html {
   0% {
     opacity: 0.2;
   }
+
   20% {
     opacity: 1;
   }
+
   100% {
     opacity: 0.2;
   }
@@ -1773,6 +1827,7 @@ html {
     transform: translateX(100%);
     opacity: 0;
   }
+
   to {
     transform: translateX(0);
     opacity: 1;

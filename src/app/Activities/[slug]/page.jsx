@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -22,6 +22,32 @@ export default function ActivityPost() {
   const [latestNews, setLatestNews] = useState([]);
   const [loadingNews, setLoadingNews] = useState(true);
   const [errorNews, setErrorNews] = useState(null);
+
+  // Add missing ref and state for sidebar animation
+  const sidebarRef = useRef(null);
+  const [sidebarVisible, setSidebarVisible] = useState(false);
+
+  // Add intersection observer for sidebar animation
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setSidebarVisible(true);
+          observer.unobserve(entry.target);
+        }
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '50px 0px -50px 0px'
+      }
+    );
+
+    if (sidebarRef.current) {
+      observer.observe(sidebarRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   // Fetch bài viết hiện tại
   useEffect(() => {
@@ -196,7 +222,7 @@ export default function ActivityPost() {
     <div className="min-h-screen">
       <main className="activity-detail-page">
         <div className="activity-detail-container">
-          {/* Main Content */}
+          {/* Main Content - 70% */}
           <div className="activity-content">
             {/* Article Header */}
             <header className="activity-header">
@@ -259,15 +285,18 @@ export default function ActivityPost() {
               </div>
             </footer>
 
-            {/* Comment Section - Tích hợp ở đây */}
+            {/* Comment Section */}
             <CommentSection
               activitySlug={post.slug}
               commentOption={post.commentOption}
             />
           </div>
 
-          {/* Sidebar tin tức mới nhất */}
-          <aside className="activity-sidebar">
+          {/* Sidebar tin tức mới nhất - 30% */}
+          <div
+            ref={sidebarRef}
+            className={`activity-sidebar ${sidebarVisible ? 'animate' : ''}`}
+          >
             <h3>TIN TỨC MỚI NHẤT</h3>
 
             {/* Loading state */}
@@ -310,10 +339,10 @@ export default function ActivityPost() {
                 </div>
               </>
             )}
-          </aside>
+          </div>
         </div>
-        <Footer />
       </main>
+      <Footer />
     </div>
   );
 }

@@ -341,7 +341,7 @@ export default function Home() {
                     </Link>
                     {user.role === "admin" && (
                       <Link
-                        href="/admin/UsersDashboard"
+                        href="/admin/ActivitiesDashboard"
                         className={styles.Header_Nav_AuthMenu_Item}
                       >
                         Quản trị
