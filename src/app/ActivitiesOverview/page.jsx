@@ -110,13 +110,15 @@ export default function ActivitiesOverview() {
             filteredPosts = data.data;
           } else {
             // KHI KHÔNG CÓ FILTER: Chỉ lấy bài viết trong vòng 1 tháng
-            filteredPosts = data.data.filter(post =>
+            filteredPosts = data.data.filter((post) =>
               isWithinOneMonth(post.createdAt)
             );
           }
 
           // Sắp xếp theo thời gian mới nhất
-          filteredPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          filteredPosts.sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+          );
 
           // Phân trang cho bài viết
           const postsPerPage = 8;
@@ -165,12 +167,14 @@ export default function ActivitiesOverview() {
 
         if (data.success) {
           // TỰ ĐỘNG LỌC: Chỉ lấy bài viết từ 1 tháng trở lên
-          const olderPosts = data.data.filter(post =>
-            !isWithinOneMonth(post.createdAt)
+          const olderPosts = data.data.filter(
+            (post) => !isWithinOneMonth(post.createdAt)
           );
 
           // Sắp xếp theo thời gian mới nhất
-          olderPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          olderPosts.sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+          );
 
           // Phân trang cho bài viết cũ hơn
           const postsPerPage = 8;
@@ -332,8 +336,9 @@ export default function ActivitiesOverview() {
               return (
                 <div key={key} className="filter-dropdown">
                   <button
-                    className={`filter-dropdown-btn ${isActive ? "active" : ""
-                      } ${activeDropdown === key ? "open" : ""}`}
+                    className={`filter-dropdown-btn ${
+                      isActive ? "active" : ""
+                    } ${activeDropdown === key ? "open" : ""}`}
                     onClick={() => toggleDropdown(key)}
                   >
                     <span className="dropdown-icon">{category.icon}</span>
@@ -421,9 +426,7 @@ export default function ActivitiesOverview() {
         <main className="light-container-main with-fixed-filter">
           <section className="post-list-container">
             <div className="post-list-title">
-              <h3>
-                BÀI ĐĂNG GẦN ĐÂY
-              </h3>
+              <h3>BÀI ĐĂNG GẦN ĐÂY</h3>
               <FilterBar />
               {selectedTypes.length > 0 && (
                 <span className="filter-info">
@@ -433,7 +436,7 @@ export default function ActivitiesOverview() {
             </div>
 
             {postList.length === 0 ? (
-              <div className="no-posts-message" style={{ display: 'none' }}>
+              <div className="no-posts-message" style={{ display: "none" }}>
                 {hasActiveFilter ? (
                   <p>🔍 Không tìm thấy bài viết nào phù hợp với bộ lọc.</p>
                 ) : (
@@ -447,10 +450,13 @@ export default function ActivitiesOverview() {
                     <div className="post-item" key={post._id || index}>
                       <div className="post-box">
                         <div className="post-image-placeholder">
-                          <div className="time-badge">{getTimeAgo(post.createdAt)}</div>
-                          {hasActiveFilter && isWithinOneMonth(post.createdAt) && (
-                            <div className="new-badge">Mới</div>
-                          )}
+                          <div className="time-badge">
+                            {getTimeAgo(post.createdAt)}
+                          </div>
+                          {hasActiveFilter &&
+                            isWithinOneMonth(post.createdAt) && (
+                              <div className="new-badge">Mới</div>
+                            )}
                           {post.image ? (
                             <img
                               src={post.image}
@@ -506,8 +512,9 @@ export default function ActivitiesOverview() {
                           ) : (
                             <button
                               key={pageNum}
-                              className={`pagination-btn ${pageNum === currentPostPage ? "active" : ""
-                                }`}
+                              className={`pagination-btn ${
+                                pageNum === currentPostPage ? "active" : ""
+                              }`}
                               onClick={() => setCurrentPostPage(pageNum)}
                             >
                               {pageNum}
@@ -533,12 +540,13 @@ export default function ActivitiesOverview() {
 
             {!hasActiveFilter && (
               <div className="other-posts-container">
-                <h3 className="other-posts-title">
-                  CÁC BÀI VIẾT KHÁC
-                </h3>
+                <h3 className="other-posts-title">CÁC BÀI VIẾT KHÁC</h3>
 
                 {otherPosts.length === 0 ? (
-                  <div className="no-posts-message" style={{ display: 'block' }}>
+                  <div
+                    className="no-posts-message"
+                    style={{ display: "block" }}
+                  >
                     <p>Chưa có bài viết nào được đăng cách đây hơn 1 tháng.</p>
                   </div>
                 ) : (
@@ -546,30 +554,23 @@ export default function ActivitiesOverview() {
                     <div className="other-posts-grid">
                       <div className="other-posts-column">
                         {otherPosts.slice(0, 4).map((post, index) => (
-                          <div className="other-post-item" key={post._id || index}>
+                          <div
+                            className="other-post-item"
+                            key={post._id || post.slug || index}
+                          >
                             <h4 className="other-post-title">
-                              <Link href={`/Activities/${post.slug || post._id}`}>
+                              <Link
+                                href={`/Activities/${post.slug || post._id}`}
+                              >
                                 {post.title}
                               </Link>
                             </h4>
                             <p className="other-post-date">
                               {formatDate(post.createdAt)}
-                              <span className="time-ago"> • {getTimeAgo(post.createdAt)}</span>
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="other-posts-column">
-                        {otherPosts.slice(4, 8).map((post, index) => (
-                          <div className="other-post-item" key={post._id || index}>
-                            <h4 className="other-post-title">
-                              <Link href={`/Activities/${post.slug || post._id}`}>
-                                {post.title}
-                              </Link>
-                            </h4>
-                            <p className="other-post-date">
-                              {formatDate(post.createdAt)}
-                              <span className="time-ago"> • {getTimeAgo(post.createdAt)}</span>
+                              <span className="time-ago">
+                                {" "}
+                                • {getTimeAgo(post.createdAt)}
+                              </span>
                             </p>
                           </div>
                         ))}
@@ -582,37 +583,44 @@ export default function ActivitiesOverview() {
                           {currentOtherPage > 1 && (
                             <button
                               className="pagination-btn"
-                              onClick={() => setCurrentOtherPage(currentOtherPage - 1)}
+                              onClick={() =>
+                                setCurrentOtherPage(currentOtherPage - 1)
+                              }
                             >
                               &lt;
                             </button>
                           )}
 
-                          {generatePageNumbers(currentOtherPage, totalOtherPages).map(
-                            (pageNum, index) =>
-                              pageNum === "..." ? (
-                                <span
-                                  key={`ellipsis-other-${index}`}
-                                  className="pagination-ellipsis"
-                                >
-                                  ...
-                                </span>
-                              ) : (
-                                <button
-                                  key={pageNum}
-                                  className={`pagination-btn ${pageNum === currentOtherPage ? "active" : ""
-                                    }`}
-                                  onClick={() => setCurrentOtherPage(pageNum)}
-                                >
-                                  {pageNum}
-                                </button>
-                              )
+                          {generatePageNumbers(
+                            currentOtherPage,
+                            totalOtherPages
+                          ).map((pageNum, index) =>
+                            pageNum === "..." ? (
+                              <span
+                                key={`ellipsis-other-${index}`}
+                                className="pagination-ellipsis"
+                              >
+                                ...
+                              </span>
+                            ) : (
+                              <button
+                                key={pageNum}
+                                className={`pagination-btn ${
+                                  pageNum === currentOtherPage ? "active" : ""
+                                }`}
+                                onClick={() => setCurrentOtherPage(pageNum)}
+                              >
+                                {pageNum}
+                              </button>
+                            )
                           )}
 
                           {currentOtherPage < totalOtherPages && (
                             <button
                               className="pagination-btn"
-                              onClick={() => setCurrentOtherPage(currentOtherPage + 1)}
+                              onClick={() =>
+                                setCurrentOtherPage(currentOtherPage + 1)
+                              }
                             >
                               &gt;
                             </button>

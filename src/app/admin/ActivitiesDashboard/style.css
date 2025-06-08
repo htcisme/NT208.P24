@@ -238,6 +238,12 @@ body {
   background-color: #3e8e41 !important;
 }
 
+.button-column {
+  display: flex;
+  flex-direction: column; /* Xếp theo cột */
+  gap: 10px;
+}
+
 .reply-btn {
   color: #0056b3;
 }
@@ -352,6 +358,15 @@ body {
 
 .add-content-textarea::placeholder {
   color: #6c757d;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  color: #031a3e !important;
 }
 
 .info-tabs {
@@ -1005,6 +1020,11 @@ button:disabled {
   color: #042354;
   font-size: 18px;
   font-weight: 600;
+}
+
+.section-header h3 {
+  margin: 0;
+  color: white !important;
 }
 
 .comment-section .batch-action-container {
