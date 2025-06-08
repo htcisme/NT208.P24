@@ -121,6 +121,7 @@ body.dark .form-error {
   border-color: var(--border);
 }
 
+/* Dot styles cho image carousel */
 .Body_Container_Introduction_ContentWrapper_ImageContainer_Dots {
   width: 6px !important;
   height: 6px !important;
@@ -149,7 +150,7 @@ body.dark .form-error {
 
 @import "tailwindcss";
 
-/* Scroll reveal animations for homepage */
+/* ===== SCROLL REVEAL ANIMATIONS ===== */
 .animate-hero {
   animation: fadeInUp 1s ease-out forwards;
 }
@@ -275,7 +276,7 @@ body.dark .form-error {
   opacity: 0;
 }
 
-/* Keyframes */
+/* ===== KEYFRAMES ===== */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -331,7 +332,104 @@ body.dark .form-error {
   }
 }
 
-/* Reduced motion for accessibility */
+/* ===== MARQUEE EFFECT ===== */
+/* Container chính cho marquee */
+.Body_Container_Lower_Bandroll_Content {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Đảm bảo có chiều cao tối thiểu */
+  min-height: 80px;
+}
+
+/* Element chứa text sẽ chạy */
+.Body_Container_Lower_Bandroll_Content_Marquee {
+  display: flex;
+  animation: marquee 10s linear infinite;
+  white-space: nowrap;
+  will-change: transform;
+  flex-shrink: 0;
+  min-width: max-content;
+}
+
+/* Text spans */
+.Body_Container_Lower_Bandroll_Content_Marquee span {
+  padding-right: 200px; /* Khoảng cách giữa các lần lặp */
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  display: inline-block;
+  flex-shrink: 0;
+  /* Đảm bảo text không bị wrap */
+  white-space: nowrap;
+}
+
+/* Keyframe animation cho marquee */
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* Pause animation khi hover */
+.Body_Container_Lower_Bandroll_Content_Marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Tích hợp với scroll reveal animation */
+.animate-bandroll .Body_Container_Lower_Bandroll_Content_Marquee {
+  animation: marquee 25s linear infinite, fadeInMarquee 1s ease-out;
+}
+
+@keyframes fadeInMarquee {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ===== RESPONSIVE ADJUSTMENTS ===== */
+@media (max-width: 1024px) {
+  .Body_Container_Lower_Bandroll_Content_Marquee {
+    animation-duration: 20s;
+  }
+  
+  .Body_Container_Lower_Bandroll_Content_Marquee span {
+    padding-right: 120px;
+  }
+}
+
+@media (max-width: 768px) {
+  .Body_Container_Lower_Bandroll_Content_Marquee {
+    animation-duration: 15s;
+  }
+  
+  .Body_Container_Lower_Bandroll_Content_Marquee span {
+    padding-right: 80px;
+  }
+}
+
+@media (max-width: 480px) {
+  .Body_Container_Lower_Bandroll_Content_Marquee {
+    animation-duration: 12s;
+  }
+  
+  .Body_Container_Lower_Bandroll_Content_Marquee span {
+    padding-right: 50px;
+  }
+}
+
+/* ===== ACCESSIBILITY ===== */
+/* Reduced motion cho accessibility */
 @media (prefers-reduced-motion: reduce) {
   .animate-hero,
   .animate-title,
@@ -355,8 +453,32 @@ body.dark .form-error {
   .animate-banner-2,
   .animate-banner-3,
   .animate-form {
-    animation: none;
-    opacity: 1;
-    transform: none;
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
+  
+  /* Vẫn hiển thị text marquee nhưng không chạy */
+  .Body_Container_Lower_Bandroll_Content_Marquee {
+    animation: none !important;
+    transform: translateX(0) !important;
+    justify-content: center;
+  }
+  
+  .Body_Container_Lower_Bandroll_Content_Marquee span:first-child {
+    display: inline-block;
+  }
+  
+  .Body_Container_Lower_Bandroll_Content_Marquee span:not(:first-child) {
+    display: none;
+  }
+}
+
+/* ===== DARK MODE ADJUSTMENTS ===== */
+body.dark .Body_Container_Lower_Bandroll_Content_Marquee {
+  color: var(--text);
+}
+
+body.dark .Body_Container_Lower_Bandroll_Content_Marquee span {
+  color: inherit;
 }

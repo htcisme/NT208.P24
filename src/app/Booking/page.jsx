@@ -567,6 +567,7 @@ export default function BookingForm() {
                           className="form-note-link"
                           href="https://student.uit.edu.vn/lichphong"
                           target="_blank"
+                          
                         >
                           Tại đây
                         </a>
