@@ -116,6 +116,7 @@ body {
 .history_container_text {
   line-height: 1.7;
   color: var(--text);
+  text-align: justify;
 }
 
 .values {
@@ -202,6 +203,7 @@ body {
 
 .description_container_flex_left_text {
   line-height: 1.7;
+  text-align: justify;
 }
 
 .description_container_flex_right_wrapper {
@@ -568,4 +570,144 @@ body {
 
 .leader_container_flex_right_text {
   line-height: 1.7;
+  text-align: justify;
+}
+
+/* Scroll reveal animations for Introduction page */
+.animate-hero {
+  animation: fadeInUp 1s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out 0.2s forwards;
+  opacity: 0;
+}
+
+.animate-scale-up {
+  animation: scaleUp 1s ease-out 0.3s forwards;
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.8s ease-out 0.4s forwards;
+  opacity: 0;
+  transform: translateX(-50px);
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.8s ease-out 0.5s forwards;
+  opacity: 0;
+  transform: translateX(50px);
+}
+
+.animate-title {
+  animation: fadeInUp 0.8s ease-out 0.2s forwards;
+  opacity: 0;
+}
+
+.animate-teams-grid {
+  animation: fadeInUp 0.8s ease-out 0.3s forwards;
+  opacity: 0;
+}
+
+.animate-team-0 {
+  animation: slideInUp 0.6s ease-out 0.1s forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.animate-team-1 {
+  animation: slideInUp 0.6s ease-out 0.2s forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.animate-team-2 {
+  animation: slideInUp 0.6s ease-out 0.3s forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+/* Keyframes for Introduction page */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .animate-hero,
+  .animate-fade-in,
+  .animate-scale-up,
+  .animate-slide-in-left,
+  .animate-slide-in-right,
+  .animate-title,
+  .animate-teams-grid,
+  .animate-team-0,
+  .animate-team-1,
+  .animate-team-2 {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }

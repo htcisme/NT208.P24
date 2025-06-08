@@ -24,7 +24,7 @@ const EVENTS = [
   { title: "VNU TOUR 2024", image: "/Img/Homepage/Slider1.png" },
   { title: "NGỌN ĐUỐC XANH 2025", image: "/Img/Homepage/Slider3.png" },
   { title: "NETSEC DAY 2024", image: "/Img/Homepage/Slider2.png" },
-  { title: "TẬN “TỴ” ĐÓN TẾT", image: "/Img/Homepage/Slider4.png" },
+  { title: "TẬN TỴ ĐÓN TẾT", image: "/Img/Homepage/Slider4.png" },
   { title: "CHÀO ĐÓN TÂN SINH VIÊN", image: "/Img/Homepage/Slider5.png" },
 ];
 
@@ -53,6 +53,36 @@ const MEMBER_ITEMS = [
     label: "Ban Học tập",
   },
 ];
+
+// Custom hook cho scroll reveal
+const useScrollReveal = (threshold = 0.1) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          // Unobserve sau khi đã visible để tránh re-trigger
+          observer.unobserve(entry.target);
+        }
+      },
+      {
+        threshold,
+        rootMargin: '50px 0px -50px 0px' // Trigger sớm hơn một chút
+      }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, [threshold]);
+
+  return [ref, isVisible];
+};
 
 // Custom hooks
 const useUser = () => {
@@ -151,6 +181,23 @@ export default function Home() {
   const { user, logout } = useUser();
   const { isDarkMode, toggleDarkMode } = useDarkMode();
   const { currentIndex, fade } = useImageCarousel(IMAGES);
+
+  // Scroll reveal refs cho tất cả sections
+  const [heroRef, heroVisible] = useScrollReveal(0.1);
+  const [introTitleRef, introTitleVisible] = useScrollReveal(0.2);
+  const [introImageRef, introImageVisible] = useScrollReveal(0.2);
+  const [introTextRef, introTextVisible] = useScrollReveal(0.2);
+  const [memberItemsRef, memberItemsVisible] = useScrollReveal(0.2);
+  const [activitiesTitleRef, activitiesTitleVisible] = useScrollReveal(0.2);
+  const [activitiesCardsRef, activitiesCardsVisible] = useScrollReveal(0.2);
+  const [focusRef, focusVisible] = useScrollReveal(0.2);
+  const [highlightTitleRef, highlightTitleVisible] = useScrollReveal(0.2);
+  const [highlightSliderRef, highlightSliderVisible] = useScrollReveal(0.2);
+  const [awardsTitleRef, awardsTitleVisible] = useScrollReveal(0.2);
+  const [awardsContentRef, awardsContentVisible] = useScrollReveal(0.2);
+  const [lowerBandrollRef, lowerBandrollVisible] = useScrollReveal(0.2);
+  const [imageGridRef, imageGridVisible] = useScrollReveal(0.2);
+  const [registerFormRef, registerFormVisible] = useScrollReveal(0.2);
 
   // State
   const [startIndex, setStartIndex] = useState(0);
@@ -545,8 +592,11 @@ export default function Home() {
         </nav>
       </header>
 
-      {/* Hero Section */}
-      <section className={styles.hero}>
+      {/* Hero Section với scroll reveal */}
+      <section 
+        ref={heroRef}
+        className={`${styles.hero} ${heroVisible ? 'animate-hero' : ''}`}
+      >
         <div className={styles.heroBackground}></div>
         <div className={styles.heroOverlay}></div>
         <div className={styles.heroContent}>
@@ -588,16 +638,20 @@ export default function Home() {
             ></div>
 
             <Link href="/Introduction">
-              <h2 className={styles.Body_Container_Introduction_Title}>
+              <h2 
+                ref={introTitleRef}
+                className={`${styles.Body_Container_Introduction_Title} ${introTitleVisible ? 'animate-title' : ''}`}
+              >
                 GIỚI THIỆU
               </h2>
             </Link>
 
             <div className={styles.Body_Container_Introduction_ContentWrapper}>
               <div
-                className={
+                ref={introImageRef}
+                className={`${
                   styles.Body_Container_Introduction_ContentWrapper_ImageContainer
-                }
+                } ${introImageVisible ? 'animate-image' : ''}`}
               >
                 <Image
                   src={IMAGES[currentIndex]}
@@ -635,9 +689,10 @@ export default function Home() {
               </div>
 
               <div
-                className={
+                ref={introTextRef}
+                className={`${
                   styles.Body_Container_Introduction_ContentWrapper_TextContainer
-                }
+                } ${introTextVisible ? 'animate-text' : ''}`}
               >
                 <h3
                   className={
@@ -691,8 +746,11 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Member Items */}
-            <div className={styles.Body_Container_MemberWrap}>
+            {/* Member Items với scroll reveal */}
+            <div 
+              ref={memberItemsRef}
+              className={`${styles.Body_Container_MemberWrap} ${memberItemsVisible ? 'animate-members' : ''}`}
+            >
               {MEMBER_ITEMS.map((member, index) => (
                 <div key={index} className={styles.Body_Container_MemberItem}>
                   <img
@@ -712,22 +770,28 @@ export default function Home() {
           {/* Activities Section */}
           <section className={styles.Body_Container_Activities}>
             <Link href="/Activities">
-              <h2 className={styles.Activities_RecentLabel}>
+              <h2 
+                ref={activitiesTitleRef}
+                className={`${styles.Activities_RecentLabel} ${activitiesTitleVisible ? 'animate-title' : ''}`}
+              >
                 HOẠT ĐỘNG GẦN ĐÂY
               </h2>
             </Link>
 
-            <div className={styles.Activities_RecentCards}>
+            <div 
+              ref={activitiesCardsRef}
+              className={`${styles.Activities_RecentCards} ${activitiesCardsVisible ? 'animate-cards' : ''}`}
+            >
               {loadingRecent ? (
                 <div>Đang tải hoạt động...</div>
               ) : recentActivities.length === 0 ? (
                 <div>Không có hoạt động gần đây.</div>
               ) : (
-                recentActivities.map((activity) => (
+                recentActivities.map((activity, index) => (
                   <Link
                     key={activity._id}
                     href={`/Activities/${activity.slug}`}
-                    className={styles.Activities_RecentCard}
+                    className={`${styles.Activities_RecentCard} animate-card-${index}`}
                   >
                     <div className={styles.Activities_RecentCard_Container}>
                       <img
@@ -765,8 +829,11 @@ export default function Home() {
               Xem thêm ...
             </Link>
 
-            {/* Focus Section */}
-            <div className={styles.Activities_Focus}>
+            {/* Focus Section với scroll reveal */}
+            <div 
+              ref={focusRef}
+              className={`${styles.Activities_Focus} ${focusVisible ? 'animate-focus' : ''}`}
+            >
               <div className={styles.Activities_Focus_Shape01}></div>
               <div className={styles.Activities_Focus_ContentWrapper}>
                 <div className={styles.Activities_Focus_ImageContainer}>
@@ -823,12 +890,18 @@ export default function Home() {
 
           {/* Highlight Section */}
           <section className={styles.Body_Container_Hightlight}>
-            <div className={styles.Body_Container_Hightlight_Title}>
+            <div 
+              ref={highlightTitleRef}
+              className={`${styles.Body_Container_Hightlight_Title} ${highlightTitleVisible ? 'animate-title' : ''}`}
+            >
               HOẠT ĐỘNG NỔI BẬT
             </div>
             <div className={styles.Body_Container_Hightlight_Shape}></div>
 
-            <section className={styles.light_slider_container}>
+            <section 
+              ref={highlightSliderRef}
+              className={`${styles.light_slider_container} ${highlightSliderVisible ? 'animate-slider' : ''}`}
+            >
               <button
                 className={styles.light_slider_arrow}
                 onClick={handlePrev}
@@ -838,7 +911,7 @@ export default function Home() {
               </button>
               {visibleEvents.map((event, index) => (
                 <div
-                  className={styles.light_slider_item}
+                  className={`${styles.light_slider_item} animate-slide-${index}`}
                   key={`${startIndex}-${index}`}
                 >
                   <div
@@ -881,13 +954,19 @@ export default function Home() {
 
           {/* Awards Section */}
           <section className={styles.Body_Container_Awards}>
-            <div className={styles.Body_Container_Awards_Title}>
+            <div 
+              ref={awardsTitleRef}
+              className={`${styles.Body_Container_Awards_Title} ${awardsTitleVisible ? 'animate-title' : ''}`}
+            >
               THÀNH TÍCH NỔI BẬT
             </div>
             <div className={styles.Body_Container_Awards_Shape01}></div>
             <div className={styles.Body_Container_Awards_Shape02}></div>
 
-            <div className={styles.Body_Container_Awards_ContentWrapper}>
+            <div 
+              ref={awardsContentRef}
+              className={`${styles.Body_Container_Awards_ContentWrapper} ${awardsContentVisible ? 'animate-awards' : ''}`}
+            >
               <div className={styles.Body_Container_Awards_Content}>
                 <div className={styles.Body_Container_Awards_Content_Title}>
                   ĐOÀN KHOA MẠNG MÁY TÍNH VÀ TRUYỀN THÔNG LÀ ĐƠN VỊ XUẤT SẮC DẪN
@@ -926,33 +1005,42 @@ export default function Home() {
           </section>
 
           <section className={styles.Body_Container_Lower}>
-            <div className={styles.Body_Container_Lower_Bandroll}>
+            <div 
+              ref={lowerBandrollRef}
+              className={`${styles.Body_Container_Lower_Bandroll} ${lowerBandrollVisible ? 'animate-bandroll' : ''}`}
+            >
               <div className={styles.Body_Container_Lower_Bandroll_Content}>
                 ĐOÀN KẾT - TIÊN PHONG - TRÁCH NHIỆM - ĐỔI MỚI
               </div>
             </div>
-            <div className={styles.Image_Grid_Container}>
+            <div 
+              ref={imageGridRef}
+              className={`${styles.Image_Grid_Container} ${imageGridVisible ? 'animate-grid' : ''}`}
+            >
               <img
                 src="/Img/Homepage/banner1.png"
                 alt="Top Banner"
-                className={styles.Image_Top}
+                className={`${styles.Image_Top} animate-banner-1`}
               />
               <div className={styles.Image_Bottom_Row}>
                 <img
                   src="/Img/Homepage/banner2.png"
                   alt="Bottom Left"
-                  className={styles.Image_Bottom}
+                  className={`${styles.Image_Bottom} animate-banner-2`}
                 />
                 <img
                   src="/Img/Homepage/banner3.png"
                   alt="Bottom Right"
-                  className={styles.Image_Bottom}
+                  className={`${styles.Image_Bottom} animate-banner-3`}
                 />
               </div>
             </div>
           </section>
 
-          <section className={styles.Body_Container_RegisterForm}>
+          <section 
+            ref={registerFormRef}
+            className={`${styles.Body_Container_RegisterForm} ${registerFormVisible ? 'animate-form' : ''}`}
+          >
             <RegisterForm className={styles.Body_Container_RegisterForm_Form} />
           </section>
         </div>

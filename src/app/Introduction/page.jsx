@@ -1,14 +1,12 @@
-// pages/introduction.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import styles from "./style.css";
 
 import Image from "next/image";
 import Head from "next/head";
-// Đảm bảo import style.css trong _app.tsx hoặc layout.tsx
 
 const teamData = [
   {
@@ -61,9 +59,50 @@ const teamData = [
   },
 ];
 
+// Custom hook cho scroll reveal
+const useScrollReveal = (threshold = 0.1) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          // Unobserve sau khi đã visible để tránh re-trigger
+          observer.unobserve(entry.target);
+        }
+      },
+      {
+        threshold,
+        rootMargin: '50px 0px -50px 0px' // Trigger sớm hơn một chút
+      }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, [threshold]);
+
+  return [ref, isVisible];
+};
+
 const Introduction = () => {
   // State để quản lý ID của ban đang được mở rộng
   const [expandedTeamId, setExpandedTeamId] = useState(null);
+
+  // Scroll reveal refs cho tất cả sections
+  const [heroRef, heroVisible] = useScrollReveal(0.1);
+  const [historyRef, historyVisible] = useScrollReveal(0.2);
+  const [valuesRef, valuesVisible] = useScrollReveal(0.2);
+  const [descriptionTextRef, descriptionTextVisible] = useScrollReveal(0.2);
+  const [descriptionImageRef, descriptionImageVisible] = useScrollReveal(0.2);
+  const [teamsTitleRef, teamsTitleVisible] = useScrollReveal(0.2);
+  const [teamsGridRef, teamsGridVisible] = useScrollReveal(0.2);
+  const [leaderImageRef, leaderImageVisible] = useScrollReveal(0.2);
+  const [leaderTextRef, leaderTextVisible] = useScrollReveal(0.2);
 
   // Hàm để chuyển đổi trạng thái hiển thị chi tiết của ban
   const toggleTeamDetails = (teamId) => {
@@ -82,8 +121,11 @@ const Introduction = () => {
         <div className="background">
           <Header />
 
-          {/* Hero Banner */}
-          <section className="hero">
+          {/* Hero Banner với scroll reveal */}
+          <section 
+            ref={heroRef}
+            className={`hero ${heroVisible ? 'animate-hero' : ''}`}
+          >
             <div
               className="hero_background"
               style={{
@@ -109,8 +151,11 @@ const Introduction = () => {
             </div>
           </section>
 
-          {/* History Section */}
-          <section className="history">
+          {/* History Section với scroll reveal */}
+          <section 
+            ref={historyRef}
+            className={`history ${historyVisible ? 'animate-fade-in' : ''}`}
+          >
             <div className="history_container">
               <p className="history_container_text">
                 Đúng ở vị trí là một đơn vị Đoàn có số đoàn viên xấp xỉ 35% so
@@ -125,8 +170,11 @@ const Introduction = () => {
             </div>
           </section>
 
-          {/* Values Section */}
-          <section className="values">
+          {/* Values Section với scroll reveal */}
+          <section 
+            ref={valuesRef}
+            className={`values ${valuesVisible ? 'animate-scale-up' : ''}`}
+          >
             <div className="values_container">
               <h2 className="values_container_heading">Phương châm</h2>
               <div className="values_container_motto">
@@ -135,11 +183,14 @@ const Introduction = () => {
             </div>
           </section>
 
-          {/* Description Section */}
+          {/* Description Section với scroll reveal */}
           <section className="description">
             <div className="description_container">
               <div className="description_container_flex">
-                <div className="description_container_flex_left">
+                <div 
+                  ref={descriptionTextRef}
+                  className={`description_container_flex_left ${descriptionTextVisible ? 'animate-slide-in-left' : ''}`}
+                >
                   <p className="description_container_flex_left_text">
                     Với truyền thống, lịch sử hình thành và phát triển của mình,
                     cho đến nay Đoàn khoa MMT&TT đang quản lý 17 Chi đoàn trực
@@ -152,7 +203,10 @@ const Introduction = () => {
                     luyện, giao lưu và trưởng thành.
                   </p>
                 </div>
-                <div className="description_container_flex_right">
+                <div 
+                  ref={descriptionImageRef}
+                  className={`description_container_flex_right ${descriptionImageVisible ? 'animate-slide-in-right' : ''}`}
+                >
                   <div className="description_container_flex_right_wrapper">
                     <Image
                       src="/Img/Introduction/BCH_Img.png"
@@ -167,14 +221,25 @@ const Introduction = () => {
             </div>
           </section>
 
-          {/* Teams Section */}
+          {/* Teams Section với scroll reveal */}
           <section className="teams">
             <div className="teams_container">
-              <h2 className="teams_container_title">CÁC BAN CHUYÊN MÔN</h2>
+              <h2 
+                ref={teamsTitleRef}
+                className={`teams_container_title ${teamsTitleVisible ? 'animate-title' : ''}`}
+              >
+                CÁC BAN CHUYÊN MÔN
+              </h2>
 
-              <div className="teams_container_grid">
-                {teamData.map((team) => (
-                  <div key={team.id} className="teams_container_accordion">
+              <div 
+                ref={teamsGridRef}
+                className={`teams_container_grid ${teamsGridVisible ? 'animate-teams-grid' : ''}`}
+              >
+                {teamData.map((team, index) => (
+                  <div 
+                    key={team.id} 
+                    className={`teams_container_accordion animate-team-${index}`}
+                  >
                     <div
                       className={`teams_container_accordion_card ${
                         expandedTeamId === team.id
@@ -248,11 +313,14 @@ const Introduction = () => {
             </div>
           </section>
 
-          {/* Leader Section */}
+          {/* Leader Section với scroll reveal */}
           <section className="leader">
             <div className="leader_container">
               <div className="leader_container_flex">
-                <div className="leader_container_flex_left">
+                <div 
+                  ref={leaderImageRef}
+                  className={`leader_container_flex_left ${leaderImageVisible ? 'animate-slide-in-left' : ''}`}
+                >
                   <div className="leader_container_flex_left_card">
                     <Image
                       src="/Img/Introduction/TestVideo.png"
@@ -268,7 +336,10 @@ const Introduction = () => {
                     </div>
                   </div>
                 </div>
-                <div className="leader_container_flex_right">
+                <div 
+                  ref={leaderTextRef}
+                  className={`leader_container_flex_right ${leaderTextVisible ? 'animate-slide-in-right' : ''}`}
+                >
                   <p className="leader_container_flex_right_text">
                     Với sự nỗ lực không ngừng, Đoàn Khoa MMT&TT đã và đang là
                     một trong những đơn vị đầu tàu trong công tác Đoàn và phong
