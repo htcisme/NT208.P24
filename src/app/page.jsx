@@ -28,14 +28,6 @@ const EVENTS = [
   { title: "CHÀO ĐÓN TÂN SINH VIÊN", image: "/Img/Homepage/Slider5.png" },
 ];
 
-const TIMELINE_ITEMS = [
-  {
-    date: "20.01.2025",
-    text: 'Đoàn khoa Mạng máy tính và Truyền thông đã sẵn sàng mang đến chuỗi truyền thống TẬN"TỴ"ĐÓN TẾT vô cùng hấp dẫn, đầy ý nghĩa để cùng các bạn tận hưởng một cái Tết Nguyên đán trọn vẹn nhất!!',
-  },
-  // Repeat items...
-];
-
 const MEMBER_ITEMS = [
   {
     img: "/Img/Homepage/TTSK_Img.png",
@@ -209,7 +201,6 @@ export default function Home() {
   const [isSearching, setIsSearching] = useState(false);
   const [recentActivities, setRecentActivities] = useState([]);
   const [loadingRecent, setLoadingRecent] = useState(true);
-  // State để quản lý dữ liệu awards
   const [awards, setAwards] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -264,8 +255,7 @@ export default function Home() {
         const data = await response.json();
 
         if (data.success) {
-          setAwards(data.data);
-          setAwards(data.data.slice(0, 5));
+          setAwards(data.data.slice(0, 5)); // Chỉ lấy 5 giải thưởng đầu tiên
         } else {
           throw new Error(data.message || "Lỗi khi tải dữ liệu");
         }
@@ -281,13 +271,15 @@ export default function Home() {
   }, []);
 
   // Nhóm giải thưởng theo tổ chức
-  const groupedAwards = awards.reduce((acc, award) => {
-    if (!acc[award.organization]) {
-      acc[award.organization] = [];
-    }
-    acc[award.organization].push(award);
-    return acc;
-  }, {});
+  const groupedAwards = useMemo(() => {
+    return awards.reduce((acc, award) => {
+      if (!acc[award.organization]) {
+        acc[award.organization] = [];
+      }
+      acc[award.organization].push(award);
+      return acc;
+    }, {});
+  }, [awards]);
 
   const handleSearchChange = useCallback((e) => {
     const value = e.target.value;
@@ -508,11 +500,10 @@ export default function Home() {
               ☰
             </button>
             <nav
-              className={`${styles.Header_Nav_MenuWrapper_DropdownMenu} ${
-                showMenu
+              className={`${styles.Header_Nav_MenuWrapper_DropdownMenu} ${showMenu
                   ? styles.Header_Nav_MenuWrapper_MenuButton_ShowMenu
                   : ""
-              }`}
+                }`}
             >
               <Link
                 href="/Introduction"
@@ -592,8 +583,8 @@ export default function Home() {
         </nav>
       </header>
 
-      {/* Hero Section với scroll reveal */}
-      <section 
+      {/* Hero Section */}
+      <section
         ref={heroRef}
         className={`${styles.hero} ${heroVisible ? 'animate-hero' : ''}`}
       >
@@ -638,7 +629,7 @@ export default function Home() {
             ></div>
 
             <Link href="/Introduction">
-              <h2 
+              <h2
                 ref={introTitleRef}
                 className={`${styles.Body_Container_Introduction_Title} ${introTitleVisible ? 'animate-title' : ''}`}
               >
@@ -649,24 +640,20 @@ export default function Home() {
             <div className={styles.Body_Container_Introduction_ContentWrapper}>
               <div
                 ref={introImageRef}
-                className={`${
-                  styles.Body_Container_Introduction_ContentWrapper_ImageContainer
-                } ${introImageVisible ? 'animate-image' : ''}`}
+                className={`${styles.Body_Container_Introduction_ContentWrapper_ImageContainer
+                  } ${introImageVisible ? 'animate-image' : ''}`}
               >
                 <Image
                   src={IMAGES[currentIndex]}
                   alt={`Giới thiệu ${currentIndex + 1}`}
                   width={800}
                   height={400}
-                  className={`${
-                    styles.Body_Container_Introduction_ContentWrapper_ImageContainer_Image
-                  } ${
-                    styles.Body_Container_Introduction_ContentWrapper_ImageContainer_ImageFade
-                  } ${
-                    fade
+                  className={`${styles.Body_Container_Introduction_ContentWrapper_ImageContainer_Image
+                    } ${styles.Body_Container_Introduction_ContentWrapper_ImageContainer_ImageFade
+                    } ${fade
                       ? styles.Body_Container_Introduction_ContentWrapper_ImageContainer_ImageFadeShow
                       : ""
-                  }`}
+                    }`}
                 />
                 <div
                   className={
@@ -676,13 +663,11 @@ export default function Home() {
                   {IMAGES.map((_, index) => (
                     <span
                       key={index}
-                      className={`${
-                        styles.Body_Container_Introduction_ContentWrapper_ImageContainer_Dot
-                      } ${
-                        currentIndex === index
+                      className={`${styles.Body_Container_Introduction_ContentWrapper_ImageContainer_Dot
+                        } ${currentIndex === index
                           ? styles.Body_Container_Introduction_ContentWrapper_ImageContainer_Active
                           : ""
-                      }`}
+                        }`}
                     ></span>
                   ))}
                 </div>
@@ -690,9 +675,8 @@ export default function Home() {
 
               <div
                 ref={introTextRef}
-                className={`${
-                  styles.Body_Container_Introduction_ContentWrapper_TextContainer
-                } ${introTextVisible ? 'animate-text' : ''}`}
+                className={`${styles.Body_Container_Introduction_ContentWrapper_TextContainer
+                  } ${introTextVisible ? 'animate-text' : ''}`}
               >
                 <h3
                   className={
@@ -746,8 +730,8 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Member Items với scroll reveal */}
-            <div 
+            {/* Member Items */}
+            <div
               ref={memberItemsRef}
               className={`${styles.Body_Container_MemberWrap} ${memberItemsVisible ? 'animate-members' : ''}`}
             >
@@ -770,7 +754,7 @@ export default function Home() {
           {/* Activities Section */}
           <section className={styles.Body_Container_Activities}>
             <Link href="/Activities">
-              <h2 
+              <h2
                 ref={activitiesTitleRef}
                 className={`${styles.Activities_RecentLabel} ${activitiesTitleVisible ? 'animate-title' : ''}`}
               >
@@ -778,7 +762,7 @@ export default function Home() {
               </h2>
             </Link>
 
-            <div 
+            <div
               ref={activitiesCardsRef}
               className={`${styles.Activities_RecentCards} ${activitiesCardsVisible ? 'animate-cards' : ''}`}
             >
@@ -812,8 +796,8 @@ export default function Home() {
                       <p className={styles.Activities_RecentCard_Date}>
                         {activity.createdAt
                           ? `Ngày ${new Date(
-                              activity.createdAt
-                            ).toLocaleDateString("vi-VN")}`
+                            activity.createdAt
+                          ).toLocaleDateString("vi-VN")}`
                           : ""}
                       </p>
                     </div>
@@ -829,8 +813,8 @@ export default function Home() {
               Xem thêm ...
             </Link>
 
-            {/* Focus Section với scroll reveal */}
-            <div 
+            {/* Focus Section */}
+            <div
               ref={focusRef}
               className={`${styles.Activities_Focus} ${focusVisible ? 'animate-focus' : ''}`}
             >
@@ -876,7 +860,6 @@ export default function Home() {
                       )
                     )}
 
-                    {/* Hiển thị tin nhắn nếu không có dữ liệu */}
                     {!loading && !error && awards.length === 0 && (
                       <div className="timeline-item">
                         <p>Chưa có thành tích nào được cập nhật</p>
@@ -890,7 +873,7 @@ export default function Home() {
 
           {/* Highlight Section */}
           <section className={styles.Body_Container_Hightlight}>
-            <div 
+            <div
               ref={highlightTitleRef}
               className={`${styles.Body_Container_Hightlight_Title} ${highlightTitleVisible ? 'animate-title' : ''}`}
             >
@@ -898,7 +881,7 @@ export default function Home() {
             </div>
             <div className={styles.Body_Container_Hightlight_Shape}></div>
 
-            <section 
+            <section
               ref={highlightSliderRef}
               className={`${styles.light_slider_container} ${highlightSliderVisible ? 'animate-slider' : ''}`}
             >
@@ -915,9 +898,8 @@ export default function Home() {
                   key={`${startIndex}-${index}`}
                 >
                   <div
-                    className={`${styles.slider_image_placeholder} ${
-                      index === 1 ? styles.slider_image_placeholder_active : ""
-                    }`}
+                    className={`${styles.slider_image_placeholder} ${index === 1 ? styles.slider_image_placeholder_active : ""
+                      }`}
                   >
                     <img
                       src={event.image}
@@ -942,9 +924,8 @@ export default function Home() {
               {EVENTS.map((_, index) => (
                 <button
                   key={index}
-                  className={`${styles.light_slider_dot} ${
-                    startIndex === index ? styles.light_slider_dot_active : ""
-                  }`}
+                  className={`${styles.light_slider_dot} ${startIndex === index ? styles.light_slider_dot_active : ""
+                    }`}
                   onClick={() => setStartIndex(index)}
                   aria-label={`Chuyển đến sự kiện ${index + 1}`}
                 ></button>
@@ -954,7 +935,7 @@ export default function Home() {
 
           {/* Awards Section */}
           <section className={styles.Body_Container_Awards}>
-            <div 
+            <div
               ref={awardsTitleRef}
               className={`${styles.Body_Container_Awards_Title} ${awardsTitleVisible ? 'animate-title' : ''}`}
             >
@@ -963,7 +944,7 @@ export default function Home() {
             <div className={styles.Body_Container_Awards_Shape01}></div>
             <div className={styles.Body_Container_Awards_Shape02}></div>
 
-            <div 
+            <div
               ref={awardsContentRef}
               className={`${styles.Body_Container_Awards_ContentWrapper} ${awardsContentVisible ? 'animate-awards' : ''}`}
             >
@@ -1004,16 +985,21 @@ export default function Home() {
             </div>
           </section>
 
+          {/* Lower Section với Marquee Effect */}
           <section className={styles.Body_Container_Lower}>
-            <div 
+            <div
               ref={lowerBandrollRef}
               className={`${styles.Body_Container_Lower_Bandroll} ${lowerBandrollVisible ? 'animate-bandroll' : ''}`}
             >
-              <div className={styles.Body_Container_Lower_Bandroll_Content}>
-                ĐOÀN KẾT - TIÊN PHONG - TRÁCH NHIỆM - ĐỔI MỚI
+              <div className={`${styles.Body_Container_Lower_Bandroll_Content} Body_Container_Lower_Bandroll_Content`}>
+                <div className={`${styles.Body_Container_Lower_Bandroll_Content_Marquee} Body_Container_Lower_Bandroll_Content_Marquee`}>
+                  <span>ĐOÀN KẾT - TIÊN PHONG - TRÁCH NHIỆM - ĐỔI MỚI</span>
+                  <span>ĐOÀN KẾT - TIÊN PHONG - TRÁCH NHIỆM - ĐỔI MỚI</span>
+                </div>
               </div>
             </div>
-            <div 
+            
+            <div
               ref={imageGridRef}
               className={`${styles.Image_Grid_Container} ${imageGridVisible ? 'animate-grid' : ''}`}
             >
@@ -1037,7 +1023,7 @@ export default function Home() {
             </div>
           </section>
 
-          <section 
+          <section
             ref={registerFormRef}
             className={`${styles.Body_Container_RegisterForm} ${registerFormVisible ? 'animate-form' : ''}`}
           >
