@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 export async function sendVerificationEmail(email, verificationCode) {
   try {
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: "Đoàn khoa MMT&TT <dqtrunght@gmail.com>",
       to: email,
       subject: "Xác minh tài khoản - SUCTREMMT",
       html: `
