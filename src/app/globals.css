@@ -349,16 +349,18 @@ body.dark .form-error {
 /* Element chứa text sẽ chạy */
 .Body_Container_Lower_Bandroll_Content_Marquee {
   display: flex;
-  animation: marquee 10s linear infinite;
+  animation: marquee 25s linear infinite;
   white-space: nowrap;
   will-change: transform;
+  /* Đảm bảo không bị co lại */
   flex-shrink: 0;
+  /* Chiều rộng tối thiểu để animation hoạt động */
   min-width: max-content;
 }
 
 /* Text spans */
 .Body_Container_Lower_Bandroll_Content_Marquee span {
-  padding-right: 200px; /* Khoảng cách giữa các lần lặp */
+  padding-right: 150px; /* Khoảng cách giữa các lần lặp */
   font-size: inherit;
   font-weight: inherit;
   color: inherit;

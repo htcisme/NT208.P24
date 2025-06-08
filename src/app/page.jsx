@@ -501,8 +501,8 @@ export default function Home() {
             </button>
             <nav
               className={`${styles.Header_Nav_MenuWrapper_DropdownMenu} ${showMenu
-                ? styles.Header_Nav_MenuWrapper_MenuButton_ShowMenu
-                : ""
+                  ? styles.Header_Nav_MenuWrapper_MenuButton_ShowMenu
+                  : ""
                 }`}
             >
               <Link
@@ -998,7 +998,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-
+            
             <div
               ref={imageGridRef}
               className={`${styles.Image_Grid_Container} ${imageGridVisible ? 'animate-grid' : ''}`}
