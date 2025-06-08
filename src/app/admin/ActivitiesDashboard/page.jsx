@@ -1,7 +1,7 @@
 "use client";
 
 import { getActivityTypes, getActivityTypeInfo } from "@/models/Activity";
-import React, { useState, useEffect, use, act } from "react";
+import React, { useState, useEffect } from "react";
 import { useSession } from "@/context/SessionContext";
 import Image from "next/image";
 import Footer from "@/components/Footer";
@@ -11,7 +11,7 @@ import "@/styles-comp/style.css";
 import "@/app/admin/ActivitiesDashboard/style.css";
 import { set } from "mongoose";
 
-const ActivitiesDashboard = () => {
+function ActivitiesDashboard() {
   const { user, username } = useSession();
   const [activityType, setActivityType] = useState("other");
   const [activeTab, setActiveTab] = useState("activities");
@@ -25,6 +25,7 @@ const ActivitiesDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [commentLoading, setCommentLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [mounted, setMounted] = useState(false);
 
   // State cho việc tải ảnh lên
   const [uploadedImage, setUploadedImage] = useState(null);
@@ -36,9 +37,9 @@ const ActivitiesDashboard = () => {
   const [newContent, setNewContent] = useState("");
 
   // Page status and settings
-  const [pageStatus, setPageStatus] = useState("published"); // 'published' or 'draft'
-  const [publishOption, setPublishOption] = useState("immediate"); // 'immediate' or 'scheduled'
-  const [commentOption, setCommentOption] = useState("open"); // 'open' or 'closed'
+  const [pageStatus, setPageStatus] = useState("published");
+  const [publishOption, setPublishOption] = useState("immediate");
+  const [commentOption, setCommentOption] = useState("open");
   const [scheduledDate, setScheduledDate] = useState("");
   const [scheduledTime, setScheduledTime] = useState("");
 
@@ -49,14 +50,23 @@ const ActivitiesDashboard = () => {
   // Post information right panel state
   const [infoTab, setInfoTab] = useState("basic");
 
+  // Thêm state cho reply
+  const [replyingTo, setReplyingTo] = useState(null);
+  const [replyContent, setReplyContent] = useState("");
+
   // Selected batch action
-  const [batchAction, setBatchAction] = useState("delete"); // 'delete', 'copy', 'edit'
-  const [commentBatchAction, setCommentBatchAction] = useState("delete"); // 'delete', 'edit', 'reply'
+  const [batchAction, setBatchAction] = useState("delete");
+  const [commentBatchAction, setCommentBatchAction] = useState("delete");
   const [batchEditOptions, setBatchEditOptions] = useState({
     status: "",
     type: "",
   });
   const [showBatchEditModal, setShowBatchEditModal] = useState(false);
+
+  // Thêm useEffect để đánh dấu component đã mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Fetch activities
   const fetchActivities = async () => {
@@ -71,7 +81,6 @@ const ActivitiesDashboard = () => {
       const data = await response.json();
 
       if (data.success) {
-        // Chuyển đổi dữ liệu API thành định dạng hiện tại của ứng dụng
         const formattedTasks = data.data.map((activity) => ({
           id: activity._id,
           slug: activity.slug,
@@ -98,49 +107,86 @@ const ActivitiesDashboard = () => {
     }
   };
 
-  // Fetch real comments
+  // Fetch real comments from API
   const fetchRealComments = async () => {
     try {
       setCommentLoading(true);
-      const response = await fetch("/api/admin/comments?limit=50");
+      setError(null);
+
+      const response = await fetch("/api/admin/comments?limit=100&page=1", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        cache: "no-cache",
+      });
 
       if (!response.ok) {
-        throw new Error("Không thể lấy dữ liệu bình luận");
+        const errorText = await response.text();
+        throw new Error(`HTTP ${response.status}: ${errorText || 'Không thể kết nối đến server'}`);
       }
 
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (parseError) {
+        throw new Error('Dữ liệu trả về không đúng định dạng JSON');
+      }
 
-      if (data.success) {
-        const formattedComments = data.data.map((comment) => ({
-          id: comment._id,
-          slug: comment._id, // Use comment ID as slug for selection
-          comment: comment.content,
-          author: comment.author,
-          time: formatDate(comment.createdAt),
-          activityTitle: comment.activityTitle,
-          activitySlug: comment.activitySlug,
-          reply: comment.replyTo ? "Trả lời bình luận" : "",
-          selected: false,
-          isReplying: false,
-          isEditing: false,
-        }));
+      if (data.success && data.data) {
+        const formattedComments = data.data.map(comment => {
+          if (!comment._id || !comment.content) {
+            console.warn('Comment thiếu thông tin:', comment);
+            return null;
+          }
+
+          return {
+            id: comment._id,
+            content: comment.content || '',
+            author: comment.author || 'Ẩn danh',
+            authorEmail: comment.authorEmail || '',
+            time: comment.createdAt ? formatDate(comment.createdAt) : '',
+            activitySlug: comment.activitySlug || '',
+            activityTitle: comment.activityTitle || 'Không có tiêu đề',
+            selected: false
+          };
+        }).filter(Boolean);
 
         setRealComments(formattedComments);
+        console.log(`Đã tải thành công ${formattedComments.length} bình luận`);
       } else {
-        throw new Error(data.message || "Lỗi khi lấy dữ liệu bình luận");
+        throw new Error(data.message || 'Dữ liệu trả về không hợp lệ');
       }
     } catch (error) {
       console.error("Error fetching real comments:", error);
-      setError(error.message);
+      setError(`Không thể lấy dữ liệu bình luận: ${error.message}`);
+      setRealComments([]);
     } finally {
       setCommentLoading(false);
     }
   };
 
-  // Fetch dữ liệu khi component được mount
   useEffect(() => {
     const fetchData = async () => {
-      await Promise.all([fetchActivities(), fetchRealComments()]);
+      let retryCount = 0;
+      const maxRetries = 3;
+
+      while (retryCount < maxRetries) {
+        try {
+          await Promise.all([fetchActivities(), fetchRealComments()]);
+          break;
+        } catch (error) {
+          retryCount++;
+          console.error(`Attempt ${retryCount} failed:`, error);
+
+          if (retryCount === maxRetries) {
+            console.error('Max retries reached, giving up');
+            setError('Không thể tải dữ liệu sau nhiều lần thử. Vui lòng làm mới trang.');
+          } else {
+            await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+          }
+        }
+      }
     };
 
     fetchData();
@@ -235,14 +281,15 @@ const ActivitiesDashboard = () => {
     if (!comment) return;
 
     try {
-      const response = await fetch(`/api/admin/comments/${commentId}`, {
+      const response = await fetch("/api/admin/comments", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          content: newContent,
+          commentId: commentId,
           activitySlug: comment.activitySlug,
+          content: newContent,
         }),
       });
 
@@ -250,17 +297,116 @@ const ActivitiesDashboard = () => {
         setRealComments(
           realComments.map((c) =>
             c.id === commentId
-              ? { ...c, comment: newContent, isEditing: false }
+              ? { ...c, content: newContent, isEditing: false }
               : c
           )
         );
         alert("Cập nhật bình luận thành công!");
       } else {
-        throw new Error("Lỗi khi cập nhật bình luận");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Lỗi khi cập nhật bình luận");
       }
     } catch (error) {
       console.error("Lỗi khi cập nhật bình luận:", error);
-      alert("Có lỗi xảy ra khi cập nhật bình luận!");
+      alert("Có lỗi xảy ra khi cập nhật bình luận: " + error.message);
+    }
+  };
+
+  // Thay thế hàm replyToComment hiện tại
+  const replyToComment = async (commentId, replyContent) => {
+    const comment = realComments.find((c) => c.id === commentId);
+
+    if (!comment) {
+      alert("Không tìm thấy bình luận!");
+      return;
+    }
+
+    if (!replyContent.trim()) {
+      alert("Vui lòng nhập nội dung reply!");
+      return;
+    }
+
+    // Validate dữ liệu trước khi gửi
+    if (!comment.activitySlug) {
+      alert("Lỗi: Không tìm thấy thông tin bài viết!");
+      return;
+    }
+
+    try {
+      const requestData = {
+        commentId: commentId,
+        activitySlug: comment.activitySlug,
+        content: replyContent.trim(),
+        author: user?.name || user?.username || "Admin",
+        authorEmail: user?.email || null,
+      };
+
+      console.log("=== Sending reply request ===");
+      console.log("Request data:", requestData);
+      console.log("===============================");
+
+      const response = await fetch("/api/admin/comments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      });
+
+      console.log("Response status:", response.status);
+      console.log("Response ok:", response.ok);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Response error text:", errorText);
+
+        // Thử parse JSON nếu có thể
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+          throw new Error(errorData.message || `HTTP ${response.status}: ${errorText}`);
+        } catch (parseError) {
+          throw new Error(`HTTP ${response.status}: ${errorText || 'Lỗi server'}`);
+        }
+      }
+
+      let data;
+      try {
+        data = await response.json();
+        console.log("Response data:", data);
+      } catch (parseError) {
+        console.error("JSON parse error:", parseError);
+        throw new Error('Dữ liệu trả về không đúng định dạng JSON');
+      }
+
+      if (data.success) {
+        alert("Đã reply bình luận thành công!");
+        setReplyingTo(null);
+        setReplyContent("");
+
+        // Refresh comments list
+        await fetchRealComments();
+      } else {
+        throw new Error(data.message || "Lỗi không xác định từ server");
+      }
+    } catch (error) {
+      console.error("=== Error in replyToComment ===");
+      console.error("Error:", error);
+      console.error("===============================");
+
+      let errorMessage = "Có lỗi xảy ra khi reply bình luận";
+
+      if (error.message.includes('HTTP 404')) {
+        errorMessage = "Không tìm thấy bài viết hoặc bình luận";
+      } else if (error.message.includes('HTTP 400')) {
+        errorMessage = "Dữ liệu gửi không hợp lệ";
+      } else if (error.message.includes('HTTP 500')) {
+        errorMessage = "Lỗi server, vui lòng thử lại sau";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      alert(errorMessage);
     }
   };
 
@@ -397,11 +543,11 @@ const ActivitiesDashboard = () => {
         prev.map((task) =>
           task.selected
             ? {
-                ...task,
-                status: batchEditOptions.status || task.status,
-                type: batchEditOptions.type || task.type,
-                selected: false,
-              }
+              ...task,
+              status: batchEditOptions.status || task.status,
+              type: batchEditOptions.type || task.type,
+              selected: false,
+            }
             : { ...task, selected: false }
         )
       );
@@ -446,7 +592,7 @@ const ActivitiesDashboard = () => {
       formData.append("commentOption", task.commentOption);
       formData.append("type", task.type || "other");
       if (task.image) {
-        formData.append("imageUrl", task.image); // Gửi URL của image
+        formData.append("imageUrl", task.image);
       }
       const response = await fetch("/api/activities", {
         method: "POST",
@@ -532,14 +678,14 @@ const ActivitiesDashboard = () => {
           tasks.map((task) =>
             task.slug === editingTask.slug
               ? {
-                  ...task,
-                  title: newTitle,
-                  content: newContent,
-                  status: pageStatus,
-                  commentOption: commentOption,
-                  type: activityType,
-                  image: data.data.image || task.image,
-                }
+                ...task,
+                title: newTitle,
+                content: newContent,
+                status: pageStatus,
+                commentOption: commentOption,
+                type: activityType,
+                image: data.data.image || task.image,
+              }
               : task
           )
         );
@@ -624,7 +770,6 @@ const ActivitiesDashboard = () => {
             status: data.data.status,
             commentOption: data.data.commentOption,
             type: data.data.type,
-
             selected: false,
           },
         ]);
@@ -635,9 +780,7 @@ const ActivitiesDashboard = () => {
         setImagePreview("");
         setActivityType("other");
         setActiveView("allPages");
-        // Hiển thị thông báo thành công
       } else {
-        // Hiển thị lỗi
         alert(data.message || "Có lỗi xảy ra khi tạo hoạt động mới");
       }
     } catch (error) {
@@ -1109,7 +1252,7 @@ const ActivitiesDashboard = () => {
                             whiteSpace: "nowrap",
                           }}
                         >
-                          {comment.comment}
+                          {comment.content}
                         </div>
                       </td>
                       <td>{comment.author}</td>
@@ -1124,7 +1267,7 @@ const ActivitiesDashboard = () => {
                         </a>
                       </td>
                       <td>{comment.time}</td>
-                      <td>
+                      <td className="table-actions">
                         <button
                           className="action-btn edit-btn"
                           onClick={() => {
@@ -1136,12 +1279,23 @@ const ActivitiesDashboard = () => {
                               )
                             );
                             if (!comment.isEditing) {
-                              setEditCommentText(comment.comment);
+                              setEditCommentText(comment.content);
                             }
                           }}
                         >
                           {comment.isEditing ? "Hủy" : "Chỉnh sửa"}
                         </button>
+
+                        <button
+                          className="action-btn reply-btn"
+                          onClick={() => {
+                            setReplyingTo(replyingTo === comment.id ? null : comment.id);
+                            setReplyContent("");
+                          }}
+                        >
+                          {replyingTo === comment.id ? "Hủy Reply" : "Reply"}
+                        </button>
+
                         <button
                           className="action-btn delete-btn"
                           onClick={() => deleteRealComment(comment.id)}
@@ -1197,6 +1351,51 @@ const ActivitiesDashboard = () => {
                         </td>
                       </tr>
                     )}
+                    {replyingTo === comment.id && (
+                      <tr className="reply-row">
+                        <td colSpan="6">
+                          <div className="reply-container">
+                            <h4>Reply cho bình luận của {comment.author}</h4>
+                            <textarea
+                              value={replyContent}
+                              onChange={(e) => setReplyContent(e.target.value)}
+                              className="reply-textarea"
+                              rows="3"
+                              placeholder="Nhập nội dung reply..."
+                              maxLength="1000"
+                            />
+                            <div className="reply-actions">
+                              <button
+                                className="btn-publish"
+                                onClick={() => {
+                                  const content = replyContent.trim();
+                                  if (content) {
+                                    replyToComment(comment.id, content);
+                                  } else {
+                                    alert("Vui lòng nhập nội dung reply!");
+                                  }
+                                }}
+                                disabled={!replyContent.trim()}
+                              >
+                                Gửi Reply
+                              </button>
+                              <button
+                                className="btn-cancel"
+                                onClick={() => {
+                                  setReplyingTo(null);
+                                  setReplyContent("");
+                                }}
+                              >
+                                Hủy
+                              </button>
+                            </div>
+                            <div className="reply-hint">
+                              <small>Tối đa 1000 ký tự. Hiện tại: {replyContent.length}/1000</small>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
                   </React.Fragment>
                 ))}
               </tbody>
@@ -1242,30 +1441,22 @@ const ActivitiesDashboard = () => {
                   }
                 >
                   <option value="">-- Giữ nguyên --</option>
-
-                  {/* Academic */}
                   <option value="academic">Học tập</option>
                   <option value="competition">Cuộc thi</option>
                   <option value="seminar">Seminar</option>
                   <option value="research">Nghiên cứu</option>
                   <option value="course">Khóa học</option>
-
-                  {/* Event */}
                   <option value="volunteer">Tình nguyện</option>
                   <option value="sport">Thể thao</option>
                   <option value="event">Sự kiện</option>
                   <option value="conference">Hội nghị</option>
                   <option value="vnutour">VNUTour</option>
                   <option value="netsec">Netsec</option>
-
-                  {/* Work */}
                   <option value="internship">Thực tập</option>
                   <option value="scholarship">Học bổng</option>
                   <option value="startup">Khởi nghiệp</option>
                   <option value="jobfair">Ngày hội việc làm</option>
                   <option value="career">Hướng nghiệp</option>
-
-                  {/* Other */}
                   <option value="other">Khác</option>
                 </select>
               </div>

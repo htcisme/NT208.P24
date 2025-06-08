@@ -29,24 +29,50 @@
 .activity-sidebar {
   width: 30%;
   text-align: justify;
-  max-height: 700px; /* Chiều cao tối đa */
+  max-height: 700px;
   display: flex;
   flex-direction: column;
-  background-color: #fff; /* Thêm nền trắng */
-  border-radius: 0.5rem; /* Bo tròn góc */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Thêm đổ bóng nhẹ */
-  padding: 1rem; /* Thêm khoảng cách bên trong */
+  background-color: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  padding: 1rem;
+  opacity: 0;
+  transform: translateX(50px);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  visibility: hidden;
+}
+
+.activity-sidebar.animate {
+  opacity: 1;
+  transform: translateX(0);
+  visibility: visible;
+}
+
+.activity-sidebar {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateX(0) !important;
 }
 
 /* Tiêu đề "Tin tức mới nhất" */
 .activity-sidebar h3 {
   font-size: 15px;
   font-weight: 600;
-  color: #fff; /* Chữ trắng */
-  background-color: #042354; /* Nền xanh đậm */
-  padding: 0.5rem 1rem; /* Khoảng cách bên trong */
-  display: inline-block; /* Để nền chỉ bao quanh nội dung */
-  margin-bottom: 1rem; /* Thêm khoảng cách dưới tiêu đề */
+  color: #fff;
+  background-color: #042354;
+  padding: 0.5rem 1rem;
+  display: inline-block;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+  /* Thêm hiệu ứng 3D */
+  box-shadow: 0 4px 8px rgba(4, 35, 84, 0.3);
+  transform: perspective(1000px) rotateX(5deg);
+  transition: all 0.3s ease;
+}
+
+.activity-sidebar h3:hover {
+  transform: perspective(1000px) rotateX(0deg);
+  box-shadow: 0 6px 12px rgba(4, 35, 84, 0.4);
 }
 
 /* Danh sách tin tức */
@@ -54,10 +80,10 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  max-height: 580px; /* Chiều cao tối đa */
-  overflow-y: auto; /* Tạo thanh cuộn khi cần */
+  max-height: 580px;
+  overflow-y: auto;
   border-top: 1px solid #042354;
-  padding-right: 10px; /* Tạo không gian cho thanh cuộn */
+  padding-right: 10px;
 }
 
 .light-news-list::-webkit-scrollbar {
@@ -98,12 +124,12 @@
 
 /* Ngày tháng năm */
 .light-news-list .news-date {
-  display: block; /* Đặt ngày tháng trên hàng riêng */
+  display: block;
   font-size: 12px;
   color: #042354;
   margin-top: 5px;
   margin-left: 20px;
-  font-style: italic; /* Tùy chọn: làm nghiêng ngày tháng để nổi bật */
+  font-style: italic;
 }
 
 .light-news-list a:hover {
@@ -112,7 +138,7 @@
 
 /* Phần "Xem thêm" */
 .light-news-more {
-  margin-top: auto; /* Đẩy nút Xem thêm xuống cuối */
+  margin-top: auto;
   text-align: right;
   padding: 10px 0;
 }
@@ -133,99 +159,451 @@
   color: #fff;
 }
 
-/* Phần tiêu đề mô tả */
+/* Phần tiêu đề mô tả với scroll reveal */
 .light-section-title {
   font-size: 20px;
   font-weight: 600;
+  margin-top: 0.5rem;
   margin-bottom: 1.5rem;
   text-align: left;
+  opacity: 0;
+  transform: translateY(-30px);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-/* Hình ảnh nổi bật */
-.light-section-highlight img {
-  border-radius: 0.5rem;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+.light-section-title.animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hình ảnh nổi bật với hiệu ứng 3D và viền trắng */
+.light-section-highlight {
+  /* Thêm scroll reveal */
+  opacity: 0;
+  transform: translateY(50px) scale(0.9);
+  transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s;
   margin-top: 1rem;
   margin-bottom: 1.5rem;
-  width: 100%;
-  height: auto;
 }
 
+.light-section-highlight.animate {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.light-section-highlight img {
+  border-radius: 12px;
+  /* Viền trắng dày */
+  border: 6px solid #ffffff;
+  /* Hiệu ứng 3D shadow */
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.15),
+    0 15px 35px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.8);
+  width: 100%;
+  height: auto;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  /* Hiệu ứng 3D perspective */
+  transform: perspective(1000px) rotateX(2deg) rotateY(-1deg);
+}
+
+.light-section-highlight img:hover {
+  /* Hiệu ứng hover 3D */
+  transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(-10px);
+  box-shadow: 
+    0 15px 40px rgba(0, 0, 0, 0.2),
+    0 25px 50px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 1);
+  border-color: #f0f8ff;
+}
+
+/* Hiệu ứng loading cho hình ảnh highlight */
+.light-section-highlight img.loading {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Mô tả section với scroll reveal */
 .light-section-description {
   max-width: 1000px;
   font-size: 1rem;
   text-align: justify;
+  line-height: 1.8;
+  /* Thêm scroll reveal */
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s;
 }
 
+.light-section-description.animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hiệu ứng typewriter cho text */
+.light-section-description.animate {
+  animation: fadeInUp 1s ease-out 0.6s both;
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* SLIDER STYLES - Hoàn toàn mới */
 .light-slider-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
-  margin: 2rem 0;
+  gap: 2rem;
+  margin-top: 5rem;
+  position: relative;
+  width: 100%;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 20px;
+  overflow: visible;
+  /* Thêm scroll reveal */
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.light-slider-container.animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.light-slider-wrapper {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  overflow: visible;
   position: relative;
 }
 
 .light-slider-item {
   text-align: center;
-  flex: 1; /* Chia đều không gian cho mỗi item */
+  flex: 0 0 auto;
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  transform-origin: center;
 }
 
+/* Hình ảnh slider với viền trắng và hiệu ứng 3D */
 .slider-image-placeholder {
-  width: 350px; /* Giảm chiều rộng một chút */
-  height: 300px; /* Tăng chiều cao */
+  width: 280px;
+  height: 240px;
   background-color: #fff;
-  border: 1px solid #ccc;
+  /* Viền trắng dày */
+  border: 4px solid #ffffff;
   border-radius: 15px;
-  margin: 0 auto 10px; /* Căn giữa và giữ khoảng cách bên dưới */
-  transition: all 0.3s ease; /* Thêm hiệu ứng chuyển đổi mượt mà */
+  margin: 0 auto 15px;
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  /* Hiệu ứng 3D shadow */
+  box-shadow: 
+    0 6px 20px rgba(0, 0, 0, 0.1),
+    0 12px 30px rgba(0, 0, 0, 0.08);
+  /* Hiệu ứng 3D transform */
+  transform: perspective(1000px) rotateX(3deg) rotateY(-2deg);
 }
 
-/* Hình ảnh ở giữa (active) */
+/* Hiệu ứng hover cho các item thường */
+.slider-image-placeholder:hover {
+  transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(-8px) scale(1.02);
+  box-shadow: 
+    0 12px 35px rgba(0, 0, 0, 0.15),
+    0 20px 45px rgba(0, 0, 0, 0.1);
+  border-color: #e3f2fd;
+}
+
+/* Hình ảnh ở giữa (active) với kích thước lớn hơn và hiệu ứng 3D mạnh */
 .slider-image-placeholder.active {
-  width: 450px; /* Tăng chiều rộng */
-  height: 400px; /* Tăng chiều cao */
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Đổ bóng để nổi bật */
+  width: 360px;
+  height: 320px;
+  /* Hiệu ứng 3D shadow mạnh hơn */
+  box-shadow: 
+    0 15px 45px rgba(0, 0, 0, 0.2),
+    0 25px 60px rgba(0, 0, 0, 0.15);
+  transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1.05) translateY(-10px);
+  /* Viền trắng dày hơn */
+  border: 6px solid #ffffff;
+  z-index: 5;
 }
 
-.slider-image {
-  width: 90%; /* Giảm chiều rộng một chút */
-  height: 250px; /* Tăng chiều cao */
-  object-fit: cover; /* Đảm bảo hình ảnh không bị méo */
-  border-radius: 0.5rem;
-  margin: 0 auto 0.5rem; /* Căn giữa và giữ khoảng cách bên dưới */
+/* Hiệu ứng glow cho item active */
+.slider-image-placeholder.active::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  background: linear-gradient(45deg, #042354, #2d71b9, #042354);
+  border-radius: 18px;
+  z-index: -1;
+  animation: glow 2s ease-in-out infinite alternate;
 }
 
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 20px rgba(4, 35, 84, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 30px rgba(4, 35, 84, 0.8), 0 0 40px rgba(4, 35, 84, 0.3);
+  }
+}
+
+/* Hiệu ứng hover đặc biệt cho item active */
+.slider-image-placeholder.active:hover {
+  transform: perspective(1000px) rotateX(-2deg) rotateY(1deg) scale(1.08) translateY(-15px);
+  box-shadow: 
+    0 20px 55px rgba(0, 0, 0, 0.25),
+    0 30px 70px rgba(0, 0, 0, 0.15);
+}
+
+/* Hiệu ứng cho tiêu đề */
 .light-slider-item h4 {
   font-size: 1.1rem;
   font-weight: 500;
+  transition: all 0.3s ease;
+  margin-top: 15px;
+  color: #042354;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 280px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
+.light-slider-item:hover h4 {
+  color: #2d71b9;
+  transform: translateY(-3px);
+  font-weight: 600;
+}
+
+/* Hiệu ứng đặc biệt cho tiêu đề item active */
+.slider-image-placeholder.active + h4 {
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: #042354;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 360px;
+}
+
+/* Mũi tên với style đơn giản */
 .light-slider-arrow {
   background: none;
   border: none;
-  font-size: 2rem; /* Kích thước mũi tên lớn hơn */
+  font-size: 3rem;
   cursor: pointer;
-  padding: 0 1rem;
+  padding: 10px;
+  color: #042354;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  font-weight: bold;
+  user-select: none;
+  z-index: 10;
+  flex-shrink: 0;
 }
 
+.light-slider-arrow:hover:not(:disabled) {
+  transform: scale(1.2);
+  color: #2d71b9;
+  text-shadow: 0 3px 10px rgba(4, 35, 84, 0.4);
+}
+
+.light-slider-arrow:active:not(:disabled) {
+  transform: scale(1.1);
+  color: #042354;
+}
+
+.light-slider-arrow:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Hiệu ứng cho dots */
 .light-slider-dots {
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  gap: 0.8rem;
+  margin-top: 5px;
+  padding: 15px 0;
 }
 
 .light-slider-dots .dot {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   background-color: #ccc;
   border-radius: 50%;
   cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border: none;
+  padding: 0;
+  position: relative;
+}
+
+.light-slider-dots .dot:hover {
+  background-color: #888;
+  transform: scale(1.2);
 }
 
 .light-slider-dots .dot.active {
   background-color: #042354;
+  transform: scale(1.3);
+  box-shadow: 0 0 10px rgba(4, 35, 84, 0.5);
+}
+
+/* Hiệu ứng pulse cho dot active */
+.light-slider-dots .dot.active::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border: 2px solid rgba(4, 35, 84, 0.3);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+/* Hiệu ứng loading skeleton */
+.slider-image-placeholder.loading {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Hiệu ứng cho hình ảnh bên trong */
+.slider-image-placeholder img {
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border-radius: 15px;
+}
+
+.slider-image-placeholder:hover img {
+  transform: scale(1.05);
+}
+
+.slider-image-placeholder.active img {
+  transform: scale(1.02);
+}
+
+/* Hiệu ứng khi đang animate */
+.slider-image-placeholder.animating {
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.light-slider-dots .dot.transitioning {
+  animation: dotPulse 0.6s ease-in-out;
+}
+
+@keyframes dotPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.5);
+  }
+}
+
+/* Responsive cho mobile */
+@media (max-width: 768px) {
+  .light-slider-container {
+    gap: 1rem;
+    padding: 0 10px;
+  }
+  
+  .slider-image-placeholder {
+    width: 200px;
+    height: 160px;
+    border: 3px solid #ffffff;
+  }
+  
+  .slider-image-placeholder.active {
+    width: 240px;
+    height: 200px;
+    border: 4px solid #ffffff;
+  }
+  
+  .light-slider-arrow {
+    font-size: 2rem;
+    padding: 8px;
+  }
+
+  .light-slider-item h4 {
+    font-size: 0.9rem;
+    max-width: 200px;
+  }
+
+  .slider-image-placeholder.active + h4 {
+    font-size: 1.1rem;
+    max-width: 240px;
+  }
+
+  .light-section-highlight img {
+    border: 4px solid #ffffff;
+    transform: perspective(800px) rotateX(1deg) rotateY(0deg);
+  }
+}
+
+/* ================ HIỆU ỨNG CHO PHẦN DETAIL SECTIONS ================ */
+
+/* Container chính cho các phần detail */
+.light-detail-container {
+  margin-top: 10px;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 70px;
+  padding-bottom: 70px;
+}
+
+/* Mỗi item detail với scroll reveal */
+.light-detail-item {
+  margin-bottom: 4rem;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.light-detail-item.reveal {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* 40-60 split: Hình ảnh bên trái, nội dung bên phải */
@@ -233,46 +611,205 @@
   display: flex;
   gap: 1.5rem;
   padding-bottom: 50px;
-  align-items: stretch; /* Đảm bảo các phần tử con có cùng chiều cao */
+  align-items: stretch;
 }
 
 /* 60-40 split: Nội dung bên trái, hình ảnh bên phải */
 .split-60-40 {
   display: flex;
   gap: 1.5rem;
-  align-items: stretch; /* Đảm bảo các phần tử con có cùng chiều cao */
+  align-items: stretch;
 }
 
 /* Đảm bảo hình ảnh và nội dung có cùng chiều cao */
 .split-40-60 .light-detail-image,
 .split-60-40 .light-detail-image {
   width: 40%;
-  display: flex; /* Để hình ảnh bên trong có thể căn chỉnh */
+  display: flex;
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s;
+}
+
+.split-60-40 .light-detail-image {
+  transform: translateX(30px);
 }
 
 .split-40-60 .light-detail-content,
 .split-60-40 .light-detail-content {
   width: 60%;
   text-align: justify;
-  text-indent: 2rem; /* Thụt lề dòng đầu tiên */
+  text-indent: 2rem;
+  opacity: 0;
+  transform: translateX(30px);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s;
 }
 
-/* Placeholder cho hình ảnh trong section */
+.split-60-40 .light-detail-content {
+  transform: translateX(-30px);
+}
+
+/* Khi reveal, các elements slide vào */
+.light-detail-item.reveal .light-detail-image,
+.light-detail-item.reveal .light-detail-content {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Placeholder cho hình ảnh trong section với viền trắng và hiệu ứng 3D */
 .detail-image-placeholder {
   width: 100%;
-  height: 100%; /* Chiều cao sẽ khớp với nội dung */
+  height: 100%;
   background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 0.5rem;
-  min-height: 250px; /* Đảm bảo chiều cao tối thiểu */
+  /* Viền trắng dày */
+  border: 5px solid #ffffff;
+  border-radius: 12px;
+  min-height: 250px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  /* Hiệu ứng 3D shadow */
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.12),
+    0 15px 35px rgba(0, 0, 0, 0.08);
+  /* Hiệu ứng 3D transform */
+  transform: perspective(1000px) rotateX(2deg) rotateY(-1deg);
 }
 
-.light-detail-container {
-  margin-top: 10px;
-  padding-left: 30px;
-  padding-right: 30px;
-  padding-top: 70px;
-  padding-bottom: 70px;
+.detail-image-placeholder:hover {
+  transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(-5px);
+  box-shadow: 
+    0 15px 40px rgba(0, 0, 0, 0.18),
+    0 25px 50px rgba(0, 0, 0, 0.12);
+  border-color: #042354;
+}
+
+/* Hiệu ứng cho hình ảnh bên trong detail */
+.detail-image-placeholder img {
+  transition: all 0.6s ease;
+  border-radius: 8px;
+}
+
+.detail-image-placeholder:hover img {
+  transform: scale(1.05);
+}
+
+/* Hiệu ứng cho overlay khi hover */
+.detail-image-placeholder::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(4, 35, 84, 0.1) 0%, rgba(45, 113, 185, 0.1) 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  border-radius: 8px;
+  z-index: 1;
+}
+
+.detail-image-placeholder:hover::before {
+  opacity: 1;
+}
+
+/* Hiệu ứng cho tiêu đề trong content */
+.light-detail-content h3 {
+  color: #042354;
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+  font-weight: 700;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease 0.6s;
+}
+
+.light-detail-item.reveal .light-detail-content h3 {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hiệu ứng cho đoạn văn */
+.light-detail-content p {
+  line-height: 1.8;
+  color: #333;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease 0.8s;
+}
+
+.light-detail-item.reveal .light-detail-content p {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hiệu ứng shimmer cho loading */
+.detail-image-placeholder.loading {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Hiệu ứng parallax nhẹ khi scroll */
+.light-detail-item.reveal {
+  animation: slideInScale 1s ease-out forwards;
+}
+
+@keyframes slideInScale {
+  0% {
+    opacity: 0;
+    transform: translateY(50px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Hiệu ứng stagger cho multiple elements */
+.light-detail-item:nth-child(1) {
+  transition-delay: 0s;
+}
+
+.light-detail-item:nth-child(2) {
+  transition-delay: 0.2s;
+}
+
+.light-detail-item:nth-child(3) {
+  transition-delay: 0.4s;
+}
+
+/* Responsive cho detail sections */
+@media (max-width: 768px) {
+  .split-40-60,
+  .split-60-40 {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .split-40-60 .light-detail-image,
+  .split-60-40 .light-detail-image,
+  .split-40-60 .light-detail-content,
+  .split-60-40 .light-detail-content {
+    width: 100%;
+    transform: translateY(30px);
+  }
+
+  .light-detail-item.reveal .light-detail-image,
+  .light-detail-item.reveal .light-detail-content {
+    transform: translateY(0);
+  }
+
+  .light-detail-container {
+    padding: 30px 15px;
+  }
+
+  .detail-image-placeholder {
+    min-height: 200px;
+    border: 3px solid #ffffff;
+    transform: perspective(800px) rotateX(1deg) rotateY(0deg);
+  }
 }
 
 .loading-news,
@@ -306,4 +843,24 @@
 
 .search-results-info p:first-child {
   font-weight: 600;
+}
+
+/* Tắt animation cho người dùng không muốn */
+@media (prefers-reduced-motion: reduce) {
+  .light-detail-item,
+  .light-detail-image,
+  .light-detail-content,
+  .detail-image-placeholder,
+  .light-detail-content h3,
+  .light-detail-content p,
+  .light-section-title,
+  .light-section-highlight,
+  .light-section-description,
+  .activity-sidebar,
+  .light-slider-container {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }

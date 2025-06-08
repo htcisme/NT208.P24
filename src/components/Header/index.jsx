@@ -4,8 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import "@/styles-comp/style.css";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import NotificationBell from "@/components/NotificationBell"; // Thêm import cho component NotificationBell
+import { usePathname, useRouter } from "next/navigation";
+import NotificationBell from "@/components/NotificationBell";
 
 export default function Header() {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -16,9 +16,18 @@ export default function Header() {
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+
   const router = useRouter();
+  const pathname = usePathname();
   const userMenuRef = useRef(null);
   const searchRef = useRef(null);
+
+  const isActiveNav = (href) => {
+    if (href === '/') {
+      return pathname === '/';
+    }
+    return pathname.startsWith(href);
+  };
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -90,7 +99,6 @@ export default function Header() {
     router.push("/");
   };
 
-  // Cập nhật hàm handleSearch để sử dụng đúng tham số API 'q' thay vì 'search'
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!searchTerm.trim()) {
@@ -101,7 +109,6 @@ export default function Header() {
 
     setIsSearching(true);
     try {
-      // Sử dụng tham số 'q' thay vì 'search' để phù hợp với API đã cải tiến
       const response = await fetch(
         `/api/activities/search?q=${encodeURIComponent(
           searchTerm.trim()
@@ -126,7 +133,6 @@ export default function Header() {
     }
   };
 
-  // Thêm hàm xử lý tìm kiếm khi người dùng nhập
   const handleSearchInput = async (value) => {
     setSearchTerm(value);
 
@@ -136,7 +142,6 @@ export default function Header() {
       return;
     }
 
-    // Chỉ tìm kiếm khi người dùng nhập ít nhất 2 ký tự
     if (value.trim().length >= 2) {
       setIsSearching(true);
       try {
@@ -171,32 +176,149 @@ export default function Header() {
 
   return (
     <div className="Header">
+      {/* Hàng trên: Logo, User Menu, Search, Notifications, Dark Mode */}
       <div className="Header-Topbar">
-        <div className="Header-Topbar-Logogroup">
-          <Image
-            src={
-              isDarkMode
-                ? "/Img/Homepage/Fulllogolight.png"
-                : "/Img/Homepage/Fulllogolight.png"
-            }
-            alt="Cum-logo-Doan-khoa"
-            width={250}
-            height={250}
-            onError={() => setLogoError(true)}
-            fallbackSrc="/Img/Homepage/Fulllogolight.png"
-          />
-        </div>
-
         <div className="Header-Topbar-Titlegroup">
-          <div className="Header-Topbar-Titlegroup-Uniname">
-            TRƯỜNG ĐẠI HỌC CÔNG NGHỆ THÔNG TIN - ĐHQG-HCM
-          </div>
           <div className="Header-Topbar-Titlegroup-Deptname">
-            ĐOÀN KHOA MẠNG MÁY TÍNH VÀ TRUYỀN THÔNG
+            SUCTREMMT
           </div>
         </div>
 
-        <div className="Header-Topbar-Authsearch">
+        {/* Hàng dưới: Navigation */}
+        <div className="Header-Navbar">
+          <Link
+            className={`Header-Navbar-Navitem ${isActiveNav('/') ? 'active' : ''}`}
+            href="/"
+          >
+            TRANG CHỦ
+          </Link>
+          <Link
+            className={`Header-Navbar-Navitem ${isActiveNav('/Introduction') ? 'active' : ''}`}
+            href="/Introduction"
+          >
+            GIỚI THIỆU
+          </Link>
+          <Link
+            className={`Header-Navbar-Navitem ${isActiveNav('/Activities') ? 'active' : ''}`}
+            href="/Activities"
+          >
+            HOẠT ĐỘNG
+          </Link>
+          <Link
+            className={`Header-Navbar-Navitem ${isActiveNav('/Awards') ? 'active' : ''}`}
+            href="/Awards"
+          >
+            THÀNH TÍCH
+          </Link>
+          <Link
+            className={`Header-Navbar-Navitem ${isActiveNav('/Booking') ? 'active' : ''}`}
+            href="/Booking"
+          >
+            ĐẶT PHÒNG
+          </Link>
+          <Link
+            className={`Header-Navbar-Navitem ${isActiveNav('/Contact') ? 'active' : ''}`}
+            href="/Contact"
+          >
+            LIÊN HỆ
+          </Link>
+        </div>
+
+        <div className="Header-Topbar-RightSection">
+          {/* 1. User menu hoặc auth links - ĐẦU TIÊN */}
+          {user ? (
+            <div
+              className="Header-Topbar-Authsearch-UserInfo"
+              ref={userMenuRef}
+            >
+              <div
+                className="Header-Topbar-Authsearch-UserInfo-Button"
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                role="button"
+                tabIndex={0}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") setShowUserMenu(!showUserMenu);
+                }}
+              >
+                <Image
+                  src="/hi-gesture-hand-svgrepo-com.svg"
+                  alt="Chào mừng"
+                  width={24}
+                  height={24}
+                  className="Header-Topbar-Authsearch-UserInfo-Icon"
+                />
+              </div>
+
+              {showUserMenu && (
+                <div className="Header-Topbar-Authsearch-UserInfo-Menu">
+                  <Link
+                    href="/Profile"
+                    className="Header-Topbar-Authsearch-UserInfo-MenuItem"
+                  >
+                    Trang cá nhân
+                  </Link>
+                  {user.role === "admin" && (
+                    <Link
+                      href="/admin/ActivitiesDashboard"
+                      className="Header-Topbar-Authsearch-UserInfo-MenuItem"
+                    >
+                      Quản trị
+                    </Link>
+                  )}
+                  <button
+                    className="Header-Topbar-Authsearch-UserInfo-MenuItem"
+                    onClick={handleLogout}
+                  >
+                    Đăng xuất
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div
+              className="Header-Topbar-Authsearch-UserInfo"
+              ref={userMenuRef}
+            >
+              <div
+                className="Header-Topbar-Authsearch-UserInfo-Button"
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                role="button"
+                tabIndex={0}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") setShowUserMenu(!showUserMenu);
+                }}
+              >
+                <Image
+                  src="/user-people-account-svgrepo-com.svg"
+                  alt="Đăng nhập/Đăng ký"
+                  width={24}
+                  height={24}
+                  className="Header-Topbar-Authsearch-UserInfo-Icon"
+                />
+              </div>
+
+              {showUserMenu && (
+                <div className="Header-Topbar-Authsearch-UserInfo-Menu">
+                  <Link
+                    href="/User?tab=login"
+                    className="Header-Topbar-Authsearch-UserInfo-MenuItem"
+                    onClick={() => setShowUserMenu(false)}
+                  >
+                    Đăng nhập
+                  </Link>
+                  <Link
+                    href="/User?tab=register"
+                    className="Header-Topbar-Authsearch-UserInfo-MenuItem"
+                    onClick={() => setShowUserMenu(false)}
+                  >
+                    Đăng ký
+                  </Link>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* 2. Search box - THỨ HAI */}
           <div className="Header-Topbar-Authsearch-Searchbox" ref={searchRef}>
             <form onSubmit={handleSearch}>
               <input
@@ -262,132 +384,49 @@ export default function Header() {
             )}
           </div>
 
-          {user ? (
-            <>
-              <div
-                className="Header-Topbar-Authsearch-UserInfo"
-                ref={userMenuRef}
+          {/* 3. Notification - THỨ BA */}
+          {user && <NotificationBell user={user} />}
+
+          {/* 4. Dark Mode Toggle - CUỐI CÙNG */}
+          <button
+            onClick={toggleDarkMode}
+            className="Header-Topbar-Dark-mode-toggle"
+          >
+            {isDarkMode ? (
+              <svg
+                className="w-6 h-6 text-gray-800 dark:text-white"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="currentColor"
+                viewBox="0 0 24 24"
               >
-                <NotificationBell user={user} />
-                <div
-                  className="Header-Topbar-Authsearch-UserInfo-Button"
-                  onClick={() => setShowUserMenu(!showUserMenu)}
-                  role="button"
-                  tabIndex={0}
-                  onKeyPress={(e) => {
-                    if (e.key === "Enter") setShowUserMenu(!showUserMenu);
-                  }}
-                >
-                  <span className="Header-Topbar-Authsearch-UserInfo-Name">
-                    Chào, {user.name}
-                  </span>
-                  <span className="Header-Topbar-Authsearch-UserInfo-Arrow">
-                    ▼
-                  </span>
-                </div>
-
-                {showUserMenu && (
-                  <div className="Header-Topbar-Authsearch-UserInfo-Menu">
-                    <Link
-                      href="/Profile"
-                      className="Header-Topbar-Authsearch-UserInfo-MenuItem"
-                    >
-                      Trang cá nhân
-                    </Link>
-                    {user.role === "admin" && (
-                      <Link
-                        href="/admin/UsersDashboard"
-                        className="Header-Topbar-Authsearch-UserInfo-MenuItem"
-                      >
-                        Quản trị
-                      </Link>
-                    )}
-                    <button
-                      className="Header-Topbar-Authsearch-UserInfo-MenuItem"
-                      onClick={handleLogout}
-                    >
-                      Đăng xuất
-                    </button>
-                  </div>
-                )}
-              </div>
-            </>
-          ) : (
-            <div className="Header-Topbar-Authsearch-Authlinks">
-              <a href="/User?tab=register">
-                <span className="Header-Topbar-Authsearch-Authlinks-Item">
-                  Đăng ký
-                </span>
-              </a>
-              <span>|</span>
-              <a href="/User?tab=login">
-                <span className="Header-Topbar-Authsearch-Authlinks-Item">
-                  Đăng nhập
-                </span>
-              </a>
-            </div>
-          )}
+                <path
+                  fillRule="evenodd"
+                  d="M13 3a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0V3ZM6.343 4.929A1 1 0 0 0 4.93 6.343l1.414 1.414a1 1 0 0 0 1.414-1.414L6.343 4.929Zm12.728 1.414a1 1 0 0 0-1.414-1.414l-1.414 1.414a1 1 0 0 0 1.414 1.414l1.414-1.414ZM12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm-9 4a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2H3Zm16 0a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2h-2ZM7.757 17.657a1 1 0 1 0-1.414-1.414l-1.414 1.414a1 1 0 1 0 1.414 1.414l1.414-1.414Zm9.9-1.414a1 1 0 0 0-1.414 1.414l1.414 1.414a1 1 0 0 0 1.414-1.414l-1.414-1.414ZM13 19a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0v-2Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            ) : (
+              <svg
+                className="w-6 h-6 text-gray-800 dark:text-white"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M11.675 2.015a.998.998 0 0 0-.403.011C6.09 2.4 2 6.722 2 12c0 5.523 4.477 10 10 10 4.356 0 8.058-2.784 9.43-6.667a1 1 0 0 0-1.02-1.33c-.08.006-.105.005-.127.005h-.001l-.028-.002A5.227 5.227 0 0 0 20 14a8 8 0 0 1-8-8c0-.952.121-1.752.404-2.558a.996.996 0 0 0 .096-.428V3a1 1 0 0 0-.825-.985Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            )}
+          </button>
         </div>
-
-        <button
-          onClick={toggleDarkMode}
-          className="Header-Topbar-Dark-mode-toggle"
-        >
-          {isDarkMode ? (
-            <svg
-              className="w-6 h-6 text-gray-800 dark:text-white"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                fillRule="evenodd"
-                d="M13 3a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0V3ZM6.343 4.929A1 1 0 0 0 4.93 6.343l1.414 1.414a1 1 0 0 0 1.414-1.414L6.343 4.929Zm12.728 1.414a1 1 0 0 0-1.414-1.414l-1.414 1.414a1 1 0 0 0 1.414 1.414l1.414-1.414ZM12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm-9 4a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2H3Zm16 0a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2h-2ZM7.757 17.657a1 1 0 1 0-1.414-1.414l-1.414 1.414a1 1 0 1 0 1.414 1.414l1.414-1.414Zm9.9-1.414a1 1 0 0 0-1.414 1.414l1.414 1.414a1 1 0 0 0 1.414-1.414l-1.414-1.414ZM13 19a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0v-2Z"
-                clipRule="evenodd"
-              />
-            </svg>
-          ) : (
-            <svg
-              className="w-6 h-6 text-gray-800 dark:text-white"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                fillRule="evenodd"
-                d="M11.675 2.015a.998.998 0 0 0-.403.011C6.09 2.4 2 6.722 2 12c0 5.523 4.477 10 10 10 4.356 0 8.058-2.784 9.43-6.667a1 1 0 0 0-1.02-1.33c-.08.006-.105.005-.127.005h-.001l-.028-.002A5.227 5.227 0 0 0 20 14a8 8 0 0 1-8-8c0-.952.121-1.752.404-2.558a.996.996 0 0 0 .096-.428V3a1 1 0 0 0-.825-.985Z"
-                clipRule="evenodd"
-              />
-            </svg>
-          )}
-        </button>
-      </div>
-
-      <div className="Header-Navbar">
-        <Link className="Header-Navbar-Navitem" href="/">
-          TRANG CHỦ
-        </Link>
-        <Link className="Header-Navbar-Navitem" href="/Introduction">
-          GIỚI THIỆU
-        </Link>
-        <Link className="Header-Navbar-Navitem" href="/Activities">
-          HOẠT ĐỘNG
-        </Link>
-        <Link className="Header-Navbar-Navitem" href="/Awards">
-          THÀNH TÍCH
-        </Link>
-        <Link className="Header-Navbar-Navitem" href="/Booking">
-          ĐẶT PHÒNG
-        </Link>
-        <Link className="Header-Navbar-Navitem" href="/Contact">
-          LIÊN HỆ
-        </Link>
       </div>
     </div>
   );

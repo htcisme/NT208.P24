@@ -8,8 +8,28 @@
   font-family: "Montserrat", sans-serif;
   display: flex;
   justify-content: space-between;
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
   z-index: 100;
+  border-bottom: 5px solid #f3f9fd;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  min-height: 80px;
+}
+
+body {
+  padding-top: 70px !important;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 70px;
+}
+
+.dark .Header {
+  background-color: #1a365d;
+  border-bottom-color: #2d5a8a;
 }
 
 .Header-Topbar {
@@ -17,9 +37,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 15px;
+  padding: 12px 15px;
   position: relative;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  min-height: 60px;
 }
 
 .Header-Topbar-Logogroup {
@@ -31,7 +52,7 @@
 
 .Header-Topbar-Titlegroup {
   text-align: left;
-  flex: 1;
+  flex-shrink: 0;
   text-shadow: 1px 2px 3px rgba(0, 0, 0, 0.19);
   margin-left: 15px;
 }
@@ -53,7 +74,7 @@
 .Header-Topbar-RightSection {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .Header-Topbar-Authsearch {
@@ -77,7 +98,10 @@
   border-radius: 10px;
   caret-color: #00274d;
   position: relative;
-  width: 300px;
+  width: 250pxl;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  order: 2;
+  /* Thứ tự thứ hai */
 }
 
 .Header-Topbar-Authsearch-Searchbox input {
@@ -91,7 +115,7 @@
   justify-content: center;
   padding: 0px;
   margin: 0px;
-  width: 230px;
+  width: 180px;
 }
 
 .Header-Topbar-Authsearch-Searchbox form {
@@ -130,11 +154,13 @@
 
 .Header-Topbar-Authsearch-Authlinks {
   display: flex;
-  margin-top: 7px;
-  gap: 20px;
+  gap: 8px;
   font-size: 14px;
   color: #003366;
   cursor: pointer;
+  align-items: center;
+  order: 1;
+  /* Thứ tự đầu tiên */
 }
 
 .Header-Topbar-Authsearch-Authlinks-Item:hover {
@@ -208,16 +234,26 @@
 
 /* Dark Mode Toggle */
 .Header-Topbar-Dark-mode-toggle {
-  align-items: top;
-  justify-content: top;
-  margin: 0px 0px 45px 10px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: #ffffff;
   border: none;
   cursor: pointer;
-  padding: 6px;
-  border-radius: 10px;
-  height: 38px;
-  width: 38px;
+  padding: 8px;
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  order: 4;
+  /* Thứ tự cuối cùng */
+}
+
+.Header-Topbar-Dark-mode-toggle:hover {
+  background-color: #e2f4ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .Header-Topbar-Dark-mode-toggle svg {
@@ -251,32 +287,35 @@
   border-radius: 3px;
 }
 
-/* Navigation */
 .Header-Navbar {
-  width: 100%;
   display: flex;
-  justify-content: space-evenly;
-  background-color: #e2f4ff;
-  color: #00274d;
-  border: 2px solid #ffffff;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  margin: 0 20px;
+  gap: 10px;
+  min-height: 50px;
+  padding: 5px 0;
 }
 
 .Header-Navbar-Navitem {
-  font-size: 22px;
-  letter-spacing: -0.5px;
+  font-size: 15px;
   font-family: "montserrat", sans-serif;
   font-weight: bold;
-  padding: 12px 20px;
-  border-right: 2px solid #ffffff;
+  padding: 8px 16px;
+  border-radius: 5px;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
   cursor: pointer;
-  transition: background 0.3s ease;
-  width: 100%;
+  transition: all 0.3s ease;
   text-decoration: none;
   color: #003366;
+  white-space: nowrap;
+  border: none;
+  position: relative;
+  min-height: 40px;
 }
 
 .Header-Navbar-Navitem:last-child {
@@ -286,9 +325,75 @@
 .Header-Navbar-Navitem:hover {
   background-color: #c1e0ff;
   color: #003366;
-  border-radius: 5px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+.Header-Navbar-Navitem.active {
+  background-color: #042354;
+  color: #ffffff !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+}
+
+.Header-Navbar-Navitem.active::before {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 3px;
+  background-color: #ffffff;
+  border-radius: 2px;
+}
+
+.Header-Navbar-Navitem.active:hover {
+  background-color: #0a2d5c;
+  color: #ffffff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+}
+
+.dark .Header-Navbar-Navitem {
+  color: #e2f4ff;
+}
+
+.dark .Header-Navbar-Navitem:hover {
+  background-color: #2d5a8a;
+  color: #ffffff;
+}
+
+.dark .Header-Navbar-Navitem.active {
+  background-color: #1a365d;
+  color: #ffffff !important;
+}
+
+.dark .Header-Navbar-Navitem.active:hover {
+  background-color: #0f2d4a;
+}
+
+.page-container {
+  padding-top: 50px !important;
+  min-height: 100vh;
+}
+
+.activities-page-container {
+  padding-top: 140px !important;
+  min-height: 100vh;
+}
+
+.activity-detail-page {
+  padding-top: 140px !important;
+  min-height: 100vh;
+}
+
+.light-container-main {
+  padding-top: 20px !important;
+  /* Giảm padding vì đã có padding ở body */
+  padding-left: 2rem;
+  padding-right: 2rem;
+  min-height: calc(100vh - 140px);
 }
 
 /* Responsive styles */
@@ -301,6 +406,7 @@
 
 /* Tablet (834px và nhỏ hơn) - Ẩn tiêu đề */
 @media (max-width: 834px) {
+
   /* Ẩn thông tin trường và khoa trên thiết bị tablet */
   .Header-Topbar-Titlegroup {
     display: none;
@@ -313,12 +419,16 @@
   }
 
   .Header-Topbar-Logogroup {
-    width: 160px; /* Kích thước phù hợp cho tablet */
+    width: 160px;
+    /* Kích thước phù hợp cho tablet */
   }
 
   .Header-Topbar-RightSection {
-    flex: 1;
-    justify-content: flex-end;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+    /* Không cho shrink */
   }
 
   .Header-Navbar-Navitem {
@@ -328,6 +438,7 @@
 }
 
 @media (max-width: 768px) {
+
   /* Hiển thị nút mobile menu */
   .Header-Mobile-Menu-Button {
     display: flex;
@@ -360,7 +471,8 @@
   }
 
   .Header-Topbar-Logogroup {
-    width: 140px; /* Giảm kích thước logo cho mobile */
+    width: 140px;
+    /* Giảm kích thước logo cho mobile */
   }
 }
 
@@ -387,7 +499,8 @@
   }
 
   .Header-Topbar-Authsearch-Searchbox {
-    width: 150px; /* Thu nhỏ ô tìm kiếm trên mobile */
+    width: 150px;
+    /* Thu nhỏ ô tìm kiếm trên mobile */
   }
 }
 
@@ -551,8 +664,10 @@
 
 /* Đặt màu cố định cho placeholder, không phụ thuộc vào chế độ dark/light */
 .registerform-footer-form input::placeholder {
-  color: rgba(0, 39, 77, 0.7) !important; /* #00274d với độ mờ 70% */
-  opacity: 1; /* Firefox yêu cầu opacity: 1 để hiển thị màu */
+  color: rgba(0, 39, 77, 0.7) !important;
+  /* #00274d với độ mờ 70% */
+  opacity: 1;
+  /* Firefox yêu cầu opacity: 1 để hiển thị màu */
 }
 
 /* Hỗ trợ cho các trình duyệt cũ */
@@ -561,16 +676,19 @@
   color: rgba(0, 39, 77, 0.7) !important;
   opacity: 1;
 }
+
 .registerform-footer-form input::-moz-placeholder {
   /* Firefox 19+ */
   color: rgba(0, 39, 77, 0.7) !important;
   opacity: 1;
 }
+
 .registerform-footer-form input:-ms-input-placeholder {
   /* IE 10+ */
   color: rgba(0, 39, 77, 0.7) !important;
   opacity: 1;
 }
+
 .registerform-footer-form input:-moz-placeholder {
   /* Firefox 18- */
   color: rgba(0, 39, 77, 0.7) !important;
@@ -622,7 +740,8 @@
 }
 
 .registerform-footer-form form {
-  width: 100%; /* Đảm bảo form chiếm toàn bộ chiều rộng container */
+  width: 100%;
+  /* Đảm bảo form chiếm toàn bộ chiều rộng container */
   display: flex;
   flex-direction: column;
 }
@@ -809,6 +928,7 @@
   color: #666;
   background-color: #f8f9fa;
 }
+
 /* Responsive styles */
 @media (max-width: 768px) {
   .admin-header-navbar {
@@ -823,29 +943,34 @@
 
 .Header-Topbar-Authsearch-UserInfo {
   position: relative;
-  margin-top: 8px;
   display: flex;
-  columns: 2;
+  align-items: center;
+  order: 1;
+  /* Thứ tự đầu tiên */
 }
 
 .Header-Topbar-Authsearch-UserInfo-Button {
   display: flex;
   align-items: center;
   cursor: pointer;
-  padding: 0px 10px;
-  border-radius: 18px;
-  color: #fff !important;
+  padding: 11px 12px;
+  border-radius: 10px;
+  background-color: #ffffff;
+  color: #04255a !important;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 14px;
   border: none;
   gap: 8px;
   width: auto;
-  transition: background 0.2s;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
 }
 
 .Header-Topbar-Authsearch-UserInfo-Button:hover {
-  background: #accfe4;
+  background: #e2f4ff;
   color: #04255a !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .Header-Topbar-Authsearch-UserInfo-Button .arrow {
@@ -900,6 +1025,52 @@
 .Header-Topbar-Authsearch-UserInfo-Menu button:hover {
   background: #e2f4ff;
   color: #04255a;
+}
+
+.Header-Topbar-Authsearch-UserInfo-Icon {
+  width: 25px !important;
+  height: 25px !important;
+  border-radius: 50% !important;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  object-fit: contain;
+  filter: none;
+}
+
+.Header-Topbar-Authsearch-UserInfo-Button {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px;
+  /* Giảm padding để match với notification và dark mode */
+  border-radius: 50%;
+  /* Đổi thành hình tròn như notification và dark mode */
+  background-color: #ffffff;
+  color: #04255a !important;
+  font-weight: 500;
+  font-size: 14px;
+  border: none;
+  width: 40px;
+  /* Cùng width với notification và dark mode */
+  height: 40px;
+  /* Cùng height với notification và dark mode */
+  justify-content: center;
+  /* Center icon */
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  order: 1;
+  /* Thứ tự đầu tiên */
+}
+
+.Header-Topbar-Authsearch-UserInfo-Button:hover {
+  background: #e2f4ff;
+  color: #04255a !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.Header-Topbar-Authsearch-UserInfo-Button:hover .Header-Topbar-Authsearch-UserInfo-Icon {
+  transform: scale(1.1);
 }
 
 /* Styles cho dropdown kết quả tìm kiếm */
@@ -981,11 +1152,14 @@
 
 .Header-Topbar-Authsearch-Notification {
   position: relative;
-  margin-right: 5px;
+  display: flex;
+  align-items: center;
+  order: 3;
+  /* Thứ tự thứ ba */
 }
 
 .Header-Topbar-Authsearch-Notification-Button {
-  background: none;
+  background: #ffffff;
   border: none;
   cursor: pointer;
   display: flex;
@@ -994,11 +1168,16 @@
   position: relative;
   padding: 8px;
   border-radius: 50%;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  height: 40px;
+  width: 40px;
 }
 
 .Header-Topbar-Authsearch-Notification-Button:hover {
-  background: #accfe4;
+  background: #e2f4ff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .dark .Header-Topbar-Authsearch-Notification-Button:hover {
@@ -1120,7 +1299,8 @@
 
 .Header-Topbar-Authsearch-Notification-Item-Text {
   flex: 1;
-  padding-right: 16px; /* Space for the action buttons */
+  padding-right: 16px;
+  /* Space for the action buttons */
 }
 
 .Header-Topbar-Authsearch-Notification-Item-Title {
@@ -1161,8 +1341,7 @@
   transition: opacity 0.2s;
 }
 
-.Header-Topbar-Authsearch-Notification-Item:hover
-  .Header-Topbar-Authsearch-Notification-Item-Actions {
+.Header-Topbar-Authsearch-Notification-Item:hover .Header-Topbar-Authsearch-Notification-Item-Actions {
   opacity: 1;
 }
 
@@ -1555,9 +1734,11 @@
   0% {
     opacity: 0.2;
   }
+
   20% {
     opacity: 1;
   }
+
   100% {
     opacity: 0.2;
   }
@@ -1646,6 +1827,7 @@
     transform: translateX(100%);
     opacity: 0;
   }
+
   to {
     transform: translateX(0);
     opacity: 1;

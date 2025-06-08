@@ -1032,3 +1032,82 @@ button:disabled {
   align-items: center;
   gap: 10px;
 }
+
+/* Thêm vào file CSS của bạn */
+.reply-container {
+  padding: 15px;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 5px;
+  margin: 10px 0;
+}
+
+.reply-container h4 {
+  margin: 0 0 10px 0;
+  color: #495057;
+  font-size: 14px;
+}
+
+.reply-textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.reply-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.action-btn.reply-btn {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.action-btn.reply-btn:hover {
+  background-color: #138496;
+}
+
+.reply-row td {
+  padding: 0 !important;
+}
+
+.reply-row .reply-container {
+  margin: 0;
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+}
+
+/* Thêm vào file style.css */
+.reply-hint {
+  margin-top: 8px;
+  text-align: right;
+}
+
+.reply-hint small {
+  color: #666;
+  font-size: 12px;
+}
+
+.btn-publish:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.reply-textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 14px;
+  min-height: 80px;
+}
