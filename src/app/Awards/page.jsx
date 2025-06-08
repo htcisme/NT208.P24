@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import "@/styles-comp/style.css";
 import "@/app/Awards/style.css";
@@ -14,6 +15,36 @@ const images = [
   "/Img/Homepage/BCH1.png",
 ];
 
+// Custom hook cho scroll reveal
+const useScrollReveal = (threshold = 0.1) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          // Unobserve sau khi đã visible để tránh re-trigger
+          observer.unobserve(entry.target);
+        }
+      },
+      {
+        threshold,
+        rootMargin: '50px 0px -50px 0px' // Trigger sớm hơn một chút
+      }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, [threshold]);
+
+  return [ref, isVisible];
+};
+
 export default function Awards() {
   // State để quản lý hình ảnh hiện tại
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -22,6 +53,14 @@ export default function Awards() {
   const [awards, setAwards] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Scroll reveal refs cho tất cả sections
+  const [titleRef, titleVisible] = useScrollReveal(0.1);
+  const [bannerRef, bannerVisible] = useScrollReveal(0.2);
+  const [contentRef, contentVisible] = useScrollReveal(0.2);
+  const [slideshowRef, slideshowVisible] = useScrollReveal(0.2);
+  const [timelineRef, timelineVisible] = useScrollReveal(0.2);
+  const [descriptionRef, descriptionVisible] = useScrollReveal(0.2);
 
   // Tự động chuyển ảnh sau 3 giây
   useEffect(() => {
@@ -79,9 +118,13 @@ export default function Awards() {
 
   return (
     <>
+      <Header />
       <main>
-        {/* Tiêu đề */}
-        <section className="title-section">
+        {/* Tiêu đề với scroll reveal */}
+        <section 
+          ref={titleRef}
+          className={`title-section ${titleVisible ? 'animate-title' : ''}`}
+        >
           <h1 className="main-title">
             ĐOÀN KHOA MẠNG MÁY TÍNH VÀ TRUYỀN THÔNG LÀ ĐƠN VỊ XUẤT SẮC DẪN ĐẦU{" "}
             <br />
@@ -90,8 +133,11 @@ export default function Awards() {
           <p className="subtitle">NĂM HỌC 2023 - 2024</p>
         </section>
 
-        {/* Hình ảnh tràn viền */}
-        <section className="full-width-image">
+        {/* Hình ảnh tràn viền với scroll reveal */}
+        <section 
+          ref={bannerRef}
+          className={`full-width-image ${bannerVisible ? 'animate-banner' : ''}`}
+        >
           <Image
             src="/Img/Awards/BanChapHanhDoanKhoa.png"
             alt="Award Banner"
@@ -101,9 +147,12 @@ export default function Awards() {
           />
         </section>
 
-        {/* Phần hai cột */}
+        {/* Phần hai cột với scroll reveal */}
         <section className="two-columns-section">
-          <div className="content-column">
+          <div 
+            ref={contentRef}
+            className={`content-column ${contentVisible ? 'animate-slide-in-left' : ''}`}
+          >
             <p>
               Trong 10 năm qua, những thành quả mà Đoàn khoa đã đạt được là nhờ
               vào sự cố gắng, nỗ lực không ngừng nghỉ của tập thể cán bộ, đoàn
@@ -116,7 +165,10 @@ export default function Awards() {
               độ hoạt động sôi nổi, tích cực.
             </p>
           </div>
-          <div className="image-column">
+          <div 
+            ref={slideshowRef}
+            className={`image-column ${slideshowVisible ? 'animate-slide-in-right' : ''}`}
+          >
             <div className="slideshow">
               {/* Hiển thị hình ảnh hiện tại */}
               <div className="slide">
@@ -148,8 +200,11 @@ export default function Awards() {
           </div>
         </section>
 
-        {/* Phần timeline thành tựu */}
-        <section className="timeline-section">
+        {/* Phần timeline thành tựu với scroll reveal */}
+        <section 
+          ref={timelineRef}
+          className={`timeline-section ${timelineVisible ? 'animate-timeline' : ''}`}
+        >
           <div className="timeline">
             {loading ? (
               <div className="loading-container">
@@ -163,8 +218,11 @@ export default function Awards() {
                 </button>
               </div>
             ) : (
-              Object.entries(groupedAwards).map(([organization, orgAwards]) => (
-                <div key={organization} className="timeline-item">
+              Object.entries(groupedAwards).map(([organization, orgAwards], index) => (
+                <div 
+                  key={organization} 
+                  className={`timeline-item animate-timeline-item-${index % 3}`}
+                >
                   <h3>{organization} trao tặng</h3>
                   {orgAwards.map((award) => (
                     <p key={award._id}>
@@ -184,7 +242,10 @@ export default function Awards() {
           </div>
         </section>
 
-        <div className="timeline-description">
+        <div 
+          ref={descriptionRef}
+          className={`timeline-description ${descriptionVisible ? 'animate-fade-in' : ''}`}
+        >
           <p>
             Hơn thế, Đoàn khoa còn là đơn vị xuất sắc dẫn đầu trong công tác
             Đoàn và phong trào sinh viên, nhận Cờ thi đua của Đoàn trường năm

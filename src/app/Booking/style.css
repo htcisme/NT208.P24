@@ -431,3 +431,320 @@ button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
 }
+
+/* Scroll reveal animations for Booking page */
+.animate-form-container {
+  animation: scaleInUp 0.8s ease-out forwards;
+  opacity: 0;
+  transform: translateY(30px) scale(0.98);
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out 0.2s forwards;
+  opacity: 0;
+}
+
+.animate-progress {
+  animation: slideInDown 0.6s ease-out 0.3s forwards;
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.animate-step {
+  animation: slideInUp 0.8s ease-out 0.4s forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+/* Enhanced form animations */
+.animate-step .form-card {
+  animation: cardSlideIn 0.6s ease-out 0.5s forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.animate-step .form-group {
+  animation: fieldFadeIn 0.4s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-step .form-group:nth-child(1) {
+  animation-delay: 0.6s;
+}
+
+.animate-step .form-group:nth-child(2) {
+  animation-delay: 0.7s;
+}
+
+.animate-step .form-group:nth-child(3) {
+  animation-delay: 0.8s;
+}
+
+.animate-step .form-group:nth-child(4) {
+  animation-delay: 0.9s;
+}
+
+.animate-step .btn-group {
+  animation: buttonSlideUp 0.6s ease-out 1s forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* Progress bar enhanced animation */
+.animate-progress .progress-step {
+  animation: stepPulse 0.6s ease-out forwards;
+  opacity: 0;
+  transform: scale(0);
+}
+
+.animate-progress .progress-step:nth-child(1) {
+  animation-delay: 0.4s;
+}
+
+.animate-progress .progress-step:nth-child(2) {
+  animation-delay: 0.5s;
+}
+
+/* Keyframes for Booking page */
+@keyframes scaleInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fieldFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes buttonSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes stepPulse {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Enhanced interactions */
+.form-control:focus {
+  animation: inputFocus 0.3s ease-out;
+}
+
+@keyframes inputFocus {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  transition: transform 0.2s ease;
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+/* Form step transition */
+.form-step {
+  transition: all 0.5s ease-in-out;
+}
+
+.form-step:not(.active) {
+  opacity: 0;
+  transform: translateX(-20px);
+}
+
+.form-step.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Progress step animations */
+.progress-step {
+  transition: all 0.3s ease;
+}
+
+.progress-step.active {
+  animation: activeStep 0.5s ease-out;
+}
+
+@keyframes activeStep {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Enhanced form card hover */
+.animate-step .form-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+/* Error message animation */
+.error-message {
+  animation: errorSlideIn 0.3s ease-out;
+}
+
+@keyframes errorSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Success message animation */
+.submission-success {
+  animation: successPulse 0.6s ease-out;
+}
+
+@keyframes successPulse {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Responsive animations */
+@media (max-width: 768px) {
+  .animate-form-container {
+    animation: fadeIn 0.6s ease-out forwards;
+    transform: none;
+  }
+  
+  .animate-step .form-card {
+    animation: fadeIn 0.4s ease-out 0.2s forwards;
+    transform: none;
+  }
+  
+  .animate-step .form-group {
+    animation-delay: 0.1s;
+  }
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .animate-form-container,
+  .animate-fade-in,
+  .animate-progress,
+  .animate-step,
+  .animate-step .form-card,
+  .animate-step .form-group,
+  .animate-step .btn-group,
+  .animate-progress .progress-step {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  
+  .form-control:focus {
+    animation: none;
+  }
+  
+  .btn:hover {
+    transform: none;
+  }
+  
+  .progress-step.active {
+    animation: none;
+  }
+  
+  .animate-step .form-card:hover {
+    transform: none;
+    box-shadow: var(--shadow);
+  }
+}
