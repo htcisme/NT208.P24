@@ -7,7 +7,6 @@
   margin: 30 auto;
   padding: 30px 0;
   background-color: #ffff !important;
-
 }
 
 .content-tabs {
@@ -16,12 +15,16 @@
   margin-bottom: 20px;
 }
 
+.action-btn edit-btn {
+  padding: 0 10px;
+  margin-right: 10px;
+}
+
 .tab-button {
   padding: 12px 20px;
   background-color: #e9ecef !important;
   border: none;
   border-radius: 5px;
-  font-weight: bold;
   color: #495057 !important;
   cursor: pointer;
   transition: all 0.3s ease;

@@ -180,7 +180,7 @@ export default function ProfilePage() {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
-          showNotification("Vui lòng đăng nhập để xem thông tin cá nhân");
+          showNotification("Vui lòng đăng nhập để xem thông tin cá nhân!");
           router.push("/login");
           return;
         }
