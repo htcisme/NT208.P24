@@ -354,8 +354,6 @@ body {
   font-weight: 500;
   margin-bottom: 5px;
   text-align: justify;
-
-  /* Giới hạn hiển thị tối đa 2 dòng */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -384,40 +382,88 @@ body {
   margin-top: auto;
 }
 
+/* ================ BÀI ĐĂNG GẦN ĐÂY - GRID LAYOUT RESPONSIVE ================ */
+
+/* Desktop (1025px+): 4 bài 1 dòng, tổng 3 dòng = 12 bài */
 .other-posts-container {
   margin: 40px;
   background-color: #fff;
-  padding: 20px;
+  padding: 25px;
   margin-bottom: 40px;
   border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .other-posts-grid {
-  display: flex;
-  justify-content: center;
-  gap: 40px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* Desktop: 4 cột */
+  gap: 20px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
 .other-posts-column {
-  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
+/* Mỗi post item sẽ có layout giống như post-box */
 .other-post-item {
-  padding: 5px 0;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 2px solid transparent;
+  padding: 15px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.other-post-item:hover {
+  border: 2px solid #042354;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(4, 35, 84, 0.15);
+}
+
+/* Post image cho other posts */
+.other-post-image {
+  width: 100%;
+  height: 150px;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  background-color: #f0f0f0;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.other-post-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.3s ease;
+}
+
+.other-post-image:hover img {
+  transform: scale(1.05);
+}
+
+.other-post-image .no-image-placeholder {
+  color: #999;
+  font-size: 24px;
 }
 
 .other-post-title {
   font-size: 16px;
   font-weight: 500;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   text-align: justify;
-
-  /* Giới hạn hiển thị tối đa 2 dòng */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -425,24 +471,30 @@ body {
   text-overflow: ellipsis;
   line-height: 1.4;
   max-height: calc(1.4em * 2);
+  min-height: calc(1.4em * 2);
+  flex-grow: 1;
 }
 
 .other-post-title a {
   color: #042354;
   text-decoration: none;
   display: block;
+  transition: color 0.3s ease;
 }
 
 .other-post-title a:hover {
+  color: #2d71b9;
   text-decoration: underline;
 }
 
 .other-post-date {
-  font-size: 14px;
-  color: #042354;
+  font-size: 13px;
+  color: #666;
   text-align: left;
-  padding-left: 20px;
-  margin-top: 8px;
+  margin-top: auto;
+  font-style: italic;
+  padding: 8px 0 0 0;
+  border-top: 1px solid #f0f0f0;
 }
 
 .pagination-container {
@@ -586,123 +638,7 @@ body {
   }
 }
 
-/* Tablet (992px và nhỏ hơn) */
-@media (max-width: 992px) {
-  .filter-dropdowns {
-    flex-wrap: wrap;
-  }
-
-  .filter-dropdown-btn {
-    min-width: 120px;
-    font-size: 14px;
-    padding: 8px 12px;
-  }
-
-  .post-list-container {
-    padding: 0px 40px;
-  }
-}
-
-/* Mobile (768px và nhỏ hơn) */
-@media (max-width: 768px) {
-  .post-list-container {
-    padding: 0px 20px;
-  }
-
-  .post-image-placeholder {
-    height: 180px;
-  }
-
-  .filter-bar-container {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .filter-dropdowns {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .filter-dropdown {
-    flex: 1;
-  }
-
-  .filter-dropdown-btn {
-    min-width: auto;
-    width: 100%;
-    padding: 8px 10px;
-    font-size: 13px;
-  }
-
-  .dropdown-icon {
-    font-size: 16px;
-  }
-
-  .dropdown-label {
-    display: none;
-  }
-
-  .clear-filters-btn {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .dropdown-menu {
-    left: 50%;
-    transform: translateX(-50%);
-    min-width: 200px;
-  }
-
-  .other-posts-grid {
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .other-posts-container {
-    margin: 20px;
-    padding: 15px;
-  }
-
-  .light-news-actions {
-    margin-right: 20px;
-  }
-}
-
-/* Small Mobile (480px và nhỏ hơn) */
-@media (max-width: 480px) {
-  .post-list-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .post-list-container {
-    padding: 0px 15px;
-  }
-
-  .post-list-title {
-    font-size: 20px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-  }
-
-  .other-posts-title {
-    font-size: 20px;
-  }
-
-  .other-posts-container {
-    margin: 15px;
-    padding: 10px;
-  }
-
-  .filter-dropdowns {
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .filter-dropdown-btn {
-    width: 100%;
-  }
-}
-
+/* Utility classes */
 .text-center {
   text-align: center;
 }
@@ -729,4 +665,540 @@ body {
 
 .visible {
   display: block;
+}
+
+/* ================ RESPONSIVE DESIGN ================ */
+
+/* Large Desktop (1366px+): 4 bài 1 dòng */
+@media (min-width: 1366px) {
+  .other-posts-container {
+    margin: 50px;
+    padding: 30px;
+  }
+
+  .other-posts-title {
+    font-size: 26px;
+    margin-bottom: 25px;
+  }
+
+  .other-posts-grid {
+    grid-template-columns: repeat(4, 1fr); /* 4 cột */
+    gap: 25px;
+  }
+
+  .other-post-image {
+    height: 160px;
+  }
+
+  .other-post-title {
+    font-size: 17px;
+    margin-bottom: 8px;
+  }
+
+  .other-post-date {
+    font-size: 14px;
+  }
+}
+
+/* Desktop (1025px - 1365px): 4 bài 1 dòng */
+@media (min-width: 1025px) and (max-width: 1365px) {
+  .other-posts-container {
+    margin: 40px;
+    padding: 25px;
+  }
+
+  .other-posts-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .other-posts-grid {
+    grid-template-columns: repeat(4, 1fr); /* 4 cột */
+    gap: 20px;
+  }
+
+  .other-post-image {
+    height: 150px;
+  }
+
+  .other-post-title {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  .other-post-date {
+    font-size: 13px;
+  }
+}
+
+/* Tablet (769px - 1024px): 3 bài 1 dòng */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .post-list-container {
+    padding: 0px 30px;
+  }
+  
+  .post-list-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+  }
+  
+  .post-image-placeholder {
+    height: 200px;
+  }
+  
+  .filter-bar-container {
+    gap: 12px;
+    padding: 0 30px;
+    flex-wrap: wrap;
+  }
+  
+  .filter-dropdown-btn {
+    min-width: 120px;
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+
+  /* Hiển thị nội dung trong dropdown luôn */
+  .dropdown-label {
+    display: block !important;
+  }
+  
+  /* BÀI ĐĂNG GẦN ĐÂY cho tablet: 3 bài 1 dòng */
+  .other-posts-container {
+    margin: 30px 20px;
+    padding: 20px;
+  }
+
+  .other-posts-title {
+    font-size: 22px;
+    margin-bottom: 18px;
+  }
+
+  .other-posts-grid {
+    grid-template-columns: repeat(3, 1fr); /* 3 cột */
+    gap: 18px;
+  }
+
+  .other-post-item {
+    padding: 12px;
+  }
+
+  .other-post-image {
+    height: 130px;
+    margin-bottom: 10px;
+  }
+
+  .other-post-title {
+    font-size: 15px;
+    margin-bottom: 6px;
+    line-height: 1.3;
+    max-height: calc(1.3em * 2);
+    min-height: calc(1.3em * 2);
+  }
+
+  .other-post-date {
+    font-size: 12px;
+  }
+}
+
+/* iPad Portrait (768px - 834px): 3 bài 1 dòng */
+@media (min-width: 768px) and (max-width: 834px) and (orientation: portrait) {
+  .other-posts-container {
+    margin: 25px 15px;
+    padding: 18px;
+  }
+
+  .other-posts-title {
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+
+  .other-posts-grid {
+    grid-template-columns: repeat(3, 1fr); /* 3 cột */
+    gap: 15px;
+  }
+
+  .other-post-image {
+    height: 120px;
+  }
+
+  .other-post-title {
+    font-size: 14px;
+    line-height: 1.3;
+  }
+
+  .other-post-date {
+    font-size: 11px;
+  }
+}
+
+/* Mobile (768px và nhỏ hơn): 2 bài 1 dòng, 1 hàng ngang */
+@media (max-width: 768px) {
+  .post-list-container {
+    padding: 0px 20px;
+  }
+
+  .post-image-placeholder {
+    height: 180px;
+  }
+
+  .filter-bar-container {
+    flex-direction: column;
+    gap: 12px;
+    padding: 0 20px;
+  }
+
+  .filter-dropdowns {
+    width: 100%;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .filter-dropdown {
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .filter-dropdown-btn {
+    min-width: auto;
+    width: 100%;
+    padding: 8px 6px;
+    font-size: 12px;
+  }
+
+  .dropdown-icon {
+    font-size: 14px;
+  }
+
+  /* Hiển thị nội dung dropdown luôn trên mobile */
+  .dropdown-label {
+    display: block !important;
+    font-size: 11px;
+  }
+
+  .clear-filters-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 10px;
+    margin-left: 0;
+    margin-top: 8px;
+    font-size: 12px;
+  }
+  
+  .dropdown-menu {
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 180px;
+    max-height: 180px;
+    overflow-y: auto;
+  }
+
+  /* BÀI ĐĂNG GẦN ĐÂY cho mobile: 2 bài 1 dòng, 1 hàng ngang */
+  .other-posts-container {
+    margin: 20px 15px;
+    padding: 15px;
+    border-radius: 6px;
+  }
+
+  .other-posts-title {
+    font-size: 18px;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  .other-posts-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 cột - 1 hàng ngang */
+    grid-template-rows: auto; /* Chỉ hiển thị 1 hàng */
+    gap: 15px;
+    max-height: none; /* Không giới hạn chiều cao */
+  }
+
+  .other-post-item {
+    padding: 10px;
+  }
+
+  .other-post-image {
+    height: 120px;
+    margin-bottom: 8px;
+  }
+
+  .other-post-title {
+    font-size: 14px;
+    margin-bottom: 4px;
+    line-height: 1.3;
+    max-height: calc(1.3em * 2);
+    min-height: calc(1.3em * 2);
+  }
+
+  .other-post-date {
+    font-size: 11px;
+    margin-top: 5px;
+  }
+
+  /* Touch-friendly hover cho mobile */
+  .other-post-title a:active {
+    color: #2d71b9;
+    background-color: rgba(45, 113, 185, 0.05);
+    padding: 2px 4px;
+    border-radius: 3px;
+  }
+
+  .light-news-actions {
+    margin-right: 15px;
+  }
+}
+
+/* Small Mobile (480px và nhỏ hơn): 2 bài 1 dòng, 1 hàng ngang */
+@media (max-width: 480px) {
+  .post-list-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .post-list-container {
+    padding: 0px 15px;
+  }
+
+  .post-list-title {
+    font-size: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .post-image-placeholder {
+    height: 160px;
+  }
+
+  .filter-dropdowns {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .filter-dropdown-btn {
+    width: 100%;
+    padding: 10px 8px;
+    font-size: 13px;
+  }
+  
+  .filter-bar-container {
+    padding: 0 15px;
+  }
+
+  /* BÀI ĐĂNG GẦN ĐÂY cho small mobile: 2 bài 1 dòng, 1 hàng ngang */
+  .other-posts-container {
+    margin: 15px 10px;
+    padding: 12px;
+  }
+
+  .other-posts-title {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .other-posts-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 cột - 1 hàng ngang */
+    grid-template-rows: auto; /* Chỉ hiển thị 1 hàng */
+    gap: 12px;
+  }
+
+  .other-post-item {
+    padding: 8px;
+  }
+
+  .other-post-image {
+    height: 100px;
+    margin-bottom: 6px;
+  }
+
+  .other-post-title {
+    font-size: 13px;
+    margin-bottom: 3px;
+    line-height: 1.2;
+    max-height: calc(1.2em * 2);
+    min-height: calc(1.2em * 2);
+  }
+
+  .other-post-date {
+    font-size: 10px;
+  }
+
+  .light-news-actions {
+    margin-right: 10px;
+  }
+}
+
+/* Extra Small Mobile (360px và nhỏ hơn): 2 bài 1 dòng, 1 hàng ngang */
+@media (max-width: 360px) {
+  .other-posts-container {
+    margin: 12px 8px;
+    padding: 8px;
+  }
+
+  .other-posts-title {
+    font-size: 15px;
+    margin-bottom: 10px;
+  }
+
+  .other-posts-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 cột - 1 hàng ngang */
+    grid-template-rows: auto; /* Chỉ hiển thị 1 hàng */
+    gap: 8px;
+  }
+
+  .other-post-item {
+    padding: 6px;
+  }
+
+  .other-post-image {
+    height: 80px;
+    margin-bottom: 4px;
+  }
+
+  .other-post-title {
+    font-size: 12px;
+    line-height: 1.2;
+  }
+
+  .other-post-date {
+    font-size: 9px;
+  }
+}
+
+/* Tablet (992px và nhỏ hơn) */
+@media (max-width: 992px) {
+  .filter-dropdowns {
+    flex-wrap: wrap;
+  }
+
+  .filter-dropdown-btn {
+    min-width: 100px;
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+
+  .post-list-container {
+    padding: 0px 40px;
+  }
+}
+
+/* Loading và Error states cho "BÀI ĐĂNG GẦN ĐÂY" */
+.other-posts-loading {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+  font-style: italic;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  margin: 20px;
+  grid-column: 1 / -1; /* Span across all columns */
+}
+
+.other-posts-error {
+  text-align: center;
+  padding: 40px 20px;
+  color: #dc3545;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  margin: 20px;
+  grid-column: 1 / -1; /* Span across all columns */
+}
+
+/* Animation cho scroll reveal */
+.other-posts-container.animate {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Focus states cho accessibility */
+.other-post-title a {
+  display: block;
+  transition: all 0.2s ease;
+  outline: none;
+  border-radius: 2px;
+}
+
+.other-post-title a:focus {
+  outline: 2px solid #2d71b9;
+  outline-offset: 2px;
+  background-color: rgba(45, 113, 185, 0.05);
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .other-posts-container {
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    border: 1px solid #333;
+  }
+
+  .other-posts-title {
+    color: #ffffff;
+  }
+
+  .other-post-item {
+    background-color: #2a2a2a;
+    border-color: #444;
+  }
+
+  .other-post-item:hover {
+    border-color: #64b5f6;
+  }
+
+  .other-post-title a {
+    color: #64b5f6;
+  }
+
+  .other-post-title a:hover {
+    color: #90caf9;
+  }
+
+  .other-post-date {
+    color: #aaa;
+    border-top-color: #444;
+  }
+}
+
+/* Print styles */
+@media print {
+  .other-posts-container {
+    box-shadow: none;
+    border: 1px solid #ccc;
+    margin: 20px 0;
+    page-break-inside: avoid;
+  }
+
+  .other-posts-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .other-post-title a {
+    color: #000 !important;
+    text-decoration: none !important;
+  }
+
+  .filter-bar,
+  .light-news-actions,
+  .pagination-container {
+    display: none !important;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .other-posts-container.animate,
+  .other-post-item:hover,
+  .other-post-title a {
+    animation: none !important;
+    transition: none !important;
+  }
 }

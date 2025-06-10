@@ -16,6 +16,7 @@ export default function Header() {
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const router = useRouter();
   const pathname = usePathname();
@@ -28,6 +29,37 @@ export default function Header() {
     }
     return pathname.startsWith(href);
   };
+
+  // Toggle mobile menu
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  // Đóng mobile menu khi resize về desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 1024) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Đóng mobile menu khi click outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isMobileMenuOpen && 
+          !event.target.closest('.Header-Navbar--mobile') && 
+          !event.target.closest('.Header-Mobile-Menu-Button')) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isMobileMenuOpen]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -174,65 +206,78 @@ export default function Header() {
     router.push(`/Activities/${id}`);
   };
 
+  // Đóng mobile menu khi click vào nav item
+  const handleNavClick = () => {
+    setIsMobileMenuOpen(false);
+  };
+
   return (
     <div className="Header">
-      {/* Hàng trên: Logo, User Menu, Search, Notifications, Dark Mode */}
-      <div className="Header-Topbar">
-        <div className="Header-Topbar-Titlegroup">
-          <div className="Header-Topbar-Titlegroup-Deptname">
+      {/* Single Header Row - chứa tất cả trên desktop */}
+      <div className="Header-Container">
+        {/* Left: Title */}
+        <div className="Header-Titlegroup">
+          <div className="Header-Titlegroup-Deptname">
             SUCTREMMT
           </div>
         </div>
 
-        {/* Hàng dưới: Navigation */}
-        <div className="Header-Navbar">
+        {/* Center: Navigation - chỉ hiển thị trên desktop */}
+        <nav className="Header-Navbar Header-Navbar--desktop">
           <Link
             className={`Header-Navbar-Navitem ${isActiveNav('/') ? 'active' : ''}`}
             href="/"
+            onClick={handleNavClick}
           >
             TRANG CHỦ
           </Link>
           <Link
             className={`Header-Navbar-Navitem ${isActiveNav('/Introduction') ? 'active' : ''}`}
             href="/Introduction"
+            onClick={handleNavClick}
           >
             GIỚI THIỆU
           </Link>
           <Link
             className={`Header-Navbar-Navitem ${isActiveNav('/Activities') ? 'active' : ''}`}
             href="/Activities"
+            onClick={handleNavClick}
           >
             HOẠT ĐỘNG
           </Link>
           <Link
             className={`Header-Navbar-Navitem ${isActiveNav('/Awards') ? 'active' : ''}`}
             href="/Awards"
+            onClick={handleNavClick}
           >
             THÀNH TÍCH
           </Link>
           <Link
             className={`Header-Navbar-Navitem ${isActiveNav('/Booking') ? 'active' : ''}`}
             href="/Booking"
+            onClick={handleNavClick}
           >
             ĐẶT PHÒNG
           </Link>
           <Link
             className={`Header-Navbar-Navitem ${isActiveNav('/Contact') ? 'active' : ''}`}
             href="/Contact"
+            onClick={handleNavClick}
           >
             LIÊN HỆ
           </Link>
-        </div>
+        </nav>
 
-        <div className="Header-Topbar-RightSection">
-          {/* 1. User menu hoặc auth links - ĐẦU TIÊN */}
+        {/* Right: Controls */}
+        <div className="Header-RightSection">
+          {/* 1. User menu */}
           {user ? (
             <div
-              className="Header-Topbar-Authsearch-UserInfo"
+              className="Header-Authsearch-UserInfo"
               ref={userMenuRef}
             >
               <div
-                className="Header-Topbar-Authsearch-UserInfo-Button"
+                className="Header-Authsearch-UserInfo-Button"
                 onClick={() => setShowUserMenu(!showUserMenu)}
                 role="button"
                 tabIndex={0}
@@ -245,28 +290,27 @@ export default function Header() {
                   alt="Chào mừng"
                   width={24}
                   height={24}
-                  className="Header-Topbar-Authsearch-UserInfo-Icon"
+                  className="Header-Authsearch-UserInfo-Icon"
                 />
               </div>
 
               {showUserMenu && (
-                <div className="Header-Topbar-Authsearch-UserInfo-Menu">
+                <div className="Header-Authsearch-UserInfo-Menu">
                   <Link
                     href="/Profile"
-                    className="Header-Topbar-Authsearch-UserInfo-MenuItem"
+                    onClick={() => setShowUserMenu(false)}
                   >
                     Trang cá nhân
                   </Link>
                   {user.role === "admin" && (
                     <Link
                       href="/admin/ActivitiesDashboard"
-                      className="Header-Topbar-Authsearch-UserInfo-MenuItem"
+                      onClick={() => setShowUserMenu(false)}
                     >
                       Quản trị
                     </Link>
                   )}
                   <button
-                    className="Header-Topbar-Authsearch-UserInfo-MenuItem"
                     onClick={handleLogout}
                   >
                     Đăng xuất
@@ -276,11 +320,11 @@ export default function Header() {
             </div>
           ) : (
             <div
-              className="Header-Topbar-Authsearch-UserInfo"
+              className="Header-Authsearch-UserInfo"
               ref={userMenuRef}
             >
               <div
-                className="Header-Topbar-Authsearch-UserInfo-Button"
+                className="Header-Authsearch-UserInfo-Button"
                 onClick={() => setShowUserMenu(!showUserMenu)}
                 role="button"
                 tabIndex={0}
@@ -293,22 +337,20 @@ export default function Header() {
                   alt="Đăng nhập/Đăng ký"
                   width={24}
                   height={24}
-                  className="Header-Topbar-Authsearch-UserInfo-Icon"
+                  className="Header-Authsearch-UserInfo-Icon"
                 />
               </div>
 
               {showUserMenu && (
-                <div className="Header-Topbar-Authsearch-UserInfo-Menu">
+                <div className="Header-Authsearch-UserInfo-Menu">
                   <Link
                     href="/User?tab=login"
-                    className="Header-Topbar-Authsearch-UserInfo-MenuItem"
                     onClick={() => setShowUserMenu(false)}
                   >
                     Đăng nhập
                   </Link>
                   <Link
                     href="/User?tab=register"
-                    className="Header-Topbar-Authsearch-UserInfo-MenuItem"
                     onClick={() => setShowUserMenu(false)}
                   >
                     Đăng ký
@@ -318,8 +360,8 @@ export default function Header() {
             </div>
           )}
 
-          {/* 2. Search box - THỨ HAI */}
-          <div className="Header-Topbar-Authsearch-Searchbox" ref={searchRef}>
+          {/* 2. Search box */}
+          <div className="Header-Authsearch-Searchbox" ref={searchRef}>
             <form onSubmit={handleSearch}>
               <input
                 type="text"
@@ -332,14 +374,14 @@ export default function Header() {
               />
               <button
                 type="submit"
-                className="Header-Topbar-Authsearch-Searchbox-Searchicon"
+                className="Header-Authsearch-Searchbox-Searchicon"
               >
                 <svg
-                  className="Header-Topbar-Authsearch-Searchbox-Searchicon-Icon"
+                  className="Header-Authsearch-Searchbox-Searchicon-Icon"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
+                  width="20"
+                  height="20"
                   fill="none"
                   viewBox="0 0 24 24"
                 >
@@ -384,13 +426,45 @@ export default function Header() {
             )}
           </div>
 
-          {/* 3. Notification - THỨ BA */}
+          {/* 3. Notification */}
           {user && <NotificationBell user={user} />}
 
-          {/* 4. Dark Mode Toggle - CUỐI CÙNG */}
+          {/* 4. Mobile Menu Button */}
+          <button
+            className="Header-Mobile-Menu-Button"
+            onClick={toggleMobileMenu}
+            aria-label="Toggle menu"
+            aria-expanded={isMobileMenuOpen}
+          >
+            <svg
+              className="Header-Mobile-Menu-Icon"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              {isMobileMenuOpen ? (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              ) : (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              )}
+            </svg>
+          </button>
+
+          {/* 5. Dark Mode Toggle */}
           <button
             onClick={toggleDarkMode}
-            className="Header-Topbar-Dark-mode-toggle"
+            className="Header-Dark-mode-toggle"
           >
             {isDarkMode ? (
               <svg
@@ -428,6 +502,52 @@ export default function Header() {
           </button>
         </div>
       </div>
+
+      {/* Mobile Navigation Dropdown */}
+      <nav className={`Header-Navbar Header-Navbar--mobile ${isMobileMenuOpen ? 'Header-Navbar--open' : ''}`}>
+        <Link
+          className={`Header-Navbar-Navitem ${isActiveNav('/') ? 'active' : ''}`}
+          href="/"
+          onClick={handleNavClick}
+        >
+          TRANG CHỦ
+        </Link>
+        <Link
+          className={`Header-Navbar-Navitem ${isActiveNav('/Introduction') ? 'active' : ''}`}
+          href="/Introduction"
+          onClick={handleNavClick}
+        >
+          GIỚI THIỆU
+        </Link>
+        <Link
+          className={`Header-Navbar-Navitem ${isActiveNav('/Activities') ? 'active' : ''}`}
+          href="/Activities"
+          onClick={handleNavClick}
+        >
+          HOẠT ĐỘNG
+        </Link>
+        <Link
+          className={`Header-Navbar-Navitem ${isActiveNav('/Awards') ? 'active' : ''}`}
+          href="/Awards"
+          onClick={handleNavClick}
+        >
+          THÀNH TÍCH
+        </Link>
+        <Link
+          className={`Header-Navbar-Navitem ${isActiveNav('/Booking') ? 'active' : ''}`}
+          href="/Booking"
+          onClick={handleNavClick}
+        >
+          ĐẶT PHÒNG
+        </Link>
+        <Link
+          className={`Header-Navbar-Navitem ${isActiveNav('/Contact') ? 'active' : ''}`}
+          href="/Contact"
+          onClick={handleNavClick}
+        >
+          LIÊN HỆ
+        </Link>
+      </nav>
     </div>
   );
 }
