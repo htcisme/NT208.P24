@@ -733,7 +733,7 @@
 /* Hiệu ứng cho đoạn văn */
 .light-detail-content p {
   line-height: 1.8;
-  color: #333;
+  color: #042354;
   opacity: 0;
   transform: translateY(20px);
   transition: all 0.6s ease 0.8s;
@@ -863,4 +863,397 @@
     opacity: 1 !important;
     transform: none !important;
   }
+}
+
+/* ================ RESPONSIVE DESIGN ================ */
+
+/* Desktop: Giữ nguyên layout hiện tại */
+@media (min-width: 1025px) {
+  .light-split-section {
+    display: flex;
+    gap: 2rem;
+  }
+  
+  .light-split-left {
+    width: 70%;
+  }
+  
+  .activity-sidebar {
+    width: 30%;
+  }
+  
+  /* Đảm bảo tiêu đề không xuống dòng */
+  .light-section-title {
+    font-size: 2.2rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Sidebar title size cho desktop */
+  .activity-sidebar h3 {
+    font-size: 16px;
+    padding: 0.6rem 1.2rem;
+  }
+  
+  .light-news-list li a {
+    font-size: 15px;
+    line-height: 1.4;
+  }
+  
+  .light-news-list .news-date {
+    font-size: 12px;
+  }
+}
+
+/* Tablet (768px - 1024px): Giữ layout 7:3 như Desktop */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .light-container-main {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  
+  .light-split-section {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .light-split-left {
+    width: 70%;
+  }
+  
+  .activity-sidebar {
+    width: 30%;
+    max-height: 600px;
+  }
+  
+  /* Điều chỉnh font size cho tablet - giữ tỷ lệ */
+  .light-section-title {
+    font-size: 1.8rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0;
+  }
+  
+  .light-section-description {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  
+  /* Sidebar adjustments cho tablet */
+  .activity-sidebar h3 {
+    font-size: 14px;
+    padding: 0.5rem 1rem;
+  }
+  
+  .light-news-list li a {
+    font-size: 13px;
+    line-height: 1.3;
+  }
+  
+  .light-news-list .news-date {
+    font-size: 11px;
+    margin-left: 15px;
+  }
+  
+  /* Slider adjustments cho tablet */
+  .light-slider-container {
+    gap: 1.5rem;
+    margin-top: 4rem;
+    padding: 0 15px;
+  }
+  
+  .slider-image-placeholder {
+    width: 220px;
+    height: 180px;
+  }
+  
+  .slider-image-placeholder.active {
+    width: 280px;
+    height: 240px;
+  }
+  
+  /* Highlight image cho tablet */
+  .light-section-highlight img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Detail sections cho tablet */
+  .light-detail-container {
+    padding: 50px 20px;
+  }
+  
+  .split-40-60,
+  .split-60-40 {
+    gap: 1.2rem;
+  }
+}
+
+/* Mobile (768px và nhỏ hơn): Sidebar xuống dưới */
+@media (max-width: 768px) {
+  .light-container-main {
+    padding: 1rem !important;
+  }
+  
+  .light-split-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .light-split-left {
+    width: 100%;
+    order: 1;
+  }
+  
+  .activity-sidebar {
+    width: 100%;
+    order: 2;
+    max-height: 400px;
+    margin-top: 1rem;
+  }
+  
+  /* Typography adjustments cho mobile */
+  .light-section-title {
+    font-size: 1.6rem;
+    line-height: 1.3;
+    padding: 0 10px;
+    /* Cho phép xuống dòng trên mobile nếu cần */
+    white-space: normal;
+    word-break: break-word;
+    hyphens: auto;
+  }
+  
+  .light-section-description {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    padding: 0 10px;
+  }
+  
+  /* Sidebar mobile adjustments */
+  .activity-sidebar h3 {
+    font-size: 14px;
+    padding: 0.5rem 1rem;
+    text-align: center;
+  }
+  
+  .light-news-list li a {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  
+  .light-news-list .news-date {
+    font-size: 11px;
+    margin-left: 10px;
+  }
+  
+  /* Slider adjustments cho mobile */
+  .light-slider-container {
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    padding: 0 10px;
+  }
+  
+  .slider-image-placeholder {
+    width: 180px;
+    height: 150px;
+    margin: 0 auto;
+  }
+  
+  .slider-image-placeholder.active {
+    width: 220px;
+    height: 180px;
+  }
+  
+  .slider-image-placeholder + h4 {
+    font-size: 0.85rem;
+    max-width: 200px;
+    margin-top: 0.5rem;
+    text-align: center;
+  }
+  
+  .slider-image-placeholder.active + h4 {
+    font-size: 1rem;
+    max-width: 240px;
+  }
+  
+  /* Highlight image responsive */
+  .light-section-highlight img {
+    max-width: 100%;
+    height: auto;
+    border: 4px solid #ffffff;
+  }
+  
+  /* Detail sections responsive */
+  .split-40-60,
+  .split-60-40 {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .split-40-60 .light-detail-image,
+  .split-60-40 .light-detail-image,
+  .split-40-60 .light-detail-content,
+  .split-60-40 .light-detail-content {
+    width: 100%;
+    transform: translateY(30px);
+  }
+  
+  .light-detail-item.reveal .light-detail-image,
+  .light-detail-item.reveal .light-detail-content {
+    transform: translateY(0);
+  }
+  
+  .light-detail-container {
+    padding: 30px 15px;
+  }
+  
+  .detail-image-placeholder {
+    min-height: 200px;
+    border: 3px solid #ffffff;
+    transform: perspective(800px) rotateX(1deg) rotateY(0deg);
+  }
+}
+
+/* Small Mobile (480px và nhỏ hơn) */
+@media (max-width: 480px) {
+  .light-container-main {
+    padding: 0.5rem !important;
+  }
+  
+  /* Tiêu đề nhỏ hơn cho small mobile */
+  .light-section-title {
+    font-size: 1.4rem;
+    line-height: 1.3;
+    padding: 0 5px;
+  }
+  
+  .light-section-description {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    padding: 0 5px;
+  }
+  
+  /* Sidebar small mobile */
+  .activity-sidebar {
+    max-height: 300px;
+    padding: 0.8rem;
+  }
+  
+  .activity-sidebar h3 {
+    font-size: 13px;
+    padding: 0.4rem 0.8rem;
+  }
+  
+  .light-news-list li a {
+    font-size: 13px;
+    line-height: 1.3;
+  }
+  
+  .light-news-list .news-date {
+    font-size: 10px;
+    margin-left: 8px;
+  }
+  
+  /* Slider small mobile */
+  .slider-image-placeholder {
+    width: 160px;
+    height: 130px;
+  }
+  
+  .slider-image-placeholder.active {
+    width: 200px;
+    height: 160px;
+  }
+  
+  .slider-image-placeholder + h4 {
+    font-size: 0.8rem;
+    max-width: 180px;
+  }
+  
+  .slider-image-placeholder.active + h4 {
+    font-size: 0.9rem;
+    max-width: 220px;
+  }
+  
+  /* Highlight image small mobile */
+  .light-section-highlight img {
+    border: 3px solid #ffffff;
+  }
+}
+
+/* Tablet landscape specific (1024px width) */
+@media (min-width: 1024px) and (max-width: 1024px) and (orientation: landscape) {
+  .light-section-title {
+    font-size: 1.9rem;
+    white-space: nowrap;
+  }
+  
+  .activity-sidebar {
+    max-height: 550px;
+  }
+  
+  .activity-sidebar h3 {
+    font-size: 15px;
+  }
+  
+  .light-news-list li a {
+    font-size: 14px;
+  }
+}
+
+/* iPad Pro specific adjustments */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .light-section-title {
+    font-size: 2rem;
+    white-space: nowrap;
+  }
+  
+  .slider-image-placeholder {
+    width: 250px;
+    height: 200px;
+  }
+  
+  .slider-image-placeholder.active {
+    width: 320px;
+    height: 260px;
+  }
+}
+
+/* Đảm bảo hình ảnh không tràn container */
+.light-section-highlight,
+.detail-image-placeholder,
+.slider-image-placeholder {
+  overflow: hidden;
+}
+
+.light-section-highlight img,
+.detail-image-placeholder img,
+.slider-image-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Đảm bảo text không bị overflow */
+.light-section-title,
+.activity-sidebar h3,
+.light-news-list li a {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Container constraints */
+.light-slider-container,
+.light-detail-container {
+  max-width: 100%;
+  overflow-x: hidden;
 }

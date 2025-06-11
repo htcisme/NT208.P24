@@ -529,3 +529,163 @@
     max-height: 250px;
   }
 }
+
+/* ================ RESPONSIVE DESIGN ================ */
+
+/* Desktop: Giữ nguyên layout hiện tại */
+@media (min-width: 1025px) {
+  .activity-detail-container {
+    display: flex;
+    gap: 30px;
+  }
+  
+  .activity-content {
+    width: 70%;
+  }
+  
+  .activity-sidebar {
+    width: 30%;
+  }
+}
+
+/* Tablet (768px - 1024px): Giữ layout 7:3 như Desktop */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .activity-detail-container {
+    padding: 0 15px;
+    gap: 25px;
+    display: flex; /* Giữ flex layout */
+  }
+  
+  .activity-content {
+    width: 70%; /* Giữ tỷ lệ 7:3 */
+  }
+  
+  .activity-sidebar {
+    width: 30%;
+    max-height: 600px; /* Điều chỉnh chiều cao cho tablet */
+  }
+  
+  .activity-header {
+    padding: 30px 25px 25px;
+  }
+  
+  .activity-title {
+    font-size: 2rem;
+  }
+  
+  .activity-body {
+    padding: 30px 25px;
+  }
+  
+  .content-text {
+    font-size: 16px;
+    line-height: 1.7;
+  }
+  
+  .featured-image {
+    border-radius: 12px;
+  }
+}
+
+/* Mobile (768px và nhỏ hơn): Sidebar xuống dưới */
+@media (max-width: 768px) {
+  .activity-detail-page {
+    padding: 15px 0;
+  }
+
+  .activity-detail-container {
+    padding: 0 15px;
+    gap: 20px;
+    display: flex;
+    flex-direction: column; /* Đổi thành column layout */
+  }
+  
+  .activity-content {
+    width: 100%; /* Full width cho content chính */
+    order: 1; /* Hiển thị trước */
+  }
+  
+  .activity-sidebar {
+    width: 100%; /* Full width cho sidebar */
+    order: 2; /* Hiển thị sau content chính */
+    max-height: 400px; /* Giảm chiều cao trên mobile */
+    margin-top: 20px;
+  }
+
+  .activity-header {
+    padding: 25px 20px 20px;
+  }
+
+  .activity-title {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+  }
+
+  .activity-meta {
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+  }
+
+  .meta-item {
+    justify-content: center;
+  }
+
+  .activity-body {
+    padding: 25px 20px;
+  }
+
+  .content-text {
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .activity-footer {
+    padding: 20px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .comment-section {
+    padding: 20px;
+  }
+
+  .activity-image {
+    padding: 0 20px 20px;
+  }
+
+  .activity-sidebar h3 {
+    font-size: 14px;
+    padding: 12px 16px;
+  }
+
+  .light-news-list {
+    max-height: 200px;
+  }
+
+  .light-news-list li a {
+    font-size: 13px;
+  }
+
+  .light-news-list .news-date {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .activity-title {
+    font-size: 1.5rem;
+  }
+
+  .content-text {
+    font-size: 14px;
+  }
+
+  .featured-image {
+    border-radius: 8px;
+  }
+  
+  .activity-sidebar {
+    max-height: 300px;
+  }
+}

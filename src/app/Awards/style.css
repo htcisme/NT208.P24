@@ -12,21 +12,23 @@ main {
   line-height: 1.6;
 }
 
-/* Tiêu đề */
+/* Tiêu đề - Giảm kích thước */
 .title-section {
   text-align: center;
-  padding: 40px 20px;
+  padding: 30px 15px; /* Giảm padding */
 }
 
 .main-title {
-  font-size: 25px;
+  font-size: 20px; /* Giảm từ 25px xuống 20px */
   text-transform: uppercase;
   font-weight: bold;
+  line-height: 1.3;
+  margin-bottom: 15px;
 }
 
 .subtitle {
-  font-size: 18px;
-  margin-top: 10px;
+  font-size: 15px; /* Giảm từ 18px xuống 15px */
+  margin-top: 8px;
   font-style: italic !important;
 }
 
@@ -35,9 +37,16 @@ main {
   overflow: hidden;
 }
 
+.full-width-image img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  object-position: center;
+}
+
 .two-columns-section {
   display: flex;
-  padding: 40px 20px;
+  padding: 30px 15px; /* Giảm padding */
   max-width: 1200px;
   margin: 0 auto;
   gap: 20px;
@@ -45,77 +54,84 @@ main {
 
 .content-column {
   width: 60%;
-  padding-top: 50px;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 20px;
+  padding: 20px 15px; /* Giảm padding */
 }
 
 .content-column p {
-  margin-bottom: 15px;
-  font-size: 1.1rem;
+  margin-bottom: 12px; /* Giảm margin */
+  font-size: 1rem; /* Giảm từ 1.1rem */
   text-align: justify;
+  line-height: 1.6;
 }
 
 .image-column {
   width: 40%;
-  padding: 20px;
+  padding: 15px; /* Giảm padding */
 }
 
 .slideshow {
   position: relative;
   width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .slide img {
   border-radius: 8px;
   width: 100%;
-  height: 300px;
+  height: 260px; /* Giảm từ 300px */
   object-fit: cover;
+  object-position: center;
 }
 
 .dots {
   display: flex;
   justify-content: center;
-  margin-top: 10px;
-  gap: 8px;
+  margin-top: 15px;
+  gap: 6px; /* Giảm gap */
 }
 
 .dot {
-  width: 10px;
-  height: 10px;
+  width: 8px; /* Giảm từ 10px */
+  height: 8px;
   background-color: #bbb;
   border-radius: 50%;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .dot.active {
   background-color: #003087;
+  transform: scale(1.2);
 }
 
-/* Timeline Section */
+.dot:hover {
+  background-color: #003087;
+  opacity: 0.7;
+}
+
+/* Timeline Section - Tối ưu */
 .timeline-section {
   max-width: 100%;
   margin: 0;
   position: relative;
-  padding: 40px 0;
+  padding: 30px 0; /* Giảm padding */
   background-color: #ffffff;
   width: 100%;
-  box-shadow: 0 2px 5px #0003;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .timeline {
   position: relative;
   max-width: 1200px;
   margin: 0 auto;
-  padding-left: 40px;
+  padding-left: 30px; /* Giảm từ 40px */
 }
 
 .timeline::before {
   content: "";
   position: absolute;
-  left: 18px; /* Đặt đường thẳng sao cho dấu chấm tròn nằm chính giữa */
+  left: 15px; /* Điều chỉnh */
   top: 0;
   bottom: 0;
   width: 2px;
@@ -124,48 +140,92 @@ main {
 
 .timeline-item {
   position: relative;
-  margin-bottom: 30px;
+  margin-bottom: 25px; /* Giảm từ 30px */
+  padding: 15px 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #003087;
+  transition: all 0.3s ease;
+}
+
+.timeline-item:hover {
+  transform: translateX(5px);
+  box-shadow: 0 4px 15px rgba(0, 48, 135, 0.1);
 }
 
 .timeline-item::before {
   content: "";
   position: absolute;
-  left: -37px; /* Điều chỉnh để dấu chấm tròn nằm chính giữa đường thẳng */
-  top: 5px;
-  width: 16px;
-  height: 16px;
+  left: -32px; /* Điều chỉnh */
+  top: 20px;
+  width: 14px; /* Giảm từ 16px */
+  height: 14px;
   background-color: #003087;
   border-radius: 50%;
-  transform: translateX(
-    50%
-  ); /* Dịch chuyển dấu chấm tròn về bên phải 50% chiều rộng của nó để căn giữa */
+  border: 3px solid #ffffff;
+  box-shadow: 0 0 0 3px #003087;
 }
 
 .timeline-item h3 {
-  font-size: 1.2rem;
+  font-size: 1.1rem; /* Giảm từ 1.2rem */
   color: #003087;
   font-weight: bold;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
 }
 
 .timeline-item p {
-  font-size: 1rem;
+  font-size: 0.95rem; /* Giảm từ 1rem */
   color: #042354;
+  margin-bottom: 5px;
+  line-height: 1.5;
 }
 
 .timeline-description {
   max-width: 1200px;
   margin: 0 auto;
-  position: relative; /* Cần thiết để pseudo-element ::before hoạt động đúng */
-  padding: 40px 20px;
+  position: relative;
+  padding: 30px 20px; /* Giảm padding */
   margin-top: 20px;
-  padding: 25px;
-  padding-bottom: 40px;
   text-align: justify;
+  border-radius: 8px;
 }
 
 .timeline-description p {
-  font-size: 1.1rem;
+  font-size: 1rem; /* Giảm từ 1.1rem */
+  line-height: 1.7;
+  color: #042354;
+}
+
+/* Loading và Error states */
+.loading-container,
+.error-container {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.loading-container p {
+  font-size: 16px;
+  color: #666;
+}
+
+.error-container p {
+  font-size: 16px;
+  color: #dc3545;
+  margin-bottom: 15px;
+}
+
+.error-container button {
+  background: #003087;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.error-container button:hover {
+  background: #042354;
 }
 
 /* Scroll reveal animations for Awards page */
@@ -284,16 +344,6 @@ main {
   }
 }
 
-/* Enhanced timeline animations */
-.timeline-item {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.animate-timeline .timeline-item:hover {
-  transform: translateX(10px);
-  box-shadow: -5px 0 15px rgba(0, 48, 135, 0.1);
-}
-
 /* Dots animation */
 .dots .dot {
   transition: all 0.3s ease;
@@ -331,7 +381,431 @@ main {
   }
 }
 
-/* Reduced motion for accessibility */
+/* ================ RESPONSIVE DESIGN ================ */
+
+/* Desktop (1025px+): Tối ưu kích thước */
+@media (min-width: 1025px) {
+  .main-title {
+    font-size: 22px; /* Giảm từ 25px */
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .subtitle {
+    font-size: 16px; /* Giảm từ 18px */
+  }
+  
+  .timeline-item h3 {
+    font-size: 1.1rem;
+  }
+  
+  .timeline-item p {
+    font-size: 0.95rem;
+  }
+  
+  .timeline-description p {
+    font-size: 1rem;
+  }
+  
+  .content-column p {
+    font-size: 1rem;
+  }
+}
+
+/* Large Desktop (1366px+): Kích thước lớn hơn một chút */
+@media (min-width: 1366px) {
+  .main-title {
+    font-size: 24px;
+  }
+  
+  .subtitle {
+    font-size: 17px;
+  }
+  
+  .timeline-item h3 {
+    font-size: 1.15rem;
+  }
+  
+  .timeline-item p {
+    font-size: 1rem;
+  }
+  
+  .timeline-description p {
+    font-size: 1.05rem;
+  }
+}
+
+/* Tablet (769px - 1024px): Cân bằng */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .title-section {
+    padding: 25px 15px;
+  }
+  
+  .main-title {
+    font-size: 20px;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+  
+  .subtitle {
+    font-size: 15px;
+  }
+  
+  .two-columns-section {
+    padding: 25px 15px;
+    gap: 15px;
+  }
+  
+  .content-column {
+    width: 65%;
+    padding: 15px 10px;
+  }
+  
+  .content-column p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  
+  .image-column {
+    width: 35%;
+    padding: 10px;
+  }
+  
+  .slide img {
+    height: 220px; /* Giảm cho tablet */
+  }
+  
+  .timeline-section {
+    padding: 25px 0;
+  }
+  
+  .timeline {
+    padding-left: 25px;
+  }
+  
+  .timeline-item {
+    margin-bottom: 20px;
+    padding: 12px 15px;
+  }
+  
+  .timeline-item h3 {
+    font-size: 1rem;
+    margin-bottom: 6px;
+  }
+  
+  .timeline-item p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  
+  .timeline-description {
+    padding: 25px 15px;
+  }
+  
+  .timeline-description p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+}
+
+/* Tablet landscape specific (1024px width) */
+@media (min-width: 1024px) and (max-width: 1024px) and (orientation: landscape) {
+  .main-title {
+    font-size: 19px;
+    white-space: nowrap;
+    max-width: 90%;
+    margin: 0 auto;
+  }
+  
+  .subtitle {
+    font-size: 14px;
+  }
+}
+
+/* iPad Portrait (768px - 834px) */
+@media (min-width: 768px) and (max-width: 834px) and (orientation: portrait) {
+  .main-title {
+    font-size: 18px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .subtitle {
+    font-size: 14px;
+  }
+  
+  .slide img {
+    height: 200px;
+  }
+}
+
+/* Mobile (768px và nhỏ hơn): Layout dọc */
+@media (max-width: 768px) {
+  .title-section {
+    padding: 20px 10px;
+  }
+  
+  .main-title {
+    font-size: 16px; /* Nhỏ hơn cho mobile */
+    line-height: 1.3;
+    white-space: normal;
+    word-break: break-word;
+    hyphens: auto;
+    max-width: 100%;
+  }
+  
+  .subtitle {
+    font-size: 13px;
+    margin-top: 10px;
+  }
+  
+  .full-width-image img {
+    max-height: 250px; /* Giảm cho mobile */
+  }
+  
+  .two-columns-section {
+    flex-direction: column;
+    padding: 20px 10px;
+    gap: 15px;
+  }
+  
+  .content-column,
+  .image-column {
+    width: 100%;
+    padding: 10px 5px;
+  }
+  
+  .content-column {
+    order: 2;
+  }
+  
+  .content-column p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+  
+  .image-column {
+    order: 1;
+  }
+  
+  .slide img {
+    height: 180px; /* Nhỏ hơn cho mobile */
+  }
+  
+  .dots {
+    margin-top: 10px;
+    gap: 4px;
+  }
+  
+  .dot {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .timeline-section {
+    padding: 20px 0;
+  }
+  
+  .timeline {
+    padding-left: 20px;
+  }
+  
+  .timeline::before {
+    left: 12px;
+  }
+  
+  .timeline-item {
+    margin-bottom: 15px;
+    padding: 10px 12px;
+  }
+  
+  .timeline-item::before {
+    left: -25px;
+    width: 10px;
+    height: 10px;
+    top: 15px;
+  }
+  
+  .timeline-item h3 {
+    font-size: 0.95rem;
+    margin-bottom: 5px;
+  }
+  
+  .timeline-item p {
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+  
+  .timeline-description {
+    padding: 20px 10px;
+  }
+  
+  .timeline-description p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+}
+
+/* Small Mobile (480px và nhỏ hơn): Tối ưu tối đa */
+@media (max-width: 480px) {
+  .title-section {
+    padding: 15px 8px;
+  }
+  
+  .main-title {
+    font-size: 14px;
+    line-height: 1.3;
+    padding: 0 5px;
+  }
+  
+  .subtitle {
+    font-size: 12px;
+    margin-top: 8px;
+  }
+  
+  .full-width-image img {
+    max-height: 200px;
+  }
+  
+  .two-columns-section {
+    padding: 15px 8px;
+  }
+  
+  .content-column p {
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+  
+  .slide img {
+    height: 150px;
+  }
+  
+  .timeline {
+    padding-left: 15px;
+  }
+  
+  .timeline::before {
+    left: 8px;
+  }
+  
+  .timeline-item {
+    padding: 8px 10px;
+    margin-bottom: 12px;
+  }
+  
+  .timeline-item::before {
+    left: -20px;
+    width: 8px;
+    height: 8px;
+  }
+  
+  .timeline-item h3 {
+    font-size: 0.9rem;
+  }
+  
+  .timeline-item p {
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+  
+  .timeline-description {
+    padding: 15px 8px;
+  }
+  
+  .timeline-description p {
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+}
+
+/* Extra Small Mobile (360px và nhỏ hơn) */
+@media (max-width: 360px) {
+  .main-title {
+    font-size: 13px;
+  }
+  
+  .subtitle {
+    font-size: 11px;
+  }
+  
+  .slide img {
+    height: 130px;
+  }
+  
+  .timeline-item h3 {
+    font-size: 0.85rem;
+  }
+  
+  .timeline-item p {
+    font-size: 0.75rem;
+  }
+}
+
+/* Breakpoint đặc biệt cho màn hình rộng nhưng thấp */
+@media (min-width: 1024px) and (max-height: 600px) {
+  .main-title {
+    font-size: 18px;
+    white-space: nowrap;
+  }
+  
+  .subtitle {
+    font-size: 13px;
+  }
+  
+  .timeline-section,
+  .two-columns-section {
+    padding: 15px;
+  }
+  
+  .slide img {
+    height: 180px;
+  }
+}
+
+/* Đảm bảo container không overflow */
+.title-section {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.main-title {
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Đảm bảo hình ảnh responsive */
+.slideshow,
+.full-width-image {
+  overflow: hidden;
+}
+
+.slide img,
+.full-width-image img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Điều chỉnh animation cho mobile */
+@media (max-width: 768px) {
+  .animate-title,
+  .animate-banner,
+  .animate-slide-in-left,
+  .animate-slide-in-right,
+  .animate-timeline,
+  .animate-fade-in {
+    animation-duration: 0.5s;
+  }
+}
+
+/* Tắt animation cho thiết bị có preference reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .animate-title,
   .animate-banner,
@@ -342,13 +816,32 @@ main {
   .animate-timeline-item-1,
   .animate-timeline-item-2,
   .animate-fade-in {
-    animation: none;
-    opacity: 1;
-    transform: none;
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
   
-  .animate-timeline .timeline-item:hover {
-    transform: none;
-    box-shadow: none;
+  .timeline-item:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  .animate-title,
+  .animate-banner,
+  .animate-slide-in-left,
+  .animate-slide-in-right,
+  .animate-timeline,
+  .animate-fade-in {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  
+  .timeline-item {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 }
