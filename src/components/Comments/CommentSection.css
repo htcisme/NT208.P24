@@ -152,6 +152,7 @@
   width: 100%;
   padding: 15px;
   border: 2px solid #ced4da;
+  color: #042354 !important;
   border-radius: 8px;
   font-family: inherit;
   font-size: 14px;
@@ -185,7 +186,8 @@
   align-items: center;
 }
 
-.btn-submit, .btn-cancel {
+.btn-submit,
+.btn-cancel {
   padding: 10px 20px;
   border: none;
   border-radius: 6px;
@@ -271,7 +273,10 @@
 }
 
 .comment-header {
-  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 .comment-author-info {
@@ -345,7 +350,8 @@
   margin-top: 20px;
 }
 
-.loading, .error {
+.loading,
+.error {
   text-align: center;
   padding: 30px;
   border-radius: 8px;
@@ -394,7 +400,8 @@
     padding: 10px;
   }
 
-  .user-avatar, .comment-avatar {
+  .user-avatar,
+  .comment-avatar {
     width: 32px;
     height: 32px;
     font-size: 12px;
@@ -405,7 +412,8 @@
     align-items: stretch;
   }
 
-  .btn-submit, .btn-cancel {
+  .btn-submit,
+  .btn-cancel {
     width: 100%;
     padding: 12px;
   }

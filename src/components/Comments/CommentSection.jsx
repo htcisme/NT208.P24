@@ -19,12 +19,19 @@ const CommentSection = ({ activitySlug, commentOption = "open" }) => {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await fetch(`/api/activities/${activitySlug}/comments`);
       const data = await response.json();
-      
+
       if (data.success) {
         const commentsData = Array.isArray(data.data) ? data.data : [];
+        // Log first comment's avatar data
+        if (commentsData.length > 0) {
+          console.log(
+            "Sample comment avatar:",
+            commentsData[0].authorAvatar?.substring(0, 50) + "..."
+          );
+        }
         setComments(commentsData);
       } else {
         setError(data.message);
@@ -46,6 +53,11 @@ const CommentSection = ({ activitySlug, commentOption = "open" }) => {
   // Handle new comment
   const handleNewComment = async (commentData) => {
     try {
+      console.log("User data:", {
+        name: user?.name,
+        avatar: user?.avatar?.substring(0, 50) + "...", // Log first 50 chars of avatar
+      });
+
       const response = await fetch(`/api/activities/${activitySlug}/comments`, {
         method: "POST",
         headers: {
@@ -55,12 +67,16 @@ const CommentSection = ({ activitySlug, commentOption = "open" }) => {
           content: commentData.content,
           author: user?.name || user?.username || "Ẩn danh",
           authorEmail: user?.email,
+          authorAvatar: user?.avatar || null,
           replyTo: commentData.replyTo || null,
         }),
       });
-
       const data = await response.json();
-      
+      console.log("Comment response:", {
+        success: data.success,
+        hasAvatar: !!data.data?.authorAvatar,
+      });
+
       if (data.success) {
         await fetchComments(); // Refresh comments
         return { success: true };
@@ -101,10 +117,7 @@ const CommentSection = ({ activitySlug, commentOption = "open" }) => {
         <div className="login-prompt">
           <p>
             Vui lòng{" "}
-            <button 
-              onClick={handleLoginRedirect}
-              className="login-link-button"
-            >
+            <button onClick={handleLoginRedirect} className="login-link-button">
               đăng nhập
             </button>{" "}
             để bình luận.
@@ -118,8 +131,11 @@ const CommentSection = ({ activitySlug, commentOption = "open" }) => {
       ) : error ? (
         <div className="error">Lỗi: {error}</div>
       ) : (
-        <CommentList 
-          comments={comments} 
+        <CommentList
+          comments={comments.map((comment) => ({
+            ...comment,
+            authorAvatar: comment.authorAvatar || null,
+          }))}
           onReply={handleNewComment}
           currentUser={user}
         />

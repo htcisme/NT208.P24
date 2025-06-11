@@ -31,6 +31,8 @@ function ActivitiesDashboard() {
   const [uploadedImage, setUploadedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
   const [imageUrls, setImageUrls] = useState([]);
+  const [imageUrlsArray, setImageUrlsArray] = useState([]);
+  const [urlBlocks, setUrlBlocks] = useState([]);
 
   // For new page creation
   const [newTitle, setNewTitle] = useState("");
@@ -68,6 +70,112 @@ function ActivitiesDashboard() {
     setMounted(true);
   }, []);
 
+  // Kiểm tra nếu component đã mount trước khi render
+  const isValidImageUrl = (url) => {
+    if (!url || typeof url !== "string") return false;
+    try {
+      const parsed = new URL(url);
+      return parsed.protocol === "http:" || parsed.protocol === "https:";
+    } catch (e) {
+      return false;
+    }
+  };
+
+  // Hàm kiểm tra ảnh có tồn tại hay không
+  const validateImageExists = async (url) => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(true);
+      img.onerror = () => resolve(false);
+      img.src = url;
+      setTimeout(() => resolve(false), 10000); // 10s timeout
+    });
+  };
+
+  // Hàm xử lý thay đổi URL ảnh
+  const handleImageUrlsChange = (e) => {
+    const newValue = e.target.value;
+    const urls = newValue.split("\n");
+
+    // Giữ lại các URL cũ đã được validate
+    const currentValidUrls = [...imageUrlsArray];
+
+    // Kiểm tra từng URL mới
+    urls.forEach((url, index) => {
+      const trimmedUrl = url.trim();
+      if (trimmedUrl !== "") {
+        try {
+          const urlObj = new URL(trimmedUrl);
+          if (urlObj.protocol === "http:" || urlObj.protocol === "https:") {
+            // Chỉ thêm URL mới nếu nó chưa tồn tại trong mảng
+            if (!currentValidUrls.includes(trimmedUrl)) {
+              currentValidUrls.push(trimmedUrl);
+            }
+          }
+        } catch (e) {
+          console.error("Invalid URL:", trimmedUrl);
+        }
+      }
+    });
+
+    setImageUrlsArray(currentValidUrls);
+
+    // Cập nhật nội dung textarea với các URL hợp lệ
+    e.target.value = currentValidUrls.join("\n");
+  };
+
+  // Thêm xử lý paste events
+  const handleImageUrlsPaste = (e) => {
+    e.preventDefault();
+    const pastedText = e.clipboardData.getData("text");
+    const urls = pastedText.split("\n");
+
+    // Validate và tạo khối cho từng URL riêng biệt
+    urls.forEach((url) => {
+      const trimmedUrl = url.trim();
+      if (trimmedUrl) {
+        try {
+          const urlObj = new URL(trimmedUrl);
+          if (urlObj.protocol === "http:" || urlObj.protocol === "https:") {
+            // Tạo một khối mới cho mỗi URL hợp lệ
+            setUrlBlocks((prev) => [...prev, [trimmedUrl]]);
+            setImageUrlsArray((prev) => [...prev, trimmedUrl]);
+          }
+        } catch (e) {
+          console.error("Invalid URL:", trimmedUrl);
+        }
+      }
+    });
+  };
+
+  // Kiểm tra tính hợp lệ của URL ảnh
+  const checkImage = (url) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(true);
+      img.onerror = () => reject(false);
+      img.src = url;
+    });
+  };
+
+  // Thêm ảnh từ URL
+  const addImage = async () => {
+    if (!imagePreview) return;
+
+    if (!isValidImageUrl(imagePreview)) {
+      alert("URL ảnh không hợp lệ. Vui lòng kiểm tra lại!");
+      return;
+    }
+
+    try {
+      await checkImage(imagePreview);
+      setImageUrls([...imageUrls, imagePreview]);
+      setImagePreview("");
+    } catch {
+      alert("Không thể tải ảnh từ URL này. Vui lòng thử URL khác!");
+    }
+  };
+
   // Fetch activities
   const fetchActivities = async () => {
     try {
@@ -88,7 +196,8 @@ function ActivitiesDashboard() {
           content: activity.content,
           author: activity.author,
           time: formatDate(activity.createdAt),
-          image: activity.image,
+          image: activity.images?.[0] || null, // Ảnh đại diện là ảnh đầu tiên
+          images: activity.images || [], // Lưu toàn bộ mảng images
           status: activity.status,
           commentOption: activity.commentOption,
           type: activity.type || "other",
@@ -123,39 +232,45 @@ function ActivitiesDashboard() {
 
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`HTTP ${response.status}: ${errorText || 'Không thể kết nối đến server'}`);
+        throw new Error(
+          `HTTP ${response.status}: ${
+            errorText || "Không thể kết nối đến server"
+          }`
+        );
       }
 
       let data;
       try {
         data = await response.json();
       } catch (parseError) {
-        throw new Error('Dữ liệu trả về không đúng định dạng JSON');
+        throw new Error("Dữ liệu trả về không đúng định dạng JSON");
       }
 
       if (data.success && data.data) {
-        const formattedComments = data.data.map(comment => {
-          if (!comment._id || !comment.content) {
-            console.warn('Comment thiếu thông tin:', comment);
-            return null;
-          }
+        const formattedComments = data.data
+          .map((comment) => {
+            if (!comment._id || !comment.content) {
+              console.warn("Comment thiếu thông tin:", comment);
+              return null;
+            }
 
-          return {
-            id: comment._id,
-            content: comment.content || '',
-            author: comment.author || 'Ẩn danh',
-            authorEmail: comment.authorEmail || '',
-            time: comment.createdAt ? formatDate(comment.createdAt) : '',
-            activitySlug: comment.activitySlug || '',
-            activityTitle: comment.activityTitle || 'Không có tiêu đề',
-            selected: false
-          };
-        }).filter(Boolean);
+            return {
+              id: comment._id,
+              content: comment.content || "",
+              author: comment.author || "Ẩn danh",
+              authorEmail: comment.authorEmail || "",
+              time: comment.createdAt ? formatDate(comment.createdAt) : "",
+              activitySlug: comment.activitySlug || "",
+              activityTitle: comment.activityTitle || "Không có tiêu đề",
+              selected: false,
+            };
+          })
+          .filter(Boolean);
 
         setRealComments(formattedComments);
         console.log(`Đã tải thành công ${formattedComments.length} bình luận`);
       } else {
-        throw new Error(data.message || 'Dữ liệu trả về không hợp lệ');
+        throw new Error(data.message || "Dữ liệu trả về không hợp lệ");
       }
     } catch (error) {
       console.error("Error fetching real comments:", error);
@@ -180,10 +295,14 @@ function ActivitiesDashboard() {
           console.error(`Attempt ${retryCount} failed:`, error);
 
           if (retryCount === maxRetries) {
-            console.error('Max retries reached, giving up');
-            setError('Không thể tải dữ liệu sau nhiều lần thử. Vui lòng làm mới trang.');
+            console.error("Max retries reached, giving up");
+            setError(
+              "Không thể tải dữ liệu sau nhiều lần thử. Vui lòng làm mới trang."
+            );
           } else {
-            await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+            await new Promise((resolve) =>
+              setTimeout(resolve, 1000 * retryCount)
+            );
           }
         }
       }
@@ -364,9 +483,13 @@ function ActivitiesDashboard() {
         let errorData;
         try {
           errorData = JSON.parse(errorText);
-          throw new Error(errorData.message || `HTTP ${response.status}: ${errorText}`);
+          throw new Error(
+            errorData.message || `HTTP ${response.status}: ${errorText}`
+          );
         } catch (parseError) {
-          throw new Error(`HTTP ${response.status}: ${errorText || 'Lỗi server'}`);
+          throw new Error(
+            `HTTP ${response.status}: ${errorText || "Lỗi server"}`
+          );
         }
       }
 
@@ -376,7 +499,7 @@ function ActivitiesDashboard() {
         console.log("Response data:", data);
       } catch (parseError) {
         console.error("JSON parse error:", parseError);
-        throw new Error('Dữ liệu trả về không đúng định dạng JSON');
+        throw new Error("Dữ liệu trả về không đúng định dạng JSON");
       }
 
       if (data.success) {
@@ -396,11 +519,11 @@ function ActivitiesDashboard() {
 
       let errorMessage = "Có lỗi xảy ra khi reply bình luận";
 
-      if (error.message.includes('HTTP 404')) {
+      if (error.message.includes("HTTP 404")) {
         errorMessage = "Không tìm thấy bài viết hoặc bình luận";
-      } else if (error.message.includes('HTTP 400')) {
+      } else if (error.message.includes("HTTP 400")) {
         errorMessage = "Dữ liệu gửi không hợp lệ";
-      } else if (error.message.includes('HTTP 500')) {
+      } else if (error.message.includes("HTTP 500")) {
         errorMessage = "Lỗi server, vui lòng thử lại sau";
       } else if (error.message) {
         errorMessage = error.message;
@@ -543,11 +666,11 @@ function ActivitiesDashboard() {
         prev.map((task) =>
           task.selected
             ? {
-              ...task,
-              status: batchEditOptions.status || task.status,
-              type: batchEditOptions.type || task.type,
-              selected: false,
-            }
+                ...task,
+                status: batchEditOptions.status || task.status,
+                type: batchEditOptions.type || task.type,
+                selected: false,
+              }
             : { ...task, selected: false }
         )
       );
@@ -638,7 +761,7 @@ function ActivitiesDashboard() {
       setPageStatus(task.status);
       setCommentOption(task.commentOption);
       setActivityType(task.type || "other");
-      setImagePreview(task.image || "");
+      setImageUrlsArray(task.images || []); // Load existing images
       setActiveView("editPage");
     }
   };
@@ -648,47 +771,43 @@ function ActivitiesDashboard() {
     if (!editingTask) return;
 
     try {
+      console.log("Current imageUrlsArray:", imageUrlsArray);
       const formData = new FormData();
       formData.append("title", newTitle);
       formData.append("content", newContent);
       formData.append("status", pageStatus);
       formData.append("commentOption", commentOption);
       formData.append("type", activityType);
-
-      if (uploadedImage) {
-        formData.append("image", uploadedImage);
-      }
+      formData.append("images", JSON.stringify(imageUrlsArray || []));
 
       const response = await fetch(`/api/activities/${editingTask.slug}`, {
         method: "PUT",
         body: formData,
       });
 
-      // Xử lý response đúng cách
-      let data;
-      try {
-        data = await response.json();
-      } catch (e) {
-        console.error("Không thể parse JSON từ response:", e);
-        throw new Error("Lỗi định dạng dữ liệu từ server");
-      }
+      const data = await response.json();
+      console.log("Server response:", data);
 
       if (data.success && response.ok) {
+        // Cập nhật danh sách tasks
         setTasks(
           tasks.map((task) =>
             task.slug === editingTask.slug
               ? {
-                ...task,
-                title: newTitle,
-                content: newContent,
-                status: pageStatus,
-                commentOption: commentOption,
-                type: activityType,
-                image: data.data.image || task.image,
-              }
+                  ...task,
+                  title: newTitle,
+                  content: newContent,
+                  status: pageStatus,
+                  commentOption: commentOption,
+                  type: activityType,
+                  images: data.data.images,
+                  image: data.data.images?.[0] || null,
+                }
               : task
           )
         );
+
+        // Reset tất cả các trường
         setActiveView("allPages");
         setEditingTask(null);
         setNewTitle("");
@@ -696,15 +815,33 @@ function ActivitiesDashboard() {
         setPageStatus("published");
         setCommentOption("open");
         setImagePreview("");
+        setImageUrlsArray([]); // Reset mảng images
+        setUrlBlocks([]); // Reset các khối URL
         setActivityType("other");
         setUploadedImage(null);
+
         alert("Cập nhật bài viết thành công!");
       } else {
-        throw new Error("Lỗi khi cập nhật bài viết");
+        throw new Error(data.message || "Lỗi khi cập nhật bài viết");
       }
     } catch (error) {
       console.error("Lỗi khi cập nhật bài viết:", error);
       alert("Có lỗi xảy ra khi cập nhật bài viết: " + error.message);
+    }
+  };
+
+  const validateImage = async (imageUrl) => {
+    // Kiểm tra định dạng URL
+    if (!isValidImageUrl(imageUrl)) {
+      throw new Error("URL ảnh không đúng định dạng");
+    }
+
+    // Kiểm tra ảnh có tồn tại
+    try {
+      await checkImage(imageUrl);
+      return true;
+    } catch {
+      throw new Error("Không thể tải ảnh từ URL này");
     }
   };
 
@@ -731,13 +868,17 @@ function ActivitiesDashboard() {
       const formData = new FormData();
       formData.append("title", newTitle);
       formData.append("content", newContent);
-      formData.append(
-        "author",
-        user?.name || user?.username || "Nguyễn Đình Khang"
-      );
+      formData.append("author", user?.name || user?.username || "Admin");
       formData.append("status", pageStatus);
       formData.append("commentOption", commentOption);
       formData.append("type", activityType);
+
+      // Xử lý mảng URLs ảnh
+      if (imageUrlsArray.length > 0) {
+        formData.append("images", JSON.stringify(imageUrlsArray));
+      } else {
+        formData.append("images", "[]");
+      }
 
       if (publishOption === "scheduled") {
         formData.append(
@@ -745,9 +886,7 @@ function ActivitiesDashboard() {
           new Date(`${scheduledDate}T${scheduledTime}`).toISOString()
         );
       }
-      if (imagePreview) {
-        formData.append("imageUrl", imagePreview); // Send as URL
-      }
+
       const response = await fetch("/api/activities", {
         method: "POST",
         body: formData,
@@ -765,7 +904,8 @@ function ActivitiesDashboard() {
             title: data.data.title,
             content: data.data.content,
             author: data.data.author,
-            image: data.data.image,
+            image: data.data.images?.[0], // Lấy ảnh đầu tiên từ mảng
+            images: data.data.images || [], // Lưu toàn bộ mảng images
             time: formatDate(data.data.createdAt),
             status: data.data.status,
             commentOption: data.data.commentOption,
@@ -776,10 +916,11 @@ function ActivitiesDashboard() {
 
         setNewTitle("");
         setNewContent("");
-        setUploadedImage(null);
         setImagePreview("");
+        setImageUrlsArray([]); // Reset mảng images
         setActivityType("other");
         setActiveView("allPages");
+        alert("Tạo hoạt động mới thành công!");
       } else {
         alert(data.message || "Có lỗi xảy ra khi tạo hoạt động mới");
       }
@@ -828,60 +969,66 @@ function ActivitiesDashboard() {
         />
         {/* Phần upload ảnh */}
         <div className="image-upload-container">
-          <h3>Hình ảnh đại diện</h3>
-          <div className="image-upload-box">
-            <input
-              type="text"
-              name="image"
-              placeholder="Nhập URL hình ảnh"
-              className="form-input"
-              value={imagePreview}
-              onChange={(e) => {
-                setImagePreview(e.target.value);
-                setUploadedImage(null); // Clear any uploaded file
-              }}
-            />
-            <button
-              type="button"
-              className="add-image-btn"
-              onClick={() => {
-                if (imagePreview) {
-                  setImageUrls([...imageUrls, imagePreview]);
-                  setImagePreview("");
-                }
-              }}
-            >
-              Thêm ảnh
-            </button>
+          <h3>Hình ảnh</h3>
+          <div className="form-group">
+            <label htmlFor="imageUrls">URL Ảnh (Paste URLs vào đây):</label>
+            <textarea
+              id="imageUrls"
+              className="form-control"
+              rows="5"
+              placeholder="Paste URLs ảnh vào đây..."
+              onPaste={handleImageUrlsPaste}
+              value="" // Giữ textarea luôn trống
+              onChange={() => {}} // Không cho phép chỉnh sửa trực tiếp
+            ></textarea>
+            <small className="help-text">
+              Mẹo: Copy và paste URLs ảnh vào đây. Mỗi lần paste sẽ tạo một khối
+              URLs mới.
+            </small>
+          </div>
+          <div className="total-images">
+            Tổng số ảnh: {imageUrlsArray.length}
+          </div>
 
-            <div className="images-preview-container">
-              {imageUrls.map((url, index) => (
-                <div key={index} className="image-preview-item">
-                  <img
-                    src={url}
-                    alt={`Preview ${index + 1}`}
-                    onError={(e) => {
-                      console.error("Lỗi tải ảnh:", e);
-                      alert("Không thể tải ảnh. Vui lòng kiểm tra lại URL.");
-                    }}
-                  />
-                  <button
-                    type="button"
-                    className="remove-image-btn"
-                    onClick={() => {
-                      setImageUrls(imageUrls.filter((_, i) => i !== index));
-                    }}
-                  >
-                    ×
-                  </button>
+          {urlBlocks.length > 0 && (
+            <div className="blocks-preview">
+              {urlBlocks.map((block, blockIndex) => (
+                <div key={blockIndex} className="image-block">
+                  <div className="block-header">
+                    <span>Ảnh #{blockIndex + 1}</span>
+                    <button
+                      className="remove-block-btn"
+                      onClick={() => {
+                        // Xóa khối và URL tương ứng
+                        const newBlocks = urlBlocks.filter(
+                          (_, i) => i !== blockIndex
+                        );
+                        const newUrls = newBlocks.map((block) => block[0]);
+                        setUrlBlocks(newBlocks);
+                        setImageUrlsArray(newUrls);
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                  <div className="block-images">
+                    <div className="image-preview-item">
+                      <img
+                        src={block[0]}
+                        alt={`Preview ${blockIndex}`}
+                        onError={(e) => {
+                          e.target.style.display = "none";
+                          console.error("Lỗi tải ảnh:", block[0]);
+                        }}
+                      />
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
-          </div>
-          <p className="image-hint">
-            Nhập URL hình ảnh từ Facebook hoặc nguồn khác
-          </p>
+          )}
         </div>
+
         <textarea
           placeholder="Nhập nội dung bài viết"
           value={newContent}
@@ -1124,9 +1271,24 @@ function ActivitiesDashboard() {
                           />
                         </td>
                         <td className="task-image-cell">
-                          {task.image ? (
+                          {task.images && task.images.length > 0 ? (
                             <div className="task-thumbnail">
-                              <img src={task.image} alt={task.title} />
+                              <img
+                                src={task.images[0]}
+                                alt={task.title}
+                                onError={(e) => {
+                                  e.target.onerror = null;
+                                }}
+                                onLoad={(e) => {
+                                  e.target.classList.add("loaded");
+                                }}
+                                className="loading"
+                              />
+                              {task.images.length > 1 && (
+                                <div className="image-count">
+                                  +{task.images.length - 1}
+                                </div>
+                              )}
                             </div>
                           ) : (
                             <div className="no-image">Không có ảnh</div>
@@ -1289,7 +1451,9 @@ function ActivitiesDashboard() {
                         <button
                           className="action-btn reply-btn"
                           onClick={() => {
-                            setReplyingTo(replyingTo === comment.id ? null : comment.id);
+                            setReplyingTo(
+                              replyingTo === comment.id ? null : comment.id
+                            );
                             setReplyContent("");
                           }}
                         >
@@ -1390,7 +1554,10 @@ function ActivitiesDashboard() {
                               </button>
                             </div>
                             <div className="reply-hint">
-                              <small>Tối đa 1000 ký tự. Hiện tại: {replyContent.length}/1000</small>
+                              <small>
+                                Tối đa 1000 ký tự. Hiện tại:{" "}
+                                {replyContent.length}/1000
+                              </small>
                             </div>
                           </div>
                         </td>
@@ -1481,6 +1648,6 @@ function ActivitiesDashboard() {
       </div>
     </div>
   );
-};
+}
 
 export default ActivitiesDashboard;

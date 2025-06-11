@@ -5,6 +5,12 @@ body {
   background-color: #ffff;
   display: block;
 }
+
+body {
+  padding: 0 !important;
+  margin: 0;
+  background-color: #fff !important;
+}
 .admin-container {
   font-family: Arial, sans-serif;
   margin: 0 auto;

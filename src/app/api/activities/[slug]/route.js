@@ -59,19 +59,11 @@ export async function GET(request, context) {
 export async function PUT(request, context) {
   try {
     await dbConnect();
-    // AWAIT params trước khi sử dụng
     const params = await context.params;
     const slug = params.slug;
     console.log("Updating activity with slug:", slug);
 
-    if (!slug) {
-      return NextResponse.json(
-        { success: false, message: "Slug không được cung cấp" },
-        { status: 400 }
-      );
-    }
-
-    // Tìm hoạt động trước tiên để đảm bảo tồn tại
+    // Tìm hoạt động
     const activity = await findActivityByIdOrSlug(slug);
     if (!activity) {
       return NextResponse.json(
@@ -91,8 +83,32 @@ export async function PUT(request, context) {
     const status = formData.get("status");
     const commentOption = formData.get("commentOption");
     const type = formData.get("type");
-    const imageFile = formData.get("image");
-    const imageUrl = formData.get("imageUrl");
+
+    // Xử lý images từ JSON string
+    const imagesJson = formData.get("images");
+    let images = [];
+
+    if (imagesJson) {
+      try {
+        const parsedImages = JSON.parse(imagesJson);
+        if (Array.isArray(parsedImages)) {
+          images = parsedImages.filter((url) => {
+            try {
+              const urlObj = new URL(url);
+              return (
+                urlObj.protocol === "http:" || urlObj.protocol === "https:"
+              );
+            } catch (e) {
+              console.error("Invalid URL:", url);
+              return false;
+            }
+          });
+          console.log("Valid image URLs:", images);
+        }
+      } catch (e) {
+        console.error("Error parsing images JSON:", e);
+      }
+    }
 
     // Cập nhật các trường cơ bản
     if (title) updateData.title = title;
@@ -101,65 +117,20 @@ export async function PUT(request, context) {
     if (status) updateData.status = status;
     if (commentOption) updateData.commentOption = commentOption;
     if (type) updateData.type = type;
-
-    // Xử lý hình ảnh
-    if (imageFile && imageFile.size > 0) {
-      try {
-        const bytes = await imageFile.arrayBuffer();
-        const buffer = Buffer.from(bytes);
-
-        // Tạo tên file unique
-        const timestamp = Date.now();
-        const originalName = imageFile.name;
-        const extension = originalName.split(".").pop();
-        const filename = `${timestamp}-${Math.random().toString(36).substring(2)}.${extension}`;
-
-        // Tạo đường dẫn lưu file
-        const uploadsDir = path.join(process.cwd(), "public/uploads");
-
-        // Kiểm tra và tạo thư mục nếu không tồn tại
-        if (!fs.existsSync(uploadsDir)) {
-          await mkdir(uploadsDir, { recursive: true });
-        }
-
-        // Lưu file
-        const imagePath = path.join(uploadsDir, filename);
-        await writeFile(imagePath, buffer);
-
-        // Cập nhật đường dẫn hình ảnh
-        updateData.image = `/uploads/${filename}`;
-        console.log("Image saved successfully at:", updateData.image);
-      } catch (imageError) {
-        console.error("Error processing image:", imageError);
-        // Không throw lỗi ở đây, tiếp tục cập nhật các thông tin khác
-      }
-    } else if (imageUrl) {
-      updateData.image = imageUrl;
-    }
+    if (images.length > 0) updateData.images = images;
 
     // Cập nhật thời gian
     updateData.updatedAt = new Date();
 
-    // Kiểm tra và cập nhật type
-    if (!updateData.type) {
-      updateData.type = "news";
-    }
-
-    // Tìm và cập nhật hoạt động
-    if (!activity) {
-      return NextResponse.json(
-        { success: false, message: "Không tìm thấy hoạt động" },
-        { status: 404 }
-      );
-    }
-
-    // Cập nhật các trường
+    // Log các trường được cập nhật
     console.log("Updating fields:", Object.keys(updateData));
-    Object.assign(activity, updateData);
+    console.log("Update data:", updateData);
 
+    // Cập nhật activity
+    Object.assign(activity, updateData);
     await activity.save();
 
-    // Tạo thông báo cho tác giả
+    // Tạo thông báo
     await Notification.create({
       userId: activity.author,
       title: `Hoạt động đã được cập nhật: ${activity.title}`,
@@ -174,7 +145,10 @@ export async function PUT(request, context) {
     return NextResponse.json({
       success: true,
       message: "Cập nhật hoạt động thành công",
-      data: activity,
+      data: {
+        ...activity.toObject(),
+        images: activity.images || [], // Đảm bảo trả về mảng images
+      },
     });
   } catch (error) {
     console.error("Error updating activity:", error);

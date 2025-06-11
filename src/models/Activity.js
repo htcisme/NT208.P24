@@ -14,6 +14,7 @@ try {
     createdAt: { type: Date, default: Date.now },
     replyTo: { type: mongoose.Schema.Types.ObjectId, ref: "Comment" },
   });
+  // Schema cho Activity
 
   const activitySchema = new mongoose.Schema({
     title: { type: String, required: true },

@@ -18,7 +18,9 @@ body {
   background-color: var(--background);
   min-height: 100vh;
 }
-
+body {
+  padding-top: 60px;
+}
 .form-container {
   width: 100%;
   max-width: 800px;
@@ -705,12 +707,12 @@ button:disabled {
     animation: fadeIn 0.6s ease-out forwards;
     transform: none;
   }
-  
+
   .animate-step .form-card {
     animation: fadeIn 0.4s ease-out 0.2s forwards;
     transform: none;
   }
-  
+
   .animate-step .form-group {
     animation-delay: 0.1s;
   }
@@ -730,19 +732,19 @@ button:disabled {
     opacity: 1;
     transform: none;
   }
-  
+
   .form-control:focus {
     animation: none;
   }
-  
+
   .btn:hover {
     transform: none;
   }
-  
+
   .progress-step.active {
     animation: none;
   }
-  
+
   .animate-step .form-card:hover {
     transform: none;
     box-shadow: var(--shadow);

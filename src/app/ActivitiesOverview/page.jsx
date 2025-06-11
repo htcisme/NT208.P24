@@ -457,12 +457,13 @@ export default function ActivitiesOverview() {
                             isWithinOneMonth(post.createdAt) && (
                               <div className="new-badge">Mới</div>
                             )}
-                          {post.image ? (
+                          {post.images && post.images.length > 0 ? (
                             <img
-                              src={post.image}
+                              src={post.images[0]} // Lấy ảnh đầu tiên từ mảng images
                               alt={post.title}
                               onError={(e) => {
                                 e.target.style.display = "none";
+                                console.error("Lỗi tải ảnh:", post.images[0]);
                               }}
                             />
                           ) : (

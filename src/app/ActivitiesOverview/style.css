@@ -10,6 +10,7 @@ body {
   background-color: var(--page-background);
   margin: 0;
   padding: 0;
+  padding-top: 70px;
 }
 
 .light-container-bg {
@@ -410,7 +411,6 @@ body {
 
 /* Mỗi post item sẽ có layout giống như post-box */
 .other-post-item {
-  background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   overflow: hidden;
@@ -736,22 +736,22 @@ body {
   .post-list-container {
     padding: 0px 30px;
   }
-  
+
   .post-list-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 25px;
   }
-  
+
   .post-image-placeholder {
     height: 200px;
   }
-  
+
   .filter-bar-container {
     gap: 12px;
     padding: 0 30px;
     flex-wrap: wrap;
   }
-  
+
   .filter-dropdown-btn {
     min-width: 120px;
     font-size: 13px;
@@ -762,7 +762,7 @@ body {
   .dropdown-label {
     display: block !important;
   }
-  
+
   /* BÀI ĐĂNG GẦN ĐÂY cho tablet: 3 bài 1 dòng */
   .other-posts-container {
     margin: 30px 20px;
@@ -885,7 +885,7 @@ body {
     margin-top: 8px;
     font-size: 12px;
   }
-  
+
   .dropdown-menu {
     left: 50%;
     transform: translateX(-50%);
@@ -980,7 +980,7 @@ body {
     padding: 10px 8px;
     font-size: 13px;
   }
-  
+
   .filter-bar-container {
     padding: 0 15px;
   }
@@ -1136,13 +1136,10 @@ body {
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
   .other-posts-container {
-    background-color: #1a1a1a;
-    color: #e0e0e0;
-    border: 1px solid #333;
+    background-color: var(--button-background);
   }
-
   .other-posts-title {
-    color: #ffffff;
+    color: var(--text-color);
   }
 
   .other-post-item {
