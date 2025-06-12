@@ -689,10 +689,20 @@ function UserContent() {
 
   const handleRegisterChange = (e) => {
     const { name, value } = e.target;
-    const updatedFormData = {
+    let updatedFormData = {
       ...registerFormData,
       [name]: value,
     };
+
+    // Validation cho trường name - không cho phép số
+    if (name === "name") {
+      // Loại bỏ tất cả các ký tự số
+      const nameWithoutNumbers = value.replace(/[0-9]/g, "");
+      updatedFormData = {
+        ...registerFormData,
+        [name]: nameWithoutNumbers,
+      };
+    }
 
     if (name === "role") {
       if (value === "admin") {
@@ -746,9 +756,13 @@ function UserContent() {
       localStorage.setItem("rememberMe", loginFormData.rememberMe);
       localStorage.setItem("token", data.token);
 
-      const maxAge = loginFormData.rememberMe ? 604800 : 120;
-      document.cookie = `token=${data.token}; path=/; max-age=${maxAge}`;
-
+      if (loginFormData.rememberMe) {
+        // Persistent cookie - 7 ngày
+        document.cookie = `token=${data.token}; path=/; max-age=604800`;
+      } else {
+        // Session cookie - hết hạn khi đóng browser (không có max-age)
+        document.cookie = `token=${data.token}; path=/`;
+      }
       localStorage.setItem("user", JSON.stringify(data.user));
       setUser(data.user);
 

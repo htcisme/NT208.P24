@@ -84,7 +84,7 @@ export async function POST(request) {
     };
 
     // Set expiration based on "Remember Me" option
-    const expiresIn = rememberMe ? "7d" : "2m"; // 7 days or 2 minutes
+    const expiresIn = rememberMe ? "7d" : "5m"; // 7 days or 5 minutes
 
     // Generate JWT token
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
@@ -101,7 +101,7 @@ export async function POST(request) {
         email: user.email,
         role: user.role || "user",
       },
-      sessionTimeout: rememberMe ? false : 120000, // 2 minutes in milliseconds if not remembering
+      sessionTimeout: rememberMe ? false : 300000, // 2 minutes in milliseconds if not remembering
     });
   } catch (error) {
     console.error("Login error:", error);
