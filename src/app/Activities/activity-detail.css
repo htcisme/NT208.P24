@@ -3,7 +3,7 @@
 
 .activity-detail-page {
   font-family: "Montserrat", sans-serif;
-  background-color: #ECF9FF;
+  background-color: var(--background-color);
   padding-top: 50px !important;
 }
 
@@ -15,7 +15,7 @@
   display: flex; /* Chỉ dùng flexbox */
   gap: 30px;
   align-items: start;
-  background-color: #ECF9FF;
+  background-color: var(--background-color);
   color: #042354;
   min-height: 100vh;
 }
@@ -112,16 +112,46 @@
 }
 
 /* Activity Type Colors */
-.activity-type-badge.news { background-color: #e3f2fd; color: #1976d2; }
-.activity-type-badge.academic { background-color: #f3e5f5; color: #7b1fa2; }
-.activity-type-badge.competition { background-color: #fff3e0; color: #f57c00; }
-.activity-type-badge.seminar { background-color: #e8f5e8; color: #388e3c; }
-.activity-type-badge.volunteer { background-color: #fce4ec; color: #c2185b; }
-.activity-type-badge.sport { background-color: #e0f2f1; color: #00695c; }
-.activity-type-badge.event { background-color: #fff8e1; color: #f9a825; }
-.activity-type-badge.vnutour { background-color: #e8eaf6; color: #3f51b5; }
-.activity-type-badge.netsec { background-color: #ffebee; color: #d32f2f; }
-.activity-type-badge.other { background-color: #f5f5f5; color: #616161; }
+.activity-type-badge.news {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+.activity-type-badge.academic {
+  background-color: #f3e5f5;
+  color: #7b1fa2;
+}
+.activity-type-badge.competition {
+  background-color: #fff3e0;
+  color: #f57c00;
+}
+.activity-type-badge.seminar {
+  background-color: #e8f5e8;
+  color: #388e3c;
+}
+.activity-type-badge.volunteer {
+  background-color: #fce4ec;
+  color: #c2185b;
+}
+.activity-type-badge.sport {
+  background-color: #e0f2f1;
+  color: #00695c;
+}
+.activity-type-badge.event {
+  background-color: #fff8e1;
+  color: #f9a825;
+}
+.activity-type-badge.vnutour {
+  background-color: #e8eaf6;
+  color: #3f51b5;
+}
+.activity-type-badge.netsec {
+  background-color: #ffebee;
+  color: #d32f2f;
+}
+.activity-type-badge.other {
+  background-color: #f5f5f5;
+  color: #616161;
+}
 
 /* Featured Image */
 .activity-image {
@@ -274,7 +304,9 @@
   transform: perspective(1000px) rotateX(0deg);
   box-shadow: 0 6px 12px rgba(4, 35, 84, 0.4);
 }
-
+body {
+  padding-top: 60px;
+}
 /* Danh sách tin tức */
 .light-news-list {
   list-style: none;
@@ -376,7 +408,8 @@
 }
 
 /* Loading and Error States cho main content */
-.loading-container, .error-container {
+.loading-container,
+.error-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -398,8 +431,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .error-container h2 {
@@ -425,11 +462,11 @@
     flex-direction: column; /* Stack vertically */
     gap: 30px;
   }
-  
+
   .activity-content {
     width: 100%; /* Full width trên tablet */
   }
-  
+
   .activity-sidebar {
     width: 100%; /* Full width trên tablet */
     order: -1; /* Hiển thị sidebar trước content trên tablet */
@@ -538,11 +575,11 @@
     display: flex;
     gap: 30px;
   }
-  
+
   .activity-content {
     width: 70%;
   }
-  
+
   .activity-sidebar {
     width: 30%;
   }
@@ -555,33 +592,33 @@
     gap: 25px;
     display: flex; /* Giữ flex layout */
   }
-  
+
   .activity-content {
     width: 70%; /* Giữ tỷ lệ 7:3 */
   }
-  
+
   .activity-sidebar {
     width: 30%;
     max-height: 600px; /* Điều chỉnh chiều cao cho tablet */
   }
-  
+
   .activity-header {
     padding: 30px 25px 25px;
   }
-  
+
   .activity-title {
     font-size: 2rem;
   }
-  
+
   .activity-body {
     padding: 30px 25px;
   }
-  
+
   .content-text {
     font-size: 16px;
     line-height: 1.7;
   }
-  
+
   .featured-image {
     border-radius: 12px;
   }
@@ -599,12 +636,12 @@
     display: flex;
     flex-direction: column; /* Đổi thành column layout */
   }
-  
+
   .activity-content {
     width: 100%; /* Full width cho content chính */
     order: 1; /* Hiển thị trước */
   }
-  
+
   .activity-sidebar {
     width: 100%; /* Full width cho sidebar */
     order: 2; /* Hiển thị sau content chính */
@@ -684,8 +721,113 @@
   .featured-image {
     border-radius: 8px;
   }
-  
+
   .activity-sidebar {
     max-height: 300px;
+  }
+}
+
+.activity-image-carousel {
+  position: relative;
+  width: 100%;
+  margin: 20px 0;
+}
+
+.carousel-container {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  overflow: hidden;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+}
+
+.carousel-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-position: center;
+  transition: opacity 0.3s ease;
+}
+
+.carousel-image {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
+}
+
+.carousel-image:hover {
+  transform: scale(1.02);
+}
+
+.carousel-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 15px;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+}
+
+.carousel-button:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.carousel-button.prev {
+  left: 10px;
+}
+
+.carousel-button.next {
+  right: 10px;
+}
+
+.carousel-dots {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.dot.active {
+  background: white;
+}
+
+.carousel-counter {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 14px;
+}
+
+.carousel-image.hidden {
+  display: none;
+  opacity: 0;
+}
+
+@media (max-width: 768px) {
+  .carousel-container {
+    aspect-ratio: 4/3;
   }
 }

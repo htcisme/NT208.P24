@@ -13,10 +13,7 @@
   z-index: 1000;
   border-bottom: 3px solid #f3f9fd;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-body {
-  padding-top: 70px !important;
+  margin-bottom: 70px;
 }
 
 html {
@@ -103,7 +100,7 @@ html {
 }
 
 .Header-Navbar-Navitem.active::before {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -2px;
   left: 50%;
@@ -330,7 +327,8 @@ html {
   display: block;
 }
 
-.Header-Authsearch-Searchbox-Searchicon:hover .Header-Authsearch-Searchbox-Searchicon-Icon {
+.Header-Authsearch-Searchbox-Searchicon:hover
+  .Header-Authsearch-Searchbox-Searchicon-Icon {
   color: #2d71b9;
 }
 
@@ -338,7 +336,9 @@ html {
   color: #e2f4ff;
 }
 
-.dark .Header-Authsearch-Searchbox-Searchicon:hover .Header-Authsearch-Searchbox-Searchicon-Icon {
+.dark
+  .Header-Authsearch-Searchbox-Searchicon:hover
+  .Header-Authsearch-Searchbox-Searchicon-Icon {
   color: #ffffff;
 }
 
@@ -561,7 +561,7 @@ html {
 }
 
 .Header-Navbar--mobile .Header-Navbar-Navitem::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   top: 0;
@@ -649,11 +649,11 @@ html {
   .Header-Mobile-Menu-Button {
     display: none !important;
   }
-  
+
   .Header-Navbar--desktop {
     display: flex;
   }
-  
+
   .Header-Navbar--mobile {
     display: none !important;
   }
@@ -920,7 +920,7 @@ html {
 /* ==================== OVERLAY FOR MOBILE MENU ==================== */
 @media (max-width: 1024px) {
   .Header-Navbar--mobile.Header-Navbar--open::after {
-    content: '';
+    content: "";
     position: fixed;
     top: 0;
     left: 0;
@@ -1012,7 +1012,7 @@ html {
     width: 36px;
     height: 36px;
   }
-  
+
   .Header-Topbar-Authsearch-Notification-Icon {
     width: 18px;
     height: 18px;
@@ -1024,7 +1024,7 @@ html {
     width: 32px;
     height: 32px;
   }
-  
+
   .Header-Topbar-Authsearch-Notification-Icon {
     width: 16px;
     height: 16px;
@@ -1036,7 +1036,7 @@ html {
     width: 30px;
     height: 30px;
   }
-  
+
   .Header-Topbar-Authsearch-Notification-Icon {
     width: 14px;
     height: 14px;
@@ -1442,14 +1442,31 @@ html {
   text-align: center;
   align-items: center;
   align-self: center;
-  color: var(--register-text);
+  color: var(--text-color);
   margin-top: 50px;
   margin-bottom: 5px;
 }
 
+.registerform-footer-form {
+  border: 1px solid #1a4785 !important;
+}
+
+.registerform-footer-form input {
+  /* Đặt màu văn bản sử dụng biến CSS để thích ứng với dark/light mode */
+  color: var(--text-color);
+  /* Giữ lại các thuộc tính CSS khác từ code gốc */
+  height: 40px;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #1a4785 !important;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
 /* Đặt màu cố định cho placeholder, không phụ thuộc vào chế độ dark/light */
 .registerform-footer-form input::placeholder {
-  color: rgba(0, 39, 77, 0.7) !important;
+  color: var(--text-color) !important;
   /* #00274d với độ mờ 70% */
   opacity: 1;
   /* Firefox yêu cầu opacity: 1 để hiển thị màu */
@@ -1458,25 +1475,25 @@ html {
 /* Hỗ trợ cho các trình duyệt cũ */
 .registerform-footer-form input::-webkit-input-placeholder {
   /* Chrome/Opera/Safari */
-  color: rgba(0, 39, 77, 0.7) !important;
+  color: var(--text-color) !important;
   opacity: 1;
 }
 
 .registerform-footer-form input::-moz-placeholder {
   /* Firefox 19+ */
-  color: rgba(0, 39, 77, 0.7) !important;
+  color: var(--text-color) !important;
   opacity: 1;
 }
 
 .registerform-footer-form input:-ms-input-placeholder {
   /* IE 10+ */
-  color: rgba(0, 39, 77, 0.7) !important;
+  color: var(--text-color) !important;
   opacity: 1;
 }
 
 .registerform-footer-form input:-moz-placeholder {
   /* Firefox 18- */
-  color: rgba(0, 39, 77, 0.7) !important;
+  color: var(--text-color) !important;
   opacity: 1;
 }
 
@@ -1540,7 +1557,7 @@ html {
   border-radius: 10px;
   margin-bottom: 10px;
   font-size: 18px;
-  color: #031a3e !important;
+  color: var(--register-text);
 }
 
 .registerform-footer-form label {
@@ -1551,7 +1568,7 @@ html {
 }
 
 .registerform-footer-form button {
-  background-color: var(--register-button-bg);
+  background-color: #1a4785 !important;
   width: 250px;
   height: 40px;
   /* Cách 1: Dùng margin để căn giữa */
@@ -1559,7 +1576,7 @@ html {
   margin-right: auto;
   /* Cách 2: Dùng align-self để căn giữa */
   align-self: center;
-  color: var(--register-button-text);
+  color: #fff !important;
   padding: 12px;
   border: 1px solid var(--register-button-border);
   border-radius: 10px;
@@ -1853,7 +1870,8 @@ html {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-.Header-Topbar-Authsearch-UserInfo-Button:hover .Header-Topbar-Authsearch-UserInfo-Icon {
+.Header-Topbar-Authsearch-UserInfo-Button:hover
+  .Header-Topbar-Authsearch-UserInfo-Icon {
   transform: scale(1.1);
 }
 
@@ -2125,7 +2143,8 @@ html {
   transition: opacity 0.2s;
 }
 
-.Header-Topbar-Authsearch-Notification-Item:hover .Header-Topbar-Authsearch-Notification-Item-Actions {
+.Header-Topbar-Authsearch-Notification-Item:hover
+  .Header-Topbar-Authsearch-Notification-Item-Actions {
   opacity: 1;
 }
 
@@ -2668,4 +2687,3 @@ html {
   font-size: 16px;
   flex-shrink: 0;
 }
-

@@ -859,10 +859,30 @@
   transition: transform 0.3s;
 }
 
+.Activities_RecentCard:hover .Activities_RecentCard_Image {
+  transform: scale(1.05);
+}
+
+.loading {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+.no_activities {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-style: italic;
+}
+
 .Activities_RecentCard_Content {
   padding: 15px;
   text-align: left;
   height: auto;
+  flex: 1;
+  position: relative;
+  height: 200px;
 }
 
 .Activities_RecentCard_Title {
@@ -874,6 +894,7 @@
 
 .Activities_RecentCard_Desc {
   font-size: 13px;
+
   color: #0a1f3c;
   margin-bottom: 8px;
   display: -webkit-box;
@@ -890,6 +911,9 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  bottom: 15px; /* Cách bottom 15px */
+  left: 15px; /* Cách left 15px */
+  width: calc(100% - 30px);
 }
 
 .Activities_ViewMore {

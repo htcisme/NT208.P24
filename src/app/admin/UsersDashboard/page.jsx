@@ -473,7 +473,7 @@ function UsersDashboard() {
                         </span>
                       </td>
                       <td data-label="NGÀY TẠO">{user.createdAt}</td>
-                      <td data-label="HÀNH ĐỘNG">
+                      <td data-label="HÀNH ĐỘNG" className="action-cell">
                         <button
                           className="action-btn edit-btn"
                           onClick={() => handleEditButton(user)}

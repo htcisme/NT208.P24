@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import CommentSection from "@/components/Comments/CommentSection";
 import "@/styles-comp/style.css";
 import "@/app/Activities/activity-detail.css";
+import "@/components/Comments/CommentSection.css";
 
 export default function ActivityPost() {
   const params = useParams();
@@ -27,6 +28,35 @@ export default function ActivityPost() {
   const sidebarRef = useRef(null);
   const [sidebarVisible, setSidebarVisible] = useState(false);
 
+  // Images
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+
+  useEffect(() => {
+    let intervalId;
+    if (isAutoPlaying && post?.images?.length > 1) {
+      intervalId = setInterval(() => {
+        setCurrentImageIndex((prevIndex) =>
+          prevIndex === post.images.length - 1 ? 0 : prevIndex + 1
+        );
+      }, 5000);
+    }
+    return () => clearInterval(intervalId);
+  }, [isAutoPlaying, post?.images?.length]);
+
+  // Thêm các hàm điều khiển
+  const nextImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === post.images.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === 0 ? post.images.length - 1 : prevIndex - 1
+    );
+  };
+
   // Add intersection observer for sidebar animation
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -38,7 +68,7 @@ export default function ActivityPost() {
       },
       {
         threshold: 0.1,
-        rootMargin: '50px 0px -50px 0px'
+        rootMargin: "50px 0px -50px 0px",
       }
     );
 
@@ -159,7 +189,7 @@ export default function ActivityPost() {
       startup: "Khởi nghiệp",
       jobfair: "Ngày hội việc làm",
       career: "Hướng nghiệp",
-      other: "Khác"
+      other: "Khác",
     };
 
     return typeLabels[type] || "Khác";
@@ -235,7 +265,9 @@ export default function ActivityPost() {
                 </div>
                 <div className="meta-item">
                   <span className="meta-label">Thời gian:</span>
-                  <span className="meta-value">{formatDate(post.createdAt)}</span>
+                  <span className="meta-value">
+                    {formatDate(post.createdAt)}
+                  </span>
                 </div>
                 {post.type && (
                   <div className="meta-item">
@@ -248,30 +280,61 @@ export default function ActivityPost() {
               </div>
             </header>
 
-            {/* Featured Image */}
-            {post.image && (
-              <div className="activity-image">
-                <img
-                  src={post.image}
-                  alt={post.title}
-                  className="featured-image"
-                  style={{
-                    width: '100%',
-                    height: 'auto',
-                  }}
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                  }}
-                />
+            {/* Featured Images Carousel */}
+            {post.images && post.images.length > 0 && (
+              <div className="activity-image-carousel">
+                <div className="carousel-container">
+                  <img
+                    src={post.images[currentImageIndex]}
+                    alt={`${post.title} - Ảnh ${currentImageIndex + 1}`}
+                    className="carousel-image"
+                    onError={(e) => {
+                      e.target.style.display = "none";
+                    }}
+                  />
+
+                  {post.images.length > 1 && (
+                    <>
+                      <button
+                        className="carousel-button prev"
+                        onClick={prevImage}
+                        aria-label="Previous image"
+                      >
+                        &#10094;
+                      </button>
+                      <button
+                        className="carousel-button next"
+                        onClick={nextImage}
+                        aria-label="Next image"
+                      >
+                        &#10095;
+                      </button>
+
+                      <div className="carousel-dots">
+                        {post.images.map((_, index) => (
+                          <button
+                            key={index}
+                            className={`dot ${
+                              index === currentImageIndex ? "active" : ""
+                            }`}
+                            onClick={() => setCurrentImageIndex(index)}
+                            aria-label={`Go to image ${index + 1}`}
+                          />
+                        ))}
+                      </div>
+
+                      <div className="carousel-counter">
+                        {currentImageIndex + 1} / {post.images.length}
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
             )}
 
             {/* Article Content */}
             <div className="activity-body">
-              <div
-                className="content-text"
-                style={{ whiteSpace: 'pre-wrap' }}
-              >
+              <div className="content-text" style={{ whiteSpace: "pre-wrap" }}>
                 {post.content}
               </div>
             </div>
@@ -295,7 +358,7 @@ export default function ActivityPost() {
           {/* Sidebar tin tức mới nhất - 30% */}
           <div
             ref={sidebarRef}
-            className={`activity-sidebar ${sidebarVisible ? 'animate' : ''}`}
+            className={`activity-sidebar ${sidebarVisible ? "animate" : ""}`}
           >
             <h3>TIN TỨC MỚI NHẤT</h3>
 

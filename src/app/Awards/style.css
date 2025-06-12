@@ -12,6 +12,9 @@ main {
   line-height: 1.6;
 }
 
+body {
+  padding-top: 60px;
+}
 /* Tiêu đề - Giảm kích thước */
 .title-section {
   text-align: center;
@@ -392,23 +395,23 @@ main {
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  
+
   .subtitle {
     font-size: 16px; /* Giảm từ 18px */
   }
-  
+
   .timeline-item h3 {
     font-size: 1.1rem;
   }
-  
+
   .timeline-item p {
     font-size: 0.95rem;
   }
-  
+
   .timeline-description p {
     font-size: 1rem;
   }
-  
+
   .content-column p {
     font-size: 1rem;
   }
@@ -419,19 +422,19 @@ main {
   .main-title {
     font-size: 24px;
   }
-  
+
   .subtitle {
     font-size: 17px;
   }
-  
+
   .timeline-item h3 {
     font-size: 1.15rem;
   }
-  
+
   .timeline-item p {
     font-size: 1rem;
   }
-  
+
   .timeline-description p {
     font-size: 1.05rem;
   }
@@ -442,7 +445,7 @@ main {
   .title-section {
     padding: 25px 15px;
   }
-  
+
   .main-title {
     font-size: 20px;
     line-height: 1.2;
@@ -451,62 +454,62 @@ main {
     text-overflow: ellipsis;
     max-width: 100%;
   }
-  
+
   .subtitle {
     font-size: 15px;
   }
-  
+
   .two-columns-section {
     padding: 25px 15px;
     gap: 15px;
   }
-  
+
   .content-column {
     width: 65%;
     padding: 15px 10px;
   }
-  
+
   .content-column p {
     font-size: 0.95rem;
     line-height: 1.6;
   }
-  
+
   .image-column {
     width: 35%;
     padding: 10px;
   }
-  
+
   .slide img {
     height: 220px; /* Giảm cho tablet */
   }
-  
+
   .timeline-section {
     padding: 25px 0;
   }
-  
+
   .timeline {
     padding-left: 25px;
   }
-  
+
   .timeline-item {
     margin-bottom: 20px;
     padding: 12px 15px;
   }
-  
+
   .timeline-item h3 {
     font-size: 1rem;
     margin-bottom: 6px;
   }
-  
+
   .timeline-item p {
     font-size: 0.9rem;
     line-height: 1.5;
   }
-  
+
   .timeline-description {
     padding: 25px 15px;
   }
-  
+
   .timeline-description p {
     font-size: 0.95rem;
     line-height: 1.6;
@@ -521,7 +524,7 @@ main {
     max-width: 90%;
     margin: 0 auto;
   }
-  
+
   .subtitle {
     font-size: 14px;
   }
@@ -535,11 +538,11 @@ main {
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  
+
   .subtitle {
     font-size: 14px;
   }
-  
+
   .slide img {
     height: 200px;
   }
@@ -550,7 +553,7 @@ main {
   .title-section {
     padding: 20px 10px;
   }
-  
+
   .main-title {
     font-size: 16px; /* Nhỏ hơn cho mobile */
     line-height: 1.3;
@@ -559,94 +562,94 @@ main {
     hyphens: auto;
     max-width: 100%;
   }
-  
+
   .subtitle {
     font-size: 13px;
     margin-top: 10px;
   }
-  
+
   .full-width-image img {
     max-height: 250px; /* Giảm cho mobile */
   }
-  
+
   .two-columns-section {
     flex-direction: column;
     padding: 20px 10px;
     gap: 15px;
   }
-  
+
   .content-column,
   .image-column {
     width: 100%;
     padding: 10px 5px;
   }
-  
+
   .content-column {
     order: 2;
   }
-  
+
   .content-column p {
     font-size: 0.9rem;
     line-height: 1.6;
     margin-bottom: 10px;
   }
-  
+
   .image-column {
     order: 1;
   }
-  
+
   .slide img {
     height: 180px; /* Nhỏ hơn cho mobile */
   }
-  
+
   .dots {
     margin-top: 10px;
     gap: 4px;
   }
-  
+
   .dot {
     width: 6px;
     height: 6px;
   }
-  
+
   .timeline-section {
     padding: 20px 0;
   }
-  
+
   .timeline {
     padding-left: 20px;
   }
-  
+
   .timeline::before {
     left: 12px;
   }
-  
+
   .timeline-item {
     margin-bottom: 15px;
     padding: 10px 12px;
   }
-  
+
   .timeline-item::before {
     left: -25px;
     width: 10px;
     height: 10px;
     top: 15px;
   }
-  
+
   .timeline-item h3 {
     font-size: 0.95rem;
     margin-bottom: 5px;
   }
-  
+
   .timeline-item p {
     font-size: 0.85rem;
     line-height: 1.4;
   }
-  
+
   .timeline-description {
     padding: 20px 10px;
   }
-  
+
   .timeline-description p {
     font-size: 0.9rem;
     line-height: 1.6;
@@ -658,67 +661,67 @@ main {
   .title-section {
     padding: 15px 8px;
   }
-  
+
   .main-title {
     font-size: 14px;
     line-height: 1.3;
     padding: 0 5px;
   }
-  
+
   .subtitle {
     font-size: 12px;
     margin-top: 8px;
   }
-  
+
   .full-width-image img {
     max-height: 200px;
   }
-  
+
   .two-columns-section {
     padding: 15px 8px;
   }
-  
+
   .content-column p {
     font-size: 0.85rem;
     line-height: 1.5;
   }
-  
+
   .slide img {
     height: 150px;
   }
-  
+
   .timeline {
     padding-left: 15px;
   }
-  
+
   .timeline::before {
     left: 8px;
   }
-  
+
   .timeline-item {
     padding: 8px 10px;
     margin-bottom: 12px;
   }
-  
+
   .timeline-item::before {
     left: -20px;
     width: 8px;
     height: 8px;
   }
-  
+
   .timeline-item h3 {
     font-size: 0.9rem;
   }
-  
+
   .timeline-item p {
     font-size: 0.8rem;
     line-height: 1.4;
   }
-  
+
   .timeline-description {
     padding: 15px 8px;
   }
-  
+
   .timeline-description p {
     font-size: 0.85rem;
     line-height: 1.5;
@@ -730,19 +733,19 @@ main {
   .main-title {
     font-size: 13px;
   }
-  
+
   .subtitle {
     font-size: 11px;
   }
-  
+
   .slide img {
     height: 130px;
   }
-  
+
   .timeline-item h3 {
     font-size: 0.85rem;
   }
-  
+
   .timeline-item p {
     font-size: 0.75rem;
   }
@@ -754,16 +757,16 @@ main {
     font-size: 18px;
     white-space: nowrap;
   }
-  
+
   .subtitle {
     font-size: 13px;
   }
-  
+
   .timeline-section,
   .two-columns-section {
     padding: 15px;
   }
-  
+
   .slide img {
     height: 180px;
   }
@@ -820,7 +823,7 @@ main {
     opacity: 1 !important;
     transform: none !important;
   }
-  
+
   .timeline-item:hover {
     transform: none !important;
     box-shadow: none !important;
@@ -839,7 +842,7 @@ main {
     opacity: 1 !important;
     transform: none !important;
   }
-  
+
   .timeline-item {
     break-inside: avoid;
     page-break-inside: avoid;

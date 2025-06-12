@@ -11,7 +11,7 @@ export default function Footer() {
 
   React.useEffect(() => {
     const checkDarkMode = () => {
-      setIsDarkMode(document.body.classList.contains('dark'));
+      setIsDarkMode(document.body.classList.contains("dark"));
     };
 
     // Kiểm tra ban đầu
@@ -21,7 +21,7 @@ export default function Footer() {
     const observer = new MutationObserver(checkDarkMode);
     observer.observe(document.body, {
       attributes: true,
-      attributeFilter: ['class']
+      attributeFilter: ["class"],
     });
 
     return () => observer.disconnect();
@@ -35,8 +35,7 @@ export default function Footer() {
             <div className="footer-title">
               <div className="footer-title-img-container">
                 <Image
-                  key={isDarkMode ? "dark" : "light"}
-                  src={isDarkMode ? logodoankhoadark : logodoankhoa}
+                  src={logodoankhoa}
                   alt="Logo Đoàn Khoa"
                   width={150}
                   height={50}
@@ -54,7 +53,7 @@ export default function Footer() {
             <p>
               <strong>Thông tin liên hệ:</strong>
             </p>
-            
+
             <div className="footer-contact-row">
               <div className="footer-contact-item">
                 <strong>Email: </strong>
@@ -65,7 +64,7 @@ export default function Footer() {
                   doanthanhnien@suctremmt.com
                 </a>
               </div>
-              
+
               <div className="footer-contact-item">
                 <strong>Facebook: </strong>
                 <a

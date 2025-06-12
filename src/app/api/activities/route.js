@@ -133,6 +133,99 @@ export async function GET(request) {
   }
 }
 
+export async function PUT(request) {
+  try {
+    await dbConnect();
+    const slug = request.url.split("/").pop();
+    const formData = await request.formData();
+
+    // Log toàn bộ dữ liệu nhận được
+    console.log("Received form data:", Object.fromEntries(formData.entries()));
+
+    // Parse images từ formData
+    let imageUrls = [];
+    const imagesJson = formData.get("images");
+    if (imagesJson) {
+      try {
+        const images = JSON.parse(imagesJson);
+        if (Array.isArray(images)) {
+          const validUrls = images.filter((url) => {
+            try {
+              const urlObj = new URL(url);
+              return (
+                urlObj.protocol === "http:" || urlObj.protocol === "https:"
+              );
+            } catch (e) {
+              console.error("Invalid URL:", url);
+              return false;
+            }
+          });
+          imageUrls = validUrls;
+        }
+      } catch (e) {
+        console.error("Invalid images JSON:", e);
+      }
+    }
+
+    const updateData = {
+      title: formData.get("title"),
+      content: formData.get("content"),
+      status: formData.get("status"),
+      commentOption: formData.get("commentOption"),
+      type: formData.get("type"),
+      images: imageUrls,
+      updatedAt: new Date(),
+    };
+
+    // Xử lý images riêng
+    console.log("Received images JSON:", imagesJson);
+
+    console.log("Final update data:", updateData);
+
+    // Sử dụng $set để đảm bảo cập nhật tất cả các trường
+    const activity = await Activity.findOneAndUpdate(
+      { slug: slug },
+      { $set: updateData },
+      { new: true }
+    );
+
+    if (!activity) {
+      return NextResponse.json(
+        { success: false, message: "Không tìm thấy bài viết" },
+        { status: 404 }
+      );
+    }
+
+    console.log("Updated activity:", activity);
+
+    return NextResponse.json({
+      success: true,
+      message: "Cập nhật thành công",
+      data: activity.toObject(),
+    });
+  } catch (error) {
+    console.error("Lỗi khi cập nhật:", error);
+    return NextResponse.json(
+      { success: false, message: "Lỗi khi cập nhật bài viết" },
+      { status: 500 }
+    );
+  }
+}
+
+async function generateUniqueSlug(baseSlug) {
+  let slug = baseSlug;
+  let counter = 1;
+
+  // Kiểm tra xem slug đã tồn tại chưa
+  while (await Activity.findOne({ slug })) {
+    // Nếu slug đã tồn tại, thêm số vào cuối
+    slug = `${baseSlug}-${counter}`;
+    counter++;
+  }
+
+  return slug;
+}
+
 export async function POST(request) {
   try {
     await dbConnect();
@@ -148,12 +241,39 @@ export async function POST(request) {
       body[key] = value;
     });
 
-    // Xử lý hình ảnh nếu có
-    let imageUrl = null;
-    const image = formData.get("image");
+    const baseSlug =
+      body.title
+        ?.toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^\w-]/g, "") || `activity-${Date.now()}`;
 
-    if (image) {
-      imageUrl = image;
+    // Tạo slug độc nhất
+    const uniqueSlug = await generateUniqueSlug(baseSlug);
+
+    // Xử lý hình ảnh nếu có
+    let imageUrls = [];
+    const imagesJson = formData.get("images");
+
+    if (imagesJson) {
+      try {
+        const images = JSON.parse(imagesJson);
+        if (Array.isArray(images)) {
+          const validUrls = images.filter((url) => {
+            try {
+              const urlObj = new URL(url);
+              return (
+                urlObj.protocol === "http:" || urlObj.protocol === "https:"
+              );
+            } catch (e) {
+              console.error("Invalid URL:", url);
+              return false;
+            }
+          });
+          imageUrls = validUrls;
+        }
+      } catch (e) {
+        console.error("Invalid images JSON:", e);
+      }
     }
 
     // Tạo hoạt động mới
@@ -163,14 +283,10 @@ export async function POST(request) {
       author: body.author,
       status: body.status,
       commentOption: body.commentOption,
-      type: body.type || "other", // Changed from "news" to "other" (valid enum value)
-      image: imageUrl,
+      type: body.type || "other",
+      images: imageUrls,
       scheduledPublish: body.scheduledPublish,
-      slug:
-        body.title
-          ?.toLowerCase()
-          .replace(/\s+/g, "-")
-          .replace(/[^\w-]/g, "") || `activity-${Date.now()}`,
+      slug: uniqueSlug,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -292,7 +408,10 @@ export async function POST(request) {
               console.error(`✗ Gửi thất bại đến ${subscriber.email}`);
             }
           }
-
+          console.log("=== Images Debug ===");
+          console.log("Received images:", formData.get("images"));
+          console.log("Parsed URLs:", imageUrls);
+          console.log("==================");
           console.log("=== Tổng kết gửi email ===");
           console.log(`Tổng số email: ${subscribers.length}`);
           console.log(`Thành công: ${successCount}`);

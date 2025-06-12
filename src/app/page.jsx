@@ -62,7 +62,7 @@ const useScrollReveal = (threshold = 0.1) => {
       },
       {
         threshold,
-        rootMargin: '50px 0px -50px 0px' // Trigger sớm hơn một chút
+        rootMargin: "50px 0px -50px 0px", // Trigger sớm hơn một chút
       }
     );
 
@@ -331,7 +331,18 @@ export default function Home() {
           "/api/activities?page=1&limit=4&status=published"
         );
         const data = await res.json();
-        setRecentActivities(data.success ? data.data : []);
+
+        if (data.success) {
+          // Xử lý dữ liệu để lấy ảnh đầu tiên cho mỗi hoạt động
+          const processedActivities = data.data.map((activity) => ({
+            ...activity,
+            // Lấy ảnh đầu tiên từ mảng images hoặc dùng ảnh mặc định
+            image: activity.images?.[0] || "/Img/Homepage/card1.png",
+          }));
+          setRecentActivities(processedActivities);
+        } else {
+          setRecentActivities([]);
+        }
       } catch (err) {
         console.error("Error fetching activities:", err);
         setRecentActivities([]);
@@ -500,10 +511,11 @@ export default function Home() {
               ☰
             </button>
             <nav
-              className={`${styles.Header_Nav_MenuWrapper_DropdownMenu} ${showMenu
+              className={`${styles.Header_Nav_MenuWrapper_DropdownMenu} ${
+                showMenu
                   ? styles.Header_Nav_MenuWrapper_MenuButton_ShowMenu
                   : ""
-                }`}
+              }`}
             >
               <Link
                 href="/Introduction"
@@ -586,7 +598,7 @@ export default function Home() {
       {/* Hero Section */}
       <section
         ref={heroRef}
-        className={`${styles.hero} ${heroVisible ? 'animate-hero' : ''}`}
+        className={`${styles.hero} ${heroVisible ? "animate-hero" : ""}`}
       >
         <div className={styles.heroBackground}></div>
         <div className={styles.heroOverlay}></div>
@@ -631,7 +643,9 @@ export default function Home() {
             <Link href="/Introduction">
               <h2
                 ref={introTitleRef}
-                className={`${styles.Body_Container_Introduction_Title} ${introTitleVisible ? 'animate-title' : ''}`}
+                className={`${styles.Body_Container_Introduction_Title} ${
+                  introTitleVisible ? "animate-title" : ""
+                }`}
               >
                 GIỚI THIỆU
               </h2>
@@ -640,20 +654,24 @@ export default function Home() {
             <div className={styles.Body_Container_Introduction_ContentWrapper}>
               <div
                 ref={introImageRef}
-                className={`${styles.Body_Container_Introduction_ContentWrapper_ImageContainer
-                  } ${introImageVisible ? 'animate-image' : ''}`}
+                className={`${
+                  styles.Body_Container_Introduction_ContentWrapper_ImageContainer
+                } ${introImageVisible ? "animate-image" : ""}`}
               >
                 <Image
                   src={IMAGES[currentIndex]}
                   alt={`Giới thiệu ${currentIndex + 1}`}
                   width={800}
                   height={400}
-                  className={`${styles.Body_Container_Introduction_ContentWrapper_ImageContainer_Image
-                    } ${styles.Body_Container_Introduction_ContentWrapper_ImageContainer_ImageFade
-                    } ${fade
+                  className={`${
+                    styles.Body_Container_Introduction_ContentWrapper_ImageContainer_Image
+                  } ${
+                    styles.Body_Container_Introduction_ContentWrapper_ImageContainer_ImageFade
+                  } ${
+                    fade
                       ? styles.Body_Container_Introduction_ContentWrapper_ImageContainer_ImageFadeShow
                       : ""
-                    }`}
+                  }`}
                 />
                 <div
                   className={
@@ -663,11 +681,13 @@ export default function Home() {
                   {IMAGES.map((_, index) => (
                     <span
                       key={index}
-                      className={`${styles.Body_Container_Introduction_ContentWrapper_ImageContainer_Dot
-                        } ${currentIndex === index
+                      className={`${
+                        styles.Body_Container_Introduction_ContentWrapper_ImageContainer_Dot
+                      } ${
+                        currentIndex === index
                           ? styles.Body_Container_Introduction_ContentWrapper_ImageContainer_Active
                           : ""
-                        }`}
+                      }`}
                     ></span>
                   ))}
                 </div>
@@ -675,8 +695,9 @@ export default function Home() {
 
               <div
                 ref={introTextRef}
-                className={`${styles.Body_Container_Introduction_ContentWrapper_TextContainer
-                  } ${introTextVisible ? 'animate-text' : ''}`}
+                className={`${
+                  styles.Body_Container_Introduction_ContentWrapper_TextContainer
+                } ${introTextVisible ? "animate-text" : ""}`}
               >
                 <h3
                   className={
@@ -733,7 +754,9 @@ export default function Home() {
             {/* Member Items */}
             <div
               ref={memberItemsRef}
-              className={`${styles.Body_Container_MemberWrap} ${memberItemsVisible ? 'animate-members' : ''}`}
+              className={`${styles.Body_Container_MemberWrap} ${
+                memberItemsVisible ? "animate-members" : ""
+              }`}
             >
               {MEMBER_ITEMS.map((member, index) => (
                 <div key={index} className={styles.Body_Container_MemberItem}>
@@ -756,7 +779,9 @@ export default function Home() {
             <Link href="/Activities">
               <h2
                 ref={activitiesTitleRef}
-                className={`${styles.Activities_RecentLabel} ${activitiesTitleVisible ? 'animate-title' : ''}`}
+                className={`${styles.Activities_RecentLabel} ${
+                  activitiesTitleVisible ? "animate-title" : ""
+                }`}
               >
                 HOẠT ĐỘNG GẦN ĐÂY
               </h2>
@@ -764,12 +789,16 @@ export default function Home() {
 
             <div
               ref={activitiesCardsRef}
-              className={`${styles.Activities_RecentCards} ${activitiesCardsVisible ? 'animate-cards' : ''}`}
+              className={`${styles.Activities_RecentCards} ${
+                activitiesCardsVisible ? "animate-cards" : ""
+              }`}
             >
               {loadingRecent ? (
-                <div>Đang tải hoạt động...</div>
+                <div className={styles.loading}>Đang tải hoạt động...</div>
               ) : recentActivities.length === 0 ? (
-                <div>Không có hoạt động gần đây.</div>
+                <div className={styles.no_activities}>
+                  Không có hoạt động gần đây.
+                </div>
               ) : (
                 recentActivities.map((activity, index) => (
                   <Link
@@ -779,9 +808,13 @@ export default function Home() {
                   >
                     <div className={styles.Activities_RecentCard_Container}>
                       <img
-                        src={activity.image || "/Img/Homepage/card1.png"}
+                        src={activity.image}
                         alt={activity.title}
                         className={styles.Activities_RecentCard_Image}
+                        onError={(e) => {
+                          e.target.src = "/Img/Homepage/card1.png";
+                          console.error("Lỗi tải ảnh:", activity.image);
+                        }}
                         loading="lazy"
                       />
                     </div>
@@ -795,9 +828,14 @@ export default function Home() {
                       </p>
                       <p className={styles.Activities_RecentCard_Date}>
                         {activity.createdAt
-                          ? `Ngày ${new Date(
-                            activity.createdAt
-                          ).toLocaleDateString("vi-VN")}`
+                          ? new Date(activity.createdAt).toLocaleDateString(
+                              "vi-VN",
+                              {
+                                year: "numeric",
+                                month: "2-digit",
+                                day: "2-digit",
+                              }
+                            )
                           : ""}
                       </p>
                     </div>
@@ -816,7 +854,9 @@ export default function Home() {
             {/* Focus Section */}
             <div
               ref={focusRef}
-              className={`${styles.Activities_Focus} ${focusVisible ? 'animate-focus' : ''}`}
+              className={`${styles.Activities_Focus} ${
+                focusVisible ? "animate-focus" : ""
+              }`}
             >
               <div className={styles.Activities_Focus_Shape01}></div>
               <div className={styles.Activities_Focus_ContentWrapper}>
@@ -875,7 +915,9 @@ export default function Home() {
           <section className={styles.Body_Container_Hightlight}>
             <div
               ref={highlightTitleRef}
-              className={`${styles.Body_Container_Hightlight_Title} ${highlightTitleVisible ? 'animate-title' : ''}`}
+              className={`${styles.Body_Container_Hightlight_Title} ${
+                highlightTitleVisible ? "animate-title" : ""
+              }`}
             >
               HOẠT ĐỘNG NỔI BẬT
             </div>
@@ -883,7 +925,9 @@ export default function Home() {
 
             <section
               ref={highlightSliderRef}
-              className={`${styles.light_slider_container} ${highlightSliderVisible ? 'animate-slider' : ''}`}
+              className={`${styles.light_slider_container} ${
+                highlightSliderVisible ? "animate-slider" : ""
+              }`}
             >
               <button
                 className={styles.light_slider_arrow}
@@ -898,8 +942,9 @@ export default function Home() {
                   key={`${startIndex}-${index}`}
                 >
                   <div
-                    className={`${styles.slider_image_placeholder} ${index === 1 ? styles.slider_image_placeholder_active : ""
-                      }`}
+                    className={`${styles.slider_image_placeholder} ${
+                      index === 1 ? styles.slider_image_placeholder_active : ""
+                    }`}
                   >
                     <img
                       src={event.image}
@@ -924,8 +969,9 @@ export default function Home() {
               {EVENTS.map((_, index) => (
                 <button
                   key={index}
-                  className={`${styles.light_slider_dot} ${startIndex === index ? styles.light_slider_dot_active : ""
-                    }`}
+                  className={`${styles.light_slider_dot} ${
+                    startIndex === index ? styles.light_slider_dot_active : ""
+                  }`}
                   onClick={() => setStartIndex(index)}
                   aria-label={`Chuyển đến sự kiện ${index + 1}`}
                 ></button>
@@ -937,7 +983,9 @@ export default function Home() {
           <section className={styles.Body_Container_Awards}>
             <div
               ref={awardsTitleRef}
-              className={`${styles.Body_Container_Awards_Title} ${awardsTitleVisible ? 'animate-title' : ''}`}
+              className={`${styles.Body_Container_Awards_Title} ${
+                awardsTitleVisible ? "animate-title" : ""
+              }`}
             >
               THÀNH TÍCH NỔI BẬT
             </div>
@@ -946,7 +994,9 @@ export default function Home() {
 
             <div
               ref={awardsContentRef}
-              className={`${styles.Body_Container_Awards_ContentWrapper} ${awardsContentVisible ? 'animate-awards' : ''}`}
+              className={`${styles.Body_Container_Awards_ContentWrapper} ${
+                awardsContentVisible ? "animate-awards" : ""
+              }`}
             >
               <div className={styles.Body_Container_Awards_Content}>
                 <div className={styles.Body_Container_Awards_Content_Title}>
@@ -989,19 +1039,27 @@ export default function Home() {
           <section className={styles.Body_Container_Lower}>
             <div
               ref={lowerBandrollRef}
-              className={`${styles.Body_Container_Lower_Bandroll} ${lowerBandrollVisible ? 'animate-bandroll' : ''}`}
+              className={`${styles.Body_Container_Lower_Bandroll} ${
+                lowerBandrollVisible ? "animate-bandroll" : ""
+              }`}
             >
-              <div className={`${styles.Body_Container_Lower_Bandroll_Content} Body_Container_Lower_Bandroll_Content`}>
-                <div className={`${styles.Body_Container_Lower_Bandroll_Content_Marquee} Body_Container_Lower_Bandroll_Content_Marquee`}>
+              <div
+                className={`${styles.Body_Container_Lower_Bandroll_Content} Body_Container_Lower_Bandroll_Content`}
+              >
+                <div
+                  className={`${styles.Body_Container_Lower_Bandroll_Content_Marquee} Body_Container_Lower_Bandroll_Content_Marquee`}
+                >
                   <span>ĐOÀN KẾT - TIÊN PHONG - TRÁCH NHIỆM - ĐỔI MỚI</span>
                   <span>ĐOÀN KẾT - TIÊN PHONG - TRÁCH NHIỆM - ĐỔI MỚI</span>
                 </div>
               </div>
             </div>
-            
+
             <div
               ref={imageGridRef}
-              className={`${styles.Image_Grid_Container} ${imageGridVisible ? 'animate-grid' : ''}`}
+              className={`${styles.Image_Grid_Container} ${
+                imageGridVisible ? "animate-grid" : ""
+              }`}
             >
               <img
                 src="/Img/Homepage/banner1.png"
@@ -1025,7 +1083,9 @@ export default function Home() {
 
           <section
             ref={registerFormRef}
-            className={`${styles.Body_Container_RegisterForm} ${registerFormVisible ? 'animate-form' : ''}`}
+            className={`${styles.Body_Container_RegisterForm} ${
+              registerFormVisible ? "animate-form" : ""
+            }`}
           >
             <RegisterForm className={styles.Body_Container_RegisterForm_Form} />
           </section>

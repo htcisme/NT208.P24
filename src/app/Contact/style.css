@@ -11,7 +11,9 @@ body {
   flex-direction: column;
   font-family: "Montserrat", sans-serif;
 }
-
+body {
+  padding-top: 60px;
+}
 .contact-header-title {
   text-align: justify;
   font-weight: bold;
@@ -190,12 +192,12 @@ body {
     margin-left: 20px;
     text-align: center;
   }
-  
+
   .contact-body-information {
     margin-left: 20px;
     margin-right: 20px;
   }
-  
+
   .animate-slide-in-left,
   .animate-slide-in-right {
     animation: fadeIn 0.8s ease-out forwards;
@@ -214,18 +216,17 @@ body {
     opacity: 1;
     transform: none;
   }
-  
+
   .animate-scale-up .contact-body-img:hover img {
     transform: none;
     box-shadow: none;
   }
-  
+
   .contact-body-img img {
     transition: none;
   }
-  
+
   .contact-body-facemail-information a {
     transition: none;
   }
 }
-
