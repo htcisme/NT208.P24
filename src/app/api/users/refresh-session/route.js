@@ -36,13 +36,13 @@ export async function POST(request) {
     };
 
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "2m", // Always 2 minutes for session refreshes
+      expiresIn: "5m", // Always 2 minutes for session refreshes
     });
 
     return NextResponse.json({
       success: true,
       token,
-      sessionTimeout: 120000, // 2 minutes in milliseconds
+      sessionTimeout: 300000, // 2 minutes in milliseconds
     });
   } catch (error) {
     console.error("Session refresh error:", error);
