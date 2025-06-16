@@ -6,7 +6,6 @@ import Link from "next/link";
 import Image from "next/image";
 import Footer from "@/components/Footer";
 import CommentSection from "@/components/Comments/CommentSection";
-import "@/styles-comp/style.css";
 import "@/app/Activities/activity-detail.css";
 import "@/components/Comments/CommentSection.css";
 
@@ -273,7 +272,7 @@ export default function ActivityPost() {
                   <div className="meta-item">
                     <span className="meta-label">Loại:</span>
                     <span className={`activity-type-badge ${post.type}`}>
-                      {getActivityTypeLabel(post.type)}
+                      {post.typeLabel || "Chưa phân loại"}
                     </span>
                   </div>
                 )}
@@ -404,8 +403,8 @@ export default function ActivityPost() {
             )}
           </div>
         </div>
+        <Footer />
       </main>
-      <Footer />
     </div>
   );
 }

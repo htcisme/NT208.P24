@@ -101,7 +101,7 @@ export async function POST(request) {
         email: user.email,
         role: user.role || "user",
       },
-      sessionTimeout: rememberMe ? false : 120000, // 2 minutes in milliseconds if not remembering
+      sessionTimeout: rememberMe ? false : 120000, // 2 minutes in milliseconds if not remembering.
     });
   } catch (error) {
     console.error("Login error:", error);

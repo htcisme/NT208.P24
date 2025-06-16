@@ -1,15 +1,20 @@
-/* filepath: d:\PROJECT\NT208.P24\src\app\ActivitiesOverview\page.jsx */
 "use client";
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
-import { getActivityTypes } from "@/models/Activity";
 import "@/styles-comp/style.css";
 import "@/app/ActivitiesOverview/style.css";
+import { useSearchParams } from "next/navigation";
 
 export default function ActivitiesOverview() {
   // State để quản lý trang hiện tại cho mỗi phần
+  const searchParams = useSearchParams();
+  const typeFromUrl = searchParams.get("type");
+  const [selectedTypes, setSelectedTypes] = useState(
+    typeFromUrl ? [typeFromUrl] : []
+  );
+  const [categories, setCategories] = useState([]);
   const [currentPostPage, setCurrentPostPage] = useState(1);
   const [currentOtherPage, setCurrentOtherPage] = useState(1);
 
@@ -20,30 +25,10 @@ export default function ActivitiesOverview() {
   const [totalOtherPages, setTotalOtherPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentCategory, setCurrentCategory] = useState(null);
 
   // State cho filter
-  const [selectedTypes, setSelectedTypes] = useState([]);
   const [activeDropdown, setActiveDropdown] = useState(null);
-
-  // Định nghĩa các category chính và subcategories
-  const mainCategories = {
-    academic: {
-      label: "Học thuật",
-      types: ["academic", "competition", "seminar", "research", "course"],
-    },
-    activity: {
-      label: "Hoạt động",
-      types: ["volunteer", "sport", "event", "conference", "vnutour", "netsec"],
-    },
-    work: {
-      label: "Công việc",
-      types: ["internship", "scholarship", "startup", "jobfair", "career"],
-    },
-    other: {
-      label: "Khác",
-      types: ["other"],
-    },
-  };
 
   // Build query string cho filter
   const buildFilterQuery = () => {
@@ -67,6 +52,93 @@ export default function ActivitiesOverview() {
     const oneMonthAgo = getOneMonthAgoDate();
     return postDate >= oneMonthAgo;
   };
+
+  useEffect(() => {
+    if (typeFromUrl && categories.length > 0) {
+      const category = categories.find((cat) => cat.value === typeFromUrl);
+      setCurrentCategory(category);
+    } else {
+      setCurrentCategory(null);
+    }
+  }, [typeFromUrl, categories]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("/api/categories");
+        const data = await response.json();
+        if (data.success) {
+          setCategories(data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        setError("Không thể lấy danh sách chuyên mục");
+      }
+    };
+
+    fetchCategories();
+  }, []);
+  useEffect(() => {
+    const fetchRecentPosts = async () => {
+      try {
+        setLoading(true);
+        const typeQuery = typeFromUrl ? `&type=${typeFromUrl}` : "";
+        const response = await fetch(
+          `/api/activities?page=1&limit=200&status=published${typeQuery}`
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch posts");
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+          let filteredPosts = data.data;
+
+          // If no type filter, only show posts within last month
+          if (!typeFromUrl) {
+            filteredPosts = filteredPosts.filter((post) =>
+              isWithinOneMonth(post.createdAt)
+            );
+          }
+
+          // Sort by date
+          filteredPosts.sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+          );
+
+          // Paginate
+          const postsPerPage = 8;
+          const startIndex = (currentPostPage - 1) * postsPerPage;
+          const endIndex = startIndex + postsPerPage;
+          const paginatedPosts = filteredPosts.slice(startIndex, endIndex);
+
+          setPostList(paginatedPosts);
+          setTotalPostPages(Math.ceil(filteredPosts.length / postsPerPage));
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        setError("Không thể lấy danh sách bài đăng");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecentPosts();
+  }, [currentPostPage, typeFromUrl]);
+
+  // Update page title based on filter
+  useEffect(() => {
+    if (typeFromUrl && categories.length > 0) {
+      const category = categories.find((cat) => cat.value === typeFromUrl);
+      document.title = category
+        ? `${category.label} - SUCTREMMT`
+        : "Hoạt động - SUCTREMMT";
+    } else {
+      document.title = "Tất cả hoạt động - SUCTREMMT";
+    }
+  }, [typeFromUrl, categories]);
 
   // Check if có filter đang active
   const hasActiveFilter = selectedTypes.length > 0;
@@ -321,86 +393,6 @@ export default function ActivitiesOverview() {
     return pages;
   };
 
-  // Component Filter Bar
-  const FilterBar = () => {
-    const allActivityTypes = getActivityTypes();
-
-    return (
-      <div className="filter-bar">
-        <div className="filter-bar-container">
-          <div className="filter-dropdowns">
-            {Object.entries(mainCategories).map(([key, category]) => {
-              const selectedCount = getSelectedCount(key);
-              const isActive = isCategoryActive(key);
-
-              return (
-                <div key={key} className="filter-dropdown">
-                  <button
-                    className={`filter-dropdown-btn ${
-                      isActive ? "active" : ""
-                    } ${activeDropdown === key ? "open" : ""}`}
-                    onClick={() => toggleDropdown(key)}
-                  >
-                    <span className="dropdown-icon">{category.icon}</span>
-                    <span className="dropdown-label">{category.label}</span>
-                    {selectedCount > 0 && (
-                      <span className="selected-count">{selectedCount}</span>
-                    )}
-                    <span className="dropdown-arrow">▼</span>
-                  </button>
-
-                  {activeDropdown === key && (
-                    <div className="dropdown-menu">
-                      <div className="dropdown-header">
-                        <label className="select-all-option">
-                          <input
-                            type="checkbox"
-                            checked={category.types.every((type) =>
-                              selectedTypes.includes(type)
-                            )}
-                            onChange={() => handleSelectAllInCategory(key)}
-                          />
-                          <span>Chọn tất cả</span>
-                        </label>
-                      </div>
-
-                      <div className="dropdown-items">
-                        {category.types.map((type) => {
-                          const typeInfo = allActivityTypes.find(
-                            (t) => t.value === type
-                          );
-                          return typeInfo ? (
-                            <label key={type} className="dropdown-item">
-                              <input
-                                type="checkbox"
-                                checked={selectedTypes.includes(type)}
-                                onChange={() => handleTypeToggle(type)}
-                              />
-                              <span className="item-icon">{typeInfo.icon}</span>
-                              <span className="item-label">
-                                {typeInfo.label}
-                              </span>
-                            </label>
-                          ) : null;
-                        })}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          {selectedTypes.length > 0 && (
-            <button className="clear-filters-btn" onClick={clearAllFilters}>
-              ✕ Xóa bộ lọc
-            </button>
-          )}
-        </div>
-      </div>
-    );
-  };
-
   // Hiển thị loading state
   if (loading) {
     return (
@@ -427,10 +419,9 @@ export default function ActivitiesOverview() {
           <section className="post-list-container">
             <div className="post-list-title">
               <h3>BÀI ĐĂNG GẦN ĐÂY</h3>
-              <FilterBar />
-              {selectedTypes.length > 0 && (
+              {currentCategory && (
                 <span className="filter-info">
-                  ({selectedTypes.length} loại được chọn)
+                  {currentCategory.description || currentCategory.label}
                 </span>
               )}
             </div>

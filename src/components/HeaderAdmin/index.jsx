@@ -118,7 +118,7 @@ const HeaderAdmin = () => {
           href="/admin/ActivitiesDashboard"
           className={isActive("/admin/ActivitiesDashboard")}
         >
-          HOẠT ĐỘNG
+          CHUYÊN MỤC
         </Link>
         <Link
           href="/admin/AwardsDashboard"

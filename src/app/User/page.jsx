@@ -211,7 +211,8 @@ function UserContent() {
 
   return (
     <div className="page-container">
-      {/* Hiển thị popup session timeout từ context */}
+      {/* Hiển thị popup session timeout từ context - session */}
+
       {sessionExpiring && (
         <div className="session-timeout-warning">
           <div className="session-timeout-content">

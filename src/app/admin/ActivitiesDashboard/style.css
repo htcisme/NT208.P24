@@ -143,6 +143,7 @@ body {
 
 .data-table {
   width: 100%;
+
   border-collapse: collapse;
   background-color: #fff;
 }
@@ -362,6 +363,8 @@ body {
 
 .form-control {
   width: 100%;
+  min-height: 100px;
+  max-height: 100px;
   padding: 10px;
   border: 1px solid #ced4da;
   border-radius: 4px;
@@ -938,66 +941,12 @@ body {
   display: inline-block;
   padding: 4px 8px;
   border-radius: 12px;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   color: white;
   white-space: nowrap;
+  background-color: var(--badge-color, #6c757d); /* Màu mặc định */
 }
-
-.type-badge[data-type="academic"] {
-  background-color: #007bff;
-} /* Xanh dương */
-.type-badge[data-type="competition"] {
-  background-color: #ff9800;
-} /* Cam tươi */
-.type-badge[data-type="seminar"] {
-  background-color: #fd7e14;
-} /* Cam đậm */
-.type-badge[data-type="research"] {
-  background-color: #6f42c1;
-} /* Tím */
-.type-badge[data-type="course"] {
-  background-color: #20c997;
-} /* Xanh ngọc */
-.type-badge[data-type="volunteer"] {
-  background-color: #28a745;
-} /* Xanh lá */
-.type-badge[data-type="event"] {
-  background-color: #17a2b8;
-} /* Xanh cyan */
-.type-badge[data-type="sport"] {
-  background-color: #f44336;
-} /* Đỏ thể thao */
-.type-badge[data-type="conference"] {
-  background-color: #795548;
-} /* Nâu */
-.type-badge[data-type="vnutour"] {
-  background-color: #ff4081;
-} /* Hồng nổi bật */
-.type-badge[data-type="netsec"] {
-  background-color: #37474f;
-} /* Xám xanh đậm */
-.type-badge[data-type="internship"] {
-  background-color: #9c27b0;
-} /* Tím sậm */
-.type-badge[data-type="scholarship"] {
-  background-color: #00bcd4;
-} /* Xanh sáng */
-.type-badge[data-type="startup"] {
-  background-color: #ff5722;
-} /* Cam startup */
-.type-badge[data-type="jobfair"] {
-  background-color: #3f51b5;
-} /* Xanh đậm */
-.type-badge[data-type="career"] {
-  background-color: #8bc34a;
-} /* Xanh lá nhạt */
-.type-badge[data-type="news"] {
-  background-color: #dc3545;
-} /* Đỏ tin tức */
-.type-badge[data-type="other"] {
-  background-color: #6c757d;
-} /* Xám mặc định */
 
 /* Responsive cho mobile */
 @media (max-width: 768px) {
@@ -1304,4 +1253,155 @@ button:disabled {
   font-family: inherit;
   font-size: 14px;
   min-height: 80px;
+}
+
+.category-container {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.category-form {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.category-form h3,
+.category-list h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #042354;
+  font-size: 18px;
+}
+.category-list .data-table {
+  margin-top: 15px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #495057;
+}
+
+.form-group .form-control {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-group textarea.form-control {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.btn-add-category {
+  background: #042354;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.btn-add-category:hover {
+  background: #031835;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.btn-update-category {
+  background: #042354;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.btn-update-category:hover {
+  background: #031835;
+}
+
+.btn-cancel {
+  background: #6c757d;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.btn-cancel:hover {
+  background: #5a6268;
+}
+
+/* Disable style cho input */
+.form-control:disabled {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+}
+
+.form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.loading-spinner {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 10px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.btn-draft:disabled,
+.btn-publish:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
