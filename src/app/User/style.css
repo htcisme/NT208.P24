@@ -426,8 +426,7 @@ body.dark-mode .header-nav-dark-mode-toggle {
   display: block;
 }
 
-/* Social Login Styles */
-.social-login {
+/* .social-login {
   margin-bottom: 25px;
 }
 
@@ -472,7 +471,7 @@ body.dark-mode .header-nav-dark-mode-toggle {
 .social-icon {
   margin-right: 10px;
   font-size: 18px;
-}
+} */
 
 .or-divider {
   text-align: center;
@@ -788,4 +787,155 @@ body.dark-mode .header-nav-dark-mode-toggle {
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* ...existing code... */
+
+/* Polar Bear Avatar Styles */
+.advanced-avatar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+  height: 200px;
+  perspective: 1000px;
+}
+
+.advanced-avatar-wrapper {
+  width: 200px;
+  height: 200px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+}
+
+.advanced-avatar-wrapper:hover {
+  transform: scale(1.05) rotateY(2deg);
+}
+
+.advanced-avatar-svg {
+  width: 100%;
+  height: 100%;
+  transition: all 0.3s ease;
+}
+
+/* Password focused state */
+.advanced-avatar-wrapper.password-focused {
+  transform: scale(0.95);
+}
+
+.advanced-avatar-wrapper.password-focused .advanced-avatar-svg {
+  filter: brightness(0.9);
+}
+
+/* Success animation */
+.advanced-avatar-wrapper.success-animation {
+  animation: celebrationBounce 1.5s ease-in-out;
+}
+
+.advanced-avatar-wrapper.success-animation .advanced-avatar-svg {
+  filter: brightness(1.2) saturate(1.3);
+}
+
+/* Animation keyframes */
+@keyframes celebrationBounce {
+  0%,
+  100% {
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-15px) scale(1.1) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(0) scale(1.15) rotate(2deg);
+  }
+  75% {
+    transform: translateY(-8px) scale(1.05) rotate(-1deg);
+  }
+}
+
+/* Eye tracking improvements */
+.eyeL circle,
+.eyeR circle {
+  transition: all 0.1s ease-out;
+}
+
+/* Arms animation when covering eyes */
+.arms .armL,
+.arms .armR {
+  transition: visibility 0.3s ease, opacity 0.3s ease;
+}
+
+.advanced-avatar-wrapper.password-focused .arms .armL,
+.advanced-avatar-wrapper.password-focused .arms .armR {
+  animation: coverEyes 0.5s ease-in-out;
+}
+
+@keyframes coverEyes {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Success particles animation */
+.success-particles circle {
+  animation: sparkleFloat 3s infinite ease-in-out;
+}
+
+@keyframes sparkleFloat {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.2);
+  }
+}
+
+/* Dark mode support */
+body.dark-mode .advanced-avatar-wrapper {
+  filter: drop-shadow(0 4px 8px rgba(255, 255, 255, 0.1));
+}
+
+body.dark-mode .advanced-avatar-svg {
+  filter: brightness(1.1) contrast(1.1);
+}
+
+body.dark-mode .advanced-avatar-wrapper.password-focused .advanced-avatar-svg {
+  filter: brightness(0.9) contrast(1.1);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .advanced-avatar-container {
+    height: 150px;
+  }
+
+  .advanced-avatar-wrapper {
+    width: 150px;
+    height: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .advanced-avatar-container {
+    height: 120px;
+  }
+
+  .advanced-avatar-wrapper {
+    width: 120px;
+    height: 120px;
+  }
+}
+
+/* Remove old polar bear styles if needed */
+.polar-bear-avatar-container,
+.polar-bear-avatar,
+.polar-bear-avatar-wrapper {
+  display: none;
 }

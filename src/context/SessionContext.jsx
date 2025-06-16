@@ -78,7 +78,7 @@ export function SessionProvider({ children }) {
       .then((data) => {
         if (data.success) {
           localStorage.setItem("token", data.token);
-          document.cookie = `token=${data.token}; path=/; max-age=120`; // 2 minutes
+          document.cookie = `token=${data.token}; path=/`;
 
           // Set a new timeout that will show the warning 30 seconds before expiration
           activityTimeoutRef.current = setTimeout(() => {
