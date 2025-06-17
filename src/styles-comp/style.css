@@ -55,6 +55,118 @@ html {
   color: #e2f4ff;
 }
 
+.categories-dropdown {
+  position: relative;
+  cursor: pointer;
+}
+
+.categories-dropdown span {
+  font-size: 14px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: bold;
+  padding: 8px 0px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: var(--background-color);
+  white-space: nowrap;
+  border: none;
+  position: relative;
+  height: 40px;
+}
+
+.dropdown-arrow {
+  margin-left: 4px;
+  transition: transform 0.2s ease;
+}
+
+.dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+.categories-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 220px;
+  background: #ffffff;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  padding: 8px 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  transform: translateY(-10px);
+}
+
+.categories-dropdown-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-item {
+  text-align: left;
+  font-size: 14px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: bold;
+  padding: 10px 14px;
+  display: block;
+  text-decoration: none;
+  color: #003366;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.dropdown-item:hover {
+  background-color: #c1e0ff;
+  color: #003366;
+}
+
+.all-activities {
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 8px;
+  padding-bottom: 12px;
+}
+
+/* Dark mode support */
+.dark .categories-dropdown span {
+  color: #e2f4ff;
+}
+
+.dark .categories-dropdown-menu {
+  background: #1a365d;
+  border: 1px solid #2d5a8a;
+}
+
+.dark .dropdown-item {
+  color: #e2f4ff;
+}
+
+.dark .dropdown-item:hover {
+  background-color: #2d5a8a;
+  color: #ffffff;
+}
+
+.dark .all-activities {
+  border-bottom-color: #2d5a8a;
+}
+
+/* Dropdown arrow animation */
+.dropdown-arrow {
+  margin-left: 4px;
+  transition: transform 0.3s ease;
+}
+
+.dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
 /* ==================== DESKTOP NAVIGATION ==================== */
 .Header-Navbar--desktop {
   display: flex;

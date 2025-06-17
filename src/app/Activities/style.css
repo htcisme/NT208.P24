@@ -6,13 +6,9 @@
   font-family: "Montserrat", sans-serif;
 }
 
-body {
-  padding-top: 60px;
-}
-
 /* Layout chính */
 .light-container-main {
-  padding-top: 2rem !important;
+  padding-top: 110px !important;
   padding-left: 2rem;
   padding-right: 2rem;
 }

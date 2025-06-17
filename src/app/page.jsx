@@ -1,11 +1,12 @@
 "use client";
-import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo, use } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import styles from "./page.module.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { set } from "mongoose";
 
 // Lazy load RegisterForm vì không cần ngay khi trang load
 const RegisterForm = dynamic(() => import("@/components/RegisterForm"), {
@@ -169,6 +170,15 @@ const useDebounce = (value, delay) => {
 };
 
 export default function Home() {
+  const [categories, setCategories] = useState([]);
+  const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
+  const menuRef = useRef(null);
+
+  const categoriesRef = useRef(null);
+  const [showCategories, setShowCategories] = useState(false);
+  const [showCategoriesMenu, setShowCategoriesMenu] = useState(false);
+  const categoriesMenuRef = useRef(null);
+
   // Custom hooks
   const { user, logout } = useUser();
   const { isDarkMode, toggleDarkMode } = useDarkMode();
@@ -235,11 +245,99 @@ export default function Home() {
     setStartIndex((prev) => (prev + 1) % EVENTS.length);
   }, []);
 
-  const toggleMenu = useCallback(() => setShowMenu((prev) => !prev), []);
   const toggleUserMenu = useCallback(
     () => setShowUserMenu((prev) => !prev),
     []
   );
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        categoriesMenuRef.current &&
+        !categoriesMenuRef.current.contains(event.target)
+      ) {
+        setShowCategoriesMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("/api/categories");
+        const data = await response.json();
+        if (data.success) {
+          setCategories(data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Check if click is outside menu and menu button
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowMenu(false);
+        // Also close categories submenu if it's open
+        setShowCategoriesMenu(false);
+      }
+    };
+
+    // Add event listener if menu is open
+    if (showMenu) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    // Cleanup
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showMenu]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        categoriesDropdownRef.current &&
+        !categoriesDropdownRef.current.contains(event.target)
+      ) {
+        setShowCategoriesDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("/api/categories");
+        const data = await response.json();
+        if (data.success) {
+          setCategories(data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  const handleMouseEnter = () => {
+    setShowCategoriesDropdown(true);
+  };
+
+  const handleMouseLeave = () => {
+    setShowCategoriesDropdown(false);
+  };
 
   // Fetch dữ liệu giải thưởng từ API
   useEffect(() => {
@@ -327,16 +425,13 @@ export default function Home() {
     const fetchRecentActivities = async () => {
       setLoadingRecent(true);
       try {
-        const res = await fetch(
-          "/api/activities?page=1&limit=4&status=published"
-        );
+        // Thay đổi limit từ 4 thành 3
+        const res = await fetch("/api/activities?limit=3&status=published");
         const data = await res.json();
 
         if (data.success) {
-          // Xử lý dữ liệu để lấy ảnh đầu tiên cho mỗi hoạt động
           const processedActivities = data.data.map((activity) => ({
             ...activity,
-            // Lấy ảnh đầu tiên từ mảng images hoặc dùng ảnh mặc định
             image: activity.images?.[0] || "/Img/Homepage/card1.png",
           }));
           setRecentActivities(processedActivities);
@@ -504,8 +599,8 @@ export default function Home() {
           <div className={styles.Header_Nav_MenuWrapper}>
             <button
               className={styles.Header_Nav_MenuWrapper_MenuButton}
-              onClick={toggleMenu}
               aria-expanded={showMenu}
+              onClick={() => setShowMenu(!showMenu)}
               aria-label="Menu điều hướng"
             >
               ☰
@@ -520,30 +615,93 @@ export default function Home() {
               <Link
                 href="/Introduction"
                 className={styles.Header_Nav_MenuWrapper_DropdownMenu_Item}
+                onClick={() => setShowMenu(false)}
               >
                 Giới thiệu
               </Link>
-              <Link
-                href="/Activities"
+
+              {/* Categories Menu Item */}
+              <div
                 className={styles.Header_Nav_MenuWrapper_DropdownMenu_Item}
+                ref={categoriesMenuRef}
+                onMouseEnter={() => setShowCategoriesMenu(true)}
+                onMouseLeave={() => setShowCategoriesMenu(false)}
               >
-                Hoạt động
-              </Link>
+                <span className={styles.category_trigger}>
+                  Chuyên mục
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className={`${styles.dropdown_arrow} ${
+                      showCategoriesMenu ? styles.open : ""
+                    }`}
+                  >
+                    <path d="M6 9l6 6 6-6" />
+                  </svg>
+                </span>
+
+                {showCategoriesMenu && (
+                  <div className={styles.categories_submenu}>
+                    <Link
+                      href="/Activities"
+                      onClick={() => {
+                        setShowMenu(false);
+                        setShowCategoriesMenu(false);
+                      }}
+                      className={styles.submenu_item}
+                    >
+                      Hoạt động nổi bật
+                    </Link>
+                    <Link
+                      href="/ActivitiesOverview"
+                      onClick={() => {
+                        setShowMenu(false);
+                        setShowCategoriesMenu(false);
+                      }}
+                      className={styles.submenu_item}
+                    >
+                      Tất cả hoạt động
+                    </Link>
+                    <div className={styles.submenu_divider}></div>
+                    {categories.map((category) => (
+                      <Link
+                        key={category.value}
+                        href={`/ActivitiesOverview?type=${category.value}`}
+                        onClick={() => {
+                          setShowMenu(false);
+                          setShowCategoriesMenu(false);
+                        }}
+                        className={styles.submenu_item}
+                      >
+                        {category.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+
               <Link
                 href="/Awards"
                 className={styles.Header_Nav_MenuWrapper_DropdownMenu_Item}
+                onClick={() => setShowMenu(false)}
               >
                 Thành tích
               </Link>
               <Link
                 href="/Booking"
                 className={styles.Header_Nav_MenuWrapper_DropdownMenu_Item}
+                onClick={() => setShowMenu(false)}
               >
                 Đặt phòng
               </Link>
               <Link
                 href="/Contact"
                 className={styles.Header_Nav_MenuWrapper_DropdownMenu_Item}
+                onClick={() => setShowMenu(false)}
               >
                 Liên hệ
               </Link>
@@ -815,7 +973,6 @@ export default function Home() {
                           e.target.src = "/Img/Homepage/card1.png";
                           console.error("Lỗi tải ảnh:", activity.image);
                         }}
-                        loading="lazy"
                       />
                     </div>
                     <div className={styles.Activities_RecentCard_Content}>

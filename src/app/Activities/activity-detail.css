@@ -3,19 +3,26 @@
 
 .activity-detail-page {
   font-family: "Montserrat", sans-serif;
-  background-color: var(--background-color);
+  background-color: var(--background);
   padding-top: 50px !important;
+}
+
+.min-h-screen {
+  padding-top: 0px !important;
+}
+
+textarea {
+  border: 2px solid #ced4da !important;
 }
 
 /* Layout cho trang chi tiết bài viết - SỬA LẠI ĐỒNG BỘ VỚI ACTIVITIES MAIN */
 .activity-detail-container {
-  max-width: 1300px;
-  margin: 0 auto;
+  margin: 0 40px;
   padding: 0 20px;
   display: flex; /* Chỉ dùng flexbox */
   gap: 30px;
   align-items: start;
-  background-color: var(--background-color);
+  background-color: var(--background);
   color: #042354;
   min-height: 100vh;
 }
@@ -744,10 +751,11 @@ body {
   align-items: center;
   justify-content: center;
   border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 .carousel-image {
-  max-width: 100%;
+  width: 100% !important;
   max-height: 100%;
   object-position: center;
   transition: opacity 0.3s ease;

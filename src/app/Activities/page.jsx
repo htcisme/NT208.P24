@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useState, useEffect, Suspense, useCallback, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  Suspense,
+  useCallback,
+  useRef,
+} from "react";
 import Image from "next/image";
 import Footer from "@/components/Footer";
 import Link from "next/link";
@@ -25,7 +31,7 @@ const useScrollReveal = (threshold = 0.1) => {
       },
       {
         threshold,
-        rootMargin: '50px 0px -50px 0px' // Trigger sớm hơn một chút
+        rootMargin: "50px 0px -50px 0px", // Trigger sớm hơn một chút
       }
     );
 
@@ -66,10 +72,22 @@ function ActivitiesContent() {
   // Danh sách 5 sự kiện
   const events = [
     { title: "VNU TOUR 2024", image: "/Img/Activities/Figure2-VNU-Tour.png" },
-    { title: "NGỌN ĐUỐC XANH 2025", image: "/Img/Activities/Figure3-Ngon-Duoc-Xanh.png" },
-    { title: "NETSEC DAY 2024", image: "/Img/Activities/Figure5-NETSEC-Day.png" },
-    { title: "TRUYỀN THÔNG TẾT 2025", image: "/Img/Activities/Figure4-Truyen-thong-Tet.png" },
-    { title: "CHÀO ĐÓN TSV KHÓA 2024", image: "/Img/Activities/Figure6-Tan-sinh-vien.png" },
+    {
+      title: "NGỌN ĐUỐC XANH 2025",
+      image: "/Img/Activities/Figure3-Ngon-Duoc-Xanh.png",
+    },
+    {
+      title: "NETSEC DAY 2024",
+      image: "/Img/Activities/Figure5-NETSEC-Day.png",
+    },
+    {
+      title: "TRUYỀN THÔNG TẾT 2025",
+      image: "/Img/Activities/Figure4-Truyen-thong-Tet.png",
+    },
+    {
+      title: "CHÀO ĐÓN TSV KHÓA 2024",
+      image: "/Img/Activities/Figure6-Tan-sinh-vien.png",
+    },
   ];
 
   // Hàm xử lý bấm mũi tên phải
@@ -103,18 +121,21 @@ function ActivitiesContent() {
   }, [isAnimating, events.length]);
 
   // Hàm xử lý click vào dot
-  const handleDotClick = useCallback((index) => {
-    if (isAnimating || index === startIndex || events.length <= 3) return;
+  const handleDotClick = useCallback(
+    (index) => {
+      if (isAnimating || index === startIndex || events.length <= 3) return;
 
-    setIsAnimating(true);
-    setAutoPlayEnabled(false);
-    setStartIndex(index);
+      setIsAnimating(true);
+      setAutoPlayEnabled(false);
+      setStartIndex(index);
 
-    setTimeout(() => {
-      setIsAnimating(false);
-      setTimeout(() => setAutoPlayEnabled(true), 1000);
-    }, 600);
-  }, [isAnimating, startIndex, events.length]);
+      setTimeout(() => {
+        setIsAnimating(false);
+        setTimeout(() => setAutoPlayEnabled(true), 1000);
+      }, 600);
+    },
+    [isAnimating, startIndex, events.length]
+  );
 
   // Auto-play effect
   useEffect(() => {
@@ -133,6 +154,7 @@ function ActivitiesContent() {
   useEffect(() => {
     const fetchLatestNews = async () => {
       try {
+        //Ajax call to fetch latest news through API
         const response = await fetch(
           `/api/activities?page=1&limit=10&status=published`
         );
@@ -205,7 +227,7 @@ function ActivitiesContent() {
           {/* Tiêu đề với scroll reveal */}
           <div
             ref={titleRef}
-            className={`light-section-title ${titleVisible ? 'animate' : ''}`}
+            className={`light-section-title ${titleVisible ? "animate" : ""}`}
           >
             <strong>CÁC HOẠT ĐỘNG NỔI BẬT</strong>
             <br />
@@ -215,7 +237,9 @@ function ActivitiesContent() {
           {/* Hình ảnh với scroll reveal và hiệu ứng 3D */}
           <div
             ref={highlightRef}
-            className={`light-section-highlight ${highlightVisible ? 'animate' : ''}`}
+            className={`light-section-highlight ${
+              highlightVisible ? "animate" : ""
+            }`}
           >
             <Image
               src="/Img/Activities/Figure1-Overall-Activities.png"
@@ -223,14 +247,14 @@ function ActivitiesContent() {
               width={800}
               height={400}
               onLoad={(e) => {
-                e.target.classList.remove('loading');
+                e.target.classList.remove("loading");
               }}
               onLoadStart={(e) => {
-                e.target.classList.add('loading');
+                e.target.classList.add("loading");
               }}
               onError={(e) => {
-                console.error('Image load error:', e);
-                e.target.style.display = 'none';
+                console.error("Image load error:", e);
+                e.target.style.display = "none";
               }}
             />
           </div>
@@ -238,21 +262,23 @@ function ActivitiesContent() {
           {/* Mô tả với scroll reveal */}
           <p
             ref={descriptionRef}
-            className={`light-section-description ${descriptionVisible ? 'animate' : ''}`}
+            className={`light-section-description ${
+              descriptionVisible ? "animate" : ""
+            }`}
           >
-            Hướng đến xây dựng một thế hệ sinh viên Khoa Mạng máy tính và
-            Truyền thông nói riêng và sinh viên trường Đại học Công nghệ Thông
-            tin nói chung vừa hồng, vừa chuyên, hiểu kiến thức, vững kỹ năng,
-            Đoàn khoa thường xuyên tổ chức các hoạt động thuộc nhiều lĩnh vực
-            khác nhau: hoạt động Đoàn - Hội, công tác xã hội, tình nguyện, học
-            tập, nghiên cứu khoa học, âm nhạc,... và các hoạt động khác phù
-            hợp với nhu cầu của sinh viên.
+            Hướng đến xây dựng một thế hệ sinh viên Khoa Mạng máy tính và Truyền
+            thông nói riêng và sinh viên trường Đại học Công nghệ Thông tin nói
+            chung vừa hồng, vừa chuyên, hiểu kiến thức, vững kỹ năng, Đoàn khoa
+            thường xuyên tổ chức các hoạt động thuộc nhiều lĩnh vực khác nhau:
+            hoạt động Đoàn - Hội, công tác xã hội, tình nguyện, học tập, nghiên
+            cứu khoa học, âm nhạc,... và các hoạt động khác phù hợp với nhu cầu
+            của sinh viên.
             <br />
             <br />
             Dấu ấn nổi bật trong suốt 10 năm thành lập của Đoàn khoa chính là
             các hoạt động Đoàn - Hội, các hoạt động phục vụ cho lợi ích của xã
-            hội, thiện nguyện và phát triển kỹ năng mềm cho sinh viên. Trải
-            dài qua các năm học, Đoàn khoa có các hoạt động nổi bật như:{" "}
+            hội, thiện nguyện và phát triển kỹ năng mềm cho sinh viên. Trải dài
+            qua các năm học, Đoàn khoa có các hoạt động nổi bật như:{" "}
             <strong>
               Chào đón Tân sinh viên Khoa kết hợp sinh hoạt công dân đầu khóa,
               VNU Tour - Hành trình khám phá khu đô thị Đại học Quốc gia HCM,
@@ -266,7 +292,7 @@ function ActivitiesContent() {
         {/* Bên phải: 30% - Tin tức mới nhất với scroll reveal */}
         <div
           ref={sidebarRef}
-          className={`activity-sidebar ${sidebarVisible ? 'animate' : ''}`}
+          className={`activity-sidebar ${sidebarVisible ? "animate" : ""}`}
         >
           <h3>TIN TỨC MỚI NHẤT</h3>
 
@@ -317,7 +343,7 @@ function ActivitiesContent() {
       {/* Slider Section với scroll reveal */}
       <section
         ref={sliderRef}
-        className={`light-slider-container ${sliderVisible ? 'animate' : ''}`}
+        className={`light-slider-container ${sliderVisible ? "animate" : ""}`}
       >
         <button
           className="light-slider-arrow"
@@ -331,8 +357,9 @@ function ActivitiesContent() {
           {visibleEvents.map((event, index) => (
             <div className="light-slider-item" key={`${startIndex}-${index}`}>
               <div
-                className={`slider-image-placeholder ${index === 1 ? "active" : ""
-                  } ${isAnimating ? "animating" : ""}`}
+                className={`slider-image-placeholder ${
+                  index === 1 ? "active" : ""
+                } ${isAnimating ? "animating" : ""}`}
               >
                 <Image
                   src={event.image}
@@ -343,14 +370,15 @@ function ActivitiesContent() {
                     width: "100%",
                     height: "100%",
                     objectFit: "cover",
-                    borderRadius: "15px"
+                    borderRadius: "15px",
                   }}
                   priority={index === 1}
                   onError={(e) => {
                     console.error(`Image load error for ${event.image}:`, e);
-                    e.target.style.display = 'none';
-                    e.target.parentElement.style.background = '#f5f5f5';
-                    e.target.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; font-size: 14px;">Không thể tải hình ảnh</div>';
+                    e.target.style.display = "none";
+                    e.target.parentElement.style.background = "#f5f5f5";
+                    e.target.parentElement.innerHTML =
+                      '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; font-size: 14px;">Không thể tải hình ảnh</div>';
                   }}
                 />
               </div>
@@ -373,8 +401,9 @@ function ActivitiesContent() {
         {Array.from({ length: events.length - 2 }).map((_, index) => (
           <span
             key={index}
-            className={`dot ${startIndex === index ? "active" : ""} ${isAnimating ? "transitioning" : ""
-              }`}
+            className={`dot ${startIndex === index ? "active" : ""} ${
+              isAnimating ? "transitioning" : ""
+            }`}
             onClick={() => handleDotClick(index)}
           ></span>
         ))}
@@ -384,7 +413,9 @@ function ActivitiesContent() {
         {/* Section 1: Ngọn Đuốc Xanh với scroll reveal */}
         <div
           ref={detailSection1Ref}
-          className={`light-detail-item split-40-60 ${detailSection1Visible ? 'reveal' : ''}`}
+          className={`light-detail-item split-40-60 ${
+            detailSection1Visible ? "reveal" : ""
+          }`}
         >
           <div className="light-detail-image">
             <div className="detail-image-placeholder">
@@ -404,22 +435,22 @@ function ActivitiesContent() {
             <br />
             <p>
               Trong hai năm trở lại đây, bên cạnh NC FES, Đoàn khoa dần khẳng
-              định vị trí của mình hơn nữa trong việc giúp sinh viên có một
-              môi trường trải nghiệm thực tế tại địa phương nơi các tỉnh. Cụ
-              thể, Đoàn khoa đã tổ chức thành công 2 chiến dịch tình nguyện:
-              Ngọn Đuốc Xanh 2023 và Ngọn Đuốc Xanh 2024. Đội hình Ngọn Đuốc
-              Xanh là đội hình tình nguyện của các bạn sinh viên trẻ, năng
-              động, nhiệt huyết, luôn mong muốn được cống hiến sức trẻ của
-              mình cho cộng đồng. Với tinh thần "Sẻ chia - Kết nối - Trao yêu
-              thương", các chiến sĩ Ngọn Đuốc Xanh đã tham gia nhiều hoạt động
-              tình nguyện ý nghĩa tại địa phương phường Tân Phú, phường Long
-              Trường (Thành phố Thủ Đức) và xã Tân Phú (Thị xã Cai Lậy, tỉnh
-              Tiền Giang) như: Công trình thanh niên "Tuyến đường hoa nông
-              thôn mới", Công trình "Thùng phân loại rác tái chế", Ngày hội
-              "Công nghệ cho em", Ngày tri ân, Bữa cơm nghĩa tình, Lớp học kỹ
-              năng mềm, Đêm văn nghệ cho em,... Các chiến sĩ của 2 chiến dịch
-              tuy đến từ các khoa khác nhau, các ngành học khác nhau nhưng
-              cùng chung tinh thần thiện nguyện, tương thân tương ái.
+              định vị trí của mình hơn nữa trong việc giúp sinh viên có một môi
+              trường trải nghiệm thực tế tại địa phương nơi các tỉnh. Cụ thể,
+              Đoàn khoa đã tổ chức thành công 2 chiến dịch tình nguyện: Ngọn
+              Đuốc Xanh 2023 và Ngọn Đuốc Xanh 2024. Đội hình Ngọn Đuốc Xanh là
+              đội hình tình nguyện của các bạn sinh viên trẻ, năng động, nhiệt
+              huyết, luôn mong muốn được cống hiến sức trẻ của mình cho cộng
+              đồng. Với tinh thần "Sẻ chia - Kết nối - Trao yêu thương", các
+              chiến sĩ Ngọn Đuốc Xanh đã tham gia nhiều hoạt động tình nguyện ý
+              nghĩa tại địa phương phường Tân Phú, phường Long Trường (Thành phố
+              Thủ Đức) và xã Tân Phú (Thị xã Cai Lậy, tỉnh Tiền Giang) như: Công
+              trình thanh niên "Tuyến đường hoa nông thôn mới", Công trình
+              "Thùng phân loại rác tái chế", Ngày hội "Công nghệ cho em", Ngày
+              tri ân, Bữa cơm nghĩa tình, Lớp học kỹ năng mềm, Đêm văn nghệ cho
+              em,... Các chiến sĩ của 2 chiến dịch tuy đến từ các khoa khác
+              nhau, các ngành học khác nhau nhưng cùng chung tinh thần thiện
+              nguyện, tương thân tương ái.
             </p>
           </div>
         </div>
@@ -427,7 +458,9 @@ function ActivitiesContent() {
         {/* Section 2: VNU Tour với scroll reveal */}
         <div
           ref={detailSection2Ref}
-          className={`light-detail-item split-60-40 ${detailSection2Visible ? 'reveal' : ''}`}
+          className={`light-detail-item split-60-40 ${
+            detailSection2Visible ? "reveal" : ""
+          }`}
         >
           <div className="light-detail-content">
             <h3>
@@ -437,27 +470,26 @@ function ActivitiesContent() {
             </h3>
             <br />
             <p>
-              Để giúp các bạn Tân sinh viên hiểu hơn về Khu đô thị Đại học
-              Quốc gia HCM - nơi trường Đại học Công nghệ Thông tin đang tọa
-              lạc, chuỗi hoạt động chào đón Tân sinh viên còn một hoạt động
-              đặc trưng, ghi dấu ấn về hoạt động "Thể lực tốt" của Đoàn khoa
-              Mạng trong nhiều năm liền, đó là VNU Tour - Hành trình khám phá
-              Khu đô thị Đại học Quốc gia. Trải qua 11 mùa tính đến năm 2023,
-              VNU Tour đã để lại trong lòng các bạn Tân sinh viên nhiều ký ức
-              khó quên trong hành trình khám phá và tìm ra sự thật được che
-              giấu đằng sau các chủ đề mà VNU Tour muốn truyền tải. Qua việc
-              đi đến các trạm được đặt tại các địa điểm nổi bật trong Khu đô
-              thị ĐHQG-HCM, vượt các chướng ngại vật, giải mật thư và tìm ra
-              câu trả lời cuối cùng được ẩn giấu, các bạn Tân sinh viên sẽ có
-              được cho mình những kỹ năng, kinh nghiệm bổ ích, sát với đời
-              sống sinh viên tại đây. Hơn nữa, đây không chỉ là hoạt động giúp
-              các bạn được trải nghiệm mà còn là một trong những hoạt động
-              được cấp giấy chứng nhận "Thể lực tốt" trong danh hiệu "Sinh
-              viên 5 tốt" cấp Khoa. Năm 2023, với chủ đề "Mật ngữ loài hoa",
-              đây là năm bùng nổ với hơn 450 thí sinh đến từ 15 trường đại học
-              khác nhau trên địa bàn thành phố. VNU Tour hứa hẹn sẽ ngày càng
-              phát huy hơn nữa vai trò của mình, nhất là giai đoạn những ngày
-              đầu năm học.
+              Để giúp các bạn Tân sinh viên hiểu hơn về Khu đô thị Đại học Quốc
+              gia HCM - nơi trường Đại học Công nghệ Thông tin đang tọa lạc,
+              chuỗi hoạt động chào đón Tân sinh viên còn một hoạt động đặc
+              trưng, ghi dấu ấn về hoạt động "Thể lực tốt" của Đoàn khoa Mạng
+              trong nhiều năm liền, đó là VNU Tour - Hành trình khám phá Khu đô
+              thị Đại học Quốc gia. Trải qua 11 mùa tính đến năm 2023, VNU Tour
+              đã để lại trong lòng các bạn Tân sinh viên nhiều ký ức khó quên
+              trong hành trình khám phá và tìm ra sự thật được che giấu đằng sau
+              các chủ đề mà VNU Tour muốn truyền tải. Qua việc đi đến các trạm
+              được đặt tại các địa điểm nổi bật trong Khu đô thị ĐHQG-HCM, vượt
+              các chướng ngại vật, giải mật thư và tìm ra câu trả lời cuối cùng
+              được ẩn giấu, các bạn Tân sinh viên sẽ có được cho mình những kỹ
+              năng, kinh nghiệm bổ ích, sát với đời sống sinh viên tại đây. Hơn
+              nữa, đây không chỉ là hoạt động giúp các bạn được trải nghiệm mà
+              còn là một trong những hoạt động được cấp giấy chứng nhận "Thể lực
+              tốt" trong danh hiệu "Sinh viên 5 tốt" cấp Khoa. Năm 2023, với chủ
+              đề "Mật ngữ loài hoa", đây là năm bùng nổ với hơn 450 thí sinh đến
+              từ 15 trường đại học khác nhau trên địa bàn thành phố. VNU Tour
+              hứa hẹn sẽ ngày càng phát huy hơn nữa vai trò của mình, nhất là
+              giai đoạn những ngày đầu năm học.
             </p>
           </div>
           <div className="light-detail-image">

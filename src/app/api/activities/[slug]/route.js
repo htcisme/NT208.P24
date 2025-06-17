@@ -7,6 +7,7 @@ import path from "path";
 import { ObjectId } from "mongodb";
 import Notification from "@/models/Notification";
 import jwt from "jsonwebtoken";
+import Category from "@/models/Category"; // Add this import
 
 function generateUniqueToken(userId, title = "") {
   const payload = {
@@ -44,8 +45,13 @@ export async function GET(request, context) {
         { status: 404 }
       );
     }
+    // Get category label
+    const category = await Category.findOne({ value: activity.type });
+    const activityData = activity.toObject();
 
-    return NextResponse.json({ success: true, data: activity });
+    activityData.typeLabel = category ? category.label : "Khác";
+
+    return NextResponse.json({ success: true, data: activityData });
   } catch (error) {
     console.error("Error fetching activity:", error);
     return NextResponse.json(

@@ -1,6 +1,5 @@
 "use client";
 
-import { getActivityTypes, getActivityTypeInfo } from "@/models/Activity";
 import React, { useState, useEffect } from "react";
 import { useSession } from "@/context/SessionContext";
 import Image from "next/image";
@@ -17,6 +16,9 @@ function ActivitiesDashboard() {
   const [activeTab, setActiveTab] = useState("activities");
   const [activeView, setActiveView] = useState("allPages");
   const [editingTask, setEditingTask] = useState(null);
+  const [availableTypes, setAvailableTypes] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submittingId, setSubmittingId] = useState(null); // For tracking specific item operations
 
   // Khởi tạo state với mảng rỗng thay vì dữ liệu mẫu
   const [tasks, setTasks] = useState([]);
@@ -33,6 +35,18 @@ function ActivitiesDashboard() {
   const [imageUrls, setImageUrls] = useState([]);
   const [imageUrlsArray, setImageUrlsArray] = useState([]);
   const [urlBlocks, setUrlBlocks] = useState([]);
+
+  // State cho cata
+  const [isLoading, setIsLoading] = useState(false);
+  const [editingCategory, setEditingCategory] = useState(null);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [newCategory, setNewCategory] = useState({
+    value: "",
+    label: "",
+    icon: "",
+    description: "",
+  });
 
   // For new page creation
   const [newTitle, setNewTitle] = useState("");
@@ -65,7 +79,79 @@ function ActivitiesDashboard() {
   });
   const [showBatchEditModal, setShowBatchEditModal] = useState(false);
 
-  // Thêm useEffect để đánh dấu component đã mount
+  useEffect(() => {
+    // Tạo style element cho dynamic colors
+    const style = document.createElement("style");
+    const colors = categories
+      .map(
+        (cat) =>
+          `[data-type="${cat.value}"] { --type-color: ${getColorForType(
+            cat.value
+          )}; }`
+      )
+      .join("\n");
+
+    style.innerHTML = colors;
+    document.head.appendChild(style);
+
+    return () => document.head.removeChild(style);
+  }, [categories]);
+
+  // Hàm helper để tạo màu ngẫu nhiên hoặc từ một bảng màu có sẵn
+  const getColorForType = (type) => {
+    const colors = {
+      academic: "#007bff",
+      competition: "#ff9800",
+      seminar: "#fd7e14",
+      research: "#6f42c1",
+      // Thêm các màu khác tùy ý
+    };
+    return colors[type] || "#6c757d"; // Màu mặc định nếu không tìm thấy
+  };
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("/api/categories");
+        const data = await response.json();
+        if (data.success) {
+          setAvailableTypes(data.data);
+          // Nếu chưa có type được chọn, set mặc định là type đầu tiên
+          if (!activityType && data.data.length > 0) {
+            setActivityType(data.data[0].value);
+          }
+        }
+      } catch (error) {
+        console.error("Lỗi khi tải danh sách chuyên mục:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("/api/categories");
+        const data = await response.json();
+
+        if (data.success) {
+          setCategories(data.data);
+        } else {
+          throw new Error(data.message);
+        }
+      } catch (error) {
+        console.error("Lỗi khi tải danh sách chuyên mục:", error);
+        setError("Không thể tải danh sách chuyên mục");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -90,6 +176,112 @@ function ActivitiesDashboard() {
       img.src = url;
       setTimeout(() => resolve(false), 10000); // 10s timeout
     });
+  };
+
+  const handleAddCategory = async () => {
+    if (!validateCategory()) return;
+
+    try {
+      setIsSubmitting(true);
+
+      const response = await fetch("/api/categories", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newCategory),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setCategories([...categories, data.data]); // Sử dụng dữ liệu từ server
+        setNewCategory({ value: "", label: "", description: "" });
+        alert("Thêm chuyên mục thành công!");
+      } else {
+        throw new Error(data.message);
+      }
+    } catch (error) {
+      console.error("Lỗi khi thêm chuyên mục:", error);
+      alert(`Có lỗi xảy ra: ${error.message}`);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleUpdateCategory = async () => {
+    if (!validateCategory()) return;
+
+    try {
+      const response = await fetch(`/api/categories/${editingCategory.value}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newCategory),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setCategories(
+          categories.map((cat) =>
+            cat.value === editingCategory.value ? data.data : cat
+          )
+        );
+        setEditingCategory(null);
+        setNewCategory({ value: "", label: "", description: "" });
+        alert("Cập nhật chuyên mục thành công!");
+      } else {
+        throw new Error(data.message);
+      }
+    } catch (error) {
+      console.error("Lỗi khi cập nhật chuyên mục:", error);
+      alert(`Có lỗi xảy ra: ${error.message}`);
+    }
+  };
+
+  const handleEditCategory = (category) => {
+    setEditingCategory(category);
+    setNewCategory({ ...category });
+  };
+
+  const handleDeleteCategory = async (value) => {
+    if (isSubmitting || !window.confirm("Bạn có chắc muốn xóa chuyên mục này?"))
+      return;
+
+    try {
+      setIsSubmitting(true);
+      setSubmittingId(value);
+
+      const response = await fetch(`/api/categories/${value}`, {
+        method: "DELETE",
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message);
+
+      setCategories((prev) => prev.filter((cat) => cat.value !== value));
+      alert("Xóa chuyên mục thành công!");
+    } catch (error) {
+      console.error("Error:", error);
+      alert(error.message);
+    } finally {
+      setIsSubmitting(false);
+      setSubmittingId(null);
+    }
+  };
+
+  const validateCategory = () => {
+    if (!newCategory.value?.trim()) {
+      alert("Vui lòng nhập mã chuyên mục");
+      return false;
+    }
+    if (!newCategory.label?.trim()) {
+      alert("Vui lòng nhập tên hiển thị");
+      return false;
+    }
+    return true;
   };
 
   // Hàm xử lý thay đổi URL ảnh
@@ -638,6 +830,17 @@ function ActivitiesDashboard() {
     const selectedTasks = tasks.filter((task) => task.selected);
 
     try {
+      if (batchEditOptions.type) {
+        const response = await fetch("/api/categories");
+        const { data: categories } = await response.json();
+        const isValidType = categories.some(
+          (cat) => cat.value === batchEditOptions.type
+        );
+
+        if (!isValidType) {
+          throw new Error("Type không hợp lệ");
+        }
+      }
       for (const task of selectedTasks) {
         const formData = new FormData();
 
@@ -770,6 +973,11 @@ function ActivitiesDashboard() {
   const updateTask = async () => {
     if (!editingTask) return;
 
+    if (!activityType) {
+      alert("Vui lòng chọn loại hoạt động!");
+      return;
+    }
+
     try {
       console.log("Current imageUrlsArray:", imageUrlsArray);
       const formData = new FormData();
@@ -863,7 +1071,14 @@ function ActivitiesDashboard() {
       return;
     }
 
+    if (!activityType) {
+      alert("Vui lòng chọn loại hoạt động!");
+      return;
+    }
+
     try {
+      setIsSubmitting(true); // Set loading state
+
       // Tạo FormData để gửi cả dữ liệu và file
       const formData = new FormData();
       formData.append("title", newTitle);
@@ -904,8 +1119,8 @@ function ActivitiesDashboard() {
             title: data.data.title,
             content: data.data.content,
             author: data.data.author,
-            image: data.data.images?.[0], // Lấy ảnh đầu tiên từ mảng
-            images: data.data.images || [], // Lưu toàn bộ mảng images
+            image: data.data.images?.[0],
+            images: data.data.images || [],
             time: formatDate(data.data.createdAt),
             status: data.data.status,
             commentOption: data.data.commentOption,
@@ -917,7 +1132,8 @@ function ActivitiesDashboard() {
         setNewTitle("");
         setNewContent("");
         setImagePreview("");
-        setImageUrlsArray([]); // Reset mảng images
+        setImageUrlsArray([]);
+        setUrlBlocks([]);
         setActivityType("other");
         setActiveView("allPages");
         alert("Tạo hoạt động mới thành công!");
@@ -927,6 +1143,8 @@ function ActivitiesDashboard() {
     } catch (error) {
       console.error("Error creating activity:", error);
       alert("Có lỗi xảy ra khi tạo hoạt động mới");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -958,6 +1176,14 @@ function ActivitiesDashboard() {
   // Render the page editor (used for both add and edit)
   const renderPageEditor = (isEditing = false) => (
     <div className="add-page-container">
+      {isSubmitting && (
+        <div className="form-overlay">
+          <div className="loading-spinner">
+            <div className="spinner"></div>
+            <p>Đang xử lý...</p>
+          </div>
+        </div>
+      )}
       <div className="add-page-content">
         <h2>{isEditing ? "CHỈNH SỬA BÀI VIẾT" : "THÊM BÀI VIẾT MỚI"}</h2>
         <input
@@ -1073,10 +1299,12 @@ function ActivitiesDashboard() {
                   value={activityType}
                   onChange={(e) => setActivityType(e.target.value)}
                   className="type-select"
+                  required
                 >
-                  {getActivityTypes().map((type) => (
+                  <option value="">-- Chọn loại hoạt động --</option>
+                  {categories.map((type) => (
                     <option key={type.value} value={type.value}>
-                      {type.icon} {type.label}
+                      {type.label}
                     </option>
                   ))}
                 </select>
@@ -1150,19 +1378,25 @@ function ActivitiesDashboard() {
         <div className="publish-actions">
           <button
             className="btn-draft"
+            disabled={isSubmitting}
             onClick={() => {
               setPageStatus("draft");
               if (isEditing) updateTask();
               else addNewPage();
             }}
           >
-            Lưu bản nháp
+            {isSubmitting ? "Đang lưu..." : "Lưu bản nháp"}
           </button>
           <button
             className="btn-publish"
+            disabled={isSubmitting}
             onClick={isEditing ? updateTask : addNewPage}
           >
-            {isEditing ? "Cập nhật" : "Xuất bản"}
+            {isSubmitting
+              ? "Đang xử lý..."
+              : isEditing
+              ? "Cập nhật"
+              : "Xuất bản"}
           </button>
         </div>
       </div>
@@ -1191,7 +1425,7 @@ function ActivitiesDashboard() {
               className={`btn-nav ${activeView === "allPages" ? "active" : ""}`}
               onClick={() => setActiveView("allPages")}
             >
-              TẤT CẢ CÁC TRANG
+              TẤT CẢ TIN BÀI
             </button>
             <button
               className={`btn-nav ${activeView === "addPage" ? "active" : ""}`}
@@ -1203,7 +1437,15 @@ function ActivitiesDashboard() {
                 setActiveView("addPage");
               }}
             >
-              THÊM TRANG MỚI
+              THÊM BÀI VIẾT
+            </button>
+            <button
+              className={`btn-nav ${
+                activeView === "categories" ? "active" : ""
+              }`}
+              onClick={() => setActiveView("categories")}
+            >
+              QUẢN LÝ CHUYÊN MỤC
             </button>
           </div>
 
@@ -1235,342 +1477,519 @@ function ActivitiesDashboard() {
         </div>
 
         {activeView === "allPages" && (
-          <div className="content-section">
-            {tasks.length > 0 ? (
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th className="checkbox-col">
-                      <input
-                        type="checkbox"
-                        onChange={handleSelectAllTasks}
-                        checked={
-                          tasks.length > 0 &&
-                          tasks.every((task) => task.selected)
-                        }
-                      />
-                    </th>
-                    <th className="image-col">HÌNH ẢNH</th>
-                    <th>TIÊU ĐỀ</th>
-                    <th>LOẠI</th>
-                    <th>TÁC GIẢ</th>
-                    <th>THỜI GIAN</th>
-                    <th>TÁC VỤ</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {tasks.map((task) => {
-                    const typeInfo = getActivityTypeInfo(task.type);
-                    return (
-                      <tr key={task.slug}>
-                        <td>
-                          <input
-                            type="checkbox"
-                            checked={task.selected}
-                            onChange={() => handleTaskSelection(task.slug)}
-                          />
-                        </td>
-                        <td className="task-image-cell">
-                          {task.images && task.images.length > 0 ? (
-                            <div className="task-thumbnail">
-                              <img
-                                src={task.images[0]}
-                                alt={task.title}
-                                onError={(e) => {
-                                  e.target.onerror = null;
-                                }}
-                                onLoad={(e) => {
-                                  e.target.classList.add("loaded");
-                                }}
-                                className="loading"
-                              />
-                              {task.images.length > 1 && (
-                                <div className="image-count">
-                                  +{task.images.length - 1}
-                                </div>
-                              )}
+          <>
+            <div className="content-section">
+              {tasks.length > 0 ? (
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th className="checkbox-col">
+                        <input
+                          type="checkbox"
+                          onChange={handleSelectAllTasks}
+                          checked={
+                            tasks.length > 0 &&
+                            tasks.every((task) => task.selected)
+                          }
+                        />
+                      </th>
+                      <th className="image-col">HÌNH ẢNH</th>
+                      <th>TIÊU ĐỀ</th>
+                      <th>LOẠI</th>
+                      <th>TÁC GIẢ</th>
+                      <th>THỜI GIAN</th>
+                      <th>TÁC VỤ</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {tasks.map((task) => {
+                      return (
+                        <tr key={task.slug}>
+                          <td>
+                            <input
+                              type="checkbox"
+                              checked={task.selected}
+                              onChange={() => handleTaskSelection(task.slug)}
+                            />
+                          </td>
+                          <td className="task-image-cell">
+                            {task.images && task.images.length > 0 ? (
+                              <div className="task-thumbnail">
+                                <img
+                                  src={task.images[0]}
+                                  alt={task.title}
+                                  onError={(e) => {
+                                    e.target.onerror = null;
+                                  }}
+                                  onLoad={(e) => {
+                                    e.target.classList.add("loaded");
+                                  }}
+                                  className="loading"
+                                />
+                                {task.images.length > 1 && (
+                                  <div className="image-count">
+                                    +{task.images.length - 1}
+                                  </div>
+                                )}
+                              </div>
+                            ) : (
+                              <div className="no-image">Không có ảnh</div>
+                            )}
+                          </td>
+                          <td>{task.title}</td>
+                          <td className="type-cell">
+                            <span className="type-badge" data-type={task.type}>
+                              {categories.find((cat) => cat.value === task.type)
+                                ?.label || "Khác"}
+                            </span>
+                          </td>
+                          <td>{task.author}</td>
+                          <td>{task.time}</td>
+                          <td>
+                            <div class="button-column">
+                              <button
+                                className="action-btn edit-btn"
+                                onClick={() => editTask(task.slug)}
+                              >
+                                Chỉnh sửa
+                              </button>
+                              <button
+                                className="action-btn delete-btn"
+                                onClick={() => deleteTask(task.slug)}
+                              >
+                                Xóa
+                              </button>
+                              <button
+                                className="action-btn copy-btn"
+                                onClick={() => copyTask(task)}
+                              >
+                                Sao chép
+                              </button>
                             </div>
-                          ) : (
-                            <div className="no-image">Không có ảnh</div>
-                          )}
-                        </td>
-                        <td>{task.title}</td>
-                        <td className="type-cell">
-                          <span className="type-badge" data-type={task.type}>
-                            {typeInfo.icon} {typeInfo.label}
-                          </span>
-                        </td>
-                        <td>{task.author}</td>
-                        <td>{task.time}</td>
-                        <td>
-                          <div class="button-column">
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              ) : (
+                <div className="no-data-message">
+                  Chưa có bài viết nào. Hãy thêm bài viết mới!
+                </div>
+              )}
+            </div>
+
+            <div className="comment-section">
+              <div className="section-header">
+                <h3>BÌNH LUẬN ({realComments.length})</h3>
+                <div className="batch-action-container">
+                  <select
+                    className="batch-action-select"
+                    value={commentBatchAction}
+                    onChange={(e) => setCommentBatchAction(e.target.value)}
+                  >
+                    <option value="delete">Xóa</option>
+                    <option value="edit">Chỉnh sửa</option>
+                  </select>
+                  <button
+                    className="btn-batch-action"
+                    onClick={executeBatchActionOnRealComments}
+                  >
+                    THỰC HIỆN
+                  </button>
+                  <button
+                    className="btn-refresh"
+                    onClick={fetchRealComments}
+                    disabled={commentLoading}
+                  >
+                    {commentLoading ? "Đang tải..." : "Làm mới"}
+                  </button>
+                </div>
+              </div>
+
+              {commentLoading ? (
+                <div className="loading">Đang tải bình luận...</div>
+              ) : realComments.length > 0 ? (
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th className="checkbox-col">
+                        <input
+                          type="checkbox"
+                          onChange={handleSelectAllRealComments}
+                          checked={
+                            realComments.length > 0 &&
+                            realComments.every((comment) => comment.selected)
+                          }
+                        />
+                      </th>
+                      <th>BÌNH LUẬN</th>
+                      <th>TÁC GIẢ</th>
+                      <th>BÀI VIẾT</th>
+                      <th>THỜI GIAN</th>
+                      <th>TÁC VỤ</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {realComments.map((comment) => (
+                      <React.Fragment key={comment.id}>
+                        <tr className="comment-row">
+                          <td>
+                            <input
+                              type="checkbox"
+                              checked={comment.selected}
+                              onChange={() =>
+                                handleRealCommentSelection(comment.id)
+                              }
+                            />
+                          </td>
+                          <td className="comment-text">
+                            <div
+                              style={{
+                                maxWidth: "300px",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              {comment.content}
+                            </div>
+                          </td>
+                          <td>{comment.author}</td>
+                          <td>
+                            <a
+                              href={`/Activities/${comment.activitySlug}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{
+                                color: "#042354",
+                                textDecoration: "none",
+                              }}
+                            >
+                              {comment.activityTitle}
+                            </a>
+                          </td>
+                          <td>{comment.time}</td>
+                          <td className="table-actions">
                             <button
                               className="action-btn edit-btn"
-                              onClick={() => editTask(task.slug)}
+                              onClick={() => {
+                                setRealComments(
+                                  realComments.map((c) =>
+                                    c.id === comment.id
+                                      ? { ...c, isEditing: !c.isEditing }
+                                      : { ...c, isEditing: false }
+                                  )
+                                );
+                                if (!comment.isEditing) {
+                                  setEditCommentText(comment.content);
+                                }
+                              }}
                             >
-                              Chỉnh sửa
+                              {comment.isEditing ? "Hủy" : "Chỉnh sửa"}
                             </button>
+
+                            <button
+                              className="action-btn reply-btn"
+                              onClick={() => {
+                                setReplyingTo(
+                                  replyingTo === comment.id ? null : comment.id
+                                );
+                                setReplyContent("");
+                              }}
+                            >
+                              {replyingTo === comment.id
+                                ? "Hủy Reply"
+                                : "Reply"}
+                            </button>
+
                             <button
                               className="action-btn delete-btn"
-                              onClick={() => deleteTask(task.slug)}
+                              onClick={() => deleteRealComment(comment.id)}
                             >
                               Xóa
                             </button>
+                          </td>
+                        </tr>
+
+                        {comment.isEditing && (
+                          <tr className="edit-row">
+                            <td colSpan="6">
+                              <div className="edit-container">
+                                <h4>Chỉnh sửa bình luận</h4>
+                                <textarea
+                                  value={editCommentText}
+                                  onChange={(e) =>
+                                    setEditCommentText(e.target.value)
+                                  }
+                                  className="edit-textarea"
+                                  rows="3"
+                                />
+                                <div className="edit-actions">
+                                  <button
+                                    className="btn-publish"
+                                    onClick={() => {
+                                      if (editCommentText.trim()) {
+                                        updateRealComment(
+                                          comment.id,
+                                          editCommentText.trim()
+                                        );
+                                      }
+                                    }}
+                                  >
+                                    Cập nhật
+                                  </button>
+                                  <button
+                                    className="btn-cancel"
+                                    onClick={() => {
+                                      setRealComments(
+                                        realComments.map((c) =>
+                                          c.id === comment.id
+                                            ? { ...c, isEditing: false }
+                                            : c
+                                        )
+                                      );
+                                    }}
+                                  >
+                                    Hủy
+                                  </button>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                        {replyingTo === comment.id && (
+                          <tr className="reply-row">
+                            <td colSpan="6">
+                              <div className="reply-container">
+                                <h4>
+                                  Reply cho bình luận của {comment.author}
+                                </h4>
+                                <textarea
+                                  value={replyContent}
+                                  onChange={(e) =>
+                                    setReplyContent(e.target.value)
+                                  }
+                                  className="reply-textarea"
+                                  rows="3"
+                                  placeholder="Nhập nội dung reply..."
+                                  maxLength="1000"
+                                />
+                                <div className="reply-actions">
+                                  <button
+                                    className="btn-publish"
+                                    onClick={() => {
+                                      const content = replyContent.trim();
+                                      if (content) {
+                                        replyToComment(comment.id, content);
+                                      } else {
+                                        alert("Vui lòng nhập nội dung reply!");
+                                      }
+                                    }}
+                                    disabled={!replyContent.trim()}
+                                  >
+                                    Gửi Reply
+                                  </button>
+                                  <button
+                                    className="btn-cancel"
+                                    onClick={() => {
+                                      setReplyingTo(null);
+                                      setReplyContent("");
+                                    }}
+                                  >
+                                    Hủy
+                                  </button>
+                                </div>
+                                <div className="reply-hint">
+                                  <small>
+                                    Tối đa 1000 ký tự. Hiện tại:{" "}
+                                    {replyContent.length}/1000
+                                  </small>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <div className="no-data-message">Chưa có bình luận nào.</div>
+              )}
+            </div>
+          </>
+        )}
+
+        {activeView === "categories" && (
+          <div className="content-section">
+            {isSubmitting && !submittingId && (
+              <div className="loading-overlay">
+                <div className="spinner"></div>
+                <p>Đang xử lý...</p>
+              </div>
+            )}
+            <div className="category-container">
+              <div className="category-form">
+                <h3>
+                  {editingCategory
+                    ? "Chỉnh sửa chuyên mục"
+                    : "Thêm chuyên mục mới"}
+                </h3>
+                <div className="form-group">
+                  <label>Mã chuyên mục:</label>
+                  <input
+                    type="text"
+                    value={newCategory.value}
+                    onChange={(e) =>
+                      setNewCategory({ ...newCategory, value: e.target.value })
+                    }
+                    placeholder="vd: academic"
+                    className="form-control"
+                    disabled={editingCategory} // Disable khi đang edit
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Tên hiển thị:</label>
+                  <input
+                    type="text"
+                    value={newCategory.label}
+                    onChange={(e) =>
+                      setNewCategory({ ...newCategory, label: e.target.value })
+                    }
+                    placeholder="vd: Học tập"
+                    className="form-control"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Mô tả:</label>
+                  <textarea
+                    value={newCategory.description}
+                    onChange={(e) =>
+                      setNewCategory({
+                        ...newCategory,
+                        description: e.target.value,
+                      })
+                    }
+                    placeholder="Mô tả về chuyên mục"
+                    className="form-control"
+                    rows="3"
+                  />
+                </div>
+                {editingCategory ? (
+                  <div className="edit-actions">
+                    <button
+                      className="btn-update-category"
+                      onClick={async () => {
+                        if (validateCategory()) {
+                          try {
+                            const response = await fetch(
+                              `/api/categories/${editingCategory.value}`,
+                              {
+                                method: "PUT",
+                                headers: {
+                                  "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify(newCategory),
+                              }
+                            );
+
+                            if (response.ok) {
+                              setCategories(
+                                categories.map((cat) =>
+                                  cat.value === editingCategory.value
+                                    ? newCategory
+                                    : cat
+                                )
+                              );
+                              setEditingCategory(null);
+                              setNewCategory({
+                                value: "",
+                                label: "",
+                                description: "",
+                              });
+                              alert("Cập nhật chuyên mục thành công!");
+                            }
+                          } catch (error) {
+                            console.error("Lỗi khi cập nhật:", error);
+                            alert("Có lỗi xảy ra khi cập nhật chuyên mục");
+                          }
+                        }
+                      }}
+                    >
+                      Cập nhật
+                    </button>
+                    <button
+                      className="btn-cancel"
+                      onClick={() => {
+                        setEditingCategory(null);
+                        setNewCategory({
+                          value: "",
+                          label: "",
+                          description: "",
+                        });
+                      }}
+                    >
+                      Hủy
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    className="btn-add-category"
+                    onClick={handleAddCategory}
+                  >
+                    Thêm chuyên mục
+                  </button>
+                )}
+              </div>
+
+              <div className="category-list">
+                <h3>Danh sách chuyên mục</h3>
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th>Mã</th>
+                      <th>Tên hiển thị</th>
+                      <th>Mô tả</th>
+                      <th>Thao tác</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {categories.map((category) => (
+                      <tr key={category.value}>
+                        <td>{category.value}</td>
+                        <td>{category.label}</td>
+                        <td>{category.description}</td>
+                        <td>
+                          <div className="button-column">
                             <button
-                              className="action-btn copy-btn"
-                              onClick={() => copyTask(task)}
+                              className="action-btn edit-btn"
+                              onClick={() => handleEditCategory(category)}
                             >
-                              Sao chép
+                              Sửa
+                            </button>
+                            <button
+                              className="action-btn delete-btn"
+                              onClick={() =>
+                                handleDeleteCategory(category.value)
+                              }
+                            >
+                              {isLoading ? "Đang xóa..." : "Xóa"}
                             </button>
                           </div>
                         </td>
                       </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            ) : (
-              <div className="no-data-message">
-                Chưa có bài viết nào. Hãy thêm bài viết mới!
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            )}
+            </div>
           </div>
         )}
 
         {activeView === "addPage" && renderPageEditor(false)}
         {activeView === "editPage" && renderPageEditor(true)}
-
-        {/* Real Comments Section */}
-        <div className="comment-section">
-          <div className="section-header">
-            <h3>BÌNH LUẬN ({realComments.length})</h3>
-            <div className="batch-action-container">
-              <select
-                className="batch-action-select"
-                value={commentBatchAction}
-                onChange={(e) => setCommentBatchAction(e.target.value)}
-              >
-                <option value="delete">Xóa</option>
-                <option value="edit">Chỉnh sửa</option>
-              </select>
-              <button
-                className="btn-batch-action"
-                onClick={executeBatchActionOnRealComments}
-              >
-                THỰC HIỆN
-              </button>
-              <button
-                className="btn-refresh"
-                onClick={fetchRealComments}
-                disabled={commentLoading}
-              >
-                {commentLoading ? "Đang tải..." : "Làm mới"}
-              </button>
-            </div>
-          </div>
-
-          {commentLoading ? (
-            <div className="loading">Đang tải bình luận...</div>
-          ) : realComments.length > 0 ? (
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th className="checkbox-col">
-                    <input
-                      type="checkbox"
-                      onChange={handleSelectAllRealComments}
-                      checked={
-                        realComments.length > 0 &&
-                        realComments.every((comment) => comment.selected)
-                      }
-                    />
-                  </th>
-                  <th>BÌNH LUẬN</th>
-                  <th>TÁC GIẢ</th>
-                  <th>BÀI VIẾT</th>
-                  <th>THỜI GIAN</th>
-                  <th>TÁC VỤ</th>
-                </tr>
-              </thead>
-              <tbody>
-                {realComments.map((comment) => (
-                  <React.Fragment key={comment.id}>
-                    <tr className="comment-row">
-                      <td>
-                        <input
-                          type="checkbox"
-                          checked={comment.selected}
-                          onChange={() =>
-                            handleRealCommentSelection(comment.id)
-                          }
-                        />
-                      </td>
-                      <td className="comment-text">
-                        <div
-                          style={{
-                            maxWidth: "300px",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          {comment.content}
-                        </div>
-                      </td>
-                      <td>{comment.author}</td>
-                      <td>
-                        <a
-                          href={`/Activities/${comment.activitySlug}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{ color: "#042354", textDecoration: "none" }}
-                        >
-                          {comment.activityTitle}
-                        </a>
-                      </td>
-                      <td>{comment.time}</td>
-                      <td className="table-actions">
-                        <button
-                          className="action-btn edit-btn"
-                          onClick={() => {
-                            setRealComments(
-                              realComments.map((c) =>
-                                c.id === comment.id
-                                  ? { ...c, isEditing: !c.isEditing }
-                                  : { ...c, isEditing: false }
-                              )
-                            );
-                            if (!comment.isEditing) {
-                              setEditCommentText(comment.content);
-                            }
-                          }}
-                        >
-                          {comment.isEditing ? "Hủy" : "Chỉnh sửa"}
-                        </button>
-
-                        <button
-                          className="action-btn reply-btn"
-                          onClick={() => {
-                            setReplyingTo(
-                              replyingTo === comment.id ? null : comment.id
-                            );
-                            setReplyContent("");
-                          }}
-                        >
-                          {replyingTo === comment.id ? "Hủy Reply" : "Reply"}
-                        </button>
-
-                        <button
-                          className="action-btn delete-btn"
-                          onClick={() => deleteRealComment(comment.id)}
-                        >
-                          Xóa
-                        </button>
-                      </td>
-                    </tr>
-
-                    {comment.isEditing && (
-                      <tr className="edit-row">
-                        <td colSpan="6">
-                          <div className="edit-container">
-                            <h4>Chỉnh sửa bình luận</h4>
-                            <textarea
-                              value={editCommentText}
-                              onChange={(e) =>
-                                setEditCommentText(e.target.value)
-                              }
-                              className="edit-textarea"
-                              rows="3"
-                            />
-                            <div className="edit-actions">
-                              <button
-                                className="btn-publish"
-                                onClick={() => {
-                                  if (editCommentText.trim()) {
-                                    updateRealComment(
-                                      comment.id,
-                                      editCommentText.trim()
-                                    );
-                                  }
-                                }}
-                              >
-                                Cập nhật
-                              </button>
-                              <button
-                                className="btn-cancel"
-                                onClick={() => {
-                                  setRealComments(
-                                    realComments.map((c) =>
-                                      c.id === comment.id
-                                        ? { ...c, isEditing: false }
-                                        : c
-                                    )
-                                  );
-                                }}
-                              >
-                                Hủy
-                              </button>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                    {replyingTo === comment.id && (
-                      <tr className="reply-row">
-                        <td colSpan="6">
-                          <div className="reply-container">
-                            <h4>Reply cho bình luận của {comment.author}</h4>
-                            <textarea
-                              value={replyContent}
-                              onChange={(e) => setReplyContent(e.target.value)}
-                              className="reply-textarea"
-                              rows="3"
-                              placeholder="Nhập nội dung reply..."
-                              maxLength="1000"
-                            />
-                            <div className="reply-actions">
-                              <button
-                                className="btn-publish"
-                                onClick={() => {
-                                  const content = replyContent.trim();
-                                  if (content) {
-                                    replyToComment(comment.id, content);
-                                  } else {
-                                    alert("Vui lòng nhập nội dung reply!");
-                                  }
-                                }}
-                                disabled={!replyContent.trim()}
-                              >
-                                Gửi Reply
-                              </button>
-                              <button
-                                className="btn-cancel"
-                                onClick={() => {
-                                  setReplyingTo(null);
-                                  setReplyContent("");
-                                }}
-                              >
-                                Hủy
-                              </button>
-                            </div>
-                            <div className="reply-hint">
-                              <small>
-                                Tối đa 1000 ký tự. Hiện tại:{" "}
-                                {replyContent.length}/1000
-                              </small>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </React.Fragment>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <div className="no-data-message">Chưa có bình luận nào.</div>
-          )}
-        </div>
 
         {showBatchEditModal && (
           <div className="modal-overlay">
@@ -1608,23 +2027,11 @@ function ActivitiesDashboard() {
                   }
                 >
                   <option value="">-- Giữ nguyên --</option>
-                  <option value="academic">Học tập</option>
-                  <option value="competition">Cuộc thi</option>
-                  <option value="seminar">Seminar</option>
-                  <option value="research">Nghiên cứu</option>
-                  <option value="course">Khóa học</option>
-                  <option value="volunteer">Tình nguyện</option>
-                  <option value="sport">Thể thao</option>
-                  <option value="event">Sự kiện</option>
-                  <option value="conference">Hội nghị</option>
-                  <option value="vnutour">VNUTour</option>
-                  <option value="netsec">Netsec</option>
-                  <option value="internship">Thực tập</option>
-                  <option value="scholarship">Học bổng</option>
-                  <option value="startup">Khởi nghiệp</option>
-                  <option value="jobfair">Ngày hội việc làm</option>
-                  <option value="career">Hướng nghiệp</option>
-                  <option value="other">Khác</option>
+                  {availableTypes.map((type) => (
+                    <option key={type.value} value={type.value}>
+                      {type.label}
+                    </option>
+                  ))}
                 </select>
               </div>
 

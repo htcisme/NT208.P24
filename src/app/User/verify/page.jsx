@@ -158,6 +158,7 @@ function VerifyAccountContent() {
   );
 }
 
+//Verification page component
 export default function VerifyAccount() {
   return (
     <Suspense

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import Activity from "@/models/Activity";
+import Category from "@/models/Category";
 import Notification from "@/models/Notification";
 import User from "@/models/User";
 import NotificationSubscription from "@/models/NotificationSubscription";
@@ -85,17 +86,18 @@ function getDomainFromRequest(request) {
 export async function GET(request) {
   try {
     await dbConnect();
-
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page")) || 1;
-    const limit = parseInt(searchParams.get("limit")) || 8;
+    const limit = parseInt(searchParams.get("limit")) || 3;
     const status = searchParams.get("status");
     const type = searchParams.get("type");
     const types = searchParams.get("types");
     const skip = (page - 1) * limit;
 
-    const query = status ? { status } : { status: "published" };
-
+    const query = { status: "published" };
+    if (type) {
+      query.type = type;
+    }
     // Add type filter
     if (type) {
       query.type = type;
@@ -108,21 +110,10 @@ export async function GET(request) {
     const activities = await Activity.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(limit)
-      .select("-comments")
-      .lean();
-
-    const total = await Activity.countDocuments(query);
-
+      .limit(limit);
     return NextResponse.json({
       success: true,
       data: activities,
-      pagination: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
-      },
     });
   } catch (error) {
     console.error("Error fetching activities:", error);
@@ -165,6 +156,16 @@ export async function PUT(request) {
       } catch (e) {
         console.error("Invalid images JSON:", e);
       }
+    }
+
+    // Validate type từ categories
+    const type = formData.get("type");
+    const category = await Category.findOne({ value: type });
+    if (!category) {
+      return NextResponse.json(
+        { success: false, message: "Type không hợp lệ" },
+        { status: 400 }
+      );
     }
 
     const updateData = {
@@ -216,9 +217,8 @@ async function generateUniqueSlug(baseSlug) {
   let slug = baseSlug;
   let counter = 1;
 
-  // Kiểm tra xem slug đã tồn tại chưa
   while (await Activity.findOne({ slug })) {
-    // Nếu slug đã tồn tại, thêm số vào cuối
+    // Expand slug with a counter if it already exists
     slug = `${baseSlug}-${counter}`;
     counter++;
   }
@@ -241,6 +241,7 @@ export async function POST(request) {
       body[key] = value;
     });
 
+    //slug gen
     const baseSlug =
       body.title
         ?.toLowerCase()
@@ -275,7 +276,14 @@ export async function POST(request) {
         console.error("Invalid images JSON:", e);
       }
     }
-
+    const type = formData.get("type");
+    const category = await Category.findOne({ value: type });
+    if (!category) {
+      return NextResponse.json(
+        { success: false, message: "Type không hợp lệ" },
+        { status: 400 }
+      );
+    }
     // Tạo hoạt động mới
     const newActivity = new Activity({
       title: body.title,
@@ -283,7 +291,7 @@ export async function POST(request) {
       author: body.author,
       status: body.status,
       commentOption: body.commentOption,
-      type: body.type || "other",
+      type: type || "other",
       images: imageUrls,
       scheduledPublish: body.scheduledPublish,
       slug: uniqueSlug,

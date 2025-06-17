@@ -17,6 +17,11 @@ export default function Header() {
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
+  const categoriesDropdownRef = useRef(null);
+  const [isHovering, setIsHovering] = useState(false);
+  const hoverTimeoutRef = useRef(null);
 
   const router = useRouter();
   const pathname = usePathname();
@@ -24,11 +29,44 @@ export default function Header() {
   const searchRef = useRef(null);
 
   const isActiveNav = (href) => {
-    if (href === '/') {
-      return pathname === '/';
+    if (href === "/") {
+      return pathname === "/";
     }
     return pathname.startsWith(href);
   };
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("/api/categories");
+        const data = await response.json();
+        if (data.success) {
+          setCategories(data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  // Add click outside handler for dropdown
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        categoriesDropdownRef.current &&
+        !categoriesDropdownRef.current.contains(event.target)
+      ) {
+        setShowCategoriesDropdown(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // Toggle mobile menu
   const toggleMobileMenu = () => {
@@ -43,22 +81,24 @@ export default function Header() {
       }
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   // Đóng mobile menu khi click outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (isMobileMenuOpen && 
-          !event.target.closest('.Header-Navbar--mobile') && 
-          !event.target.closest('.Header-Mobile-Menu-Button')) {
+      if (
+        isMobileMenuOpen &&
+        !event.target.closest(".Header-Navbar--mobile") &&
+        !event.target.closest(".Header-Mobile-Menu-Button")
+      ) {
         setIsMobileMenuOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isMobileMenuOpen]);
 
   useEffect(() => {
@@ -165,15 +205,32 @@ export default function Header() {
     }
   };
 
+  const handleMouseEnter = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
+    setIsHovering(true);
+    setShowCategoriesDropdown(true);
+  };
+
+  const handleMouseLeave = () => {
+    hoverTimeoutRef.current = setTimeout(() => {
+      setIsHovering(false);
+      setShowCategoriesDropdown(false);
+    }, 300); // Delay 300ms trước khi đóng
+  };
+
   const handleSearchInput = async (value) => {
     setSearchTerm(value);
 
+    // Validate input empty
     if (!value.trim()) {
       setSearchResults([]);
       setShowSearchResults(false);
       return;
     }
 
+    // Validate to suggest with more than 2 characters
     if (value.trim().length >= 2) {
       setIsSearching(true);
       try {
@@ -217,50 +274,108 @@ export default function Header() {
       <div className="Header-Container">
         {/* Left: Title */}
         <div className="Header-Titlegroup">
-          <div className="Header-Titlegroup-Deptname">
-            SUCTREMMT
-          </div>
+          <div className="Header-Titlegroup-Deptname">SUCTREMMT</div>
         </div>
 
         {/* Center: Navigation - chỉ hiển thị trên desktop */}
         <nav className="Header-Navbar Header-Navbar--desktop">
           <Link
-            className={`Header-Navbar-Navitem ${isActiveNav('/') ? 'active' : ''}`}
+            className={`Header-Navbar-Navitem ${
+              isActiveNav("/") ? "active" : ""
+            }`}
             href="/"
             onClick={handleNavClick}
           >
             TRANG CHỦ
           </Link>
           <Link
-            className={`Header-Navbar-Navitem ${isActiveNav('/Introduction') ? 'active' : ''}`}
+            className={`Header-Navbar-Navitem ${
+              isActiveNav("/Introduction") ? "active" : ""
+            }`}
             href="/Introduction"
             onClick={handleNavClick}
           >
             GIỚI THIỆU
           </Link>
-          <Link
-            className={`Header-Navbar-Navitem ${isActiveNav('/Activities') ? 'active' : ''}`}
-            href="/Activities"
-            onClick={handleNavClick}
+          <div
+            className={`Header-Navbar-Navitem categories-dropdown ${
+              isActiveNav("/Activities") ? "active" : ""
+            }`}
+            ref={categoriesDropdownRef}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
           >
-            HOẠT ĐỘNG
-          </Link>
+            <span>
+              CHUYÊN MỤC
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                className={`dropdown-arrow ${
+                  showCategoriesDropdown ? "open" : ""
+                }`}
+              >
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </span>
+
+            <div
+              className={`categories-dropdown-menu ${
+                showCategoriesDropdown ? "show" : ""
+              }`}
+            >
+              <Link
+                href="/Activities"
+                onClick={() => setShowCategoriesDropdown(false)}
+                className="dropdown-item all-activities"
+              >
+                Hoạt động nổi bật
+              </Link>
+              <Link
+                href="/ActivitiesOverview"
+                onClick={() => setShowCategoriesDropdown(false)}
+                className="dropdown-item featured-activities"
+              >
+                Tất cả hoạt động
+              </Link>
+
+              {categories.map((category) => (
+                <Link
+                  key={category.value}
+                  href={`/ActivitiesOverview?type=${category.value}`}
+                  onClick={() => setShowCategoriesDropdown(false)}
+                  className="dropdown-item"
+                >
+                  {category.label}
+                </Link>
+              ))}
+            </div>
+          </div>
           <Link
-            className={`Header-Navbar-Navitem ${isActiveNav('/Awards') ? 'active' : ''}`}
+            className={`Header-Navbar-Navitem ${
+              isActiveNav("/Awards") ? "active" : ""
+            }`}
             href="/Awards"
             onClick={handleNavClick}
           >
             THÀNH TÍCH
           </Link>
           <Link
-            className={`Header-Navbar-Navitem ${isActiveNav('/Booking') ? 'active' : ''}`}
+            className={`Header-Navbar-Navitem ${
+              isActiveNav("/Booking") ? "active" : ""
+            }`}
             href="/Booking"
             onClick={handleNavClick}
           >
             ĐẶT PHÒNG
           </Link>
           <Link
-            className={`Header-Navbar-Navitem ${isActiveNav('/Contact') ? 'active' : ''}`}
+            className={`Header-Navbar-Navitem ${
+              isActiveNav("/Contact") ? "active" : ""
+            }`}
             href="/Contact"
             onClick={handleNavClick}
           >
@@ -272,10 +387,7 @@ export default function Header() {
         <div className="Header-RightSection">
           {/* 1. User menu */}
           {user ? (
-            <div
-              className="Header-Authsearch-UserInfo"
-              ref={userMenuRef}
-            >
+            <div className="Header-Authsearch-UserInfo" ref={userMenuRef}>
               <div
                 className="Header-Authsearch-UserInfo-Button"
                 onClick={() => setShowUserMenu(!showUserMenu)}
@@ -296,10 +408,7 @@ export default function Header() {
 
               {showUserMenu && (
                 <div className="Header-Authsearch-UserInfo-Menu">
-                  <Link
-                    href="/Profile"
-                    onClick={() => setShowUserMenu(false)}
-                  >
+                  <Link href="/Profile" onClick={() => setShowUserMenu(false)}>
                     Trang cá nhân
                   </Link>
                   {user.role === "admin" && (
@@ -310,19 +419,12 @@ export default function Header() {
                       Quản trị
                     </Link>
                   )}
-                  <button
-                    onClick={handleLogout}
-                  >
-                    Đăng xuất
-                  </button>
+                  <button onClick={handleLogout}>Đăng xuất</button>
                 </div>
               )}
             </div>
           ) : (
-            <div
-              className="Header-Authsearch-UserInfo"
-              ref={userMenuRef}
-            >
+            <div className="Header-Authsearch-UserInfo" ref={userMenuRef}>
               <div
                 className="Header-Authsearch-UserInfo-Button"
                 onClick={() => setShowUserMenu(!showUserMenu)}
@@ -462,10 +564,7 @@ export default function Header() {
           </button>
 
           {/* 5. Dark Mode Toggle */}
-          <button
-            onClick={toggleDarkMode}
-            className="Header-Dark-mode-toggle"
-          >
+          <button onClick={toggleDarkMode} className="Header-Dark-mode-toggle">
             {isDarkMode ? (
               <svg
                 className="w-6 h-6 text-gray-800 dark:text-white"
@@ -504,44 +603,60 @@ export default function Header() {
       </div>
 
       {/* Mobile Navigation Dropdown */}
-      <nav className={`Header-Navbar Header-Navbar--mobile ${isMobileMenuOpen ? 'Header-Navbar--open' : ''}`}>
+      <nav
+        className={`Header-Navbar Header-Navbar--mobile ${
+          isMobileMenuOpen ? "Header-Navbar--open" : ""
+        }`}
+      >
         <Link
-          className={`Header-Navbar-Navitem ${isActiveNav('/') ? 'active' : ''}`}
+          className={`Header-Navbar-Navitem ${
+            isActiveNav("/") ? "active" : ""
+          }`}
           href="/"
           onClick={handleNavClick}
         >
           TRANG CHỦ
         </Link>
         <Link
-          className={`Header-Navbar-Navitem ${isActiveNav('/Introduction') ? 'active' : ''}`}
+          className={`Header-Navbar-Navitem ${
+            isActiveNav("/Introduction") ? "active" : ""
+          }`}
           href="/Introduction"
           onClick={handleNavClick}
         >
           GIỚI THIỆU
         </Link>
         <Link
-          className={`Header-Navbar-Navitem ${isActiveNav('/Activities') ? 'active' : ''}`}
+          className={`Header-Navbar-Navitem ${
+            isActiveNav("/Activities") ? "active" : ""
+          }`}
           href="/Activities"
           onClick={handleNavClick}
         >
           HOẠT ĐỘNG
         </Link>
         <Link
-          className={`Header-Navbar-Navitem ${isActiveNav('/Awards') ? 'active' : ''}`}
+          className={`Header-Navbar-Navitem ${
+            isActiveNav("/Awards") ? "active" : ""
+          }`}
           href="/Awards"
           onClick={handleNavClick}
         >
           THÀNH TÍCH
         </Link>
         <Link
-          className={`Header-Navbar-Navitem ${isActiveNav('/Booking') ? 'active' : ''}`}
+          className={`Header-Navbar-Navitem ${
+            isActiveNav("/Booking") ? "active" : ""
+          }`}
           href="/Booking"
           onClick={handleNavClick}
         >
           ĐẶT PHÒNG
         </Link>
         <Link
-          className={`Header-Navbar-Navitem ${isActiveNav('/Contact') ? 'active' : ''}`}
+          className={`Header-Navbar-Navitem ${
+            isActiveNav("/Contact") ? "active" : ""
+          }`}
           href="/Contact"
           onClick={handleNavClick}
         >
