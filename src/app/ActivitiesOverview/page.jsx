@@ -7,9 +7,10 @@ import "@/styles-comp/style.css";
 import "@/app/ActivitiesOverview/style.css";
 import { useSearchParams } from "next/navigation";
 
-export default function ActivitiesOverview() {
+const searchParams = useSearchParams();
+
+function ActivitiesOverviewContent() {
   // State để quản lý trang hiện tại cho mỗi phần
-  const searchParams = useSearchParams();
   const typeFromUrl = searchParams.get("type");
   const [selectedTypes, setSelectedTypes] = useState(
     typeFromUrl ? [typeFromUrl] : []
@@ -635,5 +636,13 @@ export default function ActivitiesOverview() {
         </main>
       </div>
     </>
+  );
+}
+
+export default function ActivitiesOverview() {
+  return (
+    <Suspense>
+      <ActivitiesOverviewContent />
+    </Suspense>
   );
 }

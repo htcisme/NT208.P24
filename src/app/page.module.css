@@ -14,6 +14,10 @@
     padding: 8px 10px;
   }
 
+  .heroTitle {
+    font-size: 2px;
+  }
+
   .Header_Logo {
     font-size: 20px;
     -webkit-text-stroke: 0.5px black;
@@ -1407,8 +1411,18 @@
     padding: 10px 15px;
   }
 
-  .Header_Logo {
-    font-size: 24px;
+  .Header_Nav_MenuWrapper_MenuButton {
+    scale: 1.2;
+    padding: 5px;
+  }
+
+  .Header_Nav_AuthButton {
+    padding: 6px 10px;
+    font-size: 10px;
+  }
+
+  .Header_Logo a {
+    display: none;
   }
 
   .Header_Nav {
@@ -1582,198 +1596,39 @@
   }
 }
 
-/* Tablet Responsive - Cải tiến bổ sung */
-@media (min-width: 768px) and (max-width: 834px) {
-  /* Header styles for tablet */
-  .Header {
-    padding: 10px 15px;
-  }
+.Body_Container_Awards_Title {
+  font-size: 24px;
+  padding-left: 30px;
+}
 
-  .Header_Logo {
-    font-size: 24px;
-  }
+.Body_Container_Awards_ContentWrapper {
+  flex-direction: column;
+  padding: 20px;
+}
 
-  .Header_Nav {
-    gap: 12px;
-  }
+.Body_Container_Awards_Content {
+  width: 100%;
+}
 
-  .Header_Nav_AuthButton {
-    padding: 7px 12px;
-    font-size: 13px;
-  }
+.Body_Container_Awards_Image {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  margin: 30px auto;
+}
 
-  .Header_Topbar_Authsearch_Searchbox {
-    width: 160px;
-  }
+/* Lower section for tablet */
+.Body_Container_Lower_Bandroll_Content {
+  font-size: 36px;
+}
 
-  /* Hero section for tablet */
-  .hero {
-    height: 80vh;
-  }
+.Image_Grid_Container {
+  padding: 30px 20px;
+}
 
-  .heroTitle {
-    font-size: 22px;
-    padding: 0 10px;
-  }
-
-  .heroSubtitle {
-    font-size: 26px;
-    padding: 0 10px;
-  }
-
-  .logo {
-    width: 300px;
-    height: 300px;
-  }
-
-  /* Introduction section for tablet */
-  .Body_Container_Introduction_Title {
-    font-size: 24px;
-    margin: 15px 20px;
-    padding: 7px 20px;
-  }
-
-  .Body_Container_Introduction_ContentWrapper {
-    margin: 0 20px;
-    gap: 30px;
-    flex-direction: column;
-  }
-
-  .Body_Container_Introduction_ContentWrapper_ImageContainer {
-    padding: 10px;
-    width: 100%;
-  }
-
-  .Body_Container_Introduction_ContentWrapper_ImageContainer_Image {
-    width: 100%;
-    max-width: 600px;
-    height: auto;
-    margin: 0 auto;
-  }
-
-  .Body_Container_Introduction_ContentWrapper_TextContainer {
-    padding: 10px;
-    width: 100%;
-  }
-
-  .Body_Container_Introduction_ContentWrapper_TextContainer_Heading {
-    text-align: center;
-    font-size: 28px;
-    line-height: 1.4;
-  }
-
-  /* Member section for tablet */
-  .Body_Container_MemberWrap {
-    gap: 25px;
-    padding: 0 20px;
-  }
-
-  .Body_Container_MemberItem {
-    width: calc(50% - 25px);
-    max-width: none;
-  }
-
-  .Body_Container_MemberImage {
-    width: 100%;
-    height: auto;
-  }
-
-  .Body_Container_MemberLabel {
-    width: 100%;
-    font-size: 24px;
-    line-height: 40px;
-    -webkit-text-stroke: 2px #b5dff7;
-  }
-
-  /* Activities section for tablet */
-  .Activities_RecentLabel {
-    font-size: 24px;
-    padding: 8px 20px;
-  }
-
-  .Activities_RecentCards {
-    padding: 0 20px;
-    gap: 20px;
-  }
-
-  .Activities_RecentCard {
-    width: calc(50% - 10px);
-    max-width: none;
-  }
-
-  /* Focus activities for tablet */
-  .Activities_Focus_ContentWrapper {
-    flex-direction: column;
-    gap: 30px;
-    padding: 0 20px;
-  }
-
-  .Activities_Focus_ImageContainer {
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
-  }
-
-  .Activities_Focus_Content {
-    width: 100%;
-  }
-
-  /* Highlight section for tablet */
-  .Body_Container_Hightlight_Title {
-    font-size: 24px;
-  }
-
-  .light_slider_container {
-    width: 90%;
-    max-width: 700px;
-    gap: 15px;
-  }
-
-  .slider_image_placeholder {
-    width: 180px;
-    height: 180px;
-  }
-
-  .slider_image_placeholder_active {
-    width: 220px;
-    height: 220px;
-  }
-
-  /* Awards section for tablet */
-  .Body_Container_Awards_Title {
-    font-size: 24px;
-    padding-left: 30px;
-  }
-
-  .Body_Container_Awards_ContentWrapper {
-    flex-direction: column;
-    padding: 20px;
-  }
-
-  .Body_Container_Awards_Content {
-    width: 100%;
-  }
-
-  .Body_Container_Awards_Image {
-    width: 100%;
-    max-width: 500px;
-    height: auto;
-    margin: 30px auto;
-  }
-
-  /* Lower section for tablet */
-  .Body_Container_Lower_Bandroll_Content {
-    font-size: 36px;
-  }
-
-  .Image_Grid_Container {
-    padding: 30px 20px;
-  }
-
-  /* Register form for tablet */
-  .Body_Container_RegisterForm {
-    padding: 30px 20px;
-  }
+/* Register form for tablet */
+.Body_Container_RegisterForm {
+  padding: 30px 20px;
 }
 
 /* Điều chỉnh cho tablet đứng (portrait) */
