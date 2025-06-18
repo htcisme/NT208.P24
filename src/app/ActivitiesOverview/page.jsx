@@ -1,16 +1,15 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { Suspense, useState, useEffect } from "react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import "@/styles-comp/style.css";
 import "@/app/ActivitiesOverview/style.css";
 import { useSearchParams } from "next/navigation";
 
-const searchParams = useSearchParams();
-
 function ActivitiesOverviewContent() {
   // State để quản lý trang hiện tại cho mỗi phần
+  const searchParams = useSearchParams();
   const typeFromUrl = searchParams.get("type");
   const [selectedTypes, setSelectedTypes] = useState(
     typeFromUrl ? [typeFromUrl] : []
