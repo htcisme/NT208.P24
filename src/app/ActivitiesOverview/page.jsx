@@ -3,10 +3,37 @@
 import React, { Suspense, useState, useEffect } from "react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
-import "@/styles-comp/style.css";
 import "@/app/ActivitiesOverview/style.css";
 import { useSearchParams } from "next/navigation";
 
+const useScrollReveal = (threshold = 0.1) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          // Unobserve sau khi đã visible để tránh re-trigger
+          observer.unobserve(entry.target);
+        }
+      },
+      {
+        threshold,
+        rootMargin: "50px 0px -50px 0px", // Trigger sớm hơn một chút
+      }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, [threshold]);
+
+  return [ref, isVisible];
+};
 function ActivitiesOverviewContent() {
   // State để quản lý trang hiện tại cho mỗi phần
   const searchParams = useSearchParams();

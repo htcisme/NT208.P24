@@ -1731,7 +1731,7 @@ html {
 
 .admin-header-topbar {
   background-color: hsl(0, 0%, 100%);
-  padding: 10px 20px;
+  padding: 20px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1758,6 +1758,7 @@ html {
 
 .admin-header-navbar {
   display: flex;
+
   list-style: none;
   border-top: 1px solid #e0e0e0;
   border-bottom: 1px solid #e0e0e0;
@@ -1772,8 +1773,7 @@ html {
   transition: background-color 0.2s ease;
   border-right: 1px solid #e0e0e0;
   text-decoration: none;
-  color: #333;
-  font-weight: bold;
+  color: #636363;
   font-size: 14px;
   flex: 1;
 }
@@ -1784,6 +1784,7 @@ html {
 
 .admin-header-navitem-active {
   background-color: #cce5ff;
+  font-weight: bold;
   color: #003366;
 }
 

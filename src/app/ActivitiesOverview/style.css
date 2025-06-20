@@ -10,7 +10,7 @@ body {
   background-color: var(--page-background);
   margin: 0;
   padding: 0;
-  padding-top: 70px;
+  padding-top: 70px !important;
 }
 
 .light-container-bg {
