@@ -115,6 +115,12 @@ const HeaderAdmin = () => {
           TRANG CHỦ
         </Link>
         <Link
+          href="/admin/IntroductionDashboard"
+          className={isActive("/admin/IntroductionDashboard")}
+        >
+          GIỚI THIỆU
+        </Link>
+        <Link
           href="/admin/ActivitiesDashboard"
           className={isActive("/admin/ActivitiesDashboard")}
         >
@@ -125,6 +131,18 @@ const HeaderAdmin = () => {
           className={isActive("/admin/AwardsDashboard")}
         >
           THÀNH TÍCH
+        </Link>
+        <Link
+          href="/admin/BookingDashboard"
+          className={isActive("/admin/BookingDashboard")}
+        >
+          ĐẶT PHÒNG
+        </Link>
+        <Link
+          href="/admin/ContactDashboard"
+          className={isActive("/admin/ContactDashboard")}
+        >
+          LIÊN HỆ
         </Link>
         <Link
           href="/admin/UsersDashboard"

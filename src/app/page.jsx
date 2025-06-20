@@ -1024,7 +1024,6 @@ export default function Home() {
                     className={styles.Activities_Focus_Image}
                     loading="lazy"
                   />
-                  <div className={styles.Activities_Focus_Shape02}></div>
                 </div>
                 <div className={styles.Activities_Focus_Content}>
                   <div className={styles.Activities_Focus_Content_Title}>
@@ -1147,7 +1146,6 @@ export default function Home() {
               THÀNH TÍCH NỔI BẬT
             </div>
             <div className={styles.Body_Container_Awards_Shape01}></div>
-            <div className={styles.Body_Container_Awards_Shape02}></div>
 
             <div
               ref={awardsContentRef}
