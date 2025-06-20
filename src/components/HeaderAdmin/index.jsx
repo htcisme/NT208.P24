@@ -133,7 +133,7 @@ const HeaderAdmin = () => {
           THÀNH TÍCH
         </Link>
         <Link
-          href="/admin/BookingDashboard"
+          href="/admin/BookingFormDashboard"
           className={isActive("/admin/BookingDashboard")}
         >
           ĐẶT PHÒNG

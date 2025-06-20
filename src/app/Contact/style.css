@@ -230,3 +230,13 @@ body {
     transition: none;
   }
 }
+.address-link {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.3s ease;
+  display: inline-block;
+}
+
+.address-link:hover {
+  color: #007bff; /* Hoặc một màu bạn thích */
+}

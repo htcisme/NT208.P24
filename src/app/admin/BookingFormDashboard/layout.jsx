@@ -1,18 +1,16 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
-import styles from "./style.css";
 
 export const metadata = {
-  title: "Liên hệ",
+  title: "Quản trị Thành tích",
   description: "Tạo bởi XangFuTing",
 };
 
-export default function RootLayout({ children }) {
+export default function AwardsAdminDashboard({ children }) {
   return (
     <html lang="en">
       <body>
-        <Header className="header-component"></Header>
-        <div className="body-component">{children}</div>
+        {children}
       </body>
     </html>
   );
