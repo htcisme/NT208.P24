@@ -88,7 +88,7 @@ export async function GET(request) {
     await dbConnect();
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page")) || 1;
-    const limit = parseInt(searchParams.get("limit")) || 3;
+    const limit = parseInt(searchParams.get("limit")) || 4;
     const status = searchParams.get("status");
     const type = searchParams.get("type");
     const types = searchParams.get("types");

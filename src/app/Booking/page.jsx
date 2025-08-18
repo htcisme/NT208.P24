@@ -704,7 +704,6 @@ export default function BookingForm() {
           </div>
         </div>
       </div>
-      <Footer />
     </>
   );
 }

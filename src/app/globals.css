@@ -144,8 +144,8 @@ body.dark .form-error {
 .Body_Container_Introduction_ContentWrapper_ImageContainer_Dots {
   display: flex;
   justify-content: center;
-  gap: 6px; 
-  margin-top: 12px; 
+  gap: 6px;
+  margin-top: 12px;
 }
 
 @import "tailwindcss";
@@ -404,7 +404,7 @@ body.dark .form-error {
   .Body_Container_Lower_Bandroll_Content_Marquee {
     animation-duration: 20s;
   }
-  
+
   .Body_Container_Lower_Bandroll_Content_Marquee span {
     padding-right: 120px;
   }
@@ -414,7 +414,7 @@ body.dark .form-error {
   .Body_Container_Lower_Bandroll_Content_Marquee {
     animation-duration: 15s;
   }
-  
+
   .Body_Container_Lower_Bandroll_Content_Marquee span {
     padding-right: 80px;
   }
@@ -424,7 +424,7 @@ body.dark .form-error {
   .Body_Container_Lower_Bandroll_Content_Marquee {
     animation-duration: 12s;
   }
-  
+
   .Body_Container_Lower_Bandroll_Content_Marquee span {
     padding-right: 50px;
   }
@@ -459,18 +459,18 @@ body.dark .form-error {
     opacity: 1 !important;
     transform: none !important;
   }
-  
+
   /* Vẫn hiển thị text marquee nhưng không chạy */
   .Body_Container_Lower_Bandroll_Content_Marquee {
     animation: none !important;
     transform: translateX(0) !important;
     justify-content: center;
   }
-  
+
   .Body_Container_Lower_Bandroll_Content_Marquee span:first-child {
     display: inline-block;
   }
-  
+
   .Body_Container_Lower_Bandroll_Content_Marquee span:not(:first-child) {
     display: none;
   }
