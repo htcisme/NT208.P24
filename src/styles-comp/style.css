@@ -55,6 +55,7 @@ html {
   color: #e2f4ff;
 }
 
+/* ==================== DESKTOP CATEGORIES DROPDOWN ==================== */
 .categories-dropdown {
   position: relative;
   cursor: pointer;
@@ -72,7 +73,7 @@ html {
   text-align: center;
   transition: all 0.3s ease;
   text-decoration: none;
-  color: var(--background-color);
+  color: #003366;
   white-space: nowrap;
   border: none;
   position: relative;
@@ -81,7 +82,7 @@ html {
 
 .dropdown-arrow {
   margin-left: 4px;
-  transition: transform 0.2s ease;
+  transition: transform 0.3s ease;
 }
 
 .dropdown-arrow.open {
@@ -121,20 +122,24 @@ html {
   color: #003366;
   transition: all 0.3s ease;
   white-space: nowrap;
+  border-left: 3px solid transparent;
 }
 
 .dropdown-item:hover {
   background-color: #c1e0ff;
   color: #003366;
+  border-left-color: #042354;
 }
 
-.all-activities {
+.dropdown-item.all-activities,
+.dropdown-item.featured-activities {
   border-bottom: 1px solid #e0e0e0;
   margin-bottom: 8px;
   padding-bottom: 12px;
+  font-weight: 700;
 }
 
-/* Dark mode support */
+/* Dark mode support for desktop dropdown */
 .dark .categories-dropdown span {
   color: #e2f4ff;
 }
@@ -151,20 +156,12 @@ html {
 .dark .dropdown-item:hover {
   background-color: #2d5a8a;
   color: #ffffff;
+  border-left-color: #4a6fa5;
 }
 
-.dark .all-activities {
+.dark .dropdown-item.all-activities,
+.dark .dropdown-item.featured-activities {
   border-bottom-color: #2d5a8a;
-}
-
-/* Dropdown arrow animation */
-.dropdown-arrow {
-  margin-left: 4px;
-  transition: transform 0.3s ease;
-}
-
-.dropdown-arrow.open {
-  transform: rotate(180deg);
 }
 
 /* ==================== DESKTOP NAVIGATION ==================== */
@@ -256,7 +253,7 @@ html {
   flex-shrink: 0;
 }
 
-/* ==================== USER INFO BUTTON ==================== */
+/* ==================== USER INFO BUTTON WITH TEXT ==================== */
 .Header-Authsearch-UserInfo {
   position: relative;
   display: flex;
@@ -268,17 +265,18 @@ html {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  padding: 8px;
-  border-radius: 50%;
+  padding: 8px 12px;
+  border-radius: 8px;
   background-color: #ffffff;
   color: #04255a !important;
   font-weight: 500;
   font-size: 14px;
   border: none;
-  width: 40px;
+  min-width: 40px;
   height: 40px;
   transition: all 0.3s ease;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  gap: 8px;
 }
 
 .Header-Authsearch-UserInfo-Button:hover {
@@ -306,21 +304,30 @@ html {
   transition: transform 0.3s ease;
   object-fit: contain;
   filter: none;
+  flex-shrink: 0;
 }
 
 .Header-Authsearch-UserInfo-Button:hover .Header-Authsearch-UserInfo-Icon {
   transform: scale(1.1);
 }
 
+.Header-Authsearch-UserInfo-Text {
+  font-size: 14px;
+  font-weight: 500;
+  color: inherit;
+  white-space: nowrap;
+  display: block;
+}
+
 .Header-Authsearch-UserInfo-Menu {
   position: absolute;
   top: calc(100% + 8px);
-  left: 0;
+  right: 0;
   min-width: 180px;
   background: #fff;
   border-radius: 14px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-  z-index: 100;
+  z-index: 1003;
   overflow: hidden;
   border: 1px solid #e2f4ff;
   padding: 6px 0;
@@ -466,7 +473,7 @@ html {
   margin-top: 8px;
   max-height: 400px;
   overflow-y: auto;
-  z-index: 1000;
+  z-index: 1002;
 }
 
 .dark .search-results-dropdown {
@@ -635,7 +642,7 @@ html {
   right: 0;
   background: white;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-  z-index: 1000;
+  z-index: 1001;
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
@@ -650,7 +657,7 @@ html {
 
 .Header-Navbar--mobile.Header-Navbar--open {
   display: flex;
-  max-height: 450px;
+  max-height: 500px;
   opacity: 1;
   visibility: visible;
 }
@@ -718,6 +725,104 @@ html {
   box-shadow: none;
 }
 
+/* ==================== MOBILE CATEGORIES DROPDOWN ==================== */
+.mobile-categories-container {
+  position: relative;
+  width: 100%;
+}
+
+.mobile-categories-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 16px 24px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: white;
+  border-bottom: 1px solid #f0f0f0;
+  color: #003366;
+  font-size: 15px;
+  font-weight: bold;
+  position: relative;
+}
+
+.mobile-categories-trigger::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: transparent;
+  transition: background-color 0.2s ease;
+}
+
+.mobile-categories-trigger:hover {
+  background-color: #f8fafe;
+  color: #042354;
+}
+
+.mobile-categories-trigger:hover::before {
+  background-color: #042354;
+}
+
+.mobile-categories-trigger.active {
+  background-color: #e8f4fd;
+  color: #042354 !important;
+  font-weight: 700;
+}
+
+.mobile-categories-trigger.active::before {
+  background-color: #042354;
+}
+
+.mobile-dropdown-arrow {
+  transition: transform 0.3s ease;
+  width: 12px;
+  height: 12px;
+}
+
+.mobile-dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+.mobile-categories-submenu {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
+  background-color: #f8f9fa;
+}
+
+.mobile-categories-submenu.show {
+  max-height: 400px;
+  opacity: 1;
+}
+
+.mobile-submenu-item {
+  display: block;
+  padding: 12px 16px 12px 40px;
+  color: #555;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  border-left: 3px solid transparent;
+  background: #f8f9fa;
+}
+
+.mobile-submenu-item:hover {
+  background-color: #e9ecef;
+  color: #042354;
+  border-left-color: #042354;
+}
+
+.mobile-submenu-divider {
+  height: 1px;
+  background-color: #dee2e6;
+  margin: 8px 16px 8px 40px;
+}
+
 /* Dark mode cho mobile navbar */
 .dark .Header-Navbar--mobile {
   background: #1a365d;
@@ -754,304 +859,47 @@ html {
   color: #ffffff !important;
 }
 
-/* ==================== RESPONSIVE DESIGN ==================== */
-
-/* Desktop (>1024px) - Tất cả cùng một hàng */
-@media (min-width: 1025px) {
-  .Header-Mobile-Menu-Button {
-    display: none !important;
-  }
-
-  .Header-Navbar--desktop {
-    display: flex;
-  }
-
-  .Header-Navbar--mobile {
-    display: none !important;
-  }
+.dark .mobile-categories-trigger {
+  color: #e2f4ff;
+  background: #1a365d;
+  border-bottom-color: #2d5a8a;
 }
 
-/* Tablet (768px - 1024px) */
-@media (min-width: 768px) and (max-width: 1024px) {
-  body {
-    padding-top: 65px !important;
-  }
-
-  .Header-Container {
-    padding: 10px 16px;
-  }
-
-  .Header-Titlegroup-Deptname {
-    font-size: 20px;
-  }
-
-  .Header-RightSection {
-    gap: 8px;
-  }
-
-  .Header-Authsearch-Searchbox {
-    width: 180px;
-    padding: 6px 10px;
-  }
-
-  .Header-Authsearch-Searchbox input {
-    font-size: 13px;
-  }
-
-  .Header-Authsearch-Searchbox-Searchicon-Icon {
-    width: 16px;
-    height: 16px;
-  }
-
-  /* Ẩn desktop nav, hiện mobile button */
-  .Header-Navbar--desktop {
-    display: none;
-  }
-
-  .Header-Mobile-Menu-Button {
-    display: flex !important;
-    width: 36px;
-    height: 36px;
-  }
-
-  .Header-Mobile-Menu-Icon {
-    width: 18px;
-    height: 18px;
-  }
-
-  /* Kích thước icons cho tablet */
-  .Header-Authsearch-UserInfo-Button,
-  .Header-Dark-mode-toggle {
-    width: 36px;
-    height: 36px;
-    padding: 6px;
-  }
-
-  .Header-Authsearch-UserInfo-Icon {
-    width: 22px !important;
-    height: 22px !important;
-  }
-
-  .Header-Dark-mode-toggle svg {
-    width: 18px;
-    height: 18px;
-  }
-
-  .Header-Authsearch-Searchbox {
-    height: 36px;
-  }
+.dark .mobile-categories-trigger:hover {
+  background-color: #2d5a8a;
+  color: #ffffff;
 }
 
-/* Mobile (≤767px) */
-@media (max-width: 767px) {
-  body {
-    padding-top: 60px !important;
-  }
-
-  .Header-Container {
-    padding: 8px 12px;
-  }
-
-  .Header-Titlegroup-Deptname {
-    font-size: 16px;
-  }
-
-  .Header-RightSection {
-    gap: 6px;
-  }
-
-  .Header-Authsearch-Searchbox {
-    width: 120px;
-    padding: 5px 8px;
-    height: 32px;
-  }
-
-  .Header-Authsearch-Searchbox input {
-    font-size: 12px;
-  }
-
-  .Header-Authsearch-Searchbox-Searchicon-Icon {
-    width: 14px;
-    height: 14px;
-  }
-
-  /* Ẩn desktop nav, hiện mobile button */
-  .Header-Navbar--desktop {
-    display: none;
-  }
-
-  .Header-Mobile-Menu-Button {
-    display: flex !important;
-    width: 32px;
-    height: 32px;
-  }
-
-  .Header-Mobile-Menu-Icon {
-    width: 16px;
-    height: 16px;
-  }
-
-  /* Kích thước icons cho mobile */
-  .Header-Authsearch-UserInfo-Button,
-  .Header-Dark-mode-toggle {
-    width: 32px;
-    height: 32px;
-    padding: 4px;
-  }
-
-  .Header-Authsearch-UserInfo-Icon {
-    width: 20px !important;
-    height: 20px !important;
-  }
-
-  .Header-Dark-mode-toggle svg {
-    width: 16px;
-    height: 16px;
-  }
-
-  /* Mobile dropdown items */
-  .Header-Navbar--mobile .Header-Navbar-Navitem {
-    padding: 14px 20px;
-    font-size: 14px;
-  }
-
-  .search-results-dropdown {
-    max-height: 200px;
-  }
+.dark .mobile-categories-trigger:hover::before {
+  background-color: #4a6fa5;
 }
 
-/* Small Mobile (≤480px) */
-@media (max-width: 480px) {
-  .Header-Container {
-    padding: 6px 10px;
-  }
-
-  .Header-Titlegroup-Deptname {
-    font-size: 14px;
-  }
-
-  .Header-RightSection {
-    gap: 4px;
-  }
-
-  .Header-Authsearch-Searchbox {
-    width: 100px;
-    padding: 4px 6px;
-    height: 30px;
-  }
-
-  .Header-Authsearch-Searchbox input {
-    font-size: 11px;
-  }
-
-  .Header-Authsearch-Searchbox-Searchicon-Icon {
-    width: 12px;
-    height: 12px;
-  }
-
-  .Header-Mobile-Menu-Button {
-    width: 30px;
-    height: 30px;
-  }
-
-  .Header-Mobile-Menu-Icon {
-    width: 14px;
-    height: 14px;
-  }
-
-  .Header-Authsearch-UserInfo-Button,
-  .Header-Dark-mode-toggle {
-    width: 30px;
-    height: 30px;
-    padding: 3px;
-  }
-
-  .Header-Authsearch-UserInfo-Icon {
-    width: 18px !important;
-    height: 18px !important;
-  }
-
-  .Header-Dark-mode-toggle svg {
-    width: 14px;
-    height: 14px;
-  }
-
-  .Header-Navbar--mobile .Header-Navbar-Navitem {
-    padding: 12px 16px;
-    font-size: 13px;
-  }
+.dark .mobile-categories-trigger.active {
+  background-color: #2d5a8a;
+  color: #ffffff !important;
 }
 
-/* ==================== SCROLLBAR CUSTOMIZATION ==================== */
-.search-results-dropdown::-webkit-scrollbar {
-  width: 6px;
+.dark .mobile-categories-trigger.active::before {
+  background-color: #4a6fa5;
 }
 
-.search-results-dropdown::-webkit-scrollbar-track {
-  background: #f1f1f1;
+.dark .mobile-categories-submenu {
+  background-color: #2d3748;
 }
 
-.search-results-dropdown::-webkit-scrollbar-thumb {
-  background: #042354;
-  border-radius: 3px;
+.dark .mobile-submenu-item {
+  color: #e2e8f0;
+  background: #2d3748;
 }
 
-.search-results-dropdown::-webkit-scrollbar-thumb:hover {
-  background: #031a3e;
+.dark .mobile-submenu-item:hover {
+  background-color: #4a5568;
+  color: #90cdf4;
+  border-left-color: #4a6fa5;
 }
 
-/* ==================== Z-INDEX MANAGEMENT ==================== */
-.Header-Navbar--mobile.Header-Navbar--open {
-  z-index: 1001;
-}
-
-.search-results-dropdown {
-  z-index: 1002;
-}
-
-.Header-Authsearch-UserInfo-Menu {
-  z-index: 1003;
-}
-
-/* ==================== ANIMATIONS ==================== */
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.Header-Navbar--mobile {
-  animation: slideDown 0.3s ease-out;
-}
-
-/* ==================== OVERLAY FOR MOBILE MENU ==================== */
-@media (max-width: 1024px) {
-  .Header-Navbar--mobile.Header-Navbar--open::after {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.2);
-    z-index: -1;
-    pointer-events: none;
-    animation: fadeIn 0.3s ease;
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+.dark .mobile-submenu-divider {
+  background-color: #4a5568;
 }
 
 /* ==================== NOTIFICATION STYLES ==================== */
@@ -1118,8 +966,136 @@ html {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
-/* Responsive notification icon sizes */
-@media (min-width: 768px) and (max-width: 1024px) {
+/* ==================== RESPONSIVE DESIGN ==================== */
+
+/* Desktop (>1024px) - Hiển thị text cho user menu */
+@media (min-width: 1025px) {
+  .Header-Mobile-Menu-Button {
+    display: none !important;
+  }
+
+  .Header-Navbar--desktop {
+    display: flex;
+  }
+
+  .Header-Navbar--mobile {
+    display: none !important;
+  }
+
+  .Header-Authsearch-UserInfo-Text {
+    display: block;
+  }
+
+  .Header-Authsearch-UserInfo-Button {
+    padding: 8px 16px;
+    border-radius: 20px;
+    min-width: auto;
+    gap: 10px;
+  }
+}
+
+/* Large Desktop (>1200px) */
+@media (min-width: 1201px) {
+  .Header-Authsearch-UserInfo-Text {
+    font-size: 15px;
+  }
+
+  .Header-Authsearch-UserInfo-Button {
+    padding: 10px 18px;
+    gap: 12px;
+  }
+
+  .categories-dropdown-menu {
+    min-width: 240px;
+  }
+
+  .dropdown-item {
+    padding: 14px 18px;
+    font-size: 15px;
+  }
+}
+
+/* Tablet (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  body {
+    padding-top: 65px !important;
+  }
+
+  .Header-Container {
+    padding: 10px 16px;
+  }
+
+  .Header-Titlegroup-Deptname {
+    font-size: 20px;
+  }
+
+  .Header-RightSection {
+    gap: 8px;
+  }
+
+  .Header-Authsearch-Searchbox {
+    width: 180px;
+    padding: 6px 10px;
+  }
+
+  .Header-Authsearch-Searchbox input {
+    font-size: 13px;
+  }
+
+  .Header-Authsearch-Searchbox-Searchicon-Icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Show text on tablet */
+  .Header-Authsearch-UserInfo-Text {
+    display: block;
+    font-size: 13px;
+  }
+
+  .Header-Authsearch-UserInfo-Button {
+    padding: 6px 12px;
+    gap: 6px;
+    border-radius: 18px;
+  }
+
+  /* Ẩn desktop nav, hiện mobile button */
+  .Header-Navbar--desktop {
+    display: none;
+  }
+
+  .Header-Mobile-Menu-Button {
+    display: flex !important;
+    width: 36px;
+    height: 36px;
+  }
+
+  .Header-Mobile-Menu-Icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Kích thước icons cho tablet */
+  .Header-Authsearch-UserInfo-Icon {
+    width: 22px !important;
+    height: 22px !important;
+  }
+
+  .Header-Dark-mode-toggle {
+    width: 36px;
+    height: 36px;
+    padding: 6px;
+  }
+
+  .Header-Dark-mode-toggle svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .Header-Authsearch-Searchbox {
+    height: 36px;
+  }
+
   .Header-Topbar-Authsearch-Notification-Button {
     width: 36px;
     height: 36px;
@@ -1131,7 +1107,182 @@ html {
   }
 }
 
-@media (max-width: 767px) {
+/* Mobile Landscape (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  body {
+    padding-top: 60px !important;
+  }
+
+  .Header-Container {
+    padding: 8px 14px;
+  }
+
+  .Header-Titlegroup-Deptname {
+    font-size: 18px;
+  }
+
+  .Header-RightSection {
+    gap: 6px;
+  }
+
+  .Header-Authsearch-Searchbox {
+    width: 140px;
+    padding: 5px 8px;
+    height: 34px;
+  }
+
+  .Header-Authsearch-Searchbox input {
+    font-size: 13px;
+  }
+
+  .Header-Authsearch-Searchbox-Searchicon-Icon {
+    width: 15px;
+    height: 15px;
+  }
+
+  /* Hide text on mobile landscape */
+  .Header-Authsearch-UserInfo-Text {
+    display: none;
+  }
+
+  .Header-Authsearch-UserInfo-Button {
+    padding: 6px;
+    gap: 0;
+    border-radius: 50%;
+    min-width: 34px;
+    width: 34px;
+    height: 34px;
+  }
+
+  .Header-Navbar--desktop {
+    display: none;
+  }
+
+  .Header-Mobile-Menu-Button {
+    display: flex !important;
+    width: 34px;
+    height: 34px;
+  }
+
+  .Header-Mobile-Menu-Icon {
+    width: 17px;
+    height: 17px;
+  }
+
+  .Header-Authsearch-UserInfo-Icon {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .Header-Dark-mode-toggle {
+    width: 34px;
+    height: 34px;
+    padding: 5px;
+  }
+
+  .Header-Dark-mode-toggle svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .Header-Topbar-Authsearch-Notification-Button {
+    width: 34px;
+    height: 34px;
+  }
+
+  .Header-Topbar-Authsearch-Notification-Icon {
+    width: 17px;
+    height: 17px;
+  }
+
+  .mobile-categories-submenu.show {
+    max-height: 350px;
+  }
+
+  .mobile-submenu-item {
+    padding: 12px 16px 12px 36px;
+    font-size: 15px;
+  }
+}
+
+/* Mobile Portrait (≤480px) */
+@media (max-width: 480px) {
+  body {
+    padding-top: 55px !important;
+  }
+
+  .Header-Container {
+    padding: 6px 12px;
+  }
+
+  .Header-Titlegroup-Deptname {
+    font-size: 16px;
+  }
+
+  .Header-RightSection {
+    gap: 4px;
+  }
+
+  .Header-Authsearch-Searchbox {
+    width: 120px;
+    padding: 4px 6px;
+    height: 32px;
+  }
+
+  .Header-Authsearch-Searchbox input {
+    font-size: 12px;
+  }
+
+  .Header-Authsearch-Searchbox-Searchicon-Icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* Hide text on mobile */
+  .Header-Authsearch-UserInfo-Text {
+    display: none;
+  }
+
+  .Header-Authsearch-UserInfo-Button {
+    padding: 4px;
+    gap: 0;
+    border-radius: 50%;
+    min-width: 32px;
+    width: 32px;
+    height: 32px;
+  }
+
+  .Header-Navbar--desktop {
+    display: none;
+  }
+
+  .Header-Mobile-Menu-Button {
+    display: flex !important;
+    width: 32px;
+    height: 32px;
+  }
+
+  .Header-Mobile-Menu-Icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .Header-Authsearch-UserInfo-Icon {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .Header-Dark-mode-toggle {
+    width: 32px;
+    height: 32px;
+    padding: 4px;
+  }
+
+  .Header-Dark-mode-toggle svg {
+    width: 16px;
+    height: 16px;
+  }
+
   .Header-Topbar-Authsearch-Notification-Button {
     width: 32px;
     height: 32px;
@@ -1141,9 +1292,99 @@ html {
     width: 16px;
     height: 16px;
   }
+
+  /* Mobile dropdown items */
+  .Header-Navbar--mobile .Header-Navbar-Navitem {
+    padding: 14px 20px;
+    font-size: 14px;
+  }
+
+  .mobile-categories-trigger {
+    padding: 14px 20px;
+    font-size: 14px;
+  }
+
+  .mobile-categories-submenu.show {
+    max-height: 300px;
+  }
+
+  .mobile-submenu-item {
+    padding: 10px 14px 10px 34px;
+    font-size: 14px;
+  }
+
+  .mobile-dropdown-arrow {
+    width: 10px;
+    height: 10px;
+  }
+
+  .search-results-dropdown {
+    max-height: 200px;
+  }
 }
 
-@media (max-width: 480px) {
+/* Extra Small Mobile (≤360px) */
+@media (max-width: 360px) {
+  .Header-Container {
+    padding: 4px 8px;
+  }
+
+  .Header-Titlegroup-Deptname {
+    font-size: 14px;
+  }
+
+  .Header-RightSection {
+    gap: 3px;
+  }
+
+  .Header-Authsearch-Searchbox {
+    width: 100px;
+    padding: 3px 5px;
+    height: 30px;
+  }
+
+  .Header-Authsearch-Searchbox input {
+    font-size: 11px;
+  }
+
+  .Header-Authsearch-Searchbox-Searchicon-Icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  .Header-Authsearch-UserInfo-Button {
+    padding: 3px;
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+  }
+
+  .Header-Mobile-Menu-Button {
+    width: 30px;
+    height: 30px;
+  }
+
+  .Header-Mobile-Menu-Icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .Header-Authsearch-UserInfo-Icon {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .Header-Dark-mode-toggle {
+    width: 30px;
+    height: 30px;
+    padding: 3px;
+  }
+
+  .Header-Dark-mode-toggle svg {
+    width: 14px;
+    height: 14px;
+  }
+
   .Header-Topbar-Authsearch-Notification-Button {
     width: 30px;
     height: 30px;
@@ -1153,14 +1394,211 @@ html {
     width: 14px;
     height: 14px;
   }
+
+  .Header-Navbar--mobile .Header-Navbar-Navitem {
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+
+  .mobile-categories-trigger {
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+
+  .mobile-categories-submenu.show {
+    max-height: 250px;
+  }
+
+  .mobile-submenu-item {
+    padding: 8px 12px 8px 28px;
+    font-size: 13px;
+  }
+
+  .mobile-submenu-divider {
+    margin: 6px 12px 6px 28px;
+  }
 }
 
+/* ==================== SCROLLBAR CUSTOMIZATION ==================== */
+.search-results-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.search-results-dropdown::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.search-results-dropdown::-webkit-scrollbar-thumb {
+  background: #042354;
+  border-radius: 3px;
+}
+
+.search-results-dropdown::-webkit-scrollbar-thumb:hover {
+  background: #031a3e;
+}
+
+.mobile-categories-submenu::-webkit-scrollbar {
+  width: 4px;
+}
+
+.mobile-categories-submenu::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.mobile-categories-submenu::-webkit-scrollbar-thumb {
+  background: #042354;
+  border-radius: 2px;
+}
+
+/* ==================== Z-INDEX MANAGEMENT ==================== */
+.Header-Navbar--mobile.Header-Navbar--open {
+  z-index: 1001;
+}
+
+.search-results-dropdown {
+  z-index: 1002;
+}
+
+.Header-Authsearch-UserInfo-Menu {
+  z-index: 1003;
+}
+
+.categories-dropdown-menu {
+  z-index: 1004;
+}
+
+/* ==================== ANIMATIONS ==================== */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.Header-Navbar--mobile {
+  animation: slideDown 0.3s ease-out;
+}
+
+.categories-dropdown-menu.show,
+.mobile-categories-submenu.show {
+  animation: slideDown 0.2s ease-out;
+}
+
+/* ==================== ACCESSIBILITY IMPROVEMENTS ==================== */
+
+/* Focus states */
+.mobile-categories-trigger:focus,
+.Header-Authsearch-UserInfo-Button:focus,
+.Header-Mobile-Menu-Button:focus,
+.Header-Dark-mode-toggle:focus {
+  outline: 2px solid #042354;
+  outline-offset: 2px;
+}
+
+.dark .mobile-categories-trigger:focus,
+.dark .Header-Authsearch-UserInfo-Button:focus,
+.dark .Header-Mobile-Menu-Button:focus,
+.dark .Header-Dark-mode-toggle:focus {
+  outline-color: #4a6fa5;
+}
+
+.mobile-submenu-item:focus,
+.dropdown-item:focus {
+  outline: 2px solid #042354;
+  outline-offset: -2px;
+}
+
+.dark .mobile-submenu-item:focus,
+.dark .dropdown-item:focus {
+  outline-color: #4a6fa5;
+}
+
+.Header-Navbar-Navitem:focus {
+  outline: 2px solid #042354;
+  outline-offset: 2px;
+}
+
+.dark .Header-Navbar-Navitem:focus {
+  outline-color: #4a6fa5;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .mobile-categories-submenu,
+  .categories-dropdown-menu,
+  .mobile-dropdown-arrow,
+  .dropdown-arrow,
+  .Header-Authsearch-UserInfo-Button,
+  .mobile-submenu-item,
+  .dropdown-item,
+  .Header-Navbar-Navitem,
+  .Header-Mobile-Menu-Icon {
+    transition: none;
+    animation: none;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .mobile-submenu-item,
+  .dropdown-item,
+  .Header-Navbar-Navitem {
+    border: 1px solid;
+  }
+
+  .mobile-categories-submenu,
+  .categories-dropdown-menu,
+  .Header-Authsearch-UserInfo-Menu,
+  .Header-Navbar--mobile {
+    border-width: 2px;
+  }
+
+  .Header-Authsearch-UserInfo-Button,
+  .Header-Mobile-Menu-Button,
+  .Header-Dark-mode-toggle,
+  .Header-Topbar-Authsearch-Notification-Button {
+    border: 2px solid currentColor;
+  }
+}
+
+/* ==================== PRINT STYLES ==================== */
+@media print {
+  .Header {
+    position: static !important;
+    box-shadow: none !important;
+    border-bottom: 1px solid #000 !important;
+    background: white !important;
+    color: black !important;
+  }
+
+  .Header-RightSection,
+  .Header-Mobile-Menu-Button,
+  .Header-Navbar--mobile {
+    display: none !important;
+  }
+
+  .Header-Navbar--desktop {
+    display: flex !important;
+  }
+
+  .Header-Navbar-Navitem {
+    color: black !important;
+    background: transparent !important;
+  }
+
+  .Header-Titlegroup-Deptname {
+    color: black !important;
+  }
+}
 /* ==================== FOOTER RESPONSIVE DESIGN ==================== */
 
 /* Footer base styles - Desktop */
 .footer-container {
   width: 100%;
-  /* background-color: #ECF9FF; */
   margin-top: auto;
 }
 
@@ -1231,6 +1669,26 @@ html {
   line-height: 1.4;
 }
 
+.footer-contact-row {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.footer-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.footer-address {
+  font-style: italic;
+  line-height: 1.5;
+  margin-top: 10px;
+}
+
 .footer-divider {
   margin: 20px 0;
   width: 100%;
@@ -1255,7 +1713,13 @@ html {
 }
 
 .footer-link:hover {
-  color: var(--footer-link-hover, #446ca1);
+  color: var(--footer-link-hover, #87ceeb);
+  text-decoration: underline;
+}
+
+.footer-link:focus {
+  outline: 2px solid var(--footer-text, #ffffff);
+  outline-offset: 2px;
 }
 
 /* ==================== LARGE DESKTOP (>1200px) ==================== */
@@ -1306,6 +1770,10 @@ html {
     height: auto !important;
   }
 
+  .footer-contact-item {
+    font-size: 13px;
+  }
+
   .footer-divider {
     margin: 15px 0;
   }
@@ -1319,89 +1787,89 @@ html {
 /* ==================== MOBILE RESPONSIVE (≤767px) ==================== */
 @media (max-width: 767px) {
   .footer-content {
-    padding: 15px 10px; /* Giảm padding từ 20px 15px */
+    padding: 20px 15px;
+    border-radius: 12px 12px 0 0;
   }
 
   .footer-columns {
     flex-direction: column;
-    gap: 15px; /* Giảm từ 25px xuống 15px */
-    align-items: center; /* Căn giữa toàn bộ */
-    text-align: center; /* Căn giữa text */
+    gap: 20px;
+    align-items: center;
+    text-align: center;
   }
 
   .footer-section {
     width: 100%;
     min-width: unset;
-    padding-bottom: 0; /* Giảm từ 15px xuống 0 */
-    text-align: center; /* Căn giữa */
+    padding-bottom: 0;
+    text-align: center;
   }
 
   .footer-section:first-child {
     margin: 0;
-    align-items: center; /* Căn giữa logo */
-    text-align: center; /* Căn giữa text */
+    align-items: center;
+    text-align: center;
     order: 1;
-    margin-bottom: 5px; /* Thêm margin nhỏ để tách biệt */
+    margin-bottom: 10px;
   }
 
   .footer-section:last-child {
     margin: 0;
     padding-top: 0;
-    text-align: center; /* Căn giữa */
+    text-align: center;
     order: 2;
   }
 
   .footer-title {
-    align-items: center; /* Căn giữa */
-    margin-bottom: 8px; /* Giảm từ 15px xuống 8px */
+    align-items: center;
+    margin-bottom: 12px;
   }
 
   .footer-title-text {
-    font-size: 13px; /* Giảm từ 14px xuống 13px */
-    line-height: 1.2; /* Giảm line-height để compact hơn */
-    text-align: center; /* Căn giữa */
-    margin-top: 8px; /* Giảm khoảng cách với logo */
+    font-size: 14px;
+    line-height: 1.3;
+    text-align: center;
+    margin-top: 10px;
   }
 
   .footer-title-img-container {
-    text-align: center; /* Căn giữa logo container */
-    margin-bottom: 8px; /* Giảm từ 15px xuống 8px */
+    text-align: center;
+    margin-bottom: 10px;
   }
 
   .footer-title-img-container img {
-    width: 90px !important; /* Giảm từ 100px xuống 90px */
+    width: 100px !important;
     height: auto !important;
   }
 
   .footer-divider {
-    margin: 10px 0; /* Giảm từ 15px 0 xuống 10px 0 */
+    margin: 15px 0;
   }
 
   .footer-rights {
-    font-size: 9px; /* Giảm từ 10px xuống 9px */
-    padding-top: 5px; /* Giảm từ 10px xuống 5px */
-    text-align: center; /* Căn giữa */
+    font-size: 10px;
+    padding-top: 10px;
+    text-align: center;
   }
 
-  /* Mobile contact info styling - compact hơn */
+  /* Mobile contact info styling */
   .footer-section:last-child {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 5px; /* Giảm từ 8px xuống 5px */
+    gap: 8px;
   }
 
   .footer-section:last-child p:first-child {
-    margin-bottom: 8px; /* Giảm từ 12px xuống 8px */
-    font-size: 12px; /* Giảm từ 13px xuống 12px */
+    margin-bottom: 12px;
+    font-size: 13px;
     font-weight: bold;
   }
 
-  /* Container cho Email và Facebook */
   .footer-contact-row {
     display: flex;
     flex-direction: column;
-    gap: 4px; /* Giảm từ 6px xuống 4px */
+    gap: 8px;
     align-items: center;
     width: 100%;
   }
@@ -1410,120 +1878,178 @@ html {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 4px; /* Giảm từ 5px xuống 4px */
-    font-size: 11px; /* Giảm từ 13px xuống 11px */
+    gap: 6px;
+    font-size: 12px;
     flex-wrap: wrap;
-    line-height: 1.3; /* Thêm line-height compact */
+    line-height: 1.4;
   }
 
   .footer-contact-item strong {
-    font-size: 11px; /* Giảm từ 13px xuống 11px */
+    font-size: 12px;
     white-space: nowrap;
   }
 
   .footer-contact-item .footer-link {
-    font-size: 11px; /* Giảm từ 13px xuống 11px */
+    font-size: 12px;
     word-break: break-word;
     text-align: center;
   }
 
-  /* Địa chỉ */
   .footer-address {
-    font-size: 10px; /* Giảm từ 13px xuống 10px */
-    margin-top: 5px; /* Giảm từ 8px xuống 5px */
+    font-size: 12px;
+    margin-top: 10px;
     text-align: center;
-    line-height: 1.2; /* Compact line-height */
+    line-height: 1.4;
+    max-width: 300px;
   }
 }
 
 /* ==================== SMALL MOBILE RESPONSIVE (≤480px) ==================== */
 @media (max-width: 480px) {
   .footer-content {
-    padding: 12px 8px; /* Giảm từ 15px 10px */
-    border-radius: 8px 8px 0 0; /* Giảm border-radius */
+    padding: 15px 10px;
+    border-radius: 0 0;
   }
 
   .footer-columns {
-    gap: 12px; /* Giảm từ 20px xuống 12px */
+    gap: 15px;
   }
 
   .footer-title-text {
-    font-size: 11px; /* Giảm từ 12px xuống 11px */
-    line-height: 1.1; /* Compact hơn nữa */
+    font-size: 13px;
+    line-height: 1.2;
   }
 
   .footer-title-img-container img {
-    width: 75px !important; /* Giảm từ 80px xuống 75px */
+    width: 85px !important;
     height: auto !important;
   }
 
   .footer-title {
-    margin-bottom: 6px; /* Giảm từ 12px xuống 6px */
+    margin-bottom: 10px;
   }
 
   .footer-title-img-container {
-    margin-bottom: 6px; /* Giảm từ 8px xuống 6px */
+    margin-bottom: 8px;
   }
 
   .footer-divider {
-    margin: 8px 0; /* Giảm từ 12px 0 xuống 8px 0 */
+    margin: 12px 0;
   }
 
   .footer-rights {
-    font-size: 8px; /* Giảm từ 9px xuống 8px */
-    padding-top: 4px; /* Giảm từ 8px xuống 4px */
+    font-size: 9px;
+    padding-top: 8px;
   }
 
-  /* Small mobile contact adjustments */
   .footer-section:last-child p:first-child {
-    font-size: 11px; /* Giảm từ 12px xuống 11px */
-    margin-bottom: 6px; /* Giảm từ 8px xuống 6px */
+    font-size: 12px;
+    margin-bottom: 10px;
   }
 
   .footer-contact-row {
-    gap: 3px; /* Giảm từ 4px xuống 3px */
+    gap: 6px;
   }
 
   .footer-contact-item {
-    font-size: 9px; /* Giảm từ 10px xuống 9px */
-    gap: 3px; /* Giảm từ 4px xuống 3px */
+    font-size: 11px;
+    gap: 4px;
   }
 
   .footer-contact-item strong {
-    font-size: 9px; /* Giảm từ 10px xuống 9px */
+    font-size: 11px;
   }
 
   .footer-contact-item .footer-link {
-    font-size: 9px; /* Giảm từ 10px xuống 9px */
+    font-size: 11px;
   }
 
   .footer-address {
-    font-size: 9px; /* Giảm từ 10px xuống 9px */
-    margin-top: 4px; /* Giảm từ 5px xuống 4px */
-    line-height: 1.1; /* Compact nhất */
+    font-size: 11px;
+    margin-top: 8px;
+    line-height: 1.3;
+    max-width: 280px;
   }
 
   .footer-section:last-child {
-    gap: 4px; /* Giảm gap cho small mobile */
+    gap: 6px;
+  }
+}
+
+/* ==================== EXTRA SMALL MOBILE (≤360px) ==================== */
+@media (max-width: 360px) {
+  .footer-content {
+    padding: 12px 8px;
+  }
+
+  .footer-columns {
+    gap: 12px;
+  }
+
+  .footer-title-text {
+    font-size: 12px;
+    line-height: 1.1;
+  }
+
+  .footer-title-img-container img {
+    width: 75px !important;
+    height: auto !important;
+  }
+
+  .footer-contact-item {
+    font-size: 10px;
+    gap: 3px;
+  }
+
+  .footer-contact-item strong,
+  .footer-contact-item .footer-link {
+    font-size: 10px;
+  }
+
+  .footer-address {
+    font-size: 10px;
+    max-width: 250px;
+  }
+
+  .footer-rights {
+    font-size: 8px;
   }
 }
 
 /* ==================== DARK MODE FOOTER STYLES ==================== */
 .dark .footer-content {
-  background: var(--header-bg-dark, #1a4785);
-  color: var(--header-text-dark, #e2f4ff);
+  background: var(--footer-bg-dark, #1a4785);
+  color: var(--footer-text-dark, #e2f4ff);
 }
 
 .dark .footer-divider {
-  border-color: var(--header-text-dark, #e2f4ff);
+  border-color: var(--footer-text-dark, #e2f4ff);
 }
 
 .dark .footer-link {
-  color: var(--header-text-dark, #e2f4ff);
+  color: var(--footer-text-dark, #e2f4ff);
 }
 
 .dark .footer-link:hover {
-  color: #a0bfdf;
+  color: var(--footer-link-hover-dark, #a0bfdf);
+}
+
+/* ==================== ACCESSIBILITY IMPROVEMENTS ==================== */
+@media (prefers-reduced-motion: reduce) {
+  .footer-link,
+  .footer-content {
+    transition: none;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .footer-link {
+    text-decoration: underline;
+  }
+
+  .footer-divider {
+    border-width: 1px;
+  }
 }
 
 /* ==================== PRINT STYLES ==================== */
@@ -1533,6 +2059,7 @@ html {
     color: black !important;
     border: 1px solid #000;
     padding: 20px;
+    border-radius: 0;
   }
 
   .footer-link {
@@ -1543,6 +2070,10 @@ html {
   .footer-title-img-container img {
     width: 100px !important;
     height: auto !important;
+  }
+
+  .footer-divider {
+    border-color: black !important;
   }
 }
 
@@ -1718,6 +2249,132 @@ html {
   color: #52c41a;
   text-align: center;
   margin: 10px 0;
+}
+
+/* --------------- RESPONSIVE MOBILE -------------*/
+
+/* Tablet (768px trở xuống) */
+@media (max-width: 768px) {
+  .registerform-header {
+    max-width: 90%;
+    padding: 20px 15px;
+    margin-top: 30px;
+  }
+
+  .registerform-header h1 {
+    font-size: 24px;
+  }
+
+  .registerform-header-subtext {
+    font-size: 16px;
+    line-height: 1.4;
+  }
+
+  .registerform-footer-form {
+    max-width: 90%;
+    width: 90%;
+    padding: 25px 20px;
+    margin: 0 auto 30px;
+    border-radius: 20px;
+  }
+
+  .registerform-footer-form button {
+    width: 200px;
+  }
+}
+
+/* Mobile (480px trở xuống) */
+@media (max-width: 480px) {
+  .registerform-header {
+    max-width: 95%;
+    padding: 15px 10px;
+    margin-top: 20px;
+  }
+
+  .registerform-header h1 {
+    font-size: 20px;
+    line-height: 1.3;
+  }
+
+  .registerform-header-subtext {
+    font-size: 14px;
+    line-height: 1.5;
+    margin-top: 8px;
+  }
+
+  .registerform-footer-form {
+    max-width: 95%;
+    width: 95%;
+    padding: 20px 15px;
+    margin: 0 auto 20px;
+    border-radius: 15px;
+    font-size: 16px;
+    border: 1px solid var(--register-input-border);
+  }
+
+  .registerform-footer-form input {
+    height: 45px;
+    font-size: 16px;
+    padding: 12px 10px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+  }
+
+  .registerform-footer-form label {
+    font-size: 16px;
+    margin-bottom: 8px;
+    margin-top: 12px;
+  }
+
+  .registerform-footer-form button {
+    width: 100%;
+    height: 45px;
+    font-size: 16px;
+    margin-top: 15px;
+    border-radius: 8px;
+  }
+
+  .registerform-error,
+  .registerform-success {
+    font-size: 14px;
+    margin: 8px 0;
+    padding: 0 5px;
+  }
+}
+
+/* Extra small mobile (360px trở xuống) */
+@media (max-width: 360px) {
+  .registerform-header {
+    padding: 10px 5px;
+  }
+
+  .registerform-header h1 {
+    font-size: 18px;
+  }
+
+  .registerform-header-subtext {
+    font-size: 13px;
+  }
+
+  .registerform-footer-form {
+    padding: 15px 10px;
+    border-radius: 12px;
+  }
+
+  .registerform-footer-form input {
+    height: 42px;
+    font-size: 15px;
+    padding: 10px 8px;
+  }
+
+  .registerform-footer-form label {
+    font-size: 15px;
+  }
+
+  .registerform-footer-form button {
+    height: 42px;
+    font-size: 15px;
+  }
 }
 
 /* --------------- HEADER ADMIN -------------*/

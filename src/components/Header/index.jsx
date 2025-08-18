@@ -19,6 +19,8 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [categories, setCategories] = useState([]);
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
+  const [showMobileCategoriesMenu, setShowMobileCategoriesMenu] =
+    useState(false);
   const categoriesDropdownRef = useRef(null);
   const [isHovering, setIsHovering] = useState(false);
   const hoverTimeoutRef = useRef(null);
@@ -78,6 +80,7 @@ export default function Header() {
     const handleResize = () => {
       if (window.innerWidth > 1024) {
         setIsMobileMenuOpen(false);
+        setShowMobileCategoriesMenu(false);
       }
     };
 
@@ -94,6 +97,7 @@ export default function Header() {
         !event.target.closest(".Header-Mobile-Menu-Button")
       ) {
         setIsMobileMenuOpen(false);
+        setShowMobileCategoriesMenu(false);
       }
     };
 
@@ -266,6 +270,18 @@ export default function Header() {
   // Đóng mobile menu khi click vào nav item
   const handleNavClick = () => {
     setIsMobileMenuOpen(false);
+    setShowMobileCategoriesMenu(false);
+  };
+
+  // Toggle mobile categories menu
+  const toggleMobileCategoriesMenu = () => {
+    setShowMobileCategoriesMenu(!showMobileCategoriesMenu);
+  };
+
+  // Get user display name
+  const getUserDisplayName = () => {
+    if (!user) return "";
+    return user.name || user.username || user.email?.split("@")[0] || "User";
   };
 
   return (
@@ -274,7 +290,9 @@ export default function Header() {
       <div className="Header-Container">
         {/* Left: Title */}
         <div className="Header-Titlegroup">
-          <div className="Header-Titlegroup-Deptname">SUCTREMMT</div>
+          <div className="Header-Titlegroup-Deptname">
+            <a href="/">SUCTREMMT</a>
+          </div>
         </div>
 
         {/* Center: Navigation - chỉ hiển thị trên desktop */}
@@ -404,6 +422,9 @@ export default function Header() {
                   height={24}
                   className="Header-Authsearch-UserInfo-Icon"
                 />
+                <span className="Header-Authsearch-UserInfo-Text">
+                  Xin chào, {getUserDisplayName()}
+                </span>
               </div>
 
               {showUserMenu && (
@@ -441,6 +462,9 @@ export default function Header() {
                   height={24}
                   className="Header-Authsearch-UserInfo-Icon"
                 />
+                <span className="Header-Authsearch-UserInfo-Text">
+                  Tài khoản
+                </span>
               </div>
 
               {showUserMenu && (
@@ -626,15 +650,64 @@ export default function Header() {
         >
           GIỚI THIỆU
         </Link>
-        <Link
-          className={`Header-Navbar-Navitem ${
-            isActiveNav("/Activities") ? "active" : ""
-          }`}
-          href="/Activities"
-          onClick={handleNavClick}
-        >
-          HOẠT ĐỘNG
-        </Link>
+
+        {/* Mobile Categories Dropdown */}
+        <div className="Header-Navbar-Navitem mobile-categories-container">
+          <div
+            className={`mobile-categories-trigger ${
+              isActiveNav("/Activities") ? "active" : ""
+            }`}
+            onClick={toggleMobileCategoriesMenu}
+          >
+            <span>CHUYÊN MỤC</span>
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              className={`mobile-dropdown-arrow ${
+                showMobileCategoriesMenu ? "open" : ""
+              }`}
+            >
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </div>
+
+          <div
+            className={`mobile-categories-submenu ${
+              showMobileCategoriesMenu ? "show" : ""
+            }`}
+          >
+            <Link
+              href="/Activities"
+              className="mobile-submenu-item"
+              onClick={handleNavClick}
+            >
+              Hoạt động nổi bật
+            </Link>
+            <Link
+              href="/ActivitiesOverview"
+              className="mobile-submenu-item"
+              onClick={handleNavClick}
+            >
+              Tất cả hoạt động
+            </Link>
+            <div className="mobile-submenu-divider"></div>
+            {categories.map((category) => (
+              <Link
+                key={category.value}
+                href={`/ActivitiesOverview?type=${category.value}`}
+                className="mobile-submenu-item"
+                onClick={handleNavClick}
+              >
+                {category.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+
         <Link
           className={`Header-Navbar-Navitem ${
             isActiveNav("/Awards") ? "active" : ""

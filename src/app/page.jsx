@@ -4,9 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import styles from "./page.module.css";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { set } from "mongoose";
 
 // Lazy load RegisterForm vì không cần ngay khi trang load
 const RegisterForm = dynamic(() => import("@/components/RegisterForm"), {
@@ -14,7 +12,6 @@ const RegisterForm = dynamic(() => import("@/components/RegisterForm"), {
   loading: () => <div>Đang tải...</div>,
 });
 
-// Constants được đưa ra ngoài component để tránh re-create
 const IMAGES = [
   "/Img/Homepage/BCH1.png",
   "/Img/Homepage/BCH2.png",
@@ -214,6 +211,20 @@ export default function Home() {
   const [awards, setAwards] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Thêm useEffect để detect mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      if (typeof window !== "undefined") {
+        setIsMobile(window.innerWidth <= 431);
+      }
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   // Refs
   const searchRef = useRef(null);
@@ -230,7 +241,7 @@ export default function Home() {
   const visibleEvents = useMemo(
     () =>
       Array.from(
-        { length: 3 },
+        { length: isMobile ? 1 : 3 },
         (_, i) => EVENTS[(startIndex + i) % EVENTS.length]
       ),
     [startIndex]
@@ -420,13 +431,16 @@ export default function Home() {
     searchActivities();
   }, [debouncedSearchTerm]);
 
-  // Fetch recent activities
   useEffect(() => {
     const fetchRecentActivities = async () => {
       setLoadingRecent(true);
       try {
-        // Thay đổi limit từ 4 thành 3
-        const res = await fetch("/api/activities?limit=3&status=published");
+        const isMobile = window.innerWidth <= 431;
+        const limit = isMobile ? 4 : 3; // VD: mobile lấy 2, desktop lấy 3
+
+        const res = await fetch(
+          `/api/activities?limit=${limit}&status=published`
+        );
         const data = await res.json();
 
         if (data.success) {
@@ -456,303 +470,6 @@ export default function Home() {
 
   return (
     <div className={styles.Container}>
-      <header className={styles.Header}>
-        <div className={styles.Header_Logo}>
-          <Link href="/">SUCTREMMT</Link>
-        </div>
-
-        <nav className={styles.Header_Nav}>
-          {/* User Menu */}
-          <div className={styles.Header_Nav_MenuWrapper}>
-            <button
-              className={styles.Header_Nav_AuthButton}
-              onClick={toggleUserMenu}
-              aria-label={user ? `Menu của ${user.name}` : "Menu tài khoản"}
-              aria-expanded={showUserMenu}
-            >
-              {user ? `Xin chào, ${user.name}` : "Tài khoản"}
-              <span className={styles.Header_Nav_AuthButton_Arrow}>▼</span>
-            </button>
-
-            {showUserMenu && (
-              <div className={styles.Header_Nav_AuthMenu} ref={userMenuRef}>
-                {user ? (
-                  <>
-                    <Link
-                      href="/Profile"
-                      className={styles.Header_Nav_AuthMenu_Item}
-                    >
-                      Trang cá nhân
-                    </Link>
-                    {user.role === "admin" && (
-                      <Link
-                        href="/admin/ActivitiesDashboard"
-                        className={styles.Header_Nav_AuthMenu_Item}
-                      >
-                        Quản trị
-                      </Link>
-                    )}
-                    <button
-                      onClick={logout}
-                      className={styles.Header_Nav_AuthMenu_Item}
-                    >
-                      Đăng xuất
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      href="/User?tab=login"
-                      className={styles.Header_Nav_AuthMenu_Item}
-                    >
-                      Đăng nhập
-                    </Link>
-                    <Link
-                      href="/User?tab=register"
-                      className={styles.Header_Nav_AuthMenu_Item}
-                    >
-                      Đăng ký
-                    </Link>
-                  </>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Search */}
-          <div className={styles.Header_Nav_SearchWrapper} ref={searchRef}>
-            <form
-              onSubmit={handleSearchSubmit}
-              className={styles.Header_Topbar_Authsearch_Searchbox}
-            >
-              <input
-                type="text"
-                placeholder="Tìm kiếm hoạt động"
-                value={searchTerm}
-                onChange={handleSearchChange}
-                onFocus={() => searchTerm.trim() && setShowSearchResults(true)}
-                aria-label="Tìm kiếm hoạt động"
-              />
-              <button
-                type="submit"
-                className={styles.Header_Topbar_Authsearch_Searchbox_Searchicon}
-                aria-label="Tìm kiếm"
-              >
-                <svg
-                  className={
-                    styles.Header_Topbar_Authsearch_Searchbox_Searchicon_Icon
-                  }
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeWidth="2"
-                    d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
-                  />
-                </svg>
-              </button>
-            </form>
-
-            {showSearchResults && (
-              <div className={styles.searchResultsDropdown}>
-                {isSearching ? (
-                  <div className={styles.searchLoading}>Đang tìm kiếm...</div>
-                ) : searchResults.length > 0 ? (
-                  <>
-                    <div className={styles.searchResultsHeader}>
-                      <span>Tìm thấy {searchResults.length} kết quả</span>
-                    </div>
-                    <div className={styles.searchResultsList}>
-                      {searchResults.map((result) => (
-                        <div
-                          key={result._id}
-                          className={styles.searchResultItem}
-                          onClick={() => handleResultClick(result.slug)}
-                          role="button"
-                          tabIndex={0}
-                          onKeyPress={(e) =>
-                            e.key === "Enter" && handleResultClick(result.slug)
-                          }
-                        >
-                          <h4>{result.title}</h4>
-                          <p>{result.description?.substring(0, 100)}...</p>
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                ) : (
-                  <div className={styles.searchNoResults}>
-                    Không tìm thấy kết quả nào
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Navigation Menu */}
-          <div className={styles.Header_Nav_MenuWrapper}>
-            <button
-              className={styles.Header_Nav_MenuWrapper_MenuButton}
-              aria-expanded={showMenu}
-              onClick={() => setShowMenu(!showMenu)}
-              aria-label="Menu điều hướng"
-            >
-              ☰
-            </button>
-            <nav
-              className={`${styles.Header_Nav_MenuWrapper_DropdownMenu} ${
-                showMenu
-                  ? styles.Header_Nav_MenuWrapper_MenuButton_ShowMenu
-                  : ""
-              }`}
-            >
-              <Link
-                href="/Introduction"
-                className={styles.Header_Nav_MenuWrapper_DropdownMenu_Item}
-                onClick={() => setShowMenu(false)}
-              >
-                Giới thiệu
-              </Link>
-
-              {/* Categories Menu Item */}
-              <div
-                className={styles.Header_Nav_MenuWrapper_DropdownMenu_Item}
-                ref={categoriesMenuRef}
-                onMouseEnter={() => setShowCategoriesMenu(true)}
-                onMouseLeave={() => setShowCategoriesMenu(false)}
-              >
-                <span className={styles.category_trigger}>
-                  Chuyên mục
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    className={`${styles.dropdown_arrow} ${
-                      showCategoriesMenu ? styles.open : ""
-                    }`}
-                  >
-                    <path d="M6 9l6 6 6-6" />
-                  </svg>
-                </span>
-
-                {showCategoriesMenu && (
-                  <div className={styles.categories_submenu}>
-                    <Link
-                      href="/Activities"
-                      onClick={() => {
-                        setShowMenu(false);
-                        setShowCategoriesMenu(false);
-                      }}
-                      className={styles.submenu_item}
-                    >
-                      Hoạt động nổi bật
-                    </Link>
-                    <Link
-                      href="/ActivitiesOverview"
-                      onClick={() => {
-                        setShowMenu(false);
-                        setShowCategoriesMenu(false);
-                      }}
-                      className={styles.submenu_item}
-                    >
-                      Tất cả hoạt động
-                    </Link>
-                    <div className={styles.submenu_divider}></div>
-                    {categories.map((category) => (
-                      <Link
-                        key={category.value}
-                        href={`/ActivitiesOverview?type=${category.value}`}
-                        onClick={() => {
-                          setShowMenu(false);
-                          setShowCategoriesMenu(false);
-                        }}
-                        className={styles.submenu_item}
-                      >
-                        {category.label}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              <Link
-                href="/Awards"
-                className={styles.Header_Nav_MenuWrapper_DropdownMenu_Item}
-                onClick={() => setShowMenu(false)}
-              >
-                Thành tích
-              </Link>
-              <Link
-                href="/Booking"
-                className={styles.Header_Nav_MenuWrapper_DropdownMenu_Item}
-                onClick={() => setShowMenu(false)}
-              >
-                Đặt phòng
-              </Link>
-              <Link
-                href="/Contact"
-                className={styles.Header_Nav_MenuWrapper_DropdownMenu_Item}
-                onClick={() => setShowMenu(false)}
-              >
-                Liên hệ
-              </Link>
-            </nav>
-          </div>
-
-          {/* Dark Mode Toggle */}
-          <button
-            className={styles.Header_Nav_DarkModeToggle}
-            onClick={toggleDarkMode}
-            aria-label={
-              isDarkMode ? "Chuyển sang chế độ sáng" : "Chuyển sang chế độ tối"
-            }
-          >
-            {isDarkMode ? (
-              <svg
-                className="w-6 h-6 text-gray-800 dark:text-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M13 3a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0V3ZM6.343 4.929A1 1 0 0 0 4.93 6.343l1.414 1.414a1 1 0 0 0 1.414-1.414L6.343 4.929Zm12.728 1.414a1 1 0 0 0-1.414-1.414l-1.414 1.414a1 1 0 0 0 1.414 1.414l1.414-1.414ZM12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm-9 4a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2H3Zm16 0a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2h-2ZM7.757 17.657a1 1 0 1 0-1.414-1.414l-1.414 1.414a1 1 0 1 0 1.414 1.414l1.414-1.414Zm9.9-1.414a1 1 0 0 0-1.414 1.414l1.414 1.414a1 1 0 0 0 1.414-1.414l-1.414-1.414ZM13 19a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0v-2Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            ) : (
-              <svg
-                className="w-6 h-6 text-gray-800 dark:text-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="#042354"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M11.675 2.015a.998.998 0 0 0-.403.011C6.09 2.4 2 6.722 2 12c0 5.523 4.477 10 10 10 4.356 0 8.058-2.784 9.43-6.667a1 1 0 0 0-1.02-1.33c-.08.006-.105.005-.127.005h-.001l-.028-.002A5.227 5.227 0 0 0 20 14a8 8 0 0 1-8-8c0-.952.121-1.752.404-2.558a.996.996 0 0 0 .096-.428V3a1 1 0 0 0-.825-.985Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            )}
-          </button>
-        </nav>
-      </header>
-
       {/* Hero Section */}
       <section
         ref={heroRef}
@@ -1245,8 +962,8 @@ export default function Home() {
             <RegisterForm className={styles.Body_Container_RegisterForm_Form} />
           </section>
         </div>
-        <Footer />
       </main>
+      <Footer />
     </div>
   );
 }
