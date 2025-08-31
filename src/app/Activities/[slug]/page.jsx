@@ -31,6 +31,23 @@ export default function ActivityPost() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
+  // Add this helper function after imports
+  const getImageSrc = (image) => {
+    if (!image) return null;
+
+    // Check if image is a base64 object
+    if (image.data && image.contentType) {
+      return `data:${image.contentType};base64,${image.data}`;
+    }
+
+    // If image is already a URL string
+    if (typeof image === "string") {
+      return image;
+    }
+
+    return null;
+  };
+
   useEffect(() => {
     let intervalId;
     if (isAutoPlaying && post?.images?.length > 1) {
@@ -284,10 +301,14 @@ export default function ActivityPost() {
               <div className="activity-image-carousel">
                 <div className="carousel-container">
                   <img
-                    src={post.images[currentImageIndex]}
+                    src={getImageSrc(post.images[currentImageIndex])}
                     alt={`${post.title} - Ảnh ${currentImageIndex + 1}`}
                     className="carousel-image"
                     onError={(e) => {
+                      console.error(
+                        "Error loading image:",
+                        post.images[currentImageIndex]
+                      );
                       e.target.style.display = "none";
                     }}
                   />

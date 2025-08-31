@@ -21,7 +21,14 @@ try {
     title: { type: String, required: true },
     content: { type: String, required: true },
     author: { type: String, required: true },
-    images: [{ type: String }],
+    images: [
+      {
+        data: { type: String, required: true }, // base64 string
+        contentType: { type: String, required: true },
+        filename: { type: String, default: "image" },
+        size: { type: Number, default: 0 },
+      },
+    ],
     type: {
       type: String,
       required: true,

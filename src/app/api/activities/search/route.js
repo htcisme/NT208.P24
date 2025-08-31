@@ -12,6 +12,16 @@ function removeVietnameseTones(str) {
     .toLowerCase();
 }
 
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function extractHashtags(str) {
+  if (!str) return [];
+  const hashtagRegex = /#[a-zA-Z0-9_\u0100-\u017F\u0180-\u024F\u1E00-\u1EFF]+/g;
+  return str.match(hashtagRegex) || [];
+}
+
 export async function GET(request) {
   try {
     await dbConnect();
@@ -19,7 +29,6 @@ export async function GET(request) {
     const q = searchParams.get("q") || "";
     const limit = parseInt(searchParams.get("limit")) || 8;
 
-    // Nếu không có từ khóa tìm kiếm, trả về mảng rỗng
     if (!q.trim()) {
       return NextResponse.json({
         success: true,
@@ -27,29 +36,30 @@ export async function GET(request) {
       });
     }
 
-    // Chuẩn bị từ khóa tìm kiếm
     const searchTerm = q.trim();
     const searchTermNoSign = removeVietnameseTones(searchTerm);
 
-    // Tạo RegExp pattern phù hợp hơn
-    // Escape special regex characters to prevent regex injection
-    const escapeRegExp = (string) => {
-      return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    // Kiểm tra nếu là hashtag search
+    const isHashtagSearch = searchTerm.startsWith("#");
+
+    let query = {
+      status: "published",
     };
 
-    const regexPattern = escapeRegExp(searchTermNoSign);
+    if (isHashtagSearch) {
+      // Tìm kiếm hashtag trong content
+      query.$or = [
+        { content: { $regex: new RegExp(escapeRegExp(searchTerm), "i") } },
+      ];
+    } else {
+      // Tìm kiếm thông thường
+      const regexPattern = escapeRegExp(searchTermNoSign);
+      const regex = new RegExp(regexPattern, "i");
 
-    // Tạo regex cho cả có dấu và không dấu - sử dụng word boundary để tìm từ hoàn chỉnh
-    const regex = new RegExp(regexPattern, "i");
-
-    // Tìm kiếm với điều kiện cải thiện
-    const activities = await Activity.find({
-      status: "published",
-      $or: [
+      query.$or = [
         { title: { $regex: new RegExp(escapeRegExp(searchTerm), "i") } },
         { content: { $regex: new RegExp(escapeRegExp(searchTerm), "i") } },
         { description: { $regex: new RegExp(escapeRegExp(searchTerm), "i") } },
-        // Thêm tìm kiếm không dấu
         {
           $expr: {
             $regexMatch: {
@@ -66,51 +76,79 @@ export async function GET(request) {
             },
           },
         },
-        {
-          $expr: {
-            $regexMatch: {
-              input: { $toLower: "$description" },
-              regex: regex,
-            },
-          },
-        },
-      ],
-    })
+      ];
+    }
+
+    const activities = await Activity.find(query)
       .sort({ createdAt: -1 })
       .limit(limit)
-      .select("title description content slug createdAt image") // Thêm slug vào select
+      .select("title description content slug createdAt images")
       .lean();
 
-    // Cải thiện logic lọc kết quả với độ chính xác cao hơn
-    // Chuyển đổi tất cả nội dung về dạng không dấu để so sánh
-    const filteredActivities = activities.filter((activity) => {
-      const titleNoSign = removeVietnameseTones(activity.title || "");
-      const contentNoSign = removeVietnameseTones(activity.content || "");
-      const descriptionNoSign = removeVietnameseTones(activity.description || "");
+    // Xử lý kết quả
+    const processedActivities = activities.map((activity) => {
+      // Trích xuất hashtags từ content
+      const hashtags = extractHashtags(activity.content);
 
-      // Tìm chính xác hơn với từng từ trong cụm từ tìm kiếm
-      const searchWords = searchTermNoSign
-        .split(/\s+/)
-        .filter((word) => word.length > 1);
-
-      // Nếu không có từ hợp lệ nào trong tìm kiếm, trả về false
-      if (searchWords.length === 0) {
-        return false;
-      }
-
-      // Kiểm tra xem có ít nhất một từ khớp hay không
-      return searchWords.some((word) => {
-        return (
-          titleNoSign.includes(word) ||
-          contentNoSign.includes(word) ||
-          descriptionNoSign.includes(word)
-        );
-      });
+      return {
+        ...activity,
+        hashtags,
+        // Highlight đoạn text chứa từ khóa tìm kiếm
+        highlightedContent:
+          isHashtagSearch && activity.content
+            ? activity.content.replace(
+                new RegExp(`(${escapeRegExp(searchTerm)})`, "gi"),
+                "<mark>$1</mark>"
+              )
+            : activity.content,
+      };
     });
+
+    // Lọc và sắp xếp kết quả
+    const filteredActivities = processedActivities
+      .filter((activity) => {
+        if (isHashtagSearch) {
+          return activity.hashtags.some(
+            (tag) =>
+              removeVietnameseTones(tag.toLowerCase()) ===
+              removeVietnameseTones(searchTerm.toLowerCase())
+          );
+        }
+
+        const titleNoSign = removeVietnameseTones(activity.title || "");
+        const contentNoSign = removeVietnameseTones(activity.content || "");
+        const descriptionNoSign = removeVietnameseTones(
+          activity.description || ""
+        );
+        const searchWords = searchTermNoSign
+          .split(/\s+/)
+          .filter((word) => word.length > 1);
+
+        return (
+          searchWords.length > 0 &&
+          searchWords.some(
+            (word) =>
+              titleNoSign.includes(word) ||
+              contentNoSign.includes(word) ||
+              descriptionNoSign.includes(word)
+          )
+        );
+      })
+      .sort((a, b) => {
+        // Ưu tiên kết quả có hashtag khớp chính xác
+        if (isHashtagSearch) {
+          const aExactMatch = a.hashtags.includes(searchTerm);
+          const bExactMatch = b.hashtags.includes(searchTerm);
+          if (aExactMatch && !bExactMatch) return -1;
+          if (!aExactMatch && bExactMatch) return 1;
+        }
+        return 0;
+      });
 
     return NextResponse.json({
       success: true,
       data: filteredActivities,
+      isHashtagSearch,
     });
   } catch (error) {
     console.error("Error searching activities:", error);

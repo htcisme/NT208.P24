@@ -1122,16 +1122,24 @@
 
 .Activities_RecentCard_Title {
   font-weight: 600;
+  line-height: 1.5;
+  height: 68.5px; /* đúng 2 dòng */
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* giới hạn 2 dòng */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
   font-size: 15px;
   color: #0a1f3c;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
 .Activities_RecentCard_Desc {
   font-size: 13px;
 
   color: #0a1f3c;
-  margin-bottom: 8px;
+  margin-bottom: 20px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -2132,4 +2140,67 @@ body.dark-mode .Activities_RecentCard {
 
 .dropdown_arrow.open {
   transform: rotate(180deg);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Thêm các class animation */
+.animate-hero,
+.animate-title,
+.animate-image,
+.animate-text,
+.animate-members,
+.animate-cards,
+.animate-focus,
+.animate-slider,
+.animate-awards,
+.animate-bandroll,
+.animate-grid,
+.animate-form {
+  opacity: 0;
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+/* Delay cho các animation */
+.animate-title {
+  animation-delay: 0.2s;
+}
+.animate-image {
+  animation-delay: 0.3s;
+}
+.animate-text {
+  animation-delay: 0.4s;
+}
+.animate-members {
+  animation-delay: 0.5s;
+}
+.animate-cards {
+  animation-delay: 0.3s;
+}
+.animate-focus {
+  animation-delay: 0.4s;
+}
+.animate-slider {
+  animation-delay: 0.5s;
+}
+.animate-awards {
+  animation-delay: 0.6s;
+}
+.animate-bandroll {
+  animation-delay: 0.7s;
+}
+.animate-grid {
+  animation-delay: 0.8s;
+}
+.animate-form {
+  animation-delay: 0.9s;
 }

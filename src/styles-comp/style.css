@@ -164,6 +164,51 @@ html {
   border-bottom-color: #2d5a8a;
 }
 
+.search-result-hashtags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 4px 0;
+}
+
+.search-result-hashtags .hashtag {
+  font-size: 0.8rem;
+  color: #0366d6;
+  background: #f1f8ff;
+  padding: 2px 6px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.dark .search-result-hashtags .hashtag {
+  background: #1a2634;
+  color: #58a6ff;
+}
+
+mark {
+  background-color: #fff3cd;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+.dark mark {
+  background-color: #2d3748;
+  color: #ffd700;
+}
+
+.search-typing {
+  padding: 12px;
+  text-align: center;
+  color: #666;
+  font-size: 0.8em;
+  border-bottom: 1px solid #eee;
+}
+
+.dark .search-typing {
+  color: #aaa;
+  border-bottom-color: #2d3748;
+}
+
 /* ==================== DESKTOP NAVIGATION ==================== */
 .Header-Navbar--desktop {
   display: flex;
@@ -631,6 +676,37 @@ html {
 
 .dark .Header-Dark-mode-toggle svg {
   color: #e2f4ff;
+}
+
+/* Sửa lại style cho categories dropdown khi active */
+.Header-Navbar-Navitem.categories-dropdown.active span {
+  color: #ffffff !important; /* Force màu trắng khi active */
+}
+
+.Header-Navbar-Navitem.categories-dropdown.active .dropdown-arrow {
+  stroke: #ffffff !important; /* Màu trắng cho mũi tên */
+}
+
+/* Cập nhật hover state */
+.Header-Navbar-Navitem.categories-dropdown:hover span {
+  color: #003366;
+}
+
+.Header-Navbar-Navitem.categories-dropdown.active:hover span {
+  color: #ffffff !important;
+}
+
+/* Dark mode */
+.dark .Header-Navbar-Navitem.categories-dropdown.active span {
+  color: #ffffff !important;
+}
+
+.dark .Header-Navbar-Navitem.categories-dropdown.active .dropdown-arrow {
+  stroke: #ffffff !important;
+}
+
+.dark .Header-Navbar-Navitem.categories-dropdown:hover span {
+  color: #ffffff;
 }
 
 /* ==================== MOBILE NAVIGATION ==================== */

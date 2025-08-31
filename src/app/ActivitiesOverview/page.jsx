@@ -6,34 +6,6 @@ import Footer from "@/components/Footer";
 import "@/app/ActivitiesOverview/style.css";
 import { useSearchParams } from "next/navigation";
 
-const useScrollReveal = (threshold = 0.1) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const ref = useRef(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          // Unobserve sau khi đã visible để tránh re-trigger
-          observer.unobserve(entry.target);
-        }
-      },
-      {
-        threshold,
-        rootMargin: "50px 0px -50px 0px", // Trigger sớm hơn một chút
-      }
-    );
-
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-
-    return () => observer.disconnect();
-  }, [threshold]);
-
-  return [ref, isVisible];
-};
 function ActivitiesOverviewContent() {
   // State để quản lý trang hiện tại cho mỗi phần
   const searchParams = useSearchParams();
@@ -56,6 +28,51 @@ function ActivitiesOverviewContent() {
 
   // State cho filter
   const [activeDropdown, setActiveDropdown] = useState(null);
+
+  const getImageSrc = (image) => {
+    if (!image) return null;
+
+    // Nếu là base64 object
+    if (image.data && image.contentType) {
+      return `data:${image.contentType};base64,${image.data}`;
+    }
+
+    // Nếu là URL string
+    if (typeof image === "string") {
+      return image;
+    }
+
+    return null;
+  };
+
+  const useScrollReveal = (threshold = 0.1) => {
+    const [isVisible, setIsVisible] = useState(false);
+    const ref = useRef(null);
+
+    useEffect(() => {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            // Unobserve sau khi đã visible để tránh re-trigger
+            observer.unobserve(entry.target);
+          }
+        },
+        {
+          threshold,
+          rootMargin: "50px 0px -50px 0px", // Trigger sớm hơn một chút
+        }
+      );
+
+      if (ref.current) {
+        observer.observe(ref.current);
+      }
+
+      return () => observer.disconnect();
+    }, [threshold]);
+
+    return [ref, isVisible];
+  };
 
   // Build query string cho filter
   const buildFilterQuery = () => {
@@ -477,12 +494,14 @@ function ActivitiesOverviewContent() {
                             )}
                           {post.images && post.images.length > 0 ? (
                             <img
-                              src={post.images[0]} // Lấy ảnh đầu tiên từ mảng images
+                              src={getImageSrc(post.images[0])}
                               alt={post.title}
                               onError={(e) => {
                                 e.target.style.display = "none";
                                 console.error("Lỗi tải ảnh:", post.images[0]);
                               }}
+                              loading="lazy"
+                              className="post-image"
                             />
                           ) : (
                             <div className="no-image-placeholder">
