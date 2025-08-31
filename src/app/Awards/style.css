@@ -13,7 +13,7 @@ main {
 }
 
 body {
-  padding-top: 60px;
+  padding-top: 60px !important; /* Đảm bảo không bị che bởi header */
 }
 /* Tiêu đề - Giảm kích thước */
 .title-section {

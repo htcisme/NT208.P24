@@ -74,7 +74,7 @@ const HeaderAdmin = () => {
   return (
     <div className="admin-header-container">
       <div className="admin-header-topbar">
-        <a href="/admin/">
+        <a href="/admin/ActivitiesDashboard">
           <div className="admin-header-title">TRANG QUẢN TRỊ</div>
         </a>
         <div className="admin-header-user">
@@ -112,13 +112,7 @@ const HeaderAdmin = () => {
 
       <div className="admin-header-navbar">
         <Link href="/" className={isActive("/")}>
-          TRANG CHỦ
-        </Link>
-        <Link
-          href="/admin/IntroductionDashboard"
-          className={isActive("/admin/IntroductionDashboard")}
-        >
-          GIỚI THIỆU
+          QUAY VỀ TRANG CHỦ
         </Link>
         <Link
           href="/admin/ActivitiesDashboard"

@@ -22,7 +22,6 @@ const teamData = [
       "Tổ chức và hỗ trợ các sự kiện của Đoàn khoa",
       "Thiết kế các nội dung truyền thông",
     ],
-    contact: "Email: truyenthong.mmtt@uit.edu.vn",
   },
   {
     id: 2,
@@ -38,7 +37,6 @@ const teamData = [
       "Biên tập hình ảnh, video cho các hoạt động",
       "Tổ chức các khóa tập huấn về kỹ năng thiết kế",
     ],
-    contact: "Email: thietke.mmtt@uit.edu.vn",
   },
   {
     id: 3,
@@ -54,7 +52,6 @@ const teamData = [
       "Tổ chức các nhóm học tập, trao đổi kiến thức",
       "Hỗ trợ sinh viên trong học tập và nghiên cứu",
     ],
-    contact: "Email: hoctap.mmtt@uit.edu.vn",
   },
 ];
 
