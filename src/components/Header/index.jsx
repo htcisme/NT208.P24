@@ -7,6 +7,29 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import NotificationBell from "@/components/NotificationBell";
 
+export function useDebounce(value, delay = 300) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+  const timeoutRef = useRef(null);
+
+  useEffect(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
+
 export default function Header() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [user, setUser] = useState(null);
@@ -29,6 +52,9 @@ export default function Header() {
   const pathname = usePathname();
   const userMenuRef = useRef(null);
   const searchRef = useRef(null);
+
+  const [isTyping, setIsTyping] = useState(false);
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const isActiveNav = (href) => {
     if (href === "/") {
@@ -177,22 +203,23 @@ export default function Header() {
 
   const handleSearch = async (e) => {
     e.preventDefault();
+    setIsTyping(false);
     if (!searchTerm.trim()) {
       setSearchResults([]);
       setShowSearchResults(false);
       return;
     }
+    await performSearch(searchTerm);
+  };
+
+  const performSearch = async (term) => {
+    if (!term.trim() || term.trim().length < 2) return;
 
     setIsSearching(true);
     try {
       const response = await fetch(
-        `/api/activities/search?q=${encodeURIComponent(
-          searchTerm.trim()
-        )}&limit=8`
+        `/api/activities/search?q=${encodeURIComponent(term.trim())}`
       );
-      if (!response.ok) {
-        throw new Error("Failed to fetch search results");
-      }
       const data = await response.json();
 
       if (data.success) {
@@ -209,6 +236,12 @@ export default function Header() {
     }
   };
 
+  useEffect(() => {
+    if (!isTyping && debouncedSearchTerm.trim().length >= 2) {
+      performSearch(debouncedSearchTerm);
+    }
+  }, [debouncedSearchTerm, isTyping]);
+
   const handleMouseEnter = () => {
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
@@ -224,41 +257,9 @@ export default function Header() {
     }, 300); // Delay 300ms trước khi đóng
   };
 
-  const handleSearchInput = async (value) => {
+  const handleSearchInput = (value) => {
     setSearchTerm(value);
-
-    // Validate input empty
-    if (!value.trim()) {
-      setSearchResults([]);
-      setShowSearchResults(false);
-      return;
-    }
-
-    // Validate to suggest with more than 2 characters
-    if (value.trim().length >= 2) {
-      setIsSearching(true);
-      try {
-        const response = await fetch(
-          `/api/activities/search?q=${encodeURIComponent(value.trim())}&limit=8`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch search results");
-        }
-        const data = await response.json();
-
-        if (data.success) {
-          setSearchResults(data.data);
-          setShowSearchResults(true);
-        } else {
-          setSearchResults([]);
-        }
-      } catch (error) {
-        console.error("Search error:", error);
-        setSearchResults([]);
-      } finally {
-        setIsSearching(false);
-      }
-    }
+    setIsTyping(true);
   };
 
   const handleResultClick = (id) => {
@@ -317,7 +318,11 @@ export default function Header() {
           </Link>
           <div
             className={`Header-Navbar-Navitem categories-dropdown ${
-              isActiveNav("/Activities") ? "active" : ""
+              isActiveNav("/Activities") ||
+              isActiveNav("/ActivitiesOverview") ||
+              pathname.includes("/Activities/")
+                ? "active"
+                : ""
             }`}
             ref={categoriesDropdownRef}
             onMouseEnter={handleMouseEnter}
@@ -494,13 +499,16 @@ export default function Header() {
                 placeholder="Tìm kiếm hoạt động..."
                 value={searchTerm}
                 onChange={(e) => handleSearchInput(e.target.value)}
-                onFocus={() =>
-                  searchTerm.trim().length >= 2 && setShowSearchResults(true)
-                }
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    setIsTyping(false);
+                  }
+                }}
               />
               <button
                 type="submit"
                 className="Header-Authsearch-Searchbox-Searchicon"
+                onClick={() => setIsTyping(false)}
               >
                 <svg
                   className="Header-Authsearch-Searchbox-Searchicon-Icon"
@@ -525,6 +533,10 @@ export default function Header() {
               <div className="search-results-dropdown">
                 {isSearching ? (
                   <div className="search-loading">Đang tìm kiếm...</div>
+                ) : isTyping ? (
+                  <div className="search-typing">
+                    Nhấn Enter hoặc nút tìm kiếm để xem kết quả chính xác
+                  </div>
                 ) : searchResults.length > 0 ? (
                   <>
                     <div className="search-results-header">
@@ -538,7 +550,30 @@ export default function Header() {
                           onClick={() => handleResultClick(result._id)}
                         >
                           <h4>{result.title}</h4>
-                          <p>{result.description?.substring(0, 100)}...</p>
+                          {result.hashtags && result.hashtags.length > 0 && (
+                            <div className="search-result-hashtags">
+                              {result.hashtags.map((tag, index) => (
+                                <span key={index} className="hashtag">
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                          <p>
+                            {result.highlightedContent ? (
+                              <span
+                                dangerouslySetInnerHTML={{
+                                  __html:
+                                    result.highlightedContent.substring(
+                                      0,
+                                      100
+                                    ) + "...",
+                                }}
+                              />
+                            ) : (
+                              result.description?.substring(0, 100) + "..."
+                            )}
+                          </p>
                         </div>
                       ))}
                     </div>

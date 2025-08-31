@@ -5,6 +5,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import styles from "./page.module.css";
 import Footer from "@/components/Footer";
+import Header from "@/components/Header";
 
 // Lazy load RegisterForm vì không cần ngay khi trang load
 const RegisterForm = dynamic(() => import("@/components/RegisterForm"), {
@@ -45,30 +46,50 @@ const MEMBER_ITEMS = [
 ];
 
 // Custom hook cho scroll reveal
+// Cập nhật hook useScrollReveal
 const useScrollReveal = (threshold = 0.1) => {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef(null);
 
   useEffect(() => {
+    // Kiểm tra hỗ trợ IntersectionObserver
+    if (!window.IntersectionObserver) {
+      setIsVisible(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          // Unobserve sau khi đã visible để tránh re-trigger
-          observer.unobserve(entry.target);
-        }
+      (entries) => {
+        // Xử lý nhiều entries thay vì chỉ lấy phần tử đầu tiên
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            // Chỉ unobserve element hiện tại
+            if (ref.current) {
+              observer.unobserve(ref.current);
+            }
+          }
+        });
       },
       {
-        threshold,
-        rootMargin: "50px 0px -50px 0px", // Trigger sớm hơn một chút
+        threshold, // Ngưỡng hiển thị
+        rootMargin: "50px 0px", // Trigger sớm hơn một chút
+        root: null, // Viewport
       }
     );
 
+    // Kiểm tra ref.current tồn tại trước khi observe
     if (ref.current) {
       observer.observe(ref.current);
     }
 
-    return () => observer.disconnect();
+    // Cleanup function
+    return () => {
+      if (ref.current) {
+        observer.unobserve(ref.current);
+      }
+      observer.disconnect();
+    };
   }, [threshold]);
 
   return [ref, isVisible];
@@ -212,6 +233,23 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
+
+  const getImageSrc = (activity) => {
+    if (!activity) return "/Img/Homepage/card1.png";
+
+    // Kiểm tra nếu có images array và có phần tử đầu tiên
+    if (activity.images && activity.images.length > 0) {
+      const firstImage = activity.images[0];
+
+      // Nếu là base64 object
+      if (firstImage.data && firstImage.contentType) {
+        return `data:${firstImage.contentType};base64,${firstImage.data}`;
+      }
+    }
+
+    // Fallback về ảnh mặc định
+    return "/Img/Homepage/card1.png";
+  };
 
   // Thêm useEffect để detect mobile
   useEffect(() => {
@@ -470,6 +508,8 @@ export default function Home() {
 
   return (
     <div className={styles.Container}>
+      <Header></Header>
+
       {/* Hero Section */}
       <section
         ref={heroRef}
@@ -683,13 +723,17 @@ export default function Home() {
                   >
                     <div className={styles.Activities_RecentCard_Container}>
                       <img
-                        src={activity.image}
+                        src={getImageSrc(activity)}
                         alt={activity.title}
                         className={styles.Activities_RecentCard_Image}
                         onError={(e) => {
                           e.target.src = "/Img/Homepage/card1.png";
-                          console.error("Lỗi tải ảnh:", activity.image);
+                          console.error(
+                            "Lỗi tải ảnh cho hoạt động:",
+                            activity.title
+                          );
                         }}
+                        loading="lazy"
                       />
                     </div>
                     <div className={styles.Activities_RecentCard_Content}>

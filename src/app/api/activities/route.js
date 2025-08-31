@@ -9,6 +9,7 @@ import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
 import fs from "fs";
 import nodemailer from "nodemailer";
+import { ImageProcessor } from "@/lib/imageUtils";
 
 // Cấu hình transporter cho nodemailer
 const transporter = nodemailer.createTransport({
@@ -124,41 +125,54 @@ export async function GET(request) {
   }
 }
 
+function processImages(imagesData) {
+  if (!imagesData) return [];
+
+  try {
+    const parsedImages = JSON.parse(imagesData);
+    if (!Array.isArray(parsedImages)) return [];
+
+    return parsedImages
+      .map((img) => {
+        // Nếu là object có type: 'url' thì cần convert
+        if (img && img.type === "url" && img.data) {
+          // Sẽ được convert thành base64 trong POST handler
+          return { type: "url", url: img.data };
+        }
+        // Nếu là base64 object
+        else if (img && img.data && img.contentType) {
+          return {
+            data: img.data,
+            contentType: img.contentType,
+            filename: img.filename || "uploaded-image",
+            size: img.size || 0,
+          };
+        }
+        // Nếu là URL string (legacy)
+        else if (typeof img === "string") {
+          return { type: "url", url: img };
+        }
+        return null;
+      })
+      .filter(Boolean);
+  } catch (error) {
+    console.error("Error processing images:", error);
+    return [];
+  }
+}
+
 export async function PUT(request) {
   try {
     await dbConnect();
     const slug = request.url.split("/").pop();
     const formData = await request.formData();
 
-    // Log toàn bộ dữ liệu nhận được
-    console.log("Received form data:", Object.fromEntries(formData.entries()));
+    console.log("Updating activity with slug:", slug);
 
-    // Parse images từ formData
-    let imageUrls = [];
-    const imagesJson = formData.get("images");
-    if (imagesJson) {
-      try {
-        const images = JSON.parse(imagesJson);
-        if (Array.isArray(images)) {
-          const validUrls = images.filter((url) => {
-            try {
-              const urlObj = new URL(url);
-              return (
-                urlObj.protocol === "http:" || urlObj.protocol === "https:"
-              );
-            } catch (e) {
-              console.error("Invalid URL:", url);
-              return false;
-            }
-          });
-          imageUrls = validUrls;
-        }
-      } catch (e) {
-        console.error("Invalid images JSON:", e);
-      }
-    }
+    // Xử lý images (cả URL và base64)
+    const processedImages = processImages(formData.get("images"));
 
-    // Validate type từ categories
+    // Validate type
     const type = formData.get("type");
     const category = await Category.findOne({ value: type });
     if (!category) {
@@ -174,16 +188,15 @@ export async function PUT(request) {
       status: formData.get("status"),
       commentOption: formData.get("commentOption"),
       type: formData.get("type"),
-      images: imageUrls,
+      images: processedImages, // Cập nhật với images mới
       updatedAt: new Date(),
     };
 
-    // Xử lý images riêng
-    console.log("Received images JSON:", imagesJson);
+    console.log("Update data:", {
+      ...updateData,
+      images: `Array of ${processedImages.length} images`,
+    });
 
-    console.log("Final update data:", updateData);
-
-    // Sử dụng $set để đảm bảo cập nhật tất cả các trường
     const activity = await Activity.findOneAndUpdate(
       { slug: slug },
       { $set: updateData },
@@ -196,8 +209,6 @@ export async function PUT(request) {
         { status: 404 }
       );
     }
-
-    console.log("Updated activity:", activity);
 
     return NextResponse.json({
       success: true,
@@ -241,41 +252,51 @@ export async function POST(request) {
       body[key] = value;
     });
 
-    //slug gen
+    // slug gen
     const baseSlug =
       body.title
         ?.toLowerCase()
         .replace(/\s+/g, "-")
         .replace(/[^\w-]/g, "") || `activity-${Date.now()}`;
 
-    // Tạo slug độc nhất
     const uniqueSlug = await generateUniqueSlug(baseSlug);
 
-    // Xử lý hình ảnh nếu có
-    let imageUrls = [];
+    // =============================
+    // 🔹 Xử lý hình ảnh thành base64
+    // =============================
+    let processedImages = [];
     const imagesJson = formData.get("images");
-
     if (imagesJson) {
       try {
-        const images = JSON.parse(imagesJson);
-        if (Array.isArray(images)) {
-          const validUrls = images.filter((url) => {
-            try {
-              const urlObj = new URL(url);
-              return (
-                urlObj.protocol === "http:" || urlObj.protocol === "https:"
-              );
-            } catch (e) {
-              console.error("Invalid URL:", url);
-              return false;
+        const parsedImages = JSON.parse(imagesJson);
+        console.log("Parsed images:", parsedImages);
+
+        // Validate và xử lý từng ảnh
+        for (const img of parsedImages) {
+          if (img && img.data && img.contentType) {
+            // Validate base64 data
+            if (
+              !img.data.startsWith("data:") &&
+              !img.data.includes(";base64,")
+            ) {
+              processedImages.push({
+                data: img.data,
+                contentType: img.contentType,
+                filename: img.filename || "image",
+                size: img.size || 0,
+              });
             }
-          });
-          imageUrls = validUrls;
+          }
         }
-      } catch (e) {
-        console.error("Invalid images JSON:", e);
+      } catch (error) {
+        console.error("Error parsing images:", error);
       }
     }
+    console.log("=== Images Debug ===");
+    console.log("Processed images count:", processedImages.length);
+    console.log("====================");
+
+    // Check type/category
     const type = formData.get("type");
     const category = await Category.findOne({ value: type });
     if (!category) {
@@ -284,7 +305,10 @@ export async function POST(request) {
         { status: 400 }
       );
     }
-    // Tạo hoạt động mới
+
+    // =============================
+    // 🔹 Tạo activity mới
+    // =============================
     const newActivity = new Activity({
       title: body.title,
       content: body.content,
@@ -292,7 +316,7 @@ export async function POST(request) {
       status: body.status,
       commentOption: body.commentOption,
       type: type || "other",
-      images: imageUrls,
+      images: processedImages, // 🔹 Lưu base64 images thay vì URL
       scheduledPublish: body.scheduledPublish,
       slug: uniqueSlug,
       createdAt: new Date(),
@@ -302,12 +326,14 @@ export async function POST(request) {
     await newActivity.save();
     console.log("Đã lưu hoạt động mới:", newActivity._id);
 
-    // Gửi thông báo nếu status là published
+    // =============================
+    // 🔹 Gửi email + notifications
+    // =============================
     if (body.status === "published") {
       try {
         console.log("=== Bắt đầu gửi thông báo ===");
 
-        // Gửi thông báo cho người đăng ký email
+        // Subscribers nhận email
         const subscribers = await NotificationSubscription.find({
           isActive: true,
           topics: "newPosts",
@@ -316,6 +342,7 @@ export async function POST(request) {
         console.log(
           `Tìm thấy ${subscribers.length} người đăng ký nhận thông báo`
         );
+
         const logoUrl = `${domain}/Img/Homepage/Fulllogolight.png`;
 
         if (subscribers.length > 0) {
@@ -323,67 +350,50 @@ export async function POST(request) {
             from: process.env.EMAIL_USER,
             subject: `Hoạt động mới: ${newActivity.title} - Đoàn khoa MMT&TT`,
             html: `
-              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8f9fa;">
-                <!-- Header với logo -->
-                <div style="text-align: center; margin-bottom: 30px;">
-                  <img src="${logoUrl}" alt="Logo Đoàn khoa MMT&TT" style="max-width: 200px; height: auto;">
+              <div style="font-family: Arial,sans-serif; max-width:600px; margin:0 auto; padding:20px; background-color:#f8f9fa;">
+                <div style="text-align:center; margin-bottom:30px;">
+                  <img src="${logoUrl}" alt="Logo" style="max-width:200px; height:auto;">
                 </div>
-
-                <!-- Tiêu đề -->
-                <div style="background-color: #042354; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-                  <h2 style="margin: 0; text-align: center;">Hoạt động mới từ Đoàn khoa MMT&TT</h2>
+                <div style="background:#042354; color:white; padding:20px; border-radius:8px; margin-bottom:20px;">
+                  <h2 style="margin:0; text-align:center;">Hoạt động mới từ Đoàn khoa MMT&TT</h2>
                 </div>
-
-                <!-- Nội dung chính -->
-                <div style="background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                  <h3 style="color: #333; margin-top: 0;">${
+                <div style="background:white; padding:20px; border-radius:8px; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
+                  <h3 style="color:#333; margin-top:0;">${
                     newActivity.title
                   }</h3>
-                  
-                  <!-- Hình ảnh hoạt động nếu có -->
                   ${
-                    newActivity.image
-                      ? `
-                    <div style="text-align: center; margin: 20px 0;">
-                      <img src="${domain}${newActivity.image}" alt="${newActivity.title}" style="max-width: 100%; height: auto; border-radius: 8px;">
-                    </div>
-                  `
+                    newActivity.images && newActivity.images.length > 0
+                      ? `<div style="text-align:center; margin:20px 0;">
+                          <img src="data:${newActivity.images[0].contentType};base64,${newActivity.images[0].data}" 
+                               alt="${newActivity.title}" 
+                               style="max-width:100%; height:auto; border-radius:8px;">
+                         </div>`
                       : ""
                   }
-
-                  <div style="margin: 20px 0; padding: 15px; background-color: #f5f5f5; border-radius: 5px;">
+                  <div style="margin:20px 0; padding:15px; background:#f5f5f5; border-radius:5px;">
                     ${newActivity.content.substring(0, 600)}...
                   </div>
-
-                  <!-- Nút xem chi tiết -->
-                  <div style="text-align: center; margin: 30px 0;">
+                  <div style="text-align:center; margin:30px 0;">
                     <a href="${domain}/Activities/${newActivity.slug}" 
-                       style="display: inline-block; padding: 12px 24px; background-color: #042354; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; transition: background-color 0.3s;">
+                       style="display:inline-block; padding:12px 24px; background:#042354; color:white; text-decoration:none; border-radius:5px; font-weight:bold;">
                       Xem chi tiết
                     </a>
                   </div>
-
-                  <!-- Nút hủy đăng ký -->
-                  <div style="text-align: center; margin: 20px 0;">
+                  <div style="text-align:center; margin:20px 0;">
                     <a href="${domain}/Unsubscribe?email={{email}}" 
-                       onclick="return confirm('Bạn có chắc chắn muốn hủy đăng ký nhận thông báo?');"
-                       style="display: inline-block; padding: 8px 17px; background-color: #dc3545; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; transition: background-color 0.3s; font-size: 12px;">
-                      Hủy đăng ký nhận thông báo
+                       style="display:inline-block; padding:8px 17px; background:#dc3545; color:white; text-decoration:none; border-radius:5px; font-size:12px;">
+                      Hủy đăng ký
                     </a>
                   </div>
-
-                  <!-- Thông tin về hủy đăng ký -->
-                  <div style="background-color: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                    <p style="margin: 0; font-size: 12px;">
-                      <strong>Lưu ý:</strong> Nếu bạn không muốn nhận thông báo nữa, bạn có thể hủy đăng ký bằng cách nhấn vào nút "Hủy đăng ký nhận thông báo" ở trên.
+                  <div style="background:#fff3cd; border:1px solid #ffeeba; color:#856404; padding:15px; border-radius:5px; margin:20px 0;">
+                    <p style="margin:0; font-size:12px;">
+                      Nếu không muốn nhận thông báo nữa, bạn có thể hủy đăng ký.
                     </p>
                   </div>
-
-                  <!-- Footer -->
-                  <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; text-align: center;">
-                    <p style="font-size: 12px; color: #666; margin: 0;">
-                      Đây là email tự động, vui lòng không trả lời email này.<br>
-                      © 2025 Đoàn khoa Mạng máy tính và Truyền thông
+                  <div style="margin-top:30px; padding-top:20px; border-top:1px solid #eee; text-align:center;">
+                    <p style="font-size:12px; color:#666; margin:0;">
+                      Đây là email tự động, vui lòng không trả lời.<br>
+                      © 2025 Đoàn khoa MMT&TT
                     </p>
                   </div>
                 </div>
@@ -391,11 +401,9 @@ export async function POST(request) {
             `,
           };
 
-          console.log("=== Bắt đầu gửi email cho người đăng ký ===");
           let successCount = 0;
           let failCount = 0;
 
-          // Gửi email cho từng người đăng ký
           for (const subscriber of subscribers) {
             console.log(`Đang gửi email đến ${subscriber.email}...`);
             const personalizedHtml = mailOptions.html.replace(
@@ -416,10 +424,6 @@ export async function POST(request) {
               console.error(`✗ Gửi thất bại đến ${subscriber.email}`);
             }
           }
-          console.log("=== Images Debug ===");
-          console.log("Received images:", formData.get("images"));
-          console.log("Parsed URLs:", imageUrls);
-          console.log("==================");
           console.log("=== Tổng kết gửi email ===");
           console.log(`Tổng số email: ${subscribers.length}`);
           console.log(`Thành công: ${successCount}`);
@@ -427,13 +431,15 @@ export async function POST(request) {
           console.log("=========================");
         }
 
+        // =============================
+        // 🔹 Notifications (author, admin, users)
+        // =============================
         console.log("Author from form:", body.author);
 
         let authorUser = null;
         if (ObjectId.isValid(body.author)) {
           authorUser = await User.findById(body.author).lean();
         } else {
-          // Try to find by name, case insensitive
           authorUser = await User.findOne({
             name: { $regex: new RegExp(`^${body.author}$`, "i") },
           }).lean();
@@ -454,14 +460,13 @@ export async function POST(request) {
             user.role !== "admin"
         );
 
-        // Tạo thông báo cho tác giả
+        // Notification cho tác giả
         if (authorUser) {
           try {
             const token = generateUniqueToken(
               authorUser._id.toString(),
               newActivity.title
             );
-            console.log("Generated token:", token); // Thêm log này
             await Notification.create({
               userId: authorUser._id.toString(),
               title: `Hoạt động mới đã được đăng tải: ${newActivity.title}`,
@@ -478,7 +483,7 @@ export async function POST(request) {
           }
         }
 
-        // Tạo thông báo cho admin
+        // Notification cho admin
         let adminCreated = 0;
         for (const admin of adminUsers) {
           try {
@@ -486,7 +491,6 @@ export async function POST(request) {
               admin._id.toString(),
               newActivity.title
             );
-            console.log("Generated token:", token); // Thêm log này
             await Notification.create({
               userId: admin._id.toString(),
               title: `[ADMIN] Hoạt động mới: ${newActivity.title}`,
@@ -507,7 +511,7 @@ export async function POST(request) {
         }
         console.log(`Đã tạo ${adminCreated} thông báo cho admin`);
 
-        // Tạo thông báo cho người dùng thường
+        // Notification cho user thường
         let userCreated = 0;
         let userErrors = 0;
         const batchSize = 10;
@@ -519,7 +523,6 @@ export async function POST(request) {
                 user._id.toString(),
                 newActivity.title
               );
-              console.log("Generated token:", token); // Thêm log này
               await Notification.create({
                 userId: user._id.toString(),
                 title: `Hoạt động mới: ${newActivity.title}`,
@@ -549,9 +552,7 @@ export async function POST(request) {
         );
       } catch (notificationError) {
         console.error("=== Lỗi khi xử lý thông báo ===");
-        console.error("Lỗi:", notificationError.message);
-        console.error("Stack:", notificationError.stack);
-        console.error("=========================");
+        console.error(notificationError.stack);
       }
     }
 
@@ -565,9 +566,7 @@ export async function POST(request) {
     );
   } catch (error) {
     console.error("=== Lỗi khi tạo hoạt động ===");
-    console.error("Lỗi:", error.message);
-    console.error("Stack:", error.stack);
-    console.error("=========================");
+    console.error(error.stack);
 
     return NextResponse.json(
       { success: false, message: "Lỗi khi tạo hoạt động" },

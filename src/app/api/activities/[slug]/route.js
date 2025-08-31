@@ -67,10 +67,64 @@ export async function PUT(request, context) {
     await dbConnect();
     const params = await context.params;
     const slug = params.slug;
-    console.log("Updating activity with slug:", slug);
+    const formData = await request.formData();
 
-    // Tìm hoạt động
-    const activity = await findActivityByIdOrSlug(slug);
+    // Log để debug
+    console.log("=== DEBUG PUT Request ===");
+    console.log("Slug:", slug);
+    console.log("FormData:", Object.fromEntries(formData));
+
+    // Lấy dữ liệu từ formData
+    const title = formData.get("title");
+    const content = formData.get("content");
+    const status = formData.get("status");
+    const commentOption = formData.get("commentOption");
+    const type = formData.get("type");
+
+    // Validate dữ liệu bắt buộc
+    if (!title || !content) {
+      return NextResponse.json(
+        { success: false, message: "Thiếu thông tin bắt buộc" },
+        { status: 400 }
+      );
+    }
+
+    // Xử lý images
+    const imagesJson = formData.get("images");
+    let processedImages = [];
+
+    if (imagesJson) {
+      try {
+        const parsedImages = JSON.parse(imagesJson);
+        processedImages = parsedImages.map((img) => ({
+          data: img.data,
+          contentType: img.contentType,
+          filename: img.filename || "image",
+          size: img.size || 0,
+        }));
+      } catch (error) {
+        console.error("Error processing images:", error);
+      }
+    }
+
+    // Tạo object chứa dữ liệu cập nhật
+    const updateData = {
+      title,
+      content,
+      status,
+      commentOption,
+      type,
+      images: processedImages,
+      updatedAt: new Date(),
+    };
+
+    // Tìm và cập nhật activity
+    const activity = await Activity.findOneAndUpdate(
+      { slug },
+      { $set: updateData },
+      { new: true }
+    );
+
     if (!activity) {
       return NextResponse.json(
         { success: false, message: "Không tìm thấy hoạt động" },
@@ -78,87 +132,13 @@ export async function PUT(request, context) {
       );
     }
 
-    // Xử lý FormData
-    const formData = await request.formData();
-    const updateData = {};
-
-    // Lấy các trường dữ liệu từ formData
-    const title = formData.get("title");
-    const content = formData.get("content");
-    const author = formData.get("author");
-    const status = formData.get("status");
-    const commentOption = formData.get("commentOption");
-    const type = formData.get("type");
-
-    // Xử lý images từ JSON string
-    const imagesJson = formData.get("images");
-    let images = [];
-
-    if (imagesJson) {
-      try {
-        const parsedImages = JSON.parse(imagesJson);
-        if (Array.isArray(parsedImages)) {
-          images = parsedImages.filter((url) => {
-            try {
-              const urlObj = new URL(url);
-              return (
-                urlObj.protocol === "http:" || urlObj.protocol === "https:"
-              );
-            } catch (e) {
-              console.error("Invalid URL:", url);
-              return false;
-            }
-          });
-          console.log("Valid image URLs:", images);
-        }
-      } catch (e) {
-        console.error("Error parsing images JSON:", e);
-      }
-    }
-
-    // Cập nhật các trường cơ bản
-    if (title) updateData.title = title;
-    if (content) updateData.content = content;
-    if (author) updateData.author = author;
-    if (status) updateData.status = status;
-    if (commentOption) updateData.commentOption = commentOption;
-    if (type) updateData.type = type;
-    if (images.length > 0) updateData.images = images;
-
-    // Cập nhật thời gian
-    updateData.updatedAt = new Date();
-
-    // Log các trường được cập nhật
-    console.log("Updating fields:", Object.keys(updateData));
-    console.log("Update data:", updateData);
-
-    // Cập nhật activity
-    Object.assign(activity, updateData);
-    await activity.save();
-
-    // Tạo thông báo
-    await Notification.create({
-      userId: activity.author,
-      title: `Hoạt động đã được cập nhật: ${activity.title}`,
-      message: `Hoạt động do bạn tạo đã được cập nhật thành công.`,
-      read: false,
-      link: `/Activities/${activity.slug}`,
-      activityId: activity._id,
-      type: "notification",
-      token: Date.now().toString(),
-    });
-
     return NextResponse.json({
       success: true,
       message: "Cập nhật hoạt động thành công",
-      data: {
-        ...activity.toObject(),
-        images: activity.images || [], // Đảm bảo trả về mảng images
-      },
+      data: activity,
     });
   } catch (error) {
     console.error("Error updating activity:", error);
-    console.error("Stack trace:", error.stack);
     return NextResponse.json(
       {
         success: false,

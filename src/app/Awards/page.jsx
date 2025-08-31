@@ -21,25 +21,43 @@ const useScrollReveal = (threshold = 0.1) => {
   const ref = useRef(null);
 
   useEffect(() => {
+    // Check IntersectionObserver support
+    if (!window.IntersectionObserver) {
+      setIsVisible(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          // Unobserve sau khi đã visible để tránh re-trigger
-          observer.unobserve(entry.target);
-        }
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            // Only unobserve current element
+            if (ref.current) {
+              observer.unobserve(ref.current);
+            }
+          }
+        });
       },
       {
         threshold,
-        rootMargin: '50px 0px -50px 0px' // Trigger sớm hơn một chút
+        rootMargin: "50px 0px", // Trigger slightly earlier
+        root: null, // Viewport
       }
     );
 
+    // Check ref.current exists
     if (ref.current) {
       observer.observe(ref.current);
     }
 
-    return () => observer.disconnect();
+    // Cleanup function
+    return () => {
+      if (ref.current) {
+        observer.unobserve(ref.current);
+      }
+      observer.disconnect();
+    };
   }, [threshold]);
 
   return [ref, isVisible];
@@ -121,9 +139,9 @@ export default function Awards() {
       <Header />
       <main>
         {/* Tiêu đề với scroll reveal */}
-        <section 
+        <section
           ref={titleRef}
-          className={`title-section ${titleVisible ? 'animate-title' : ''}`}
+          className={`title-section ${titleVisible ? "animate-title" : ""}`}
         >
           <h1 className="main-title">
             ĐOÀN KHOA MẠNG MÁY TÍNH VÀ TRUYỀN THÔNG LÀ ĐƠN VỊ XUẤT SẮC DẪN ĐẦU{" "}
@@ -134,9 +152,11 @@ export default function Awards() {
         </section>
 
         {/* Hình ảnh tràn viền với scroll reveal */}
-        <section 
+        <section
           ref={bannerRef}
-          className={`full-width-image ${bannerVisible ? 'animate-banner' : ''}`}
+          className={`full-width-image ${
+            bannerVisible ? "animate-banner" : ""
+          }`}
         >
           <Image
             src="/Img/Awards/BanChapHanhDoanKhoa.png"
@@ -149,9 +169,11 @@ export default function Awards() {
 
         {/* Phần hai cột với scroll reveal */}
         <section className="two-columns-section">
-          <div 
+          <div
             ref={contentRef}
-            className={`content-column ${contentVisible ? 'animate-slide-in-left' : ''}`}
+            className={`content-column ${
+              contentVisible ? "animate-slide-in-left" : ""
+            }`}
           >
             <p>
               Trong 10 năm qua, những thành quả mà Đoàn khoa đã đạt được là nhờ
@@ -165,9 +187,11 @@ export default function Awards() {
               độ hoạt động sôi nổi, tích cực.
             </p>
           </div>
-          <div 
+          <div
             ref={slideshowRef}
-            className={`image-column ${slideshowVisible ? 'animate-slide-in-right' : ''}`}
+            className={`image-column ${
+              slideshowVisible ? "animate-slide-in-right" : ""
+            }`}
           >
             <div className="slideshow">
               {/* Hiển thị hình ảnh hiện tại */}
@@ -201,9 +225,11 @@ export default function Awards() {
         </section>
 
         {/* Phần timeline thành tựu với scroll reveal */}
-        <section 
+        <section
           ref={timelineRef}
-          className={`timeline-section ${timelineVisible ? 'animate-timeline' : ''}`}
+          className={`timeline-section ${
+            timelineVisible ? "animate-timeline" : ""
+          }`}
         >
           <div className="timeline">
             {loading ? (
@@ -218,19 +244,23 @@ export default function Awards() {
                 </button>
               </div>
             ) : (
-              Object.entries(groupedAwards).map(([organization, orgAwards], index) => (
-                <div 
-                  key={organization} 
-                  className={`timeline-item animate-timeline-item-${index % 3}`}
-                >
-                  <h3>{organization} trao tặng</h3>
-                  {orgAwards.map((award) => (
-                    <p key={award._id}>
-                      {award.content} ({award.year})
-                    </p>
-                  ))}
-                </div>
-              ))
+              Object.entries(groupedAwards).map(
+                ([organization, orgAwards], index) => (
+                  <div
+                    key={organization}
+                    className={`timeline-item animate-timeline-item-${
+                      index % 3
+                    }`}
+                  >
+                    <h3>{organization} trao tặng</h3>
+                    {orgAwards.map((award) => (
+                      <p key={award._id}>
+                        {award.content} ({award.year})
+                      </p>
+                    ))}
+                  </div>
+                )
+              )
             )}
 
             {/* Hiển thị tin nhắn nếu không có dữ liệu */}
@@ -242,9 +272,11 @@ export default function Awards() {
           </div>
         </section>
 
-        <div 
+        <div
           ref={descriptionRef}
-          className={`timeline-description ${descriptionVisible ? 'animate-fade-in' : ''}`}
+          className={`timeline-description ${
+            descriptionVisible ? "animate-fade-in" : ""
+          }`}
         >
           <p>
             Hơn thế, Đoàn khoa còn là đơn vị xuất sắc dẫn đầu trong công tác

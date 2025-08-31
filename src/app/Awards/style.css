@@ -18,7 +18,7 @@ body {
 /* Tiêu đề - Giảm kích thước */
 .title-section {
   text-align: center;
-  padding: 30px 15px; /* Giảm padding */
+  padding: 30px 15px !important; /* Giảm padding */
 }
 
 .main-title {
@@ -847,4 +847,102 @@ body {
     break-inside: avoid;
     page-break-inside: avoid;
   }
+}
+
+/* Base animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation classes */
+.animate-title {
+  animation: slideInUp 0.8s ease forwards;
+}
+
+.animate-banner {
+  animation: fadeIn 1s ease forwards;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.8s ease forwards;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.8s ease forwards;
+}
+
+.animate-timeline {
+  animation: fadeIn 0.8s ease forwards;
+}
+
+.animate-timeline-item-0 {
+  animation-delay: 0.2s;
+}
+.animate-timeline-item-1 {
+  animation-delay: 0.4s;
+}
+.animate-timeline-item-2 {
+  animation-delay: 0.6s;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease forwards;
+}
+
+/* Handle invisible state */
+.title-section,
+.full-width-image,
+.content-column,
+.image-column,
+.timeline-section,
+.timeline-description {
+  opacity: 0;
+}
+
+/* Handle visible state */
+.title-section.animate-title,
+.full-width-image.animate-banner,
+.content-column.animate-slide-in-left,
+.image-column.animate-slide-in-right,
+.timeline-section.animate-timeline,
+.timeline-description.animate-fade-in {
+  opacity: 1;
 }

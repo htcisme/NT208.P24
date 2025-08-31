@@ -6,7 +6,6 @@ import Footer from "@/components/Footer";
 import styles from "@/app/Introduction/style.css";
 
 import Image from "next/image";
-import Head from "next/head";
 
 const teamData = [
   {
@@ -65,25 +64,43 @@ const useScrollReveal = (threshold = 0.1) => {
   const ref = useRef(null);
 
   useEffect(() => {
+    // Kiểm tra hỗ trợ IntersectionObserver
+    if (!window.IntersectionObserver) {
+      setIsVisible(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          // Unobserve sau khi đã visible để tránh re-trigger
-          observer.unobserve(entry.target);
-        }
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            // Chỉ unobserve element hiện tại
+            if (ref.current) {
+              observer.unobserve(ref.current);
+            }
+          }
+        });
       },
       {
         threshold,
-        rootMargin: "50px 0px -50px 0px", // Trigger sớm hơn một chút
+        rootMargin: "50px 0px", // Trigger sớm hơn để animation mượt mà
+        root: null, // Viewport
       }
     );
 
+    // Kiểm tra ref.current tồn tại
     if (ref.current) {
       observer.observe(ref.current);
     }
 
-    return () => observer.disconnect();
+    // Cleanup function
+    return () => {
+      if (ref.current) {
+        observer.unobserve(ref.current);
+      }
+      observer.disconnect();
+    };
   }, [threshold]);
 
   return [ref, isVisible];
