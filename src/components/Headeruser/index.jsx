@@ -86,7 +86,7 @@ export default function Headeruser() {
   return (
     <header className={styles.Header}>
       <div className={styles.Header_Logo}>
-        <Link href="/">XANGFUTING</Link>
+        <Link href="/">SUCTREMMT</Link>
       </div>
       <div className={styles.Header_Nav}>
         {/* Navigation */}
